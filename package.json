@@ -1,0 +1,10 @@
+{
+  "name": "dat",
+  "version": "0.0.0",
+  "description": "collaborative data tool",
+  "main": "index.js",
+  "scripts": {},
+  "repository": "",
+  "author": "",
+  "license": "BSD"
+}
