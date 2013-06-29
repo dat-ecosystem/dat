@@ -88,7 +88,7 @@ Motion to reconsider laid on the table Agreed to without objection.
 </floor_action>
 ```
 
-To consume this data in a web application (web applications can't read XML -- they prefer JSON) it would be nice to have a transformation that knows how to convert XML to JSON, like this:
+To make this data easier to consume in a web application it would be nice to have a transformation that knows how to convert XML to JSON, like this:
 
 ```
 {
@@ -101,7 +101,7 @@ To consume this data in a web application (web applications can't read XML -- th
 }
 ```
 
-With a transformation like this you can consume the daily XML data from the US House servers and automatically transform it into JSON so you can consume it in your web application.
+With a transformation like this you can consume the daily XML data from the US House servers and automatically transform it into JSON so you can consume it easily.
 
 `dat` will have a plugin format that provides a way to write these repeatable transformations in a way that they can be shared and reused.
 
