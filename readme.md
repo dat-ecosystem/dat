@@ -104,3 +104,20 @@ To consume this data in a web application (web applications can't read XML -- th
 With a transformation like this you can consume the daily XML data from the US House servers and automatically transform it into JSON so you can consume it in your web application.
 
 `dat` will have a plugin format that provides a way to write these repeatable transformations in a way that they can be shared and reused.
+
+### Goals of dat
+
+The two communites that dat is primarily focused on are publishers and consumers of **open civic data** and **open scientific data**.
+
+In order to support the needs of both communities there are a couple of technology requirements for `dat`: work with datasets in the range of **billions of rows** long and support **real-time data** use cases like GPS feeds from vehicle fleets and other 'firehose' data.
+
+The reasoning behind these two requirements is due to real world use cases. A lot of scientific data is really, really big and a lot of the most exciting open civic data can be classified as real-time.
+
+It's important to point out that complex querying isn't in the scope of the `dat` project. The goal is to enable the sharing of large datasets between nodes and not necessariily to peform complex analysis of that data. Another goal of `dat` is to act as a data 'sink' that can handle the synchronization for you between a remote data source and your local environment, but then can also do things like take subsets of the data coming in and insert them into PostgreSQL tables (or many other data stores). If you were to take billions of rows and casually insert them into most databases then you'd freeze or crash your computer. `dat` wants to enable large dataset syncing and then act as a proxy between the dataset and your database or file format of choice.
+
+### Get involved with dat
+
+- Watch the dat repo on Github
+- Write a dat plugin for your favorite database or a dat transformation for your favorite data (instructions coming soon)
+- Suggest an organization that should be using dat to distribute their data. Let me know [on twitter](http://twitter.com/maxogden).
+
