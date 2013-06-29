@@ -4,11 +4,11 @@
 
 ### What is `dat`?
 
-`dat` is a new initiative funded by the Knight Foundation that seeks to increase the traction of the open data movement by providing better tools for collaboration. 
+`dat` is a new initiative that seeks to increase the traction of the open data movement by providing better tools for collaboration. 
 
 To illustrate the goals of `dat` consider the GitHub project, which is a great model of this idea working in a different space. GitHub is built on top of an open source tool called `git` and provides a user-friendly web application that lets software developers find code written by others, use it in their own programs and improve upon it. In a similar fashion `dat` will be developed as a set of tools to store, synchronize, manipulate and collaborate in a decentralized fashion on sets of data, hopefully enabling platforms analogous to GitHub to be built on top of it.
 
-The initial prototype of `dat` will be developed as a collection of open source projects in Summer and Fall 2013 by Max Ogden and other open source contributors.
+The initial prototype of `dat` will be developed thanks to support from the Knight Foundation  as a collection of open source projects in Summer and Fall 2013 by Max Ogden and other open source contributors.
 
 ### Why do `dat`?
 
@@ -28,7 +28,7 @@ Another option is a manual merge, where you try and import each and every row of
 
 The manual merge can be tricky to implement. In your import script you will have to write the logic for how to check if an incoming row already exists in your database. Does the Excel file have it's own Crime IDs that you can use to look up existing records, or are you searching for the existing record by other method? Do you assume that the incoming row should completely overwrite the existing row, or do you try to do a full row merge?
 
-At this point the import script is probably a few dozen lines and is very specific to both the Oakland police departments data as well as your application's database. If you decide to switch from MySQL to PostgreSQL in the future you will have to revisit this script and re-write major parts of it.
+At this point the import script is probably a few dozen lines and is very specific to both the police department's data as well as your application's database. If you decide to switch from MySQL to PostgreSQL in the future you will have to revisit this script and re-write major parts of it.
 
 If you have to do things like clean up formatting errors in the Police data, reproject geographic coordinates, or change the data in other ways there is no straightforward way to share those changes publicly. The best case scenario is that you put your import script on GitHub and name it something like 'City-Police-Crime-MySQL-Import' so that other developers that want to consume the crime data in your city won't have to go through all the work that you just went through.
 
@@ -60,4 +60,47 @@ Tabular data and source code are fundamentally different, so they require a diff
 
 For source code, diffs are all you need. For data they are only half of the solution. Diffs can't operate on streams of incoming or outgoing data, for that you need something else: a transform.
 
-** work in progress **
+A simple transform might be something that takes data like this:
+
+```
+{"name": "BOB SMITH"}
+```
+
+and title-cases all the cells:
+
+```
+{"name": "Bob Smith"}
+```
+
+Transforming data is often done by writing one-off programming language scripts or by doing manual data cleaning in programs like Excel. `dat` hopes to provide a way that these transforms can be shared with others.
+
+The benefit of using transformations is that they can operate on new data when it arrives. Here is an example:
+
+The US House of Representatives publishes XML data about what happens on the house floor every day. Here is one of the actions:
+
+```
+<floor_action act-id="H38310" update-date-time="20130628T11:24">
+<action_time for-search="20130628T11:22:19">11:22:19 A.M. -</action_time>
+<action_item>H.R. 2231</action_item>
+<action_description>
+Motion to reconsider laid on the table Agreed to without objection.
+</action_description>
+</floor_action>
+```
+
+To consume this data in a web application (web applications can't read XML -- they prefer JSON) it would be nice to have a transformation that knows how to convert XML to JSON, like this:
+
+```
+{
+  "floor_action-act-id": "H38310",
+  "floor_action-update-date-time": "20130628T11:24",
+  "action_time-for-search": "20130628T11:22:19"
+  "action_time": "11:22:19 A.M. -",
+  "action_item": "H.R. 2231",
+  "action_description": "Motion to reconsider laid on the table Agreed to without objection."
+}
+```
+
+With a transformation like this you can consume the daily XML data from the US House servers and automatically transform it into JSON so you can consume it in your web application.
+
+`dat` will have a plugin format that provides a way to write these repeatable transformations in a way that they can be shared and reused.
