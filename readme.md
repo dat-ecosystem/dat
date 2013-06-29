@@ -40,9 +40,9 @@ Sadly, this workflow is the state of the art. Open data tools are at a level com
 
 ### Synchronization
 
-In order to enable collaboration on datasets, the first step is to define a syncrhonization protocol for tabular data (tabular data meaning data in a table, like a CSV or an Excel file).
+In order to enable collaboration on datasets, the first step is to define a synchronization protocol for tabular data (tabular data meaning data in a table, like a CSV or an Excel file).
 
-One of the only data stores that does this well is CouchDB. Here is a simplfied breakdown of how Couch does sync:
+One of the only data stores that does this well is CouchDB. Here is a simplified breakdown of how Couch does sync:
 
 Every database is made up of two tables. One holds the data, the other contains the chronological history of all operations. Whenever a row is written, edited or deleted from a table a row is added to the history table that describes the change.
 
