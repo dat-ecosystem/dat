@@ -24,9 +24,9 @@ To get the fresh data imported you can simply delete your entire local crime dat
 
 But the kill and fill method isn't very robust, for a variety of messy reasons. For instance, what if you cleaned up some of the rows in the crime data in your local database after importing it last time? Your edits would get lost.
 
-Another option is a manual merge, where you try and import each and every row of the incoming Excel file one at a time. If the data in the row already exists in the database, skip it. If the row already exists but the incoming data is a new version, overwrite that row. If the row doesn't exist yet make a whole new row in the database.
+Another option is a manual merge, where you try and import each and every row of the incoming Excel file one at a time. If the data in the row already exists in the database, skip it. If the row already exists but the incoming data is a new version, overwrite that row. If the row doesn't exist yet, make a whole new row in the database.
 
-The manual merge can be tricky to implement. In your import script you will have to write the logic for how to check if an incoming row already exists in your database. Does the Excel file have it's own Crime IDs that you can use to look up existing records, or are you searching for the existing record by other method? Do you assume that the incoming row should completely overwrite the existing row, or do you try to do a full row merge?
+The manual merge can be tricky to implement. In your import script you will have to write the logic for how to check if an incoming row already exists in your database. Does the Excel file have its own Crime IDs that you can use to look up existing records, or are you searching for the existing record by other method? Do you assume that the incoming row should completely overwrite the existing row, or do you try to do a full row merge?
 
 At this point the import script is probably a few dozen lines and is very specific to both the police department's data as well as your application's database. If you decide to switch from MySQL to PostgreSQL in the future you will have to revisit this script and re-write major parts of it.
 
@@ -58,7 +58,7 @@ The point of the history table is to be able to efficiently answer the query `Ye
 
 Tabular data and source code are fundamentally different, so they require a different set of tools. `git` has a concept of diffs and patches that describe changes to text like additions, moves and deletions. This concept also exists in the data world with CRUD actions (create, read, update and delete).
 
-For source code, diffs are all you need. For data they are only half of the solution. Diffs can't operate on streams of incoming or outgoing data, for that you need something else: a transform.
+For source code, diffs are all you need. For data, they are only half of the solution. Diffs can't operate on streams of incoming or outgoing data, for that you need something else: a transform.
 
 A simple transform might be something that takes data like this:
 
@@ -76,7 +76,7 @@ Transforming data is often done by writing one-off programming language scripts 
 
 The benefit of using transformations is that they can operate on new data when it arrives. Here is an example:
 
-The US House of Representatives publishes XML data about what happens on the house floor every day. Here is one of the actions:
+The US House of Representatives publishes XML data about what happens on the House floor every day. Here is one of the actions:
 
 ```
 <floor_action act-id="H38310" update-date-time="20130628T11:24">
@@ -117,7 +117,6 @@ It's important to point out that complex querying isn't in the scope of the `dat
 
 ### Get involved with dat
 
-- Watch the dat repo on Github
-- Write a dat plugin for your favorite database or a dat transformation for your favorite data (instructions coming soon)
-- Suggest an organization that should be using dat to distribute their data. Let me know [on twitter](http://twitter.com/maxogden).
-
+- Watch the `dat` repo on Github
+- Write a `dat` plugin for your favorite database or a `dat` transformation for your favorite data (instructions coming soon)
+- Suggest an organization that should be using `dat` to distribute their data. Let me know [on Twitter](http://twitter.com/maxogden).
