@@ -138,41 +138,45 @@ Git is designed this way for a good reason: to make working with large repositor
 
 Here is what happens when you try to view a 25MB text file in a browser through GitHub.com:
 
-![25mbfile](img/25mb-file.png)
+![25mbfile](img/25mb-txt.png)
 
 Note: I can only speculate as to why these limitations exist on GitHub, `git` is capable of cloning a 25MB file. Watch [Git: the stupid NOSQL database](http://www.confreaks.com/videos/443-rubyconf2010-git-the-stupid-nosql-database) by GitHub's Rick Olson to learn more.
 
 #### Open source community
 
-Ben Balter from GitHub wrote a post about why he thinks the `dat` project shouldn't exist, I encourage you to go and read it: [The Technology's The Easy Part](http://ben.balter.com/2013/07/01/technologys-the-easy-part/)
+Ben Balter from GitHub wrote a post about why he thinks the `dat` project shouldn't exist, you should go and read it: [The Technology's The Easy Part](http://ben.balter.com/2013/07/01/technologys-the-easy-part/)
 
-The summary: GitHub is good enough, so we should stop developing new data tools and be happy with what GitHub offers.
+The summary: `In many cases, we probably shouldn’t be building anything at all`, or to put it differently: our existing tools are good enough, so we should stop developing new tools.
 
-I respectfully disagree because I don't believe that open data is a zero-sum game. The reason I started the `dat` project was because I have tried to build a collaborative data platform during my Code for America fellowship and lacked the tools neccesary to achieve my goals.
+If I could fix GitHub to work with the use cases that I wan't, I would! But I can't find the page where I send them pull requests.
+
+Is open data a zero-sum game? The motivation behind `dat` comes from my trying to build a collaborative data platform during my Code for America fellowship and lacking the tools neccesary to achieve my goals.
 
 See my short presentation from 2011, ["DataCouch, a platform for collaborative data"](http://vimeo.com/31450380)
 
 The goals of DataCouch were:
 
-1: Let anyone clean up data/improve and make their contributions public
-2: Provide powerful tools for cleaning up data (heavily inspired by [Refine](http://openrefine.org/))
-3: Working with nearly any data should be fast + responsive
+- 1: Let anyone clean up data/improve and make their contributions public
+- 2: Provide powerful tools for cleaning up data (heavily inspired by [Refine](http://openrefine.org/))
+- 3: Working with nearly any data should be fast + responsive
 
-GitHub works for number 1, but 2 and 3 are still missing on their platform. Unless I go and work there I can't achieve the latter 2 goals.
+GitHub works for number 1, but 2 and 3 are still missing on their platform.
 
 In the two years since DataCouch I've invested nearly all of my time towards learning the techniques and tools that will let me build something like DataCouch without working against the grain.
 
 `dat` is the first step towards these goals. Building on my experience with open source communities, most recently a project I started in January 2013 called [voxel.js](http://voxeljs.com/). I intend to bring together a network of open source developers committed to making data collaboration work across programming language and file format barriers.
 
+In his post, Ben Balter warns that `We should be making it dumb-simple to do the right thing. We should be building really, really boring stuff. The more boring the better`. I fully agree with this, but I disagree with the notion that *new* tools can't make things simpler.
+
 ##### What will `dat` be built on?
 
 Node.js, a project commonly associated with building web apps, is actually just a tool for managing cross-platform streaming I/O. NPM, a repository of modules published with Node, is [ripe](https://npmjs.org/search?q=stream) with [modular approaches](https://blog.nodejitsu.com/npm-innovation-through-modularity) to streaming I/O for tons of databases, file formats and APIs.
 
-My implementation of `dat` will be built with NPM and [LevelDB](https://github.com/rvagg/node-levelup#introduction) (which also has a [healthy community](http://r.va.gg/presentations/sf.nodebase.meetup/)). Both are well established, used by millions of people and are focused on specific problems.
+My implementation of `dat` will be built with NPM and [LevelDB](https://github.com/rvagg/node-levelup#introduction) (which also has a [healthy community](http://r.va.gg/presentations/sf.nodebase.meetup/)). Both are well established, used by millions of people and are focused on specific problems. Reinventing the wheel is bad, because you end up with complex, bleeding edge tools. Luckily the wheels are already there.
 
 100% of my work on `dat` and related projects will be open source and optimized for contribution. I know I can't write plugins for every database under the sun alone, but I *can* enable hundreds of developers around the world to work together towards a common goal.
 
-NPM makes publishing modules ridiculousy easy. `git`, on the other hand, isn't extensible in this way and GitHub doesn't accept pull requests.
+NPM makes publishing modules ridiculousy easy. `git`, on the other hand, isn't extensible in this way. They solve different problems.
 
 And don't worry, you won't need to know or like JavaScript to contribute to the `dat` effort.
 
