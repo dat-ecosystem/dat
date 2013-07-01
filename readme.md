@@ -2,13 +2,22 @@
 
 ## collaborative data
 
+This document is just a plan that details the scope of the work to be done. `dat` is still 'emerging' as they say.
+
 ### What is `dat`?
 
-`dat` is a new initiative that seeks to increase the traction of the open data movement by providing better tools for collaboration. 
+`dat` is a new initiative that seeks to increase the traction of the open data movement by providing better tools for collaboration.
 
 To illustrate the goals of `dat` consider the GitHub project, which is a great model of this idea working in a different space. GitHub is built on top of an open source tool called `git` and provides a user-friendly web application that lets software developers find code written by others, use it in their own programs and improve upon it. In a similar fashion `dat` will be developed as a set of tools to store, synchronize, manipulate and collaborate in a decentralized fashion on sets of data, hopefully enabling platforms analogous to GitHub to be built on top of it.
 
-The initial prototype of `dat` will be developed thanks to support from the Knight Foundation  as a collection of open source projects in Summer and Fall 2013 by Max Ogden and other open source contributors.
+The initial prototype of `dat` will be developed thanks to support from the Knight Foundation  as a collection of open source projects in Summer and Fall 2013 by [Max Ogden](http://maxogden.com/gut-hosted-open-data-filets.html) and other open source contributors.
+
+### Get involved with `dat`
+
+- Watch `dat` repo on Github
+- Are you a coder? Pick your favorite database/API/file format and try to implement [SLEEP](http://www.dataprotocols.org/en/latest/sleep.html) on it. `dat` will be able to consume SLEEP (though both may evolve).
+- Suggest an organization that should be using `dat` to distribute their data. Let me know [on Twitter](http://twitter.com/maxogden).
+- Have any other questions/concerns? [Open an issue](https://github.com/maxogden/dat/issues).
 
 ### Why do `dat`?
 
@@ -115,8 +124,65 @@ The reasoning behind these two requirements is due to real world use cases. A lo
 
 It's important to point out that complex querying isn't in the scope of the `dat` project. The goal is to enable the sharing of large datasets between nodes and not necessariily to peform complex analysis of that data. Another goal of `dat` is to act as a data 'sink' that can handle the synchronization for you between a remote data source and your local environment, but then can also do things like take subsets of the data coming in and insert them into PostgreSQL tables (or many other data stores). If you were to take billions of rows and casually insert them into most databases then you'd freeze or crash your computer. `dat` wants to enable large dataset syncing and then act as a proxy between the dataset and your database or file format of choice.
 
-### Get involved with dat
+### Why not just use `git`?
 
-- Watch the `dat` repo on Github
-- Write a `dat` plugin for your favorite database or a `dat` transformation for your favorite data (instructions coming soon)
-- Suggest an organization that should be using `dat` to distribute their data. Let me know [on Twitter](http://twitter.com/maxogden).
+There are both technical and cultural reasons as to why I am not building on top of `git`. The cultural reasons are far more important, but I include the technical reasons here also.
+
+#### Technical limitations
+
+- Large numbers of commits add significant overhead. A repository with millions of commits might take minutes or hours to complete a `git status` check.
+- To quote Linus Torvalds, ["Git fundamentally never really looks at less than the whole repo"](http://osdir.com/ml/git/2009-05/msg00051.html), e.g. if you have a repository of a million documents you can't simply clone and track a subset.
+- `git` stores the full history of a repository. What if you only want to store the latest version of each row in a database and not a copy of every version? This needs to be optional (for disk space reasons).
+
+Git is designed this way for a good reason: to make working with large repositories of source code easy. For small datasets it is a great choice for sharing + tracking changes. When you start trying to work with larger datasets it becomes clear that `git` is the wrong tool for the job.
+
+Here is what happens when you try to view a 25MB text file in a browser through GitHub.com:
+
+![25mbfile](img/25mb-file.png)
+
+Note: I can only speculate as to why these limitations exist on GitHub, `git` is capable of cloning a 25MB file. Watch [Git: the stupid NOSQL database](http://www.confreaks.com/videos/443-rubyconf2010-git-the-stupid-nosql-database) by GitHub's Rick Olson to learn more.
+
+#### Open source community
+
+Ben Balter from GitHub wrote a post about why he thinks the `dat` project shouldn't exist, I encourage you to go and read it: [The Technology's The Easy Part](http://ben.balter.com/2013/07/01/technologys-the-easy-part/)
+
+The summary: GitHub is good enough, so we should stop developing new data tools and be happy with what GitHub offers.
+
+I respectfully disagree because I don't believe that open data is a zero-sum game. The reason I started the `dat` project was because I have tried to build a collaborative data platform during my Code for America fellowship and lacked the tools neccesary to achieve my goals.
+
+See my short presentation from 2011, ["DataCouch, a platform for collaborative data"](http://vimeo.com/31450380)
+
+The goals of DataCouch were:
+
+1: Let anyone clean up data/improve and make their contributions public
+2: Provide powerful tools for cleaning up data (heavily inspired by [Refine](http://openrefine.org/))
+3: Working with nearly any data should be fast + responsive
+
+GitHub works for number 1, but 2 and 3 are still missing on their platform. Unless I go and work there I can't achieve the latter 2 goals.
+
+In the two years since DataCouch I've invested nearly all of my time towards learning the techniques and tools that will let me build something like DataCouch without working against the grain.
+
+`dat` is the first step towards these goals. Building on my experience with open source communities, most recently a project I started in January 2013 called [voxel.js](http://voxeljs.com/). I intend to bring together a network of open source developers committed to making data collaboration work across programming language and file format barriers.
+
+##### What will `dat` be built on?
+
+Node.js, a project commonly associated with building web apps, is actually just a tool for managing cross-platform streaming I/O. NPM, a repository of modules published with Node, is [ripe](https://npmjs.org/search?q=stream) with [modular approaches](https://blog.nodejitsu.com/npm-innovation-through-modularity) to streaming I/O for tons of databases, file formats and APIs.
+
+My implementation of `dat` will be built with NPM and [LevelDB](https://github.com/rvagg/node-levelup#introduction) (which also has a [healthy community](http://r.va.gg/presentations/sf.nodebase.meetup/)). Both are well established, used by millions of people and are focused on specific problems.
+
+100% of my work on `dat` and related projects will be open source and optimized for contribution. I know I can't write plugins for every database under the sun alone, but I *can* enable hundreds of developers around the world to work together towards a common goal.
+
+NPM makes publishing modules ridiculousy easy. `git`, on the other hand, isn't extensible in this way and GitHub doesn't accept pull requests.
+
+And don't worry, you won't need to know or like JavaScript to contribute to the `dat` effort.
+
+### BSD Licensed
+
+Copyright (c) 2013 Max Ogden and contributors
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, are permitted provided that the following conditions are met:
+
+Redistributions of source code must retain the above copyright notice, this list of conditions and the following disclaimer.
+Redistributions in binary form must reproduce the above copyright notice, this list of conditions and the following disclaimer in the documentation and/or other materials provided with the distribution.
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
