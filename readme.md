@@ -166,17 +166,17 @@ In the two years since DataCouch I've invested nearly all of my time towards lea
 
 `dat` is the first step towards these goals. Building on my experience with open source communities, most recently a project I started in January 2013 called [voxel.js](http://voxeljs.com/). I intend to bring together a network of open source developers committed to making data collaboration work across programming language and file format barriers.
 
-In his post, Ben Balter warns that `We should be making it dumb-simple to do the right thing. We should be building really, really boring stuff. The more boring the better`. I fully agree with this, but I disagree with the notion that *new* tools can't make things simpler.
+In his post, Ben Balter warns that we `should be making it dumb-simple to do the right thing` and `should be building really, really boring stuff. The more boring the better`. I fully agree with this, but I disagree with the notion that *new* tools can't make things simpler.
 
 ##### What will `dat` be built on?
 
 Node.js, a project commonly associated with building web apps, is actually just a tool for managing cross-platform streaming I/O. NPM, a repository of modules published with Node, is [ripe](https://npmjs.org/search?q=stream) with [modular approaches](https://blog.nodejitsu.com/npm-innovation-through-modularity) to streaming I/O for tons of databases, file formats and APIs.
 
-My implementation of `dat` will be built with NPM and [LevelDB](https://github.com/rvagg/node-levelup#introduction) (which also has a [healthy community](http://r.va.gg/presentations/sf.nodebase.meetup/)). Both are well established, used by millions of people and are focused on specific problems. Reinventing the wheel is bad, because you end up with complex, bleeding edge tools. Luckily the wheels are already there.
+My implementation of `dat` will be built with Node, NPM and [LevelDB](https://github.com/rvagg/node-levelup#introduction) (which also has a [healthy community](http://r.va.gg/presentations/sf.nodebase.meetup/)). Both are well established, used by millions of people and are focused on specific problems. Reinventing the wheel is bad, because you end up with complex, bleeding edge tools. Luckily the wheels are already there.
 
 100% of my work on `dat` and related projects will be open source and optimized for contribution. I know I can't write plugins for every database under the sun alone, but I *can* enable hundreds of developers around the world to work together towards a common goal.
 
-NPM makes publishing modules ridiculousy easy. `git`, on the other hand, isn't extensible in this way. They solve different problems.
+NPM makes publishing modules ridiculousy easy. `git`, on the other hand, isn't extensible in this way. They solve different problems. If you can host your data on GitHub, use it! If you can't, you will need something better suited for your use case.
 
 And don't worry, you won't need to know or like JavaScript to contribute to the `dat` effort.
 
