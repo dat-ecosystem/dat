@@ -10,7 +10,7 @@ This document is just a plan that details the scope of the work to be done. `dat
 
 To illustrate the goals of `dat` consider the GitHub project, which is a great model of this idea working in a different space. GitHub is built on top of an open source tool called `git` and provides a user-friendly web application that lets software developers find code written by others, use it in their own programs and improve upon it. In a similar fashion `dat` will be developed as a set of tools to store, synchronize, manipulate and collaborate in a decentralized fashion on sets of data, hopefully enabling platforms analogous to GitHub to be built on top of it.
 
-The initial prototype of `dat` will be developed thanks to support from the Knight Foundation  as a collection of open source projects in Summer and Fall 2013 by [Max Ogden](http://maxogden.com/gut-hosted-open-data-filets.html) and other open source contributors.
+The initial prototype of `dat` will be developed thanks to support from the Knight Foundation  as a collection of open source projects. Full time work will begin tentatively in July or August 2013 by [Max Ogden](http://maxogden.com/gut-hosted-open-data-filets.html) and other open source contributors. The initial grant will support 6 months of full time work.
 
 ### Get involved with `dat`
 
