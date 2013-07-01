@@ -148,7 +148,7 @@ Ben Balter from GitHub wrote a post about why he thinks the `dat` project should
 
 The summary: `In many cases, we probably shouldn’t be building anything at all`, or to put it differently: our existing tools are good enough, so we should stop developing new tools.
 
-If I could fix GitHub to work with the use cases that I wan't, I would! But I can't find the page where I send them pull requests.
+If I could fix GitHub to work with the use cases that I want, I would! But I can't find the page where I send them pull requests.
 
 Is open data a zero-sum game? The motivation behind `dat` comes from my trying to build a collaborative data platform during my Code for America fellowship and lacking the tools neccesary to achieve my goals.
 
