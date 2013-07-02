@@ -88,7 +88,7 @@ The benefit of using transformations is that they can operate on new data when i
 
 The US House of Representatives publishes XML data about what happens on the House floor every day. Here is one of the actions:
 
-```
+```xml
 <floor_action act-id="H38310" update-date-time="20130628T11:24">
 <action_time for-search="20130628T11:22:19">11:22:19 A.M. -</action_time>
 <action_item>H.R. 2231</action_item>
@@ -100,11 +100,11 @@ Motion to reconsider laid on the table Agreed to without objection.
 
 To make this data easier to consume in a web application it would be nice to have a transformation that knows how to convert XML to JSON, like this:
 
-```
+```json
 {
   "floor_action-act-id": "H38310",
   "floor_action-update-date-time": "20130628T11:24",
-  "action_time-for-search": "20130628T11:22:19"
+  "action_time-for-search": "20130628T11:22:19",
   "action_time": "11:22:19 A.M. -",
   "action_item": "H.R. 2231",
   "action_description": "Motion to reconsider laid on the table Agreed to without objection."
