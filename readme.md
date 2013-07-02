@@ -148,6 +148,7 @@ To summarize, `git` is inadequate for:
 - real time data (e.g. lots of commits)
 - data filtering/subsets
 - compact history (disk efficient - only store enough to sync)
+- transforming data, as it doesn't have a concept of data transformations and isn't a scripting language
 
 `git` is great for sharing line-based ASCII formatted files like CSV that are small in size (thousands of rows). See [git (and GitHub) for Data](http://blog.okfn.org/2013/07/02/git-and-github-for-data/) for more discussion on this use case.
 
@@ -157,11 +158,11 @@ As an avid endorser of [small data](https://github.com/maxogden/smalldata) I ful
 
 Ben Balter from GitHub wrote a post about why he thinks the `dat` project shouldn't exist, you should go and read it: [The Technology's The Easy Part](http://ben.balter.com/2013/07/01/technologys-the-easy-part/)
 
-The summary: `In many cases, we probably shouldn’t be building anything at all`, or to put it differently: our existing tools are good enough, so we should stop developing new tools.
+The summary: *In many cases, we probably shouldn’t be building anything at all*, or to put it differently: our existing tools are good enough, so we should stop developing new tools.
 
 If I could fix GitHub to work with the use cases that I want, I would! But I can't find the page where I send them pull requests.
 
-In his post, Ben Balter warns that we `should be making it dumb-simple to do the right thing` and `should be building really, really boring stuff. The more boring the better`. I fully agree with this, but I disagree with the notion that *new* tools can't make things simpler. Just look at NPM. 
+In his post, Ben Balter warns that we *should be making it dumb-simple to do the right thing* and *should be building really, really boring stuff. The more boring the better*. I fully agree with this, but I disagree with the notion that *new* tools can't make things simpler.
 
 Is open data a zero-sum game? I don't think so. `dat` is a tool for automated sync and an ecosystem of compatible, open source plugins. It isn't a new, complicated file format. `dat` sits above formats and protocols and just allows them to become interoperable, like a Rosetta stone for data. As [Derek Willis sees it](http://thescoop.org/archives/2013/07/02/what-good-is-dat/), the value in the `dat` ecosystem is that it will be *a true platform for collaboration that enables users of government data to annotate it and to share their experiences in the hopes of creating a set of best practices for individual datasets.*
 
@@ -181,11 +182,20 @@ In the two years since DataCouch I've invested nearly all of my time towards lea
 
 `dat` is the first step towards these goals. Building on my experience with open source communities, most recently a project I started in January 2013 called [voxel.js](http://voxeljs.com/). I intend to bring together a network of open source developers committed to making data collaboration work across programming language and file format barriers.
 
+Some of my previous approaches to data interoperability include:
+
+- [SLEEP](http://www.dataprotocols.org/en/latest/sleep.html) - simple specification for syncing tabular data
+- [gut](https://github.com/maxogden/gut) - way to use web services to convert data between different formats
+
+The [dataprotocols.org](http://www.dataprotocols.org/en/latest/) project by the OKFN houses lots of well designed specifications for open data, including SLEEP.
+
+Whereas the individual protocols only address certain parts of the problem, `dat` is a higher level tool that will connect existing data protocols together.
+
 ##### What will `dat` be built on?
 
-Node.js, a project commonly associated with building web apps, is actually just a tool for managing cross-platform streaming I/O. NPM, a repository of modules published with Node, is [ripe](https://npmjs.org/search?q=stream) with [modular approaches](https://blog.nodejitsu.com/npm-innovation-through-modularity) to streaming I/O for tons of databases, file formats and APIs.
+My implementation of `dat` will be built with Node.js, NPM and [LevelDB](https://github.com/rvagg/node-levelup#introduction) (which also has a [healthy community](http://r.va.gg/presentations/sf.nodebase.meetup/)). Both are well established, used by millions of people and are focused on specific problems. Reinventing the wheel is bad, because you end up with complex, bleeding edge tools. Luckily the wheels are already there.
 
-My implementation of `dat` will be built with Node, NPM and [LevelDB](https://github.com/rvagg/node-levelup#introduction) (which also has a [healthy community](http://r.va.gg/presentations/sf.nodebase.meetup/)). Both are well established, used by millions of people and are focused on specific problems. Reinventing the wheel is bad, because you end up with complex, bleeding edge tools. Luckily the wheels are already there.
+Node.js, a project commonly associated with building web apps, is actually just a tool for managing cross-platform streaming I/O. NPM, a repository of modules published with Node, is [ripe](https://npmjs.org/search?q=stream) with [modular approaches](https://blog.nodejitsu.com/npm-innovation-through-modularity) to streaming I/O for tons of databases, file formats and APIs.
 
 100% of my work on `dat` and related projects will be open source and optimized for contribution. I know I can't write plugins for every database under the sun alone, but I *can* enable hundreds of developers around the world to work together towards a common goal.
 
