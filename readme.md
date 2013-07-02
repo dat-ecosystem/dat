@@ -127,7 +127,7 @@ It's important to point out that complex querying isn't in the scope of the `dat
 
 ### Why not just use `git`?
 
-There are both technical and cultural reasons as to why I am not building on top of `git`. The cultural reasons are far more important, but I include the technical reasons here also.
+There are both technical and cultural reasons as to why I am not satisfied with `git` as the end-all-be-all open data tool. The cultural reasons are far more important, but I include the technical reasons here also.
 
 #### Technical limitations
 
@@ -143,6 +143,16 @@ Here is what happens when you try to view a 25MB text file in a browser through 
 
 Note: I can only speculate as to why these limitations exist on GitHub, `git` is capable of cloning a 25MB file. Watch [Git: the stupid NOSQL database](http://www.confreaks.com/videos/443-rubyconf2010-git-the-stupid-nosql-database) by GitHub's Rick Olson to learn more.
 
+To summarize, `git` is inadequate for:
+
+- real time data (e.g. lots of commits)
+- data filtering/subsets
+- compact history (disk efficient - only store enough to sync)
+
+`git` is great for sharing line-based ASCII formatted files like CSV that are small in size (thousands of rows). See [git (and GitHub) for Data](http://blog.okfn.org/2013/07/02/git-and-github-for-data/) for more discussion on this use case.
+
+As an avid endorser of [small data](https://github.com/maxogden/smalldata) I fully support the idea of publishing simple data formats to GitHub. On the other hand `dat` is about enabling data sync regardless of format, frequency or size.
+
 #### Open source community
 
 Ben Balter from GitHub wrote a post about why he thinks the `dat` project shouldn't exist, you should go and read it: [The Technology's The Easy Part](http://ben.balter.com/2013/07/01/technologys-the-easy-part/)
@@ -151,7 +161,11 @@ The summary: `In many cases, we probably shouldn’t be building anything at all
 
 If I could fix GitHub to work with the use cases that I want, I would! But I can't find the page where I send them pull requests.
 
-Is open data a zero-sum game? The motivation behind `dat` comes from my trying to build a collaborative data platform during my Code for America fellowship and lacking the tools neccesary to achieve my goals.
+In his post, Ben Balter warns that we `should be making it dumb-simple to do the right thing` and `should be building really, really boring stuff. The more boring the better`. I fully agree with this, but I disagree with the notion that *new* tools can't make things simpler. Just look at NPM. 
+
+Is open data a zero-sum game? I don't think so. `dat` is a tool for automated sync and an ecosystem of compatible, open source plugins. It isn't a new, complicated file format. `dat` sits above formats and protocols and just allows them to become interoperable, like a Rosetta stone for data. As [Derek Willis sees it](http://thescoop.org/archives/2013/07/02/what-good-is-dat/), the value in the `dat` ecosystem is that it will be "*a true platform for collaboration that enables users of government data to annotate it and to share their experiences in the hopes of creating a set of best practices for individual datasets.*"
+
+The motivation behind `dat` comes from my trying to build a collaborative data platform during my Code for America fellowship and lacking the tools necessary to achieve my goals. Having worked both inside and outside government in my career I recognize the potential that both governmental organizations and open source communities can have in this space.
 
 See my short presentation from 2011, ["DataCouch, a platform for collaborative data"](http://vimeo.com/31450380)
 
@@ -167,8 +181,6 @@ In the two years since DataCouch I've invested nearly all of my time towards lea
 
 `dat` is the first step towards these goals. Building on my experience with open source communities, most recently a project I started in January 2013 called [voxel.js](http://voxeljs.com/). I intend to bring together a network of open source developers committed to making data collaboration work across programming language and file format barriers.
 
-In his post, Ben Balter warns that we `should be making it dumb-simple to do the right thing` and `should be building really, really boring stuff. The more boring the better`. I fully agree with this, but I disagree with the notion that *new* tools can't make things simpler.
-
 ##### What will `dat` be built on?
 
 Node.js, a project commonly associated with building web apps, is actually just a tool for managing cross-platform streaming I/O. NPM, a repository of modules published with Node, is [ripe](https://npmjs.org/search?q=stream) with [modular approaches](https://blog.nodejitsu.com/npm-innovation-through-modularity) to streaming I/O for tons of databases, file formats and APIs.
@@ -177,7 +189,7 @@ My implementation of `dat` will be built with Node, NPM and [LevelDB](https://gi
 
 100% of my work on `dat` and related projects will be open source and optimized for contribution. I know I can't write plugins for every database under the sun alone, but I *can* enable hundreds of developers around the world to work together towards a common goal.
 
-NPM makes publishing modules ridiculousy easy. `git`, on the other hand, isn't extensible in this way. They solve different problems. If you can host your data on GitHub, use it! If you can't, you will need something better suited for your use case.
+NPM makes publishing modules ridiculously easy. `git`, on the other hand, isn't extensible in this way. They solve different problems. If you can host your data on GitHub, use it! If you can't, you will need something better suited for your use case. NPM even supports installing from `git`, so you can publish your data to GitHub and there will still be an easy workflow for using `dat` to consume it later if you need to.
 
 And don't worry, you won't need to know or like JavaScript to contribute to the `dat` effort.
 
