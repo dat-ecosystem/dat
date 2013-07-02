@@ -12,6 +12,16 @@ To illustrate the goals of `dat` consider the GitHub project, which is a great m
 
 The initial prototype of `dat` will be developed thanks to support from the Knight Foundation  as a collection of open source projects. Full time work will begin tentatively in July or August 2013 by [Max Ogden](http://maxogden.com/gut-hosted-open-data-filets.html) and other open source contributors. The initial grant will support 6 months of full time work.
 
+#### Project components
+
+1. **command line tool**: capable of data storage, sync and running transformations
+2. **transformation modules**: simple scripts written in any language that can clean up/enhance/convert data, e.g. geocoding, converting from one date format to another
+3. **sync modules**: plugins (e.g. `dat-postgres`, `dat-excel`, `dat-xml`) that hook `dat` data streams up to different databases and formats and vice versa
+
+See ['how `dat` works'](#how-dat-works) below for technical descriptions. The transformation and sync modules are where `dat` really shines in that they define a way for data tools and scripts to talk to each other so that these components can be made generic and shared.
+
+[![](img/dat-diagram.png)](https://jlord.s3.amazonaws.com/dat-diagram.png)
+
 ### Get involved with `dat`
 
 - Watch `dat` repo on Github
@@ -23,14 +33,6 @@ The initial prototype of `dat` will be developed thanks to support from the Knig
 ### Why do `dat`?
 
 Open data is a relatively new concept that is being actively supported by both United States President Barack Obama and World Wide Web creator Tim Berners-Lee. The goal is to get those who possess data that could be useful to others to make that data publicly available. The way this is done today by making data available as read-only: you can download bulk copies of data or query a REST API but there is no standard way to share any changes you make to the data. `dat` seeks to take this idea further and enable a decentralized workflow where anyone can track the changes they make to data after they consume it.
-
-#### Project components
-
-1. **command line tool**: capable of data storage, sync and running transformations
-2. **transformation modules**: simple scripts written in any language that can clean up/enhance/convert data, e.g. geocoding, converting from one date format to another
-3. **sync modules**: plugins (e.g. `dat-postgres`, `dat-excel`, `dat-xml`) that hook `dat` data streams up to different databases and formats and vice versa
-
-See ['how `dat` works'](#how-dat-works) below for technical descriptions. The transformation and sync modules are where `dat` really shine in that they define a way for data tools and scripts to talk to each other.
 
 #### Example current situation
 
