@@ -18,6 +18,7 @@ The initial prototype of `dat` will be developed thanks to support from the Knig
 - Are you a coder? Pick your favorite database/API/file format and try to implement [SLEEP](http://www.dataprotocols.org/en/latest/sleep.html) on it. `dat` will be able to consume SLEEP (though both may evolve).
 - Suggest an organization that should be using `dat` to distribute their data. Let me know [on Twitter](http://twitter.com/maxogden).
 - Have any other questions/concerns? [Open an issue](https://github.com/maxogden/dat/issues).
+- Hang out in `#dat` on freenode
 
 ### Why do `dat`?
 
