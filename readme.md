@@ -6,7 +6,14 @@ This document is just a plan that details the scope of the work to be done. `dat
 
 ### What is `dat`?
 
-`dat` is a new initiative that seeks to increase the traction of the open data movement by providing better tools for collaboration.
+It's not enough for data to be open, it must also be **syncable**.
+
+`dat` is a new initiative that seeks to increase the traction of the open data movement by providing better tools for collaboration:
+
+- automatic sync and updates of entire data sets (or subsets)
+- data sets can be very large (billions of items) or updated frequently (real time data)
+- sync and transformation plugin API to connect `dat` to any existing database or format
+- built with automated + decentralized workflows in mind
 
 To illustrate the goals of `dat` consider the GitHub project, which is a great model of this idea working in a different space. GitHub is built on top of an open source tool called `git` and provides a user-friendly web application that lets software developers find code written by others, use it in their own programs and improve upon it. In a similar fashion `dat` will be developed as a set of tools to store, synchronize, manipulate and collaborate in a decentralized fashion on sets of data, hopefully enabling platforms analogous to GitHub to be built on top of it.
 
@@ -28,6 +35,7 @@ See ['how `dat` works'](#how-dat-works) below for technical descriptions. The tr
 - Are you a coder? Pick your favorite database/API/file format and try to implement [SLEEP](http://www.dataprotocols.org/en/latest/sleep.html) on it. `dat` will be able to consume SLEEP (though both may evolve).
 - Suggest an organization that should be using `dat` to distribute their data. Let me know [on Twitter](http://twitter.com/maxogden).
 - Have any other questions/concerns? [Open an issue](https://github.com/maxogden/dat/issues).
+- Interested in the underlying technology? Check out (node)[https://github.com/maxogden/art-of-node#the-art-of-node] and (leveldb)[https://github.com/rvagg/node-levelup/wiki/Modules]
 - Hang out in `#dat` on freenode
 
 ### Why do `dat`?
