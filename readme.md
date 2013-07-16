@@ -35,7 +35,7 @@ See ['how `dat` works'](#how-dat-works) below for technical descriptions. The tr
 - Are you a coder? Pick your favorite database/API/file format and try to implement [SLEEP](http://www.dataprotocols.org/en/latest/sleep.html) on it. `dat` will be able to consume SLEEP (though both may evolve).
 - Suggest an organization that should be using `dat` to distribute their data. Let me know [on Twitter](http://twitter.com/maxogden).
 - Have any other questions/concerns? [Open an issue](https://github.com/maxogden/dat/issues).
-- Interested in the underlying technology? Check out (node)[https://github.com/maxogden/art-of-node#the-art-of-node] and (leveldb)[https://github.com/rvagg/node-levelup/wiki/Modules]
+- Interested in the underlying technology? Check out [node](https://github.com/maxogden/art-of-node#the-art-of-node) and [leveldb](https://github.com/rvagg/node-levelup/wiki/Modules)
 - Hang out in `#dat` on freenode
 
 ### Why do `dat`?
