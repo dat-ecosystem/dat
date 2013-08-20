@@ -16,6 +16,7 @@
     "mkdirp": "~0.3.5",
     "abbrev": "~1.0.4",
     "level-sleep": "~0.1.0",
-    "level-sublevel": "~5.0.1"
+    "level-mutex": "~0.6.0",
+    "sleep-ref": "git://github.com/maxogden/SLEEP.git#fixes"
   }
 }
