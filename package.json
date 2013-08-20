@@ -14,6 +14,8 @@
     "optimist": "~0.6.0",
     "level": "~0.13.0",
     "mkdirp": "~0.3.5",
-    "abbrev": "~1.0.4"
+    "abbrev": "~1.0.4",
+    "level-sleep": "~0.1.0",
+    "level-sublevel": "~5.0.1"
   }
 }
