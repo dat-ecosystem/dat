@@ -18,5 +18,8 @@
     "level-sleep": "~0.1.0",
     "level-mutex": "~0.6.0",
     "sleep-ref": "git://github.com/mikeal/SLEEP.git"
+  },
+  "devDependencies": {
+    "rimraf": "~2.2.2"
   }
 }
