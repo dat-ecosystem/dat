@@ -17,6 +17,6 @@
     "abbrev": "~1.0.4",
     "level-sleep": "~0.1.0",
     "level-mutex": "~0.6.0",
-    "sleep-ref": "git://github.com/maxogden/SLEEP.git#fixes"
+    "sleep-ref": "git://github.com/mikeal/SLEEP.git"
   }
 }
