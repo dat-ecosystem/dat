@@ -21,21 +21,29 @@ function testReplication(size) {
   var source = getDat(sourcePath)
   source.init({}, function(err, msg) {
     var store = source._storage({}, function(err, seq) {
-      console.time('replicate ' + size)
       console.time('batch put ' + size)
-      for (var i = 0; i < size; i++)
-        store.put('data-' + i, {'val': i}, noop)
+      var pending = 0
+      for (var i = 0; i < size; i++) {
+        pending++
+        store.put('data-' + i, {'val': i}, function() {
+          pending--
+          if (pending === 0) console.timeEnd('batch put ' + size)
+        })
+      }
       source.serve({}, function(err, msg) {
         var dest = getDat(destPath)
-        dest.init({}, function(err) {
-          console.timeEnd('batch put ' + size)
-          dest.pull({}, function(err) {
-            console.timeEnd('replicate ' + size)
-            source._close()
-            dest._close()
-            cleanup()
+        var remote = "http://localhost:6461/_archive"
+        setTimeout(function giveLevelDBSomeTimeToCompact() {
+          console.time('replicate ' + size)
+          dest.init({remote: remote}, function(err) {
+            dest.pull({}, function(err) {
+              console.timeEnd('replicate ' + size)
+              source._close()
+              dest._close()
+              cleanup()
+            })
           })
-        })
+        }, process.argv[3] || 0)
       })
     })
   })
