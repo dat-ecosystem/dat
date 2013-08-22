@@ -5,7 +5,7 @@ var fs = require('fs')
 var os = require('os')
 var rmrf = require('rimraf')
 
-function noop() { }
+function noop() {}
 
 var sourcePath = path.join(os.tmpdir(), 'datsource')
 var destPath = path.join(os.tmpdir(), 'datdest')
@@ -22,11 +22,13 @@ function testReplication(size) {
   source.init({}, function(err, msg) {
     var store = source._storage({}, function(err, seq) {
       console.time('replicate ' + size)
+      console.time('batch put ' + size)
       for (var i = 0; i < size; i++)
         store.put('data-' + i, {'val': i}, noop)
       source.serve({}, function(err, msg) {
         var dest = getDat(destPath)
         dest.init({}, function(err) {
+          console.timeEnd('batch put ' + size)
           dest.pull({}, function(err) {
             console.timeEnd('replicate ' + size)
             source._close()
