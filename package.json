@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "collaborative data tool",
   "main": "index.js",
   "bin": {
@@ -17,7 +17,9 @@
     "abbrev": "~1.0.4",
     "level-sleep": "~0.1.0",
     "level-mutex": "~0.6.0",
-    "sleep-ref": "git://github.com/mikeal/SLEEP.git"
+    "sleep-ref": "git://github.com/mikeal/SLEEP.git",
+    "dir-tar-stream": "~0.0.3",
+    "untar": "~0.2.3"
   },
   "devDependencies": {
     "rimraf": "~2.2.2"
