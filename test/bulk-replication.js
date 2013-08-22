@@ -27,24 +27,27 @@ function testReplication(size) {
         pending++
         store.put('data-' + i, {'val': i}, function() {
           pending--
-          if (pending === 0) console.timeEnd('batch put ' + size)
+          if (pending === 0) serve()
         })
       }
-      source.serve({}, function(err, msg) {
-        var dest = getDat(destPath)
-        var remote = "http://localhost:6461/_archive"
-        setTimeout(function giveLevelDBSomeTimeToCompact() {
-          console.time('replicate ' + size)
-          dest.init({remote: remote}, function(err) {
-            dest.pull({}, function(err) {
-              console.timeEnd('replicate ' + size)
-              source._close()
-              dest._close()
-              cleanup()
+      function serve() {
+        console.timeEnd('batch put ' + size)
+        source.serve({}, function(err, msg) {
+          var dest = getDat(destPath)
+          var remote = "http://localhost:6461/_archive"
+          setTimeout(function giveLevelDBSomeTimeToCompact() {
+            console.time('replicate ' + size)
+            dest.init({remote: remote}, function(err) {
+              dest.pull({}, function(err) {
+                console.timeEnd('replicate ' + size)
+                source._close()
+                dest._close()
+                cleanup()
+              })
             })
-          })
-        }, process.argv[3] || 0)
-      })
+          }, process.argv[3] || 0)
+        })
+      }
     })
   })
 }
