@@ -7,7 +7,10 @@
     "dat": "cli.js"
   },
   "scripts": {},
-  "repository": "",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/maxogden/dat.git"
+  },
   "author": "",
   "license": "BSD",
   "dependencies": {
@@ -18,11 +21,18 @@
     "level-sleep": "~0.1.0",
     "level-mutex": "~0.6.0",
     "sleep-ref": "git://github.com/mikeal/SLEEP.git",
-    "dir-tar-stream": "~0.0.3",
+    "dir-tar-stream": "~0.0.2",
     "untar": "~0.2.3",
     "lexicographic-integer": "0.0.0"
   },
   "devDependencies": {
     "rimraf": "~2.2.2"
+  },
+  "directories": {
+    "example": "examples",
+    "test": "test"
+  },
+  "bugs": {
+    "url": "https://github.com/maxogden/dat/issues"
   }
 }

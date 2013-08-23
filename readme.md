@@ -4,6 +4,8 @@
 
 This document is just a plan that details the scope of the work to be done. `dat` is still 'emerging' as they say.
 
+If you are interested in testing out the pre-alpha version of `dat` please read [developing.md](developing.md).
+
 ### What is `dat`?
 
 It's not enough for data to be open, it must also be **syncable**.
