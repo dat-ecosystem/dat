@@ -45,6 +45,10 @@ starts an http + tcp server on port `6461` that serves the data in the current d
 
 removes duplicate copies of documents
 
+### dat cat
+
+writes line separated JSON objects to stdout, one object per key, only the newest version of each key, sorted by key
+
 ### dat dump
 
 dumps out the entire dat store to stdout as JSON
