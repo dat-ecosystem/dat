@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "0.0.2",
+  "version": "0.1.0",
   "description": "collaborative data tool",
   "main": "index.js",
   "bin": {
@@ -23,7 +23,8 @@
     "sleep-ref": "git://github.com/mikeal/SLEEP.git",
     "dir-tar-stream": "~0.0.2",
     "untar": "~0.2.3",
-    "lexicographic-integer": "0.0.0"
+    "lexicographic-integer": "0.0.0",
+    "through": "~2.3.4"
   },
   "devDependencies": {
     "rimraf": "~2.2.2"
