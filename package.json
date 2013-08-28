@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "collaborative data tool",
   "main": "index.js",
   "bin": {
@@ -26,7 +26,8 @@
     "lexicographic-integer": "0.0.0",
     "through": "~2.3.4",
     "split": "~0.2.10",
-    "request": "~2.27.0"
+    "request": "~2.27.0",
+    "hat": "0.0.3"
   },
   "devDependencies": {
     "rimraf": "~2.2.2"
