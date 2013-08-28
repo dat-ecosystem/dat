@@ -2,24 +2,53 @@
 
 ## collaborative data
 
-This document is just a plan that details the scope of the work to be done. `dat` is still 'emerging' as they say.
+`dat` is currently pre-alpha. You can test it out or hack on it now, but all things are subject to change.
 
-If you are interested in testing out the pre-alpha version of `dat` please read [developing.md](developing.md).
+To learn more about `dat` please read [what is `dat`?](#what-is-dat).
+
+# Hacking on dat
+
+If you are interested in testing out the pre-alpha version of `dat` you can install it using `npm` (which usually gets installed when you [install `node`](http://nodejs.org/))
+
+`dat` is primarily intended as a command line tool. There is also a programmatic API that you can use in node.js programs for more advanced use cases, as well as a way to have `dat` call programs written in other programming languages to transform data.
+
+## Install
+
+[![NPM](https://nodei.co/npm/dat.png)](https://nodei.co/npm/dat/)
+
+To get the currently published version (recommended):
+
+```
+npm install dat -g
+```
+
+The `-g` means "install globally" which makes the `dat` command available in your command line path.
+
+You can also install the latest development version with `git`:
+
+```
+git clone git://github.com/maxogden/dat.git
+cd dat
+npm install
+npm link
+```
+
+### How to use `dat`
+
+See [usage.md](usage.md) for usage, or type `dat help`.
 
 ### What is `dat`?
 
-It's not enough for data to be open, it must also be **syncable**.
+`dat` is a project that seeks providing better tools for data collaboration:
 
-`dat` is a new initiative that seeks to increase the traction of the open data movement by providing better tools for collaboration:
-
-- automatic sync and updates of entire data sets (or subsets)
+- make data **syncable**. automatic sync and updates of entire data sets (or subsets)
 - data sets can be very large (billions of items) or updated frequently (real time data)
-- sync and transformation plugin API to connect `dat` to any existing database or format
+- sync and transformation plugin API to connect `dat` to any existing database/format/language
 - built with automated + decentralized workflows in mind
 
 To illustrate the goals of `dat` consider the GitHub project, which is a great model of this idea working in a different space. GitHub is built on top of an open source tool called `git` and provides a user-friendly web application that lets software developers find code written by others, use it in their own programs and improve upon it. In a similar fashion `dat` will be developed as a set of tools to store, synchronize, manipulate and collaborate in a decentralized fashion on sets of data, hopefully enabling platforms analogous to GitHub to be built on top of it.
 
-The initial prototype of `dat` will be developed thanks to support from the Knight Foundation  as a collection of open source projects. Full time work will begin tentatively in July or August 2013 by [Max Ogden](http://maxogden.com/gut-hosted-open-data-filets.html) and other open source contributors. The initial grant will support 6 months of full time work.
+The initial prototype of `dat` will be developed thanks to support from the Knight Foundation  as a collection of open source projects. Full time work began in August 2013 by [Max Ogden](http://maxogden.com/gut-hosted-open-data-filets.html) and other open source contributors. The initial grant supports 6 months of full time work.
 
 #### Project components
 
@@ -34,6 +63,7 @@ See ['how `dat` works'](#how-dat-works) below for technical descriptions. The tr
 ### Get involved with `dat`
 
 - Watch `dat` repo on Github
+- Install and test the alpha version of `dat`. Leave feedback in the Github Issues of this repository!
 - Are you a coder? Pick your favorite database/API/file format and try to implement [SLEEP](http://www.dataprotocols.org/en/latest/sleep.html) on it. `dat` will be able to consume SLEEP (though both may evolve).
 - Suggest an organization that should be using `dat` to distribute their data. Let me know [on Twitter](http://twitter.com/maxogden).
 - Have any other questions/concerns? [Open an issue](https://github.com/maxogden/dat/issues).
@@ -176,17 +206,13 @@ To summarize, `git` is inadequate for:
 
 As an avid endorser of [small data](https://github.com/maxogden/smalldata) I fully support the idea of publishing simple data formats to GitHub. On the other hand `dat` is about enabling data sync regardless of format, frequency or size.
 
-#### Open source community
+#### More information
 
-Ben Balter from GitHub wrote a post about why he thinks the `dat` project shouldn't exist, you should go and read it: [The Technology's The Easy Part](http://ben.balter.com/2013/07/01/technologys-the-easy-part/)
+To read some early feedback on the `dat` concept:
 
-The summary: *In many cases, we probably shouldn’t be building anything at all*, or to put it differently: our existing tools are good enough, so we should stop developing new tools.
-
-If I could fix GitHub to work with the use cases that I want, I would! But I can't find the page where I send them pull requests.
-
-In his post, Ben Balter warns that we *should be making it dumb-simple to do the right thing* and *should be building really, really boring stuff. The more boring the better*. I fully agree with this, but I disagree with the notion that *new* tools can't make things simpler.
-
-Is open data a zero-sum game? I don't think so. `dat` is a tool for automated sync and an ecosystem of compatible, open source plugins. It isn't a new, complicated file format. `dat` sits above formats and protocols and just allows them to become interoperable, like a Rosetta stone for data. As [Derek Willis sees it](http://thescoop.org/archives/2013/07/02/what-good-is-dat/), the value in the `dat` ecosystem is that it will be *a true platform for collaboration that enables users of government data to annotate it and to share their experiences in the hopes of creating a set of best practices for individual datasets.*
+- http://jlord.us/dat/
+- http://ben.balter.com/2013/07/01/technologys-the-easy-part/
+- http://thescoop.org/archives/2013/07/02/what-good-is-dat/
 
 The motivation behind `dat` comes from my trying to build a collaborative data platform during my Code for America fellowship and lacking the tools necessary to achieve my goals. Having worked both inside and outside government in my career I recognize the potential that both governmental organizations and open source communities can have in this space.
 
@@ -215,13 +241,11 @@ Whereas the individual protocols only address certain parts of the problem, `dat
 
 ##### What will `dat` be built on?
 
-My implementation of `dat` will be built with Node.js, NPM and [LevelDB](https://github.com/rvagg/node-levelup#introduction) (which also has a [healthy community](http://r.va.gg/presentations/sf.nodebase.meetup/)). Both are well established, used by millions of people and are focused on specific problems. Reinventing the wheel is bad, because you end up with complex, bleeding edge tools. Luckily the wheels are already there.
+The `dat` command-line interface and data storage layer will be built with Node.js, NPM and [LevelDB](https://github.com/rvagg/node-levelup#introduction) (which also has a [healthy community](http://r.va.gg/presentations/sf.nodebase.meetup/)). Both are well established, used by millions of people and are focused on specific problems.
 
 Node.js, a project commonly associated with building web apps, is actually just a tool for managing cross-platform streaming I/O. NPM, a repository of modules published with Node, is [ripe](https://npmjs.org/search?q=stream) with [modular approaches](https://blog.nodejitsu.com/npm-innovation-through-modularity) to streaming I/O for tons of databases, file formats and APIs.
 
 100% of my work on `dat` and related projects will be open source and optimized for contribution. I know I can't write plugins for every database under the sun alone, but I *can* enable hundreds of developers around the world to work together towards a common goal.
-
-NPM makes publishing modules ridiculously easy. `git`, on the other hand, isn't extensible in this way. They solve different problems. If you can host your data on GitHub, use it! If you can't, you will need something better suited for your use case. NPM even supports installing from `git`, so you can publish your data to GitHub and there will still be an easy workflow for using `dat` to consume it later if you need to.
 
 And don't worry, you won't need to know or like JavaScript to contribute to the `dat` effort.
 

@@ -1,8 +1,9 @@
 {
   "name": "dat",
-  "version": "0.1.2",
-  "description": "collaborative data tool",
+  "version": "0.1.3",
+  "description": "data sharing and replication tool",
   "main": "index.js",
+  "preferGlobal": true,
   "bin": {
     "dat": "cli.js"
   },
@@ -17,7 +18,6 @@
     "optimist": "~0.6.0",
     "level": "~0.13.0",
     "mkdirp": "~0.3.5",
-    "abbrev": "~1.0.4",
     "level-sleep": "~0.1.0",
     "level-mutex": "~0.6.0",
     "sleep-ref": "git://github.com/mikeal/SLEEP.git",

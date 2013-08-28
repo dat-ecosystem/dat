@@ -1,27 +1,44 @@
-# Hacking on dat
-
-`dat` is primarily intended as a command line tool. You can install `dat` using `git` and `npm` (`npm` usually gets installed when you install `node`)
-
-There is also a programmatic JavaScript API that you can use in node.js programs for more advanced use cases.
-
-## Install
-
-to get the current stable version:
+## Example usage
 
 ```
-npm install dat -g
+# make a new folder and turn it into a dat store
+mkdir foo
+cd foo
+dat init
+
+# put a single key/value into dat
+dat crud put foo bar
+
+# put a JSON object into dat
+echo '{"hello": "world"}' | dat
+
+# retrieve a single row by key
+dat crud get foo
+dat crud get hello
+
+# stream the most recent of all rows
+dat cat
+
+# pipe dat into itself (increments revisions)
+dat cat | dat
+
+# view updated data
+dat cat
+
+# view raw data in the store
+dat dump
+
+# compact data (removes unnecessary metadata)
+dat compact
+
+# start a dat server
+dat serve
+
+# delete the dat folder (removes all data + history)
+rm -rf .dat
 ```
 
-or to install the latest version from `git`:
-
-```
-git clone git://github.com/maxogden/dat.git
-cd dat
-npm install
-npm link
-```
-
-## Basic commands
+## Command reference
 
 There are subject to change. See `lib/commands.js` for the source code
 
@@ -60,20 +77,3 @@ dumps out the entire dat store to stdout as JSON
 ### dat crud
 
 used for debugging. usage: `dat crud <action> <key> <value>` e.g. `dat crud get foo` or `dat crud put foo bar`
-
-## Hello world
-
-```
-mkdir foo
-cd foo
-dat init
-dat crud put foo bar
-echo '{"hello": "world"}' | dat
-dat crud get foo
-dat crud get hello
-dat cat
-dat cat | dat
-dat cat
-dat dump
-dat serve
-```
