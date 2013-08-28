@@ -6,7 +6,7 @@
 
 # change this function to modify each R list object as it gets processed
 transform <- function(obj) {
-  # e.g. obj["foo"] = "bar"
+  obj["hello_from"] = "R"
   return(obj)
 }
 

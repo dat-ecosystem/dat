@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+
 var path = require('path')
 var dat = require(__dirname)(process.cwd())
 var cli = require(path.join(__dirname, 'lib', 'parse-cli'))
