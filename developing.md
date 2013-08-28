@@ -68,8 +68,10 @@ mkdir foo
 cd foo
 dat init
 dat crud put foo bar
-dat crud put baz bar
+echo '{"hello": "world"}' | dat
 dat crud get foo
+dat crud get hello
+dat cat
 dat cat | dat
 dat cat
 dat dump
