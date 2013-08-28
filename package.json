@@ -25,7 +25,8 @@
     "untar": "~0.2.3",
     "lexicographic-integer": "0.0.0",
     "through": "~2.3.4",
-    "split": "~0.2.10"
+    "split": "~0.2.10",
+    "request": "~2.27.0"
   },
   "devDependencies": {
     "rimraf": "~2.2.2"

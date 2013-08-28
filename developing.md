@@ -33,6 +33,10 @@ turns the current folder into a new empty dat store
 
 initializes a new dat store by copying a remote dat server
 
+### dat
+
+you can pipe line separated JSON data into `dat` on stdin and it will be stored. otherwise entering `dat` with no arguments will just show you the usage instructions
+
 ### dat pull
 
 pulls new changes/data from a remote dat server
@@ -56,3 +60,18 @@ dumps out the entire dat store to stdout as JSON
 ### dat crud
 
 used for debugging. usage: `dat crud <action> <key> <value>` e.g. `dat crud get foo` or `dat crud put foo bar`
+
+## Hello world
+
+```
+mkdir foo
+cd foo
+dat init
+dat crud put foo bar
+dat crud put baz bar
+dat crud get foo
+dat cat | dat
+dat cat
+dat dump
+dat serve
+```
