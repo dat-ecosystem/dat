@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "data sharing and replication tool",
   "main": "index.js",
   "preferGlobal": true,
@@ -16,7 +16,7 @@
   "license": "BSD",
   "dependencies": {
     "optimist": "~0.6.0",
-    "level": "~0.13.0",
+    "level": "~0.15.0",
     "mkdirp": "~0.3.5",
     "level-sleep": "~0.1.0",
     "level-mutex": "~0.6.0",
