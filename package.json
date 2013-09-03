@@ -27,7 +27,8 @@
     "through": "~2.3.4",
     "split": "~0.2.10",
     "request": "~2.27.0",
-    "hat": "0.0.3"
+    "hat": "0.0.3",
+    "level-batcher": "0.0.1"
   },
   "devDependencies": {
     "rimraf": "~2.2.2"
