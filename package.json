@@ -32,7 +32,8 @@
     "hat": "~0.0.3",
     "level-batcher": "~0.0.2",
     "stream-combiner": "~0.0.2",
-    "rimraf": "~2.2.2"
+    "rimraf": "~2.2.2",
+    "byte-stream": "0.0.1"
   },
   "directories": {
     "example": "examples",
