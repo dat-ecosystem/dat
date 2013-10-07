@@ -57,7 +57,20 @@ test('creating single row with write stream', function(t) {
     ws.end()
     ws.on('close', function() {
       dat.storage.currentData().pipe(concat(function(data) {
-        console.log('data', data.toString())
+        done()
+      }))
+    })
+  })
+})
+
+test('piping a csv into a write stream', function(t) {
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({csv: true})
+    ws.write('a,b,c\n1,2,3')
+    ws.end()
+    ws.on('close', function() {
+      var cat = dat.storage.currentData()
+      cat.pipe(concat(function(data) {
         done()
       }))
     })

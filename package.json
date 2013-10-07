@@ -25,7 +25,6 @@
     "sleep-ref": "git://github.com/mikeal/SLEEP.git",
     "dir-tar-stream": "~0.0.2",
     "untar": "~0.2.3",
-    "lexicographic-integer": "~0.0.0",
     "through": "~2.3.4",
     "split": "~0.2.10",
     "request": "~2.27.0",
@@ -33,7 +32,9 @@
     "level-batcher": "~0.0.2",
     "stream-combiner": "~0.0.2",
     "rimraf": "~2.2.2",
-    "byte-stream": "0.0.1"
+    "byte-stream": "~0.0.1",
+    "multibuffer-stream": "~1.0.0",
+    "lexicographic-integer": "~1.0.0"
   },
   "directories": {
     "example": "examples",
