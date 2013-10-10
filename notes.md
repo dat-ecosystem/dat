@@ -19,7 +19,7 @@ a,b,c
 1,2,3
 ```
 
-all data should be stored as csv formatted rows. each dat store has a header array, so for the above csv it would be ['a','b','c']
+all data should be stored as csv formatted rows. each dat store has a header array, so for the above csv it would be `['a','b','c']`
 
 if data gets written to dat later on that has a fourth column that column value will have to get added to the header array
 
@@ -27,13 +27,13 @@ for example, if you convert the above csv to json it would be `{"a": 1, "b": 2, 
 
 #### storage considerations
 
-1. rows over cells
+##### rows over cells
 
 cell based storage was discussed here: https://github.com/maxogden/dat/issues/10#issuecomment-23287110
 
 the downside is that it adds complexity as you have to store revision numbers for every cell. what isn't mentioned in that thread is the performance impact. when keys are, say, 10 bytes and values are 5 bytes (or 1 byte as in the above example csv) then write throughput with leveldb goes down as opposed to row based storage where keys are the same but values are usually in 100 byte range (depending on how many columns exist of course, but roughly hundreds - thousands of bytes per row rather than double digits as with cellular storage)
 
-2. delimited vs framed
+##### delimited vs framed
 
 csv is a delimited format, whereas things like msgpack or the redis protocol are framed formats.
 
@@ -54,4 +54,6 @@ which means for 3 bytes of data there are 12 bytes of overhead (4 bytes for each
 to make a broad generalization: most tabular data will have short contents. rather than optimizing dat for spreadsheets where one cell might contain megabytes of data I have decided to instead optimize it for smaller cell values while also respecting disk space usage. this opinion may change in the future!
 
 delimited data is more intensive as you have to scan the full data for all of the instances of your delimiter, but for smaller values the performance impact shouldn't be as noticable. the benefit is that you can store single byte delimiters instead of having to use larger bit precision framing indexes
+
+a nice tradeoff between the two is to use a framed protocol with variable width integers for the indexes. see https://npmjs.org/package/varint and https://npmjs.org/package/multibuffer for more details
 
