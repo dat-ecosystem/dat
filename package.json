@@ -32,10 +32,11 @@
     "stream-combiner": "~0.0.2",
     "rimraf": "~2.2.2",
     "byte-stream": "~0.0.1",
-    "multibuffer-stream": "~1.0.0",
-    "lexicographic-integer": "~1.1.0",
+    "multibuffer-stream": "~2.0.0",
+    "multibuffer": "~2.0.0",
     "extend": "~1.2.1",
-    "level-hyper": "~0.17.0"
+    "level-hyper": "~0.17.0",
+    "lexicographic-integer": "~1.1.0"
   },
   "directories": {
     "example": "examples",
