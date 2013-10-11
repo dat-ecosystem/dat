@@ -19,11 +19,11 @@ a,b,c
 1,2,3
 ```
 
-all data should be stored as csv formatted rows. each dat store has a header array, so for the above csv it would be `['a','b','c']`
+in dat all data is stored as rows, where each cell is a buffer and the row is persisted to disk as a [multibuffer](http://npmjs.org/multibuffer). each dat store has a header array, so for the above csv it would be `['a','b','c']`
 
 if data gets written to dat later on that has a fourth column that column value will have to get added to the header array
 
-for example, if you convert the above csv to json it would be `{"a": 1, "b": 2, "c": 3}`. Storing this on disk as JSON would take up 19 bytes, storing the header array once is 13 bytes and then the value 'a,b,c' is only 5 bytes. with millions of rows the space savings add up.
+for example, if you convert the above csv to json it would be `{"a": 1, "b": 2, "c": 3}`. Storing this on disk as JSON would take up 19 bytes, storing the header array once is 13 bytes and then the cells 'a', 'b', 'c' is only ~5 bytes. with millions of rows the space savings add up.
 
 #### storage considerations
 
@@ -46,7 +46,7 @@ to store the above csv in a framed format would look something like this
 or, when written out with 4byte integer (UInt32BE) framing length precision:
 
 ```
-[000110001200013]
+[0001 1 0001 2 0001 3]
 ```
 
 which means for 3 bytes of data there are 12 bytes of overhead (4 bytes for each cell)
@@ -57,3 +57,4 @@ delimited data is more intensive as you have to scan the full data for all of th
 
 a nice tradeoff between the two is to use a framed protocol with variable width integers for the indexes. see https://npmjs.org/package/varint and https://npmjs.org/package/multibuffer for more details
 
+now that multibuffer uses varints internally, dat itself will encode and store rows of data as multibuffers and persist those to disk
