@@ -19,13 +19,15 @@ a,b,c
 1,2,3
 ```
 
-in dat all data is stored as rows, where each cell is a buffer and the row is persisted to disk as a [multibuffer](http://npmjs.org/multibuffer). each dat store has a header array, so for the above csv it would be `['a','b','c']`
+in dat all data are stored as [multibuffers](http://npmjs.org/multibuffer) (aka 'buff'), which represents a single row, where each cell is a buffer and the row is persisted to disk as a multibuffer. each dat store has a header array, so for the above csv it would be `['a','b','c']`
 
 if data gets written to dat later on that has a fourth column that column value will have to get added to the header array
 
 for example, if you convert the above csv to json it would be `{"a": 1, "b": 2, "c": 3}`. Storing this on disk as JSON would take up 19 bytes, storing the header array once is 13 bytes and then the cells 'a', 'b', 'c' is only ~5 bytes. with millions of rows the space savings add up.
 
 #### storage considerations
+
+to make a broad generalization: most tabular data will have short contents. rather than optimizing dat for spreadsheets where one cell might contain megabytes of data I have decided to instead optimize it for smaller cell values while also respecting disk space usage. this opinion may change in the future!
 
 ##### rows over cells
 
@@ -37,7 +39,7 @@ the downside is that it adds complexity as you have to store revision numbers fo
 
 csv is a delimited format, whereas things like msgpack or the redis protocol are framed formats.
 
-to store the above csv in a framed format would look something like this
+to store the above csv in a simple framed format would look something like this
 
 ```
 [4 byte length integer][first cell][4 byte length integer][second cell][4 byte length integer][third cell]
@@ -49,12 +51,39 @@ or, when written out with 4byte integer (UInt32BE) framing length precision:
 [0001 1 0001 2 0001 3]
 ```
 
-which means for 3 bytes of data there are 12 bytes of overhead (4 bytes for each cell)
+which means for 3 bytes of data there are 12 bytes of overhead (4 bytes for each cell). instead of using fixed width framing sections dat uses [varints](https://npmjs.org/package/varint) instead
 
-to make a broad generalization: most tabular data will have short contents. rather than optimizing dat for spreadsheets where one cell might contain megabytes of data I have decided to instead optimize it for smaller cell values while also respecting disk space usage. this opinion may change in the future!
+generally speaking, delimited data is more intensive as you have to scan the full data for all of the instances of your delimiter, but for smaller values the performance impact shouldn't be as noticable. the benefit is that you can store single byte delimiters instead of having to use larger bit precision framing indexes
 
-delimited data is more intensive as you have to scan the full data for all of the instances of your delimiter, but for smaller values the performance impact shouldn't be as noticable. the benefit is that you can store single byte delimiters instead of having to use larger bit precision framing indexes
+#### the .buff format
 
-a nice tradeoff between the two is to use a framed protocol with variable width integers for the indexes. see https://npmjs.org/package/varint and https://npmjs.org/package/multibuffer for more details
+buff is the abbreviated name for a [multibuffer](https://github.com/brycebaril/multibuffer), which is the data produced by the module of the same name by `node_redis` co-maintainer [brycebaril](https://github.com/brycebaril/)
 
-now that multibuffer uses varints internally, dat itself will encode and store rows of data as multibuffers and persist those to disk
+a buffer is just a name for a group of bytes. buffers can be any length, from a few bytes up to gigabytes in size. in node you receive data in buffers when you read from files or download things over the network. buffers are pretty fast!
+
+multibuffers are similar to a single row in a csv -- a bunch of individual values all grouped together. they aren't tuples/objects -- just values. in dat we combine all the individual cells into rows for a few reasons -- but primarily to make dat really fast. 
+
+for example, if you have these three values: `taco`, `pizza`, 'walrus` and you wanted to combine them and store them on disk, you can turn them into a single multibuffer:
+
+```
+var multibuffer = require('multibuffer')
+var buff = multibuffer.pack([new Buffer('taco'), new Buffer('pizza'), new Buffer('walrus')])
+```
+
+in the above code `buff` is now also a `Buffer`, but it contains all three of the buffers we put into it. To reverse the process you can use `unpack`:
+
+```
+var unpackedBuffers = multibuffer.unpack(buff)
+```
+
+the actual composition of a buff is pretty simple -- there are just two repeating sections:
+
+```
+[frame - how many bytes long the first buffer is, stored as a varint][data - the first buffer]
+```
+
+so for the above example the buffer would be something like this:
+
+```
+4taco5pizza6walrus
+```
