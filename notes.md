@@ -63,7 +63,7 @@ a buffer is just a name for a group of bytes. buffers can be any length, from a 
 
 multibuffers are similar to a single row in a csv -- a bunch of individual values all grouped together. they aren't tuples/objects -- just values. in dat we combine all the individual cells into rows for a few reasons -- but primarily to make dat really fast. 
 
-for example, if you have these three values: `taco`, `pizza`, 'walrus` and you wanted to combine them and store them on disk, you can turn them into a single multibuffer:
+for example, if you have these three values: `taco`, `pizza`, `walrus` and you wanted to combine them and store them on disk, you can turn them into a single multibuffer:
 
 ```
 var multibuffer = require('multibuffer')
