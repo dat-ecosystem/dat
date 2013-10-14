@@ -4,6 +4,7 @@ var datPath = path.join(__dirname, '..')
 var Dat = require(datPath)
 var test = require('tape')
 var concat = require('concat-stream')
+var jsonbuff = require('../lib/json-buff.js')
 var tmp = os.tmpdir()
 
 test('.paths', function(t) {
@@ -75,6 +76,15 @@ test('piping a csv into a write stream', function(t) {
       }))
     })
   })
+})
+
+test('buff <-> json', function(t) {
+  var test = {'hello': 'world', 'foo': {'bar': '[baz]', 'pizza': [1,2,3]}}
+  var headers = Object.keys(test)
+  var encoded = jsonbuff.encode(test)
+  var decoded = jsonbuff.decode(headers, encoded)
+  t.equal(JSON.stringify(test), JSON.stringify(decoded), 'encoded/decoded matches')
+  t.end()
 })
 
 function getDat(t, cb) {
