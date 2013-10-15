@@ -36,7 +36,8 @@
     "extend": "~1.2.1",
     "level-hyper": "~0.17.0",
     "lexicographic-integer": "~1.1.0",
-    "level-mutex": "~0.7.0"
+    "level-mutex": "~0.7.0",
+    "offset-stream": "0.0.0"
   },
   "directories": {
     "example": "examples",
