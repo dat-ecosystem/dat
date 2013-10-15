@@ -3,6 +3,7 @@ var os = require('os')
 var datPath = path.join(__dirname, '..')
 var Dat = require(datPath)
 var test = require('tape')
+var bops = require('bops')
 var concat = require('concat-stream')
 var jsonbuff = require('../lib/json-buff.js')
 var tmp = os.tmpdir()
@@ -51,30 +52,35 @@ test('.init in existing repo', function(t) {
   })
 })
 
-test('creating single row with write stream', function(t) {
-  getDat(t, function(dat, done) {
-    var ws = dat.createWriteStream()
-    ws.write('foo')
-    ws.end()
-    ws.on('close', function() {
-      dat.storage.currentData().pipe(concat(function(data) {
-        done()
-      }))
-    })
-  })
-})
+// test('creating single row of newline delimited data with write stream', function(t) {
+//   getDat(t, function(dat, done) {
+//     var ws = dat.createWriteStream()
+//     ws.on('close', function() {
+//       dat.storage.currentData().pipe(concat(function(data) {
+//         console.log(data)
+//         done()
+//       }))
+//     })
+//     ws.write(bops.from('foo'))
+//     ws.end()
+//   })
+// })
 
 test('piping a csv into a write stream', function(t) {
   getDat(t, function(dat, done) {
     var ws = dat.createWriteStream({csv: true})
-    ws.write('a,b,c\n1,2,3')
-    ws.end()
     ws.on('close', function() {
       var cat = dat.storage.currentData()
       cat.pipe(concat(function(data) {
+        t.equal(data.length, 1)
+        t.equal(data[0].a, '1')
+        t.equal(data[0].b, '2')
+        t.equal(data[0].c, '3')
         done()
       }))
     })
+    ws.write(bops.from('a,b,c\n1,2,3'))
+    ws.end()
   })
 })
 
