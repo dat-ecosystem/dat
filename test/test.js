@@ -5,6 +5,8 @@ var Dat = require(datPath)
 var test = require('tape')
 var bops = require('bops')
 var concat = require('concat-stream')
+var mbstream = require('multibuffer-stream')
+var buff = require('multibuffer')
 var jsonbuff = require('../lib/json-buff.js')
 var tmp = os.tmpdir()
 
@@ -52,19 +54,23 @@ test('.init in existing repo', function(t) {
   })
 })
 
-// test('creating single row of newline delimited data with write stream', function(t) {
-//   getDat(t, function(dat, done) {
-//     var ws = dat.createWriteStream()
-//     ws.on('close', function() {
-//       dat.storage.currentData().pipe(concat(function(data) {
-//         console.log(data)
-//         done()
-//       }))
-//     })
-//     ws.write(bops.from('foo'))
-//     ws.end()
-//   })
-// })
+test('creating single row of buff data with write stream', function(t) {
+  var row = buff.pack([bops.from('bar')])
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({headers: ['foo']})
+    ws.on('close', function() {
+      dat.storage.currentData().pipe(concat(function(data) {
+        t.equal(data.length, 1)
+        t.equal(data[0].foo, 'bar')
+        done()
+      }))
+    })
+    var packStream = mbstream.packStream()
+    packStream.pipe(ws)
+    packStream.write(row)
+    packStream.end()
+  })
+})
 
 test('piping a csv into a write stream', function(t) {
   getDat(t, function(dat, done) {
