@@ -6,23 +6,17 @@ mkdir foo
 cd foo
 dat init
 
-# put a single key/value into dat
-dat crud put foo bar
-
 # put a JSON object into dat
 echo '{"hello": "world"}' | dat --json
 
-# retrieve a single row by key
+# put a CSV object into dat
+cat some_csv | dat --csv
+
+# retrieve a single row by key (for debugging)
 dat crud get foo
 dat crud get hello
 
 # stream the most recent of all rows
-dat cat
-
-# pipe dat into itself (increments revisions)
-dat cat | dat
-
-# view updated data
 dat cat
 
 # view raw data in the store
