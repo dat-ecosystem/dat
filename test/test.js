@@ -160,7 +160,7 @@ test('piping multiple rows of buff data with write stream', function(t) {
   })
 })
 
-test('piping a csv into a write stream', function(t) {
+test('piping a csv with 1 row into a write stream', function(t) {
   getDat(t, function(dat, done) {
     var ws = dat.createWriteStream({ csv: true })
     ws.on('close', function() {
@@ -174,6 +174,27 @@ test('piping a csv into a write stream', function(t) {
       }))
     })
     ws.write(bops.from('a,b,c\n1,2,3'))
+    ws.end()
+  })
+})
+
+test('piping a csv with multiple rows into a write stream', function(t) {
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ csv: true })
+    ws.on('close', function() {
+      var cat = dat.storage.currentData()
+      cat.pipe(concat(function(data) {
+        t.equal(data.length, 2)
+        t.equal(data[0].a, '1')
+        t.equal(data[0].b, '2')
+        t.equal(data[0].c, '3')
+        t.equal(data[1].a, '4')
+        t.equal(data[1].b, '5')
+        t.equal(data[1].c, '6')
+        done()
+      }))
+    })
+    ws.write(bops.from('a,b,c\n1,2,3\n4,5,6'))
     ws.end()
   })
 })
