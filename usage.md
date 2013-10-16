@@ -10,7 +10,7 @@ dat init
 dat crud put foo bar
 
 # put a JSON object into dat
-echo '{"hello": "world"}' | dat
+echo '{"hello": "world"}' | dat --json
 
 # retrieve a single row by key
 dat crud get foo

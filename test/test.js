@@ -10,6 +10,19 @@ var buff = require('multibuffer')
 var jsonbuff = require('../lib/json-buff.js')
 var tmp = os.tmpdir()
 
+// not a real test -- just resets any existing DB
+test('setup', function(t) {
+  var dat = new Dat(tmp)
+  dat.init(function(err, msg) {
+    t.false(err, 'no err')
+    dat.level()
+    dat.destroy(function(err) {
+      t.false(err, 'no err')
+      t.end()
+    })
+  })
+})
+
 test('.paths', function(t) {
   var dat = new Dat(tmp)
   var paths = dat.paths()
@@ -54,10 +67,61 @@ test('.init in existing repo', function(t) {
   })
 })
 
-test('creating single row of buff data with write stream', function(t) {
+test('piping a single ndjson object into a write stream', function(t) {
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ json: true })
+    ws.on('close', function() {
+      var cat = dat.storage.currentData()
+      cat.pipe(concat(function(data) {
+        t.equal(data.length, 1)
+        t.equal(data[0].batman, "bruce wayne")
+        done()
+      }))
+    })
+    ws.write(bops.from(JSON.stringify({"batman": "bruce wayne"})))
+    ws.end()
+  })
+})
+
+test('piping a single ndjson string into a write stream', function(t) {
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ json: true })
+    ws.on('close', function() {
+      var cat = dat.storage.currentData()
+      cat.pipe(concat(function(data) {
+        t.equal(data.length, 1)
+        t.equal(data[0].batman, "bruce wayne")
+        done()
+      }))
+    })
+    ws.write(JSON.stringify({"batman": "bruce wayne"}))
+    ws.end()
+  })
+})
+
+test('piping multiple ndjson objects into a write stream', function(t) {
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ json: true })
+    ws.on('close', function() {
+      var cat = dat.storage.currentData()
+      cat.pipe(concat(function(data) {
+        data.sort(function(a,b) { return a._seq > b._seq })
+        t.equal(data.length, 2)
+        t.equal(data[0].foo, "bar")
+        t.equal(data[1].foo, "baz")
+        done()
+      }))
+    })
+    ws.write(bops.from(JSON.stringify({"foo": "bar"}) + os.EOL))
+    ws.write(bops.from(JSON.stringify({"foo": "baz"})))
+    ws.end()
+  })
+})
+
+test('piping a single row of buff data with write stream', function(t) {
   var row = buff.pack([bops.from('bar')])
   getDat(t, function(dat, done) {
-    var ws = dat.createWriteStream({headers: ['foo']})
+    var ws = dat.createWriteStream({ headers: ['foo'] })
     ws.on('close', function() {
       dat.storage.currentData().pipe(concat(function(data) {
         t.equal(data.length, 1)
@@ -72,9 +136,33 @@ test('creating single row of buff data with write stream', function(t) {
   })
 })
 
+test('piping multiple rows of buff data with write stream', function(t) {
+  var row1 = buff.pack([bops.from('1'), bops.from('2')])
+  var row2 = buff.pack([bops.from('3'), bops.from('4')])
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ headers: ['a', 'b'] })
+    ws.on('close', function() {
+      dat.storage.currentData().pipe(concat(function(data) {
+        data.sort(function(a,b) { return a._seq > b._seq })
+        t.equal(data.length, 2)
+        t.equal(data[0].a, '1')
+        t.equal(data[0].b, '2')
+        t.equal(data[1].a, '3')
+        t.equal(data[1].b, '4')
+        done()
+      }))
+    })
+    var packStream = mbstream.packStream()
+    packStream.pipe(ws)
+    packStream.write(row1)
+    packStream.write(row2)
+    packStream.end()
+  })
+})
+
 test('piping a csv into a write stream', function(t) {
   getDat(t, function(dat, done) {
-    var ws = dat.createWriteStream({csv: true})
+    var ws = dat.createWriteStream({ csv: true })
     ws.on('close', function() {
       var cat = dat.storage.currentData()
       cat.pipe(concat(function(data) {
