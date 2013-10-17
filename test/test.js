@@ -184,6 +184,7 @@ test('piping a csv with multiple rows into a write stream', function(t) {
     ws.on('close', function() {
       var cat = dat.storage.currentData()
       cat.pipe(concat(function(data) {
+        data.sort(function(a,b) { return a._seq > b._seq })
         t.equal(data.length, 2)
         t.equal(data[0].a, '1')
         t.equal(data[0].b, '2')
