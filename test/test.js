@@ -105,7 +105,6 @@ test('piping multiple ndjson objects into a write stream', function(t) {
     ws.on('close', function() {
       var cat = dat.storage.currentData()
       cat.pipe(concat(function(data) {
-        data.sort(function(a,b) { return a._seq > b._seq })
         t.equal(data.length, 2)
         t.equal(data[0].foo, "bar")
         t.equal(data[1].foo, "baz")
@@ -143,7 +142,6 @@ test('piping multiple rows of buff data with write stream', function(t) {
     var ws = dat.createWriteStream({ headers: ['a', 'b'] })
     ws.on('close', function() {
       dat.storage.currentData().pipe(concat(function(data) {
-        data.sort(function(a,b) { return a._seq > b._seq })
         t.equal(data.length, 2)
         t.equal(data[0].a, '1')
         t.equal(data[0].b, '2')
@@ -184,7 +182,6 @@ test('piping a csv with multiple rows into a write stream', function(t) {
     ws.on('close', function() {
       var cat = dat.storage.currentData()
       cat.pipe(concat(function(data) {
-        data.sort(function(a,b) { return a._seq > b._seq })
         t.equal(data.length, 2)
         t.equal(data[0].a, '1')
         t.equal(data[0].b, '2')
@@ -200,6 +197,30 @@ test('piping a csv with multiple rows into a write stream', function(t) {
   })
 })
 
+test('currentData returns rows in same order they went in', function(t) {
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ headers: ['num'] })
+    var nums = []
+    ws.on('close', function() {
+      dat.storage.currentData().pipe(concat(function(data) {
+        var results = data.map(function(r) { return +r.num })
+        t.equals(JSON.stringify(nums), JSON.stringify(results), 'order matches')
+        done()
+      }))
+    })
+    var packStream = mbstream.packStream()
+    packStream.pipe(ws)
+    
+    // create a bunch of single cell buff rows with incrementing integers in them
+    for (var i = 0; i < 1000; i++) {
+      packStream.write(buff.pack([bops.from(i + '')]))
+      nums.push(i)
+    }
+    
+    packStream.end()
+  })
+})
+
 test('buff <-> json', function(t) {
   var test = {'hello': 'world', 'foo': {'bar': '[baz]', 'pizza': [1,2,3]}}
   var headers = Object.keys(test)
@@ -212,16 +233,13 @@ test('buff <-> json', function(t) {
 function getDat(t, cb) {
   var dat = new Dat(tmp)
   dat.init(function(err, msg) {
-    t.false(err, 'no err')
-    dat._storage({}, function(err, seq) {
-      t.false(err, 'no err')
-      cb(dat, done)
-    })
+    if (err) throw err
+    cb(dat, done)
   })  
   
   function done() {
     dat.destroy(function(err) {
-      t.false(err, 'no err')
+      if (err) throw err
       t.end()
     })
   }
