@@ -9,8 +9,13 @@ dat init
 # put a JSON object into dat
 echo '{"hello": "world"}' | dat --json
 
-# put a CSV object into dat
+# stream a CSV into dat
 cat some_csv.csv | dat --csv
+cat some_csv.csv | cat --csv -d $'\r\n' # custom line delimiter, --delimiter= works too
+
+# specify a primary key to use
+echo $'a,b,c\n1,2,3' | dat --csv --primary=a
+echo $'{"foo":"bar"}' | dat --json --primary=foo
 
 # retrieve a single row by key (for debugging)
 dat crud get foo

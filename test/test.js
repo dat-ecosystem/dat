@@ -237,7 +237,7 @@ test('piping a csv with multiple rows into a write stream', function(t) {
   })
 })
 
-test('currentData returns rows in same order they went in', function(t) {
+test('currentData returns buff rows in same order they went in', function(t) {
   getDat(t, function(dat, done) {
     var ws = dat.createWriteStream({ headers: ['num'] })
     var nums = []
@@ -263,7 +263,7 @@ test('currentData returns rows in same order they went in', function(t) {
   })
 })
 
-test('currentData returns rows in same order they went in w/ custom primary key', function(t) {
+test('currentData returns buff rows in same order they went in w/ custom primary key', function(t) {
   getDat(t, function(dat, done) {
     var ws = dat.createWriteStream({ headers: ['num'], primary: 'num' })
     var nums = []
@@ -289,6 +289,48 @@ test('currentData returns rows in same order they went in w/ custom primary key'
     nums.sort()
     
     packStream.end()
+  })
+})
+
+test('currentData returns csv rows in same order they went in w/ custom primary key', function(t) {
+  // lexicographic means longer strings come first
+  var expected = ['100', '10', '1']
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ csv: true, primary: 'a' })
+    var nums = []
+    
+    ws.on('close', function() {
+      dat.storage.currentData().pipe(concat(function(data) {
+        var results = data.map(function(r) { return r._id })
+        t.equals(JSON.stringify(results), JSON.stringify(expected), 'order matches')
+        done()
+      }))
+    })
+    
+    ws.write(bops.from('a,b,c\n10,1,1\n100,1,1\n1,1,1'))
+    ws.end()
+  })
+})
+
+test('currentData returns ndjson rows in same order they went in w/ custom primary key', function(t) {
+  // lexicographic means longer strings come first
+  var expected = ['100', '10', '1']
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ json: true, primary: 'a' })
+    var nums = []
+    
+    ws.on('close', function() {
+      dat.storage.currentData().pipe(concat(function(data) {
+        var results = data.map(function(r) { return r._id })
+        t.equals(JSON.stringify(results), JSON.stringify(expected), 'order matches')
+        done()
+      }))
+    })
+    
+    ws.write(bops.from(JSON.stringify({"a": "1", "b": "foo"}) + os.EOL))
+    ws.write(bops.from(JSON.stringify({"a": "10", "b": "foo"}) + os.EOL))
+    ws.write(bops.from(JSON.stringify({"a": "100", "b": "foo"})))
+    ws.end()
   })
 })
 
