@@ -12,6 +12,8 @@ all are streaming parsers
 
 ## on disk format
 
+when inserting data into dat you have to specify a primary column with unique ids. if one isn't specified then unique monotonic unique ids will be generated for each row. data comes out of dat in primary key sorted order.
+
 for the following explanations refer to this example CSV:
 
 ```

@@ -10,7 +10,7 @@ dat init
 echo '{"hello": "world"}' | dat --json
 
 # put a CSV object into dat
-cat some_csv | dat --csv
+cat some_csv.csv | dat --csv
 
 # retrieve a single row by key (for debugging)
 dat crud get foo

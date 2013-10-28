@@ -263,6 +263,35 @@ test('currentData returns rows in same order they went in', function(t) {
   })
 })
 
+test('currentData returns rows in same order they went in w/ custom primary key', function(t) {
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ headers: ['num'], primary: 'num' })
+    var nums = []
+    
+    ws.on('close', function() {
+      dat.storage.currentData().pipe(concat(function(data) {
+        var results = data.map(function(r) { return r.num + '\xff' })
+        t.equals(JSON.stringify(nums), JSON.stringify(results), 'order matches')
+        done()
+      }))
+    })
+    
+    var packStream = mbstream.packStream()
+    packStream.pipe(ws)
+    
+    // create a bunch of single cell buff rows with incrementing integers in them
+    for (var i = 0; i < 1000; i++) {
+      packStream.write(buff.pack([bops.from(i + '')]))
+      nums.push(i + '\xff')
+    }
+    
+    // sort lexicographically
+    nums.sort()
+    
+    packStream.end()
+  })
+})
+
 test('buff <-> json', function(t) {
   var test = {'hello': 'world', 'foo': {'bar': '[baz]', 'pizza': [1,2,3]}}
   var headers = Object.keys(test)
