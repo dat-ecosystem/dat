@@ -334,6 +334,23 @@ test('currentData returns ndjson rows in same order they went in w/ custom prima
   })
 })
 
+test('getSequences', function(t) {
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ csv: true })
+    
+    ws.on('close', function() {
+      dat.storage.getSequences().pipe(concat(function(data) {
+        var seqs = data.map(function(r) { return r.seq })
+        t.equal(JSON.stringify(seqs), JSON.stringify([1,2,3,4,5]) , 'ordered sequences 1 - 5 exist')
+        done()
+      }))
+    })
+    
+    ws.write(bops.from('a,b,c\n10,1,1\n100,1,1\n1,1,1'))
+    ws.end()
+  })
+})
+
 test('pull replication', function(t) {
   var expected = ["1", "2"]
   getDat(t, function(dat, done) {
@@ -341,6 +358,7 @@ test('pull replication', function(t) {
     var nums = []
     
     ws.on('close', function() {
+      dat.dump()
       dat.serve(function(err, msg) {
         if (err) throw err
         var dat2 = new Dat(path.join(tmp, 'target'))
@@ -351,6 +369,7 @@ test('pull replication', function(t) {
             dat2.storage.currentData().pipe(concat(function(data) {
               var results = data.map(function(r) { return r.a })
               t.equals(JSON.stringify(results), JSON.stringify(expected), 'target matches')
+              done()
             }))
           })
         })
