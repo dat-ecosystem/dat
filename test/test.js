@@ -7,7 +7,7 @@ var bops = require('bops')
 var concat = require('concat-stream')
 var mbstream = require('multibuffer-stream')
 var buff = require('multibuffer')
-var jsonbuff = require('../lib/json-buff.js')
+var jsonbuff = path.join(__dirname, '..', 'lib', 'json-buff.js')
 var tmp = os.tmpdir()
 
 // not a real test -- just resets any existing DB
@@ -330,6 +330,34 @@ test('currentData returns ndjson rows in same order they went in w/ custom prima
     ws.write(bops.from(JSON.stringify({"a": "1", "b": "foo"}) + os.EOL))
     ws.write(bops.from(JSON.stringify({"a": "10", "b": "foo"}) + os.EOL))
     ws.write(bops.from(JSON.stringify({"a": "100", "b": "foo"})))
+    ws.end()
+  })
+})
+
+test('pull replication', function(t) {
+  var expected = ["1", "2"]
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ csv: true })
+    var nums = []
+    
+    ws.on('close', function() {
+      dat.serve(function(err, msg) {
+        if (err) throw err
+        var dat2 = new Dat(path.join(tmp, 'target'))
+        dat2.init(function(err, msg) {
+          if (err) throw err
+          dat2.pull(function(err) {
+            if (err) throw err
+            dat2.storage.currentData().pipe(concat(function(data) {
+              var results = data.map(function(r) { return r.a })
+              t.equals(JSON.stringify(results), JSON.stringify(expected), 'target matches')
+            }))
+          })
+        })
+      })
+    })
+    
+    ws.write(bops.from('a\n1\n2'))
     ws.end()
   })
 })
