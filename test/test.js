@@ -7,7 +7,7 @@ var bops = require('bops')
 var concat = require('concat-stream')
 var mbstream = require('multibuffer-stream')
 var buff = require('multibuffer')
-var jsonbuff = path.join(__dirname, '..', 'lib', 'json-buff.js')
+var jsonbuff = require(path.join(__dirname, '..', 'lib', 'json-buff.js'))
 var tmp = os.tmpdir()
 
 // not a real test -- just resets any existing DB
@@ -63,6 +63,38 @@ test('.init in existing repo', function(t) {
         t.false(err, 'no err')
         t.end()
       })
+    })
+  })
+})
+
+test('.put json', function(t) {
+  getDat(t, function(dat, done) {
+    dat.storage.put({"foo": "bar"}, function(err) {
+      if (err) throw err
+      var cat = dat.storage.currentData()
+    
+      cat.pipe(concat(function(data) {
+        t.equal(data.length, 1)
+        t.equal(data[0].foo, "bar")
+        done()
+      }))
+    })
+  })
+})
+
+test('.put buff', function(t) {
+  getDat(t, function(dat, done) {
+    var row = buff.pack([bops.from('bar')])
+    
+    dat.storage.put(row, {columns: ['foo']}, function(err) {
+      if (err) throw err
+      var cat = dat.storage.currentData()
+    
+      cat.pipe(concat(function(data) {
+        t.equal(data.length, 1)
+        t.equal(data[0].foo, "bar")
+        done()
+      }))
     })
   })
 })
@@ -144,7 +176,7 @@ test('piping a single row of buff data with write stream', function(t) {
   
   getDat(t, function(dat, done) {
     
-    var ws = dat.createWriteStream({ headers: ['foo'] })
+    var ws = dat.createWriteStream({ columns: ['foo'] })
     
     ws.on('close', function() {
       dat.storage.currentData().pipe(concat(function(data) {
@@ -169,7 +201,7 @@ test('piping multiple rows of buff data with write stream', function(t) {
 
   getDat(t, function(dat, done) {
     
-    var ws = dat.createWriteStream({ headers: ['a', 'b'] })
+    var ws = dat.createWriteStream({ columns: ['a', 'b'] })
     ws.on('close', function() {
       dat.storage.currentData().pipe(concat(function(data) {
         t.equal(data.length, 2)
@@ -239,7 +271,7 @@ test('piping a csv with multiple rows into a write stream', function(t) {
 
 test('currentData returns buff rows in same order they went in', function(t) {
   getDat(t, function(dat, done) {
-    var ws = dat.createWriteStream({ headers: ['num'] })
+    var ws = dat.createWriteStream({ columns: ['num'] })
     var nums = []
     
     ws.on('close', function() {
@@ -265,7 +297,7 @@ test('currentData returns buff rows in same order they went in', function(t) {
 
 test('currentData returns buff rows in same order they went in w/ custom primary key', function(t) {
   getDat(t, function(dat, done) {
-    var ws = dat.createWriteStream({ headers: ['num'], primary: 'num' })
+    var ws = dat.createWriteStream({ columns: ['num'], primary: 'num' })
     var nums = []
     
     ws.on('close', function() {
@@ -339,9 +371,10 @@ test('getSequences', function(t) {
     var ws = dat.createWriteStream({ csv: true })
     
     ws.on('close', function() {
-      dat.storage.getSequences().pipe(concat(function(data) {
+      dat.storage.getSequences({include_data: true}).pipe(concat(function(data) {
         var seqs = data.map(function(r) { return r.seq })
         t.equal(JSON.stringify(seqs), JSON.stringify([1,2,3,4,5]) , 'ordered sequences 1 - 5 exist')
+        t.equal(!!data[0].data, true)
         done()
       }))
     })
@@ -358,18 +391,24 @@ test('pull replication', function(t) {
     var nums = []
     
     ws.on('close', function() {
-      dat.dump()
+      // dat.dump()
       dat.serve(function(err, msg) {
         if (err) throw err
         var dat2 = new Dat(path.join(tmp, 'target'))
         dat2.init(function(err, msg) {
           if (err) throw err
+          dat2.dump()
           dat2.pull(function(err) {
             if (err) throw err
             dat2.storage.currentData().pipe(concat(function(data) {
+              console.log('currentdata', data)
               var results = data.map(function(r) { return r.a })
               t.equals(JSON.stringify(results), JSON.stringify(expected), 'target matches')
-              done()
+              dat.close() // stops http server
+              dat2.destroy(function(err) {
+                if (err) throw err
+                done()
+              })
             }))
           })
         })
@@ -383,10 +422,10 @@ test('pull replication', function(t) {
 
 test('buff <-> json', function(t) {
   var test = {'hello': 'world', 'foo': {'bar': '[baz]', 'pizza': [1,2,3]}}
-  var headers = Object.keys(test)
+  var columns = Object.keys(test)
   
   var encoded = jsonbuff.encode(test)
-  var decoded = jsonbuff.decode(headers, encoded)
+  var decoded = jsonbuff.decode(columns, encoded)
   
   t.equal(JSON.stringify(test), JSON.stringify(decoded), 'encoded/decoded matches')
   t.end()
