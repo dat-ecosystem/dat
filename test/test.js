@@ -12,13 +12,11 @@ var tmp = os.tmpdir()
 
 // not a real test -- just resets any existing DB
 test('setup', function(t) {
-  var dat = new Dat(tmp)
-  dat.init(function(err, msg) {
+  destroy(tmp, function(err) {
     t.false(err, 'no err')
-    dat.level()
-    dat.destroy(function(err) {
+    destroy(path.join(tmp, 'dat2'), function(err) {
       t.false(err, 'no err')
-      t.end()
+      t.end()      
     })
   })
 })
@@ -386,27 +384,25 @@ test('getSequences', function(t) {
 
 test('pull replication', function(t) {
   var expected = ["1", "2"]
+  var datTargetPath = path.join(tmp, 'dat2')
   getDat(t, function(dat, done) {
     var ws = dat.createWriteStream({ csv: true })
     var nums = []
     
     ws.on('close', function() {
-      // dat.dump()
       dat.serve(function(err, msg) {
         if (err) throw err
-        var dat2 = new Dat(path.join(tmp, 'target'))
+        var dat2 = new Dat(datTargetPath)
         dat2.init(function(err, msg) {
           if (err) throw err
-          dat2.dump()
           dat2.pull(function(err) {
             if (err) throw err
             dat2.storage.currentData().pipe(concat(function(data) {
-              console.log('currentdata', data)
               var results = data.map(function(r) { return r.a })
-              t.equals(JSON.stringify(results), JSON.stringify(expected), 'target matches')
+              t.equals(JSON.stringify(results), JSON.stringify(expected), 'replica matches')
               dat.close() // stops http server
               dat2.destroy(function(err) {
-                if (err) throw err
+                t.false(err, 'no err')
                 done()
               })
             }))
@@ -444,4 +440,15 @@ function getDat(t, cb) {
       t.end()
     })
   }
+}
+
+function destroy(datDir, cb) {
+  var dat = new Dat(datDir)
+  dat.init(function(err, msg) {
+    if (err) return cb(err)
+    dat.level()
+    dat.destroy(function(err) {
+      cb(err)
+    })
+  })
 }
