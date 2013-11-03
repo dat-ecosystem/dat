@@ -64,7 +64,7 @@ See ['how `dat` works'](#how-dat-works) below for technical descriptions. The tr
 
 - Watch `dat` repo on Github
 - Install and test the alpha version of `dat`. Leave feedback in the Github Issues of this repository!
-- Are you a coder? Pick your favorite database/API/file format and try to implement [SLEEP](http://www.dataprotocols.org/en/latest/sleep.html) on it. `dat` will be able to consume SLEEP (though both may evolve).
+- Are you a coder? Pick your favorite database/API/file format and try to implement [SLEEP](http://dataprotocols.org/sleep/) on it. `dat` will be able to consume SLEEP (though both may evolve).
 - Suggest an organization that should be using `dat` to distribute their data. Let me know [on Twitter](http://twitter.com/maxogden).
 - Have any other questions/concerns? [Open an issue](https://github.com/maxogden/dat/issues).
 - Interested in the underlying technology? Check out [node](https://github.com/maxogden/art-of-node#the-art-of-node) and [leveldb](https://github.com/rvagg/node-levelup/wiki/Modules)
@@ -232,10 +232,10 @@ In the two years since DataCouch I've invested nearly all of my time towards lea
 
 Some of my previous approaches to data interoperability include:
 
-- [SLEEP](http://www.dataprotocols.org/en/latest/sleep.html) - simple specification for syncing tabular data
+- [SLEEP](http://dataprotocols.org/sleep/) - simple specification for syncing tabular data
 - [gut](https://github.com/maxogden/gut) - way to use web services to convert data between different formats
 
-The [dataprotocols.org](http://www.dataprotocols.org/en/latest/) project by the OKFN houses lots of well designed specifications for open data, including SLEEP.
+The [dataprotocols.org](http://dataprotocols.org/) project by the OKFN houses lots of well designed specifications for open data, including SLEEP.
 
 Whereas the individual protocols only address certain parts of the problem, `dat` is a higher level tool that will connect existing data protocols together.
 
