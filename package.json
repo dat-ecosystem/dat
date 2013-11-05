@@ -40,7 +40,8 @@
     "binary-csv": "~0.0.5",
     "binary-split": "~0.1.0",
     "bops": "~0.1.0",
-    "monot": "~0.1.1"
+    "monot": "~0.1.1",
+    "concat-stream": "~1.1.0"
   },
   "directories": {
     "example": "examples",
@@ -48,5 +49,8 @@
   },
   "bugs": {
     "url": "https://github.com/maxogden/dat/issues"
+  },
+  "devDependencies": {
+    "tape": "~2.1.0"
   }
 }
