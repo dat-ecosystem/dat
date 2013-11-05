@@ -14,10 +14,7 @@
 // batch put 50000: 2051ms
 // replicate 50000: 10677ms
 
-var remote = "http://localhost:6461/_archive"
-if (process.argv[3]) remote = false
-
-var getDat = require('../')
+var Dat = require('../')
 
 var path = require('path')
 var fs = require('fs')
@@ -37,36 +34,33 @@ cleanup(function() {
 
 function testReplication(size) {
   size = size || 1000
-  var source = getDat(sourcePath)
-  source.init({}, function(err, msg) {
-    var store = source._storage({}, function(err, seq) {
-      console.time('batch put ' + size)
-      var pending = 0
-      for (var i = 0; i < size; i++) {
-        pending++
-        store.put('data-' + i, {'val': i}, function() {
-          pending--
-          if (pending === 0) serve()
+  var dat = new Dat(sourcePath)
+  dat.init(function(err, msg) {
+    var ws = dat.createWriteStream({ csv: true })
+    console.time('writestream ' + size)
+    ws.on('close', function() {
+      console.timeEnd('writestream ' + size)
+      dat.serve(function(err, msg) {
+        if (err) throw err
+        var dat2 = new Dat(destPath)
+        dat2.init(function(err, msg) {
+          if (err) throw err
+          console.time('replicate ' + size)
+          dat2.pull(function(err) {
+            if (err) throw err
+            console.timeEnd('replicate ' + size)
+            dat.close() // stops http server
+            cleanup()
+          })
         })
-      }
-      function serve() {
-        console.timeEnd('batch put ' + size)
-        source.serve({}, function(err, msg) {
-          var dest = getDat(destPath)
-          setTimeout(function giveLevelDBSomeTimeToCompact() {
-            console.time('replicate ' + size)
-            dest.init({remote: remote}, function(err) {
-              dest.pull({}, function(err) {
-                console.timeEnd('replicate ' + size)
-                source._close()
-                dest._close()
-                cleanup()
-              })
-            })
-          }, process.argv[4] || 0)
-        })
-      }
+      })
     })
+    
+    for (var i = 0; i < size; i++) {
+      ws.write(new Buffer('a,b,c\n' + i + ',2,3'))
+    }
+
+    ws.end()
   })
 }
 
