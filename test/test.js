@@ -411,7 +411,7 @@ test('pull replication', function(t) {
                 
                 dat2.storage.currentData().pipe(concat(function(data) {
                   var results = data.map(function(r) { return r.a })
-                  t.equals(JSON.stringify(results), JSON.stringify(expected), 'replica matches')
+                  t.equals(JSON.stringify(results), JSON.stringify(expected), 'currentData() matches')
                   dat.close() // stops http server
                   dat2.destroy(function(err) {
                     t.false(err, 'no err')

@@ -1,18 +1,18 @@
 // this benchmark creates 2 leveldbs
 // the first one it fills with argv[2] num rows of data
 // the second one get initialized from the first
-// pass argv[3] a truthy value to use pure http + json replication
-// argv[3] falsy (default) will use fast init (leveldb .tar.gz copy)
+// argv[3] truthy (default is falsy) will use fast init (leveldb .tar.gz snapshot copy)
+// default is to use pure http + json replication
 //
 // results on a mb air 1.7ghz i5 4gb ram SSD:
 // $ node test/bulk-replication.js 50000
-// batch put 50000: 2040ms
-// generate tar: 246ms
-// replicate 50000: 558ms
+// writestream 50000: 2660ms
+// replicate 50000: 28409ms
 //
 // $ node test/bulk-replication.js 50000 true
-// batch put 50000: 2051ms
-// replicate 50000: 10677ms
+// writestream 50000: 2769ms
+// generate tar: 1248ms
+// replicate 50000: 1997ms
 
 var Dat = require('../')
 
@@ -43,15 +43,24 @@ function testReplication(size) {
       dat.serve(function(err, msg) {
         if (err) throw err
         var dat2 = new Dat(destPath)
-        dat2.init(function(err, msg) {
-          if (err) throw err
-          console.time('replicate ' + size)
+        var opts = {}
+        if (process.argv[3]) opts.remote = 'http://localhost:6461/_archive'
+        console.time('replicate ' + size)
+        
+        dat2.init(opts, function(err, msg) {
+          if (err) throw err          
+          if (opts.remote) return done()
+          
           dat2.pull(function(err) {
             if (err) throw err
+            done()
+          })
+          
+          function done() {
             console.timeEnd('replicate ' + size)
             dat.close() // stops http server
             cleanup()
-          })
+          }
         })
       })
     })
