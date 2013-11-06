@@ -387,54 +387,73 @@ test('pull replication', function(t) {
   var datTargetPath = path.join(tmp, 'dat2')
   var dat2 = new Dat(datTargetPath)
   
-  getDat(t, function(dat, done) {
+  getDat(t, function(dat, cleanup) {
     var ws = dat.createWriteStream({ csv: true })
     var nums = []
     
     ws.on('close', function() {
-      serveAndPull(compare)
+      serveAndPull(dat, dat2, function() {
+        compareData(t, dat, dat2, function() {
+          done()
+        })
+      })
     })
     
-    function serveAndPull(cb) {
-      dat.serve(function(err, msg) {
+    ws.write(bops.from('a\n1\n2'))
+    ws.end()
+ 
+    function done() {
+      dat2.storage.currentData().pipe(concat(function(data) {
+        var results = data.map(function(r) { return r.a })
+        t.equals(JSON.stringify(results), JSON.stringify(expected), 'currentData() matches')
+        dat.close() // stops http server
+        dat2.destroy(function(err) {
+          t.false(err, 'no err')
+          cleanup()
+        })
+      }))
+    }
+    
+  })
+})
+
+test('multiple pulls', function(t) {
+  var expected = ["pizza", "walrus"]
+  var datTargetPath = path.join(tmp, 'dat2')
+  var dat2 = new Dat(datTargetPath)
+  
+  getDat(t, function(dat, cleanup) {
+    var doc1 = {a: 'pizza'}
+    var doc2 = {a: 'walrus'}
+    
+    putPullCompare(doc1, function() {
+      putPullCompare(doc2, function() {
+        done()
+      })
+    })
+
+    function putPullCompare(doc, cb) {
+      dat.storage.put(doc, function(err, doc) {
         if (err) throw err
-        dat2.init(function(err, msg) {
-          if (err) throw err
-          dat2.pull(function(err) {
-            if (err) throw err
+        serveAndPull(dat, dat2, function() {
+          compareData(t, dat, dat2, function() {
             cb()
           })
         })
       })
     }
-    
-    function compare() {
-      dat.db.createReadStream().pipe(concat(function(db1) {
-        dat2.db.createReadStream().pipe(concat(function(db2) {
-          var db1data = db1.filter(filterData)
-          var db2data = db2.filter(filterData)
-          t.equals(JSON.stringify(db1data), JSON.stringify(db2data), 'low level data matches')
-          
-          function filterData(r) {
-            if (JSON.stringify(r).indexOf('meta') > -1) return false
-            return true
-          }
-          
-          dat2.storage.currentData().pipe(concat(function(data) {
-            var results = data.map(function(r) { return r.a })
-            t.equals(JSON.stringify(results), JSON.stringify(expected), 'currentData() matches')
-            dat.close() // stops http server
-            dat2.destroy(function(err) {
-              t.false(err, 'no err')
-              done()
-            })
-          }))
-        }))
+      
+    function done() {
+      dat2.storage.currentData().pipe(concat(function(data) {
+        var results = data.map(function(r) { return r.a })
+        t.equals(JSON.stringify(results), JSON.stringify(expected), 'currentData() matches')
+        dat.close() // stops http server
+        dat2.destroy(function(err) {
+          t.false(err, 'no err')
+          cleanup()
+        })
       }))
     }
-    
-    ws.write(bops.from('a\n1\n2'))
-    ws.end()
   })
 })
 
@@ -462,6 +481,37 @@ function getDat(t, cb) {
       t.end()
     })
   }
+}
+
+function serveAndPull(dat1, dat2, cb) {
+  dat1.serve(function(err, msg) {
+    if (err) throw err
+    dat2.init(function(err, msg) {
+      if (err) throw err
+      dat2.pull(function(err) {
+        if (err) throw err
+        cb()
+      })
+    })
+  })
+}
+
+function compareData(t, dat1, dat2, cb) {
+  dat1.db.createReadStream().pipe(concat(function(db1) {
+    dat2.db.createReadStream().pipe(concat(function(db2) {
+      var db1data = db1.filter(filterData)
+      var db2data = db2.filter(filterData)
+      
+      t.equals(JSON.stringify(db1data), JSON.stringify(db2data), 'low level data matches')
+      
+      cb()
+      
+      function filterData(r) {
+        if (JSON.stringify(r).indexOf('meta') > -1) return false
+        return true
+      }
+    }))
+  }))
 }
 
 function destroy(datDir, cb) {

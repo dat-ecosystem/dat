@@ -4,7 +4,7 @@
 // argv[3] truthy (default is falsy) will use fast init (leveldb .tar.gz snapshot copy)
 // default is to use pure http + json replication
 //
-// results on a mb air 1.7ghz i5 4gb ram SSD:
+// results on a mb air 1.3ghz haswell i5 4gb ram SSD:
 // $ node test/bulk-replication.js 50000
 // writestream 50000: 2660ms
 // replicate 50000: 28409ms
