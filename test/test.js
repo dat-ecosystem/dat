@@ -382,48 +382,56 @@ test('getSequences', function(t) {
   })
 })
 
-// todo: refactor callback hell in this test
 test('pull replication', function(t) {
   var expected = ["1", "2"]
   var datTargetPath = path.join(tmp, 'dat2')
+  var dat2 = new Dat(datTargetPath)
+  
   getDat(t, function(dat, done) {
     var ws = dat.createWriteStream({ csv: true })
     var nums = []
     
     ws.on('close', function() {
+      serveAndPull(compare)
+    })
+    
+    function serveAndPull(cb) {
       dat.serve(function(err, msg) {
         if (err) throw err
-        var dat2 = new Dat(datTargetPath)
         dat2.init(function(err, msg) {
           if (err) throw err
           dat2.pull(function(err) {
             if (err) throw err
-            dat.db.createReadStream().pipe(concat(function(db1) {
-              dat2.db.createReadStream().pipe(concat(function(db2) {
-                var db1data = db1.filter(filterData)
-                var db2data = db2.filter(filterData)
-                t.equals(JSON.stringify(db1data), JSON.stringify(db2data), 'low level data matches')
-                
-                function filterData(r) {
-                  if (JSON.stringify(r).indexOf('meta') > -1) return false
-                  return true
-                }
-                
-                dat2.storage.currentData().pipe(concat(function(data) {
-                  var results = data.map(function(r) { return r.a })
-                  t.equals(JSON.stringify(results), JSON.stringify(expected), 'currentData() matches')
-                  dat.close() // stops http server
-                  dat2.destroy(function(err) {
-                    t.false(err, 'no err')
-                    done()
-                  })
-                }))
-              }))
-            }))
+            cb()
           })
         })
       })
-    })
+    }
+    
+    function compare() {
+      dat.db.createReadStream().pipe(concat(function(db1) {
+        dat2.db.createReadStream().pipe(concat(function(db2) {
+          var db1data = db1.filter(filterData)
+          var db2data = db2.filter(filterData)
+          t.equals(JSON.stringify(db1data), JSON.stringify(db2data), 'low level data matches')
+          
+          function filterData(r) {
+            if (JSON.stringify(r).indexOf('meta') > -1) return false
+            return true
+          }
+          
+          dat2.storage.currentData().pipe(concat(function(data) {
+            var results = data.map(function(r) { return r.a })
+            t.equals(JSON.stringify(results), JSON.stringify(expected), 'currentData() matches')
+            dat.close() // stops http server
+            dat2.destroy(function(err) {
+              t.false(err, 'no err')
+              done()
+            })
+          }))
+        }))
+      }))
+    }
     
     ws.write(bops.from('a\n1\n2'))
     ws.end()
