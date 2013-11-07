@@ -482,6 +482,8 @@ test('multiple pulls', function(t) {
   })
 })
 
+// test helper functions
+
 function getDat(t, cb) {
   var dat = new Dat(tmp)
   dat.init(function(err, msg) {
