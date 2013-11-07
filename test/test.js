@@ -31,24 +31,38 @@ test('.paths', function(t) {
 
 test('.init, .exists, .destroy', function(t) {
   var dat = new Dat(tmp)
-  dat.exists(function(err, exists) {
-    t.false(err, 'no err')
-    t.false(exists, 'does not exist')
-    dat.init(function(err, msg) {
-      dat.exists(function(err, exists) {
-        t.false(err, 'no err')
-        t.true(exists, 'exists')
-        dat.destroy(function(err) {
+  
+  create(function() {
+    destroy(function() {
+      t.end()
+    })
+  })
+  
+  function create(cb) {
+    dat.exists(function(err, exists) {
+      t.false(err, 'no err')
+      t.false(exists, 'does not exist')
+      dat.init(function(err, msg) {
+        dat.exists(function(err, exists) {
           t.false(err, 'no err')
-          dat.exists(function(err, exists) {
-            t.false(err, 'no err')
-            t.false(exists, 'does not exist')
-            t.end()
-          })
+          t.true(exists, 'exists')
+          cb()
         })
       })
     })
-  })
+  }
+  
+  function destroy(cb) {
+    dat.destroy(function(err) {
+      t.false(err, 'no err')
+      dat.exists(function(err, exists) {
+        t.false(err, 'no err')
+        t.false(exists, 'does not exist')
+        cb()
+      })
+    })
+  }
+  
 })
 
 test('.init in existing repo', function(t) {
@@ -63,6 +77,17 @@ test('.init in existing repo', function(t) {
       })
     })
   })
+})
+
+test('buff <-> json', function(t) {
+  var test = {'hello': 'world', 'foo': {'bar': '[baz]', 'pizza': [1,2,3]}}
+  var columns = Object.keys(test)
+  
+  var encoded = jsonbuff.encode(test)
+  var decoded = jsonbuff.decode(columns, encoded)
+  
+  t.equal(JSON.stringify(test), JSON.stringify(decoded), 'encoded/decoded matches')
+  t.end()
 })
 
 test('.put json', function(t) {
@@ -455,17 +480,6 @@ test('multiple pulls', function(t) {
       }))
     }
   })
-})
-
-test('buff <-> json', function(t) {
-  var test = {'hello': 'world', 'foo': {'bar': '[baz]', 'pizza': [1,2,3]}}
-  var columns = Object.keys(test)
-  
-  var encoded = jsonbuff.encode(test)
-  var decoded = jsonbuff.decode(columns, encoded)
-  
-  t.equal(JSON.stringify(test), JSON.stringify(decoded), 'encoded/decoded matches')
-  t.end()
 })
 
 function getDat(t, cb) {
