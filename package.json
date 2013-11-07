@@ -19,7 +19,6 @@
   "dependencies": {
     "optimist": "~0.6.0",
     "mkdirp": "~0.3.5",
-    "level-sleep": "~0.1.0",
     "sleep-ref": "~1.0.0",
     "dir-tar-stream": "~0.1.0",
     "untar": "~0.2.3",
