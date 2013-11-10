@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "real-time replication and versioning for large tabular data sets",
   "main": "index.js",
   "preferGlobal": true,
@@ -41,7 +41,7 @@
     "bops": "~0.1.0",
     "monot": "~0.1.1",
     "concat-stream": "~1.1.0",
-    "datapackage-json": "~0.0.4"
+    "datapackage-json": "~0.0.5"
   },
   "directories": {
     "example": "examples",
