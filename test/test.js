@@ -22,19 +22,20 @@ test('setup', function(t) {
 })
 
 test('.paths', function(t) {
-  var dat = new Dat(tmp)
-  var paths = dat.paths()
-  t.equal(paths.dat, path.join(tmp, '.dat'), 'dat path')
-  t.equal(paths.level, path.join(tmp, '.dat', 'store.dat'), 'level path')
-  t.end()
+  var dat = new Dat(tmp, function ready() {
+    var paths = dat.paths()
+    t.equal(paths.dat, path.join(tmp, '.dat'), 'dat path')
+    t.equal(paths.level, path.join(tmp, '.dat', 'store.dat'), 'level path')
+    t.end()
+  })
 })
 
 test('.init, .exists, .destroy', function(t) {
-  var dat = new Dat(tmp)
-  
-  create(function() {
-    destroy(function() {
-      t.end()
+  var dat = new Dat(tmp, function ready() {
+    create(function() {
+      destroy(function() {
+        t.end()
+      })
     })
   })
   
@@ -66,14 +67,15 @@ test('.init, .exists, .destroy', function(t) {
 })
 
 test('.init in existing repo', function(t) {
-  var dat = new Dat(tmp)
-  dat.init(function(err, msg) {
-    t.false(err, 'no err')
+  var dat = new Dat(tmp, function ready() {
     dat.init(function(err, msg) {
-      t.true(msg, msg)
-      dat.destroy(function(err) {
-        t.false(err, 'no err')
-        t.end()
+      t.false(err, 'no err')
+      dat.init(function(err, msg) {
+        t.true(msg, msg)
+        dat.destroy(function(err) {
+          t.false(err, 'no err')
+          t.end()
+        })
       })
     })
   })
@@ -402,7 +404,7 @@ test('getSequences', function(t) {
       }))
     })
     
-    ws.write(bops.from('a,b,c\n10,1,1\n100,1,1\n1,1,1'))
+    ws.write(bops.from('a,b,c\n10,1,1\n100,1,1\n1,1,1\n1,1,1\n1,1,1'))
     ws.end()
   })
 })
@@ -410,86 +412,88 @@ test('getSequences', function(t) {
 test('pull replication', function(t) {
   var expected = ["1", "2"]
   var datTargetPath = path.join(tmp, 'dat2')
-  var dat2 = new Dat(datTargetPath)
-  
-  getDat(t, function(dat, cleanup) {
-    var ws = dat.createWriteStream({ csv: true })
-    var nums = []
+  var dat2 = new Dat(datTargetPath, function ready() {
+    getDat(t, function(dat, cleanup) {
+      var ws = dat.createWriteStream({ csv: true })
+      var nums = []
     
-    ws.on('close', function() {
-      serveAndPull(dat, dat2, function() {
-        compareData(t, dat, dat2, function() {
-          done()
+      ws.on('close', function() {
+        serveAndPull(dat, dat2, function() {
+          compareData(t, dat, dat2, function() {
+            done()
+          })
         })
       })
-    })
     
-    ws.write(bops.from('a\n1\n2'))
-    ws.end()
+      ws.write(bops.from('a\n1\n2'))
+      ws.end()
  
-    function done() {
-      dat2.storage.currentData().pipe(concat(function(data) {
-        var results = data.map(function(r) { return r.a })
-        t.equals(JSON.stringify(results), JSON.stringify(expected), 'currentData() matches')
-        dat.close() // stops http server
-        dat2.destroy(function(err) {
-          t.false(err, 'no err')
-          cleanup()
-        })
-      }))
-    }
+      function done() {
+        dat2.storage.currentData().pipe(concat(function(data) {
+          var results = data.map(function(r) { return r.a })
+          t.equals(JSON.stringify(results), JSON.stringify(expected), 'currentData() matches')
+          dat.close() // stops http server
+          dat2.destroy(function(err) {
+            t.false(err, 'no err')
+            cleanup()
+          })
+        }))
+      }
     
+    })
   })
 })
 
 test('multiple pulls', function(t) {
   var expected = ["pizza", "walrus"]
   var datTargetPath = path.join(tmp, 'dat2')
-  var dat2 = new Dat(datTargetPath)
-  
-  getDat(t, function(dat, cleanup) {
-    var doc1 = {a: 'pizza'}
-    var doc2 = {a: 'walrus'}
+  var dat2 = new Dat(datTargetPath, function ready() {
+    getDat(t, function(dat, cleanup) {
+      var doc1 = {a: 'pizza'}
+      var doc2 = {a: 'walrus'}
     
-    putPullCompare(doc1, function() {
-      putPullCompare(doc2, function() {
-        done()
+      putPullCompare(doc1, function() {
+        putPullCompare(doc2, function() {
+          done()
+        })
       })
-    })
 
-    function putPullCompare(doc, cb) {
-      dat.storage.put(doc, function(err, doc) {
-        if (err) throw err
-        serveAndPull(dat, dat2, function() {
-          compareData(t, dat, dat2, function() {
-            cb()
+      function putPullCompare(doc, cb) {
+        dat.storage.put(doc, function(err, doc) {
+          if (err) throw err
+          serveAndPull(dat, dat2, function() {
+            compareData(t, dat, dat2, function() {
+              cb()
+            })
           })
         })
-      })
-    }
+      }
       
-    function done() {
-      dat2.storage.currentData().pipe(concat(function(data) {
-        var results = data.map(function(r) { return r.a })
-        t.equals(JSON.stringify(results), JSON.stringify(expected), 'currentData() matches')
-        dat.close() // stops http server
-        dat2.destroy(function(err) {
-          t.false(err, 'no err')
-          cleanup()
-        })
-      }))
-    }
+      function done() {
+        dat2.storage.currentData().pipe(concat(function(data) {
+          var results = data.map(function(r) { return r.a })
+          t.equals(JSON.stringify(results), JSON.stringify(expected), 'currentData() matches')
+          dat.close() // stops http server
+          dat2.destroy(function(err) {
+            t.false(err, 'no err')
+            cleanup()
+          })
+        }))
+      }
+    })
   })
 })
 
 // test helper functions
 
 function getDat(t, cb) {
-  var dat = new Dat(tmp)
-  dat.init(function(err, msg) {
+  var dat = new Dat(tmp, function ready(err) {
     if (err) throw err
-    cb(dat, done)
-  })  
+    dat.init(function(err, msg) {
+      if (err) throw err
+      cb(dat, done)
+    })  
+  })
   
   function done() {
     dat.destroy(function(err) {
@@ -531,12 +535,13 @@ function compareData(t, dat1, dat2, cb) {
 }
 
 function destroy(datDir, cb) {
-  var dat = new Dat(datDir)
-  dat.init(function(err, msg) {
-    if (err) return cb(err)
-    dat.level()
-    dat.destroy(function(err) {
-      cb(err)
+  var dat = new Dat(datDir, function ready() {
+    dat.init(function(err, msg) {
+      if (err) return cb(err)
+      dat.level()
+      dat.destroy(function(err) {
+        cb(err)
+      })
     })
   })
 }
