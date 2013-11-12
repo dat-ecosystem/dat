@@ -294,6 +294,34 @@ test('piping a csv with multiple rows into a write stream', function(t) {
   })
 })
 
+test('multiple csv writeStreams, updating rows', function(t) {
+  getDat(t, function(dat, done) {
+    
+    var ws = dat.createWriteStream({ csv: true })
+    
+    ws.on('close', function() {
+      var cat = dat.storage.currentData()
+      cat.pipe(concat(function(data) {
+        var jws = dat.createWriteStream({ json: true })
+        jws.on('close', function() {
+          var cat = dat.storage.currentData()
+          cat.pipe(concat(function(data2) {
+            t.equal(data.length, data2.length)
+            done()
+          }))
+        })
+        jws.write(bops.from(JSON.stringify(data[0]) + os.EOL))
+        jws.write(bops.from(JSON.stringify(data[1])))
+        jws.end()
+      }))
+    })
+    
+    ws.write(bops.from('a,b,c\n1,2,3\n4,5,6'))
+    ws.end()
+    
+  })
+})
+
 test('currentData returns buff rows in same order they went in', function(t) {
   getDat(t, function(dat, done) {
     var ws = dat.createWriteStream({ columns: ['num'] })
