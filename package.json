@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "real-time replication and versioning for large tabular data sets",
   "main": "index.js",
   "preferGlobal": true,
@@ -36,11 +36,11 @@
     "level-hyper": "~0.17.0",
     "lexicographic-integer": "~1.1.0",
     "level-mutex": "~0.7.0",
-    "binary-csv": "~0.0.5",
+    "binary-csv": "~0.1.1",
     "binary-split": "~0.1.0",
     "bops": "~0.1.0",
     "monot": "~0.1.1",
-    "concat-stream": "~1.1.0",
+    "concat-stream": "~1.2.0",
     "datapackage-json": "~0.0.5"
   },
   "directories": {
