@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "1.1.2",
+  "version": "1.1.3",
   "description": "real-time replication and versioning for large tabular data sets",
   "main": "index.js",
   "preferGlobal": true,
@@ -20,7 +20,7 @@
     "optimist": "~0.6.0",
     "mkdirp": "~0.3.5",
     "sleep-ref": "~1.0.0",
-    "dir-tar-stream": "~0.1.0",
+    "dir-tar-stream": "~0.1.1",
     "through": "~2.3.4",
     "split": "~0.2.10",
     "request": "~2.27.0",
