@@ -107,6 +107,25 @@ test('.put json', function(t) {
   })
 })
 
+test('.put same json multiple times (random id generation)', function(t) {
+  getDat(t, function(dat, done) {
+    dat.storage.put({"foo": "bar"}, function(err) {
+      if (err) throw err
+      dat.storage.put({"foo": "bar"}, function(err) {
+        if (err) throw err
+        var cat = dat.storage.currentData()
+    
+        cat.pipe(concat(function(data) {
+          t.equal(data.length, 2)
+          t.equal(data[0].foo, "bar")
+          t.equal(data[1].foo, "bar")
+          done()
+        }))
+      })
+    })
+  })
+})
+
 test('.put buff', function(t) {
   getDat(t, function(dat, done) {
     var row = buff.pack([bops.from('bar')])
@@ -294,7 +313,7 @@ test('piping a csv with multiple rows into a write stream', function(t) {
   })
 })
 
-test('multiple csv writeStreams, updating rows', function(t) {
+test('multiple writeStreams, updating rows', function(t) {
   getDat(t, function(dat, done) {
     
     var ws = dat.createWriteStream({ csv: true })
