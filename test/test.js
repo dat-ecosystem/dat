@@ -7,6 +7,7 @@ var bops = require('bops')
 var concat = require('concat-stream')
 var mbstream = require('multibuffer-stream')
 var buff = require('multibuffer')
+var request = require('request').defaults({json: true})
 var jsonbuff = require(path.join(__dirname, '..', 'lib', 'json-buff.js'))
 var tmp = os.tmpdir()
 
