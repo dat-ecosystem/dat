@@ -438,6 +438,34 @@ test('currentData returns ndjson rows in same order they went in w/ custom prima
   })
 })
 
+test('writeStream same json multiple times (random id generation)', function(t) {
+  getDat(t, function(dat, done) {
+    var ws1 = dat.createWriteStream({ json: true })
+    
+    ws1.on('close', function() {
+      var ws2 = dat.createWriteStream({ json: true })
+      
+      ws2.on('close', function() {
+        var cat = dat.storage.currentData()
+    
+        cat.pipe(concat(function(data) {
+          t.equal(data.length, 2)
+          t.equal(data[0].foo, "bar")
+          t.equal(data[1].foo, "bar")
+          done()
+        }))
+      })
+      
+      ws2.write(bops.from(JSON.stringify({"foo": "bar"})))
+      ws2.end()
+    })
+    
+    ws1.write(bops.from(JSON.stringify({"foo": "bar"})))
+    ws1.end()
+    
+  })
+})
+
 test('getSequences', function(t) {
   getDat(t, function(dat, done) {
     var ws = dat.createWriteStream({ csv: true })
