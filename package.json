@@ -36,13 +36,14 @@
     "level-hyper": "~0.18.0",
     "lexicographic-integer": "~1.1.0",
     "level-mutex": "~0.7.0",
-    "binary-csv": "~0.1.1",
+    "binary-csv": "~0.1.2",
     "binary-split": "~0.1.0",
     "bops": "~0.1.0",
     "monot": "~0.1.1",
     "concat-stream": "~1.2.0",
     "datapackage-json": "~0.0.5",
-    "progress": "~1.1.2"
+    "progress": "~1.1.2",
+    "level-live-stream": "~1.4.7"
   },
   "directories": {
     "example": "examples",

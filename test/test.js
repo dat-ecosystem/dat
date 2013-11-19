@@ -560,6 +560,33 @@ test('multiple pulls', function(t) {
   })
 })
 
+test('live pull replication', function(t) {
+  var datTargetPath = path.join(tmp, 'dat2')
+  var dat2 = new Dat(datTargetPath, function ready() {
+    getDat(t, function(dat, cleanup) {
+      dat.serve(function(err) {
+        if (err) throw err
+        dat2.init(function(err, msg) {
+          if (err) throw err
+          var pull = dat2.pull({live: true})
+          dat.storage.put({foo: 'bar'}, function(err) {
+            if (err) throw err
+            setTimeout(function() {
+              dat2.storage.currentData().pipe(concat(function(data) {
+                t.equal(data.length, 1)
+                t.equal(data[0].foo, 'bar')
+                pull.stream.end()
+                dat.close() // stops http server
+                cleanup()
+              }))
+            }, 500)
+          })
+        })
+      })
+    })
+  })
+})
+
 // test helper functions
 
 function getDat(t, cb) {
