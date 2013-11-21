@@ -578,7 +578,10 @@ test('live pull replication', function(t) {
                 t.equal(data[0].foo, 'bar')
                 pull.stream.end()
                 dat.close() // stops http server
-                cleanup()
+                dat2.destroy(function(err) {
+                  if (err) throw err
+                  cleanup()
+                })
               }))
             }, 500)
           })
@@ -596,14 +599,16 @@ test('tarball replication', function(t) {
         if (err) throw err
         dat.serve(function(err) {
           if (err) throw err
-          dat2.init({remote: 'http://localhost:6461/_archive'}, function(err, msg) {
+          dat2.init({remote: 'http://localhost:6461'}, function(err, msg) {
             if (err) throw err
             dat2.storage.currentData().pipe(concat(function(data) {
-              console.log('dat2', data)
               t.equal(data.length, 1)
               t.equal(data[0].foo, 'bar')
               dat.close() // stops http server
-              cleanup()
+              dat2.destroy(function(err) {
+                if (err) throw err
+                cleanup()
+              })
             }))
           })
         })
