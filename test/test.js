@@ -7,32 +7,32 @@ var bops = require('bops')
 var concat = require('concat-stream')
 var mbstream = require('multibuffer-stream')
 var buff = require('multibuffer')
+var rimraf = require('rimraf')
+var fs = require('fs')
 var request = require('request').defaults({json: true})
 var jsonbuff = require(path.join(__dirname, '..', 'lib', 'json-buff.js'))
 var tmp = os.tmpdir()
+var dat1tmp = path.join(tmp, 'dat1')
+var dat2tmp = path.join(tmp, 'dat2')
 
 // not a real test -- just resets any existing DB
 test('setup', function(t) {
-  destroy(tmp, function(err) {
-    t.false(err, 'no err')
-    destroy(path.join(tmp, 'dat2'), function(err) {
-      t.false(err, 'no err')
-      t.end()      
-    })
+  destroyTmpDats(function() {
+    t.end()
   })
 })
 
 test('.paths', function(t) {
-  var dat = new Dat(tmp, function ready() {
+  var dat = new Dat(dat1tmp, function ready() {
     var paths = dat.paths()
-    t.equal(paths.dat, path.join(tmp, '.dat'), 'dat path')
-    t.equal(paths.level, path.join(tmp, '.dat', 'store.dat'), 'level path')
+    t.equal(paths.dat, path.join(dat1tmp, '.dat'), 'dat path')
+    t.equal(paths.level, path.join(dat1tmp, '.dat', 'store.dat'), 'level path')
     t.end()
   })
 })
 
 test('.init, .exists, .destroy', function(t) {
-  var dat = new Dat(tmp, function ready() {
+  var dat = new Dat(dat1tmp, function ready() {
     create(function() {
       destroy(function() {
         t.end()
@@ -45,6 +45,7 @@ test('.init, .exists, .destroy', function(t) {
       t.false(err, 'no err')
       t.false(exists, 'does not exist')
       dat.init(function(err, msg) {
+        t.false(err, 'no err')
         dat.exists(function(err, exists) {
           t.false(err, 'no err')
           t.true(exists, 'exists')
@@ -68,7 +69,7 @@ test('.init, .exists, .destroy', function(t) {
 })
 
 test('.init in existing repo', function(t) {
-  var dat = new Dat(tmp, function ready() {
+  var dat = new Dat(dat1tmp, function ready() {
     dat.init(function(err, msg) {
       t.false(err, 'no err')
       dat.init(function(err, msg) {
@@ -487,7 +488,7 @@ test('getSequences', function(t) {
 
 test('pull replication', function(t) {
   var expected = ["1", "2"]
-  var datTargetPath = path.join(tmp, 'dat2')
+  var datTargetPath = dat2tmp
   var dat2 = new Dat(datTargetPath, function ready() {
     getDat(t, function(dat, cleanup) {
       var ws = dat.createWriteStream({ csv: true })
@@ -522,7 +523,7 @@ test('pull replication', function(t) {
 
 test('multiple pulls', function(t) {
   var expected = ["pizza", "walrus"]
-  var datTargetPath = path.join(tmp, 'dat2')
+  var datTargetPath = dat2tmp
   var dat2 = new Dat(datTargetPath, function ready() {
     getDat(t, function(dat, cleanup) {
       var doc1 = {a: 'pizza'}
@@ -561,7 +562,7 @@ test('multiple pulls', function(t) {
 })
 
 test('live pull replication', function(t) {
-  var datTargetPath = path.join(tmp, 'dat2')
+  var datTargetPath = dat2tmp
   var dat2 = new Dat(datTargetPath, function ready() {
     getDat(t, function(dat, cleanup) {
       dat.serve(function(err) {
@@ -587,10 +588,34 @@ test('live pull replication', function(t) {
   })
 })
 
+test('tarball replication', function(t) {
+  var datTargetPath = dat2tmp
+  var dat2 = new Dat(datTargetPath, function ready() {
+    getDat(t, function(dat, cleanup) {
+      dat.storage.put({foo: 'bar'}, function(err) {
+        if (err) throw err
+        dat.serve(function(err) {
+          if (err) throw err
+          dat2.init({remote: 'http://localhost:6461/_archive'}, function(err, msg) {
+            if (err) throw err
+            dat2.storage.currentData().pipe(concat(function(data) {
+              console.log('dat2', data)
+              t.equal(data.length, 1)
+              t.equal(data[0].foo, 'bar')
+              dat.close() // stops http server
+              cleanup()
+            }))
+          })
+        })
+      })
+    })
+  })
+})
+
 // test helper functions
 
 function getDat(t, cb) {
-  var dat = new Dat(tmp, function ready(err) {
+  var dat = new Dat(dat1tmp, function ready(err) {
     if (err) throw err
     dat.init(function(err, msg) {
       if (err) throw err
@@ -601,7 +626,9 @@ function getDat(t, cb) {
   function done() {
     dat.destroy(function(err) {
       if (err) throw err
-      t.end()
+      destroyTmpDats(function() {
+        t.end()
+      })
     })
   }
 }
@@ -610,7 +637,7 @@ function serveAndPull(dat1, dat2, cb) {
   dat1.serve(function(err, msg) {
     if (err) throw err
     dat2.init(function(err, msg) {
-      if (err) throw err
+      // ignore errors here
       dat2.pull(function(err) {
         if (err) throw err
         cb()
@@ -637,14 +664,10 @@ function compareData(t, dat1, dat2, cb) {
   }))
 }
 
-function destroy(datDir, cb) {
-  var dat = new Dat(datDir, function ready() {
-    dat.init(function(err, msg) {
-      if (err) return cb(err)
-      dat.level()
-      dat.destroy(function(err) {
-        cb(err)
-      })
+function destroyTmpDats(cb) {
+  rimraf(dat1tmp, function(err) {
+    rimraf(dat2tmp, function(err) {
+      cb()
     })
   })
 }
