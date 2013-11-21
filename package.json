@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "1.1.7",
+  "version": "1.1.8",
   "description": "real-time replication and versioning for large tabular data sets",
   "main": "index.js",
   "preferGlobal": true,
