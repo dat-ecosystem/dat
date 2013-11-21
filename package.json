@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "real-time replication and versioning for large tabular data sets",
   "main": "index.js",
   "preferGlobal": true,
@@ -20,12 +20,10 @@
     "optimist": "~0.6.0",
     "mkdirp": "~0.3.5",
     "sleep-ref": "~1.0.0",
-    "dir-tar-stream": "~0.1.1",
     "through": "~2.3.4",
     "split": "~0.2.10",
     "request": "~2.27.0",
     "hat": "~0.0.3",
-    "tar": "~0.1.18",
     "level-batcher": "~0.0.2",
     "stream-combiner": "~0.0.2",
     "rimraf": "~2.2.2",
@@ -42,8 +40,8 @@
     "monot": "~0.1.1",
     "concat-stream": "~1.2.0",
     "datapackage-json": "~0.0.5",
-    "progress": "~1.1.2",
-    "level-live-stream": "~1.4.7"
+    "level-live-stream": "~1.4.7",
+    "hyperlevel-backup": "~0.0.1"
   },
   "directories": {
     "example": "examples",
