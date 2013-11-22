@@ -591,7 +591,7 @@ test('live pull replication', function(t) {
   })
 })
 
-test('tarball replication', function(t) {
+test('init from remote using tarball', function(t) {
   var datTargetPath = dat2tmp
   var dat2 = new Dat(datTargetPath, function ready() {
     getDat(t, function(dat, cleanup) {
@@ -611,6 +611,41 @@ test('tarball replication', function(t) {
               })
             }))
           })
+        })
+      })
+    })
+  })
+})
+
+test('rest get', function(t) {
+  getDat(t, function(dat, cleanup) {
+    dat.serve(function(err) {
+      if (err) throw err
+      dat.storage.put({foo: 'bar'}, function(err, stored) {
+        if (err) throw err
+        request('http://localhost:6461/' + stored._id, function(err, res, json) {
+          t.false(err, 'no error')
+          t.deepEqual(stored, json)
+          dat.close()
+          cleanup()
+        })
+      })
+    })
+  })
+})
+
+test('rest put', function(t) {
+  getDat(t, function(dat, cleanup) {
+    dat.serve(function(err) {
+      if (err) throw err
+      var body = {foo: 'bar'}
+      request({method: 'POST', uri: 'http://localhost:6461', json: body}, function(err, res, stored) {
+        if (err) throw err
+        dat.storage.get(stored._id, function(err, json) {
+          t.false(err, 'no error')
+          t.deepEqual(stored, json)
+          dat.close()
+          cleanup()
         })
       })
     })
