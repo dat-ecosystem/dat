@@ -639,7 +639,7 @@ test('rest put', function(t) {
     dat.serve(function(err) {
       if (err) throw err
       var body = {foo: 'bar'}
-      request({method: 'POST', uri: 'http://localhost:6461', json: body}, function(err, res, stored) {
+      request({method: 'POST', uri: 'http://localhost:6461', json: body }, function(err, res, stored) {
         if (err) throw err
         dat.storage.get(stored._id, function(err, json) {
           t.false(err, 'no error')
