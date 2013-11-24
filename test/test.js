@@ -583,7 +583,7 @@ test('live pull replication', function(t) {
                   cleanup()
                 })
               }))
-            }, 500)
+            }, 250)
           })
         })
       })
