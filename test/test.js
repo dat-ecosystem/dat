@@ -96,9 +96,9 @@ test('buff <-> json', function(t) {
 
 test('.put json', function(t) {
   getDat(t, function(dat, done) {
-    dat.storage.put({"foo": "bar"}, function(err) {
+    dat.put({"foo": "bar"}, function(err) {
       if (err) throw err
-      var cat = dat.storage.currentData()
+      var cat = dat.createReadStream()
     
       cat.pipe(concat(function(data) {
         t.equal(data.length, 1)
@@ -111,11 +111,11 @@ test('.put json', function(t) {
 
 test('.put same json multiple times (random id generation)', function(t) {
   getDat(t, function(dat, done) {
-    dat.storage.put({"foo": "bar"}, function(err) {
+    dat.put({"foo": "bar"}, function(err) {
       if (err) throw err
-      dat.storage.put({"foo": "bar"}, function(err) {
+      dat.put({"foo": "bar"}, function(err) {
         if (err) throw err
-        var cat = dat.storage.currentData()
+        var cat = dat.createReadStream()
     
         cat.pipe(concat(function(data) {
           t.equal(data.length, 2)
@@ -132,9 +132,9 @@ test('.put buff', function(t) {
   getDat(t, function(dat, done) {
     var row = buff.pack([bops.from('bar')])
     
-    dat.storage.put(row, {columns: ['foo']}, function(err) {
+    dat.put(row, {columns: ['foo']}, function(err) {
       if (err) throw err
-      var cat = dat.storage.currentData()
+      var cat = dat.createReadStream()
     
       cat.pipe(concat(function(data) {
         t.equal(data.length, 1)
@@ -152,7 +152,7 @@ test('piping a single ndjson object into a write stream', function(t) {
     
     ws.on('close', function() {
     
-      var cat = dat.storage.currentData()
+      var cat = dat.createReadStream()
     
       cat.pipe(concat(function(data) {
         t.equal(data.length, 1)
@@ -175,7 +175,7 @@ test('piping a single ndjson string into a write stream', function(t) {
     
     ws.on('close', function() {
     
-      var cat = dat.storage.currentData()
+      var cat = dat.createReadStream()
       
       cat.pipe(concat(function(data) {
         t.equal(data.length, 1)
@@ -198,7 +198,7 @@ test('piping multiple ndjson objects into a write stream', function(t) {
     
     ws.on('close', function() {
       
-      var cat = dat.storage.currentData()
+      var cat = dat.createReadStream()
       
       cat.pipe(concat(function(data) {
         t.equal(data.length, 2)
@@ -225,7 +225,7 @@ test('piping a single row of buff data with write stream', function(t) {
     var ws = dat.createWriteStream({ columns: ['foo'] })
     
     ws.on('close', function() {
-      dat.storage.currentData().pipe(concat(function(data) {
+      dat.createReadStream().pipe(concat(function(data) {
         t.equal(data.length, 1)
         t.equal(data[0].foo, 'bar')
         done()
@@ -249,7 +249,7 @@ test('piping multiple rows of buff data with write stream', function(t) {
     
     var ws = dat.createWriteStream({ columns: ['a', 'b'] })
     ws.on('close', function() {
-      dat.storage.currentData().pipe(concat(function(data) {
+      dat.createReadStream().pipe(concat(function(data) {
         t.equal(data.length, 2)
         t.equal(data[0].a, '1')
         t.equal(data[0].b, '2')
@@ -274,7 +274,7 @@ test('piping a csv with 1 row into a write stream', function(t) {
     var ws = dat.createWriteStream({ csv: true })
     
     ws.on('close', function() {
-      var cat = dat.storage.currentData()
+      var cat = dat.createReadStream()
       cat.pipe(concat(function(data) {
         t.equal(data.length, 1)
         t.equal(data[0].a, '1')
@@ -296,7 +296,7 @@ test('piping a csv with multiple rows into a write stream', function(t) {
     var ws = dat.createWriteStream({ csv: true })
     
     ws.on('close', function() {
-      var cat = dat.storage.currentData()
+      var cat = dat.createReadStream()
       cat.pipe(concat(function(data) {
         t.equal(data.length, 2)
         t.equal(data[0].a, '1')
@@ -321,11 +321,11 @@ test('multiple writeStreams, updating rows', function(t) {
     var ws = dat.createWriteStream({ csv: true })
     
     ws.on('close', function() {
-      var cat = dat.storage.currentData()
+      var cat = dat.createReadStream()
       cat.pipe(concat(function(data) {
         var jws = dat.createWriteStream({ json: true })
         jws.on('close', function() {
-          var cat = dat.storage.currentData()
+          var cat = dat.createReadStream()
           cat.pipe(concat(function(data2) {
             t.equal(data.length, data2.length)
             done()
@@ -349,7 +349,7 @@ test('currentData returns buff rows in same order they went in', function(t) {
     var nums = []
     
     ws.on('close', function() {
-      dat.storage.currentData().pipe(concat(function(data) {
+      dat.createReadStream().pipe(concat(function(data) {
         var results = data.map(function(r) { return +r.num })
         t.equals(JSON.stringify(nums), JSON.stringify(results), 'order matches')
         done()
@@ -375,7 +375,7 @@ test('currentData returns buff rows in same order they went in w/ custom primary
     var nums = []
     
     ws.on('close', function() {
-      dat.storage.currentData().pipe(concat(function(data) {
+      dat.createReadStream().pipe(concat(function(data) {
         var results = data.map(function(r) { return r.num + '\xff' })
         t.equals(JSON.stringify(nums), JSON.stringify(results), 'order matches')
         done()
@@ -406,7 +406,7 @@ test('currentData returns csv rows in same order they went in w/ custom primary 
     var nums = []
     
     ws.on('close', function() {
-      dat.storage.currentData().pipe(concat(function(data) {
+      dat.createReadStream().pipe(concat(function(data) {
         var results = data.map(function(r) { return r._id })
         t.equals(JSON.stringify(results), JSON.stringify(expected), 'order matches')
         done()
@@ -426,7 +426,7 @@ test('currentData returns ndjson rows in same order they went in w/ custom prima
     var nums = []
     
     ws.on('close', function() {
-      dat.storage.currentData().pipe(concat(function(data) {
+      dat.createReadStream().pipe(concat(function(data) {
         var results = data.map(function(r) { return r._id })
         t.equals(JSON.stringify(results), JSON.stringify(expected), 'order matches')
         done()
@@ -440,6 +440,54 @@ test('currentData returns ndjson rows in same order they went in w/ custom prima
   })
 })
 
+test('multiple writeStreams w/ updating data + primary key only updates rows that changed', function(t) {
+  getDat(t, function(dat, done) {
+    var ws1 = dat.createWriteStream({ json: true, primary: 'foo' })
+  
+    ws1.on('close', function() {
+      var ws2 = dat.createWriteStream({ json: true, primary: 'foo' })
+
+      ws2.on('close', function() {
+        var cat = dat.createReadStream()
+  
+        cat.pipe(concat(function(data) {
+          t.equal(data.length, 1)
+          t.equal(data[0].foo, "bar")
+          done()
+        }))
+      })
+    
+      ws2.write(bops.from(JSON.stringify({"foo": "bar"})))
+      ws2.end()
+    })
+  
+    ws1.write(bops.from(JSON.stringify({"foo": "bar"})))
+    ws1.end()
+  
+  })
+})
+
+test('csv writeStream w/ headerRow false', function(t) {
+  getDat(t, function(dat, done) {
+    
+    var ws = dat.createWriteStream({ csv: true, columns: ['foo'], headerRow: false })
+    
+    ws.on('close', function() {
+      var cat = dat.createReadStream()
+      cat.pipe(concat(function(data) {
+        t.equal(data.length, 1)
+        t.equal(data[0].foo, 'bar')
+        done()
+      }))
+    })
+    
+    ws.write(bops.from('bar'))
+    ws.end()
+    
+  })
+})
+
+
 test('writeStream same json multiple times (random id generation)', function(t) {
   getDat(t, function(dat, done) {
     var ws1 = dat.createWriteStream({ json: true })
@@ -448,7 +496,7 @@ test('writeStream same json multiple times (random id generation)', function(t) 
       var ws2 = dat.createWriteStream({ json: true })
       
       ws2.on('close', function() {
-        var cat = dat.storage.currentData()
+        var cat = dat.createReadStream()
     
         cat.pipe(concat(function(data) {
           t.equal(data.length, 2)
@@ -473,7 +521,7 @@ test('getSequences', function(t) {
     var ws = dat.createWriteStream({ csv: true })
     
     ws.on('close', function() {
-      dat.storage.getSequences({include_data: true}).pipe(concat(function(data) {
+      dat.createChangesStream({include_data: true}).pipe(concat(function(data) {
         var seqs = data.map(function(r) { return r.seq })
         t.equal(JSON.stringify(seqs), JSON.stringify([1,2,3,4,5]) , 'ordered sequences 1 - 5 exist')
         t.equal(!!data[0].data, true)
@@ -482,6 +530,42 @@ test('getSequences', function(t) {
     })
     
     ws.write(bops.from('a,b,c\n10,1,1\n100,1,1\n1,1,1\n1,1,1\n1,1,1'))
+    ws.end()
+  })
+})
+
+test('createReadStream', function(t) {
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ csv: true })
+    
+    ws.on('close', function() {
+      var readStream = dat.storage.createReadStream()
+      readStream.pipe(concat(function(rows) {
+        t.equal(rows.length, 5, '5 rows')
+        done()
+      }))
+    })
+    
+    ws.write(bops.from('a,b,c\n10,1,1\n100,1,1\n1,1,1\n1,1,1\n1,1,1'))
+    ws.end()
+  })
+})
+
+test('createReadStream w/ start + end keys', function(t) {
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ csv: true, primary: 'a' })
+    
+    ws.on('close', function() {
+      var readStream = dat.storage.createReadStream({ start: '2', end: '4'})
+      readStream.pipe(concat(function(rows) {
+        t.equal(rows.length, 2, '2 rows')
+        t.equal(rows[0].a, '2')
+        t.equal(rows[1].a, '3')
+        done()
+      }))
+    })
+    
+    ws.write(bops.from('a\n1\n2\n3\n4\n5'))
     ws.end()
   })
 })
@@ -506,9 +590,9 @@ test('pull replication', function(t) {
       ws.end()
  
       function done() {
-        dat2.storage.currentData().pipe(concat(function(data) {
+        dat2.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r.a })
-          t.equals(JSON.stringify(results), JSON.stringify(expected), 'currentData() matches')
+          t.equals(JSON.stringify(results), JSON.stringify(expected), 'createReadStream() matches')
           dat.close() // stops http server
           dat2.destroy(function(err) {
             t.false(err, 'no err')
@@ -536,7 +620,7 @@ test('multiple pulls', function(t) {
       })
 
       function putPullCompare(doc, cb) {
-        dat.storage.put(doc, function(err, doc) {
+        dat.put(doc, function(err, doc) {
           if (err) throw err
           serveAndPull(dat, dat2, function() {
             compareData(t, dat, dat2, function() {
@@ -547,7 +631,7 @@ test('multiple pulls', function(t) {
       }
       
       function done() {
-        dat2.storage.currentData().pipe(concat(function(data) {
+        dat2.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r.a })
           t.equals(JSON.stringify(results), JSON.stringify(expected), 'currentData() matches')
           dat.close() // stops http server
@@ -570,10 +654,10 @@ test('live pull replication', function(t) {
         dat2.init(function(err, msg) {
           if (err) throw err
           var pull = dat2.pull({live: true})
-          dat.storage.put({foo: 'bar'}, function(err) {
+          dat.put({foo: 'bar'}, function(err) {
             if (err) throw err
             setTimeout(function() {
-              dat2.storage.currentData().pipe(concat(function(data) {
+              dat2.createReadStream().pipe(concat(function(data) {
                 t.equal(data.length, 1)
                 t.equal(data[0].foo, 'bar')
                 pull.stream.end()
@@ -595,13 +679,13 @@ test('init from remote using tarball', function(t) {
   var datTargetPath = dat2tmp
   var dat2 = new Dat(datTargetPath, function ready() {
     getDat(t, function(dat, cleanup) {
-      dat.storage.put({foo: 'bar'}, function(err) {
+      dat.put({foo: 'bar'}, function(err) {
         if (err) throw err
         dat.serve(function(err) {
           if (err) throw err
           dat2.init({remote: 'http://localhost:6461'}, function(err, msg) {
             if (err) throw err
-            dat2.storage.currentData().pipe(concat(function(data) {
+            dat2.createReadStream().pipe(concat(function(data) {
               t.equal(data.length, 1)
               t.equal(data[0].foo, 'bar')
               dat.close() // stops http server
@@ -621,7 +705,7 @@ test('rest get', function(t) {
   getDat(t, function(dat, cleanup) {
     dat.serve(function(err) {
       if (err) throw err
-      dat.storage.put({foo: 'bar'}, function(err, stored) {
+      dat.put({foo: 'bar'}, function(err, stored) {
         if (err) throw err
         request('http://localhost:6461/' + stored._id, function(err, res, json) {
           t.false(err, 'no error')
@@ -641,7 +725,7 @@ test('rest put', function(t) {
       var body = {foo: 'bar'}
       request({method: 'POST', uri: 'http://localhost:6461', json: body }, function(err, res, stored) {
         if (err) throw err
-        dat.storage.get(stored._id, function(err, json) {
+        dat.get(stored._id, function(err, json) {
           t.false(err, 'no error')
           t.deepEqual(stored, json)
           dat.close()
