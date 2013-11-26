@@ -147,7 +147,7 @@ test('.put buff', function(t) {
 
 test('piping a single ndjson object into a write stream', function(t) {
   getDat(t, function(dat, done) {
-    
+
     var ws = dat.createWriteStream({ json: true })
     
     ws.on('close', function() {

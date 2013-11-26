@@ -33,11 +33,15 @@ function Dat(dir, opts, onReady) {
     opts = dir
     dir = process.cwd()
   }
+  
+  if (!onReady) onReady = function(){}
+  
   this.dir = dir
   this.opts = opts
   
   this.meta = meta(this.dir, function(err) {
-    if (onReady) onReady(err)
+    if (err) return onReady()
+    self._storage(opts, onReady)
   })
 }
 
