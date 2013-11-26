@@ -467,6 +467,40 @@ test('multiple writeStreams w/ updating data + primary key only updates rows tha
   })
 })
 
+test('composite primary key', function(t) {
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ objects: true, primary: ['a', 'b'] })
+    
+    ws.on('close', function() {
+      dat.get('foo+bar', function(err, data) {
+        t.false(err, 'no error')
+        t.equal(data.c, "hello")
+        done()
+      })
+    })
+    
+    ws.write({"a": "foo", "b": "bar", "c": "hello"})
+    ws.end()
+  })
+})
+
+test('composite primary key w/ custom keySeparator', function(t) {
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ objects: true, primary: ['a', 'b'], keySeparator: '@' })
+    
+    ws.on('close', function() {
+      dat.get('foo@bar', function(err, data) {
+        t.false(err, 'no error')
+        t.equal(data.c, "hello")
+        done()
+      })
+    })
+    
+    ws.write({"a": "foo", "b": "bar", "c": "hello"})
+    ws.end()
+  })
+})
+
 test('csv writeStream w/ headerRow false', function(t) {
   getDat(t, function(dat, done) {
     
