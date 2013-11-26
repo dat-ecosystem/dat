@@ -1,5 +1,6 @@
 var path = require('path')
 var os = require('os')
+var crypto = require('crypto')
 var datPath = path.join(__dirname, '..')
 var Dat = require(datPath)
 var test = require('tape')
@@ -472,7 +473,7 @@ test('composite primary key', function(t) {
     var ws = dat.createWriteStream({ objects: true, primary: ['a', 'b'] })
     
     ws.on('close', function() {
-      dat.get('foo+bar', function(err, data) {
+      dat.get('foobar', function(err, data) {
         t.false(err, 'no error')
         t.equal(data.c, "hello")
         done()
@@ -486,10 +487,29 @@ test('composite primary key', function(t) {
 
 test('composite primary key w/ custom keySeparator', function(t) {
   getDat(t, function(dat, done) {
-    var ws = dat.createWriteStream({ objects: true, primary: ['a', 'b'], keySeparator: '@' })
+    var ws = dat.createWriteStream({ objects: true, primary: ['a', 'b'], separator: '@' })
     
     ws.on('close', function() {
       dat.get('foo@bar', function(err, data) {
+        t.false(err, 'no error')
+        t.equal(data.c, "hello")
+        done()
+      })
+    })
+    
+    ws.write({"a": "foo", "b": "bar", "c": "hello"})
+    ws.end()
+  })
+})
+
+test('composite primary key w/ composite hashing enabled', function(t) {
+  getDat(t, function(dat, done) {
+    var ws = dat.createWriteStream({ objects: true, primary: ['a', 'b'], hash: true })
+    
+    ws.on('close', function() {
+      var key = crypto.createHash('md5').update('foobar').digest("hex")
+
+      dat.get(key, function(err, data) {
         t.false(err, 'no error')
         t.equal(data.c, "hello")
         done()
