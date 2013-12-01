@@ -1,5 +1,6 @@
 var path = require('path')
 var meta = require(path.join(__dirname, 'lib', 'meta.js'))
+var commands = require(path.join(__dirname, 'lib', 'commands'))
 
 module.exports = Dat
 
@@ -41,8 +42,15 @@ function Dat(dir, opts, onReady) {
   
   this.meta = meta(this.dir, function(err) {
     if (err) return onReady()
-    self._storage(opts, onReady)
+    commands._ensureExists(opts, function (err) {
+      if (err) {
+        console.error(err)
+        process.exit(1)
+      }
+
+      self._storage(opts, onReady)
+    })
   })
 }
 
-Dat.prototype = require(path.join(__dirname, 'lib', 'commands'))
+Dat.prototype = commands
