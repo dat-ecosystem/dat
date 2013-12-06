@@ -41,7 +41,8 @@
     "datapackage-json": "~0.0.5",
     "level-live-stream": "~1.4.7",
     "hyperlevel-backup": "~0.0.1",
-    "routes": "~0.2.0"
+    "routes": "~0.2.0",
+    "head-stream": "0.0.1"
   },
   "directories": {
     "example": "examples",
