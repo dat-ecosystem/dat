@@ -11,7 +11,7 @@ var buff = require('multibuffer')
 var rimraf = require('rimraf')
 var fs = require('fs')
 var request = require('request').defaults({json: true})
-var jsonbuff = require(path.join(__dirname, '..', 'lib', 'json-buff.js'))
+var jsonBuffStream = require('json-multibuffer-stream')
 var tmp = os.tmpdir()
 var dat1tmp = path.join(tmp, 'dat1')
 var dat2tmp = path.join(tmp, 'dat2')
@@ -88,8 +88,8 @@ test('buff <-> json', function(t) {
   var test = {'hello': 'world', 'foo': {'bar': '[baz]', 'pizza': [1,2,3]}}
   var columns = Object.keys(test)
   
-  var encoded = jsonbuff.encode(test)
-  var decoded = jsonbuff.decode(columns, encoded)
+  var encoded = jsonBuffStream.encode(test)
+  var decoded = jsonBuffStream.decode(columns, encoded)
   
   t.equal(JSON.stringify(test), JSON.stringify(decoded), 'encoded/decoded matches')
   t.end()
