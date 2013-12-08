@@ -217,6 +217,26 @@ test('piping multiple ndjson objects into a write stream', function(t) {
   })
 })
 
+test('piping a single ndjson object w/ only _id into a write stream', function(t) {
+  getDat(t, function(dat, done) {
+    
+    var ws = dat.createWriteStream({ json: true })
+    
+    ws.on('close', function() {
+      var cat = dat.createReadStream()
+      cat.pipe(concat(function(data) {
+        t.equal(data.length, 1)
+        t.equal(data[0]._id, "foo")
+        done()
+      }))
+    })
+    
+    ws.write(bops.from(JSON.stringify({"_id": "foo"})))
+    ws.end()
+    
+  })
+})
+
 test('piping a single row of buff data with write stream', function(t) {
   
   var row = buff.pack([bops.from('bar')])
