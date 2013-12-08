@@ -11,7 +11,7 @@ echo '{"hello": "world"}' | dat --json
 
 # stream a CSV into dat
 cat some_csv.csv | dat --csv
-cat some_csv.csv | cat --csv -d $'\r\n' # custom line delimiter, --delimiter= works too
+cat some_csv.csv | dat --csv -d $'\r\n' # custom line delimiter, --delimiter= works too
 
 # specify a primary key to use
 echo $'a,b,c\n1,2,3' | dat --csv --primary=a
