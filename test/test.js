@@ -810,6 +810,32 @@ test('rest put', function(t) {
   })
 })
 
+test('rest bulk post csv', function(t) {
+  getDat(t, function(dat, cleanup) {
+    dat.serve(function(err) {
+      if (err) throw err
+      var headers = {'content-type': 'text/csv'}
+      var post = request({method: 'POST', uri: 'http://localhost:6461/_bulk', headers: headers})
+      post.write('a,b,c\n')
+      post.write('1,2,3')
+      post.end()
+      post.pipe(concat(function(resp) {
+        var ldj = resp.toString()
+        ldj = ldj.slice(0, ldj.length - 1)
+        var obj = ldj.split('\n').map(function(o) { return JSON.parse(o).row })[0]
+        dat.get(obj._id, function(err, json) {
+          t.false(err, 'no error')
+          t.equal(json.a, '1', 'data matches')
+          t.equal(json.b, '2', 'data matches')
+          t.equal(json.c, '3', 'data matches')
+          dat.close()
+          cleanup()
+        })
+      }))
+    })
+  })
+})
+
 // test helper functions
 
 function getDat(t, cb) {
