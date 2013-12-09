@@ -7,7 +7,7 @@
     "dat": "cli.js"
   },
   "scripts": {
-    "test": "node test/test.js"
+    "test": "node test/run.js"
   },
   "repository": {
     "type": "git",

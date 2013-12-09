@@ -42,12 +42,8 @@ function Dat(dir, opts, onReady) {
   
   this.meta = meta(this.dir, function(err) {
     if (err) return onReady()
-    commands._ensureExists(opts, function (err) {
-      if (err) {
-        console.error(err)
-        process.exit(1)
-      }
-
+    commands._ensureExists({path: self.dir}, function (err) {
+      if (err) return onReady()
       self._storage(opts, onReady)
     })
   })
