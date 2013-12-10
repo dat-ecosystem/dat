@@ -5,7 +5,7 @@ var concat = require('concat-stream')
 var os = require('os')
 var crypto = require('crypto')
 
-module.exports.singleNdjsonObject = function(test, Dat, common) {
+module.exports.singleNdjsonObject = function(test, common) {
   test('piping a single ndjson object into a write stream', function(t) {
     common.getDat(t, function(dat, done) {
 
@@ -30,7 +30,7 @@ module.exports.singleNdjsonObject = function(test, Dat, common) {
   })
 }
 
-module.exports.singleNdjsonString = function(test, Dat, common) {
+module.exports.singleNdjsonString = function(test, common) {
   test('piping a single ndjson string into a write stream', function(t) {
     common.getDat(t, function(dat, done) {
     
@@ -55,7 +55,7 @@ module.exports.singleNdjsonString = function(test, Dat, common) {
   })
 }
 
-module.exports.multipleNdjsonObjects = function(test, Dat, common) {
+module.exports.multipleNdjsonObjects = function(test, common) {
   test('piping multiple ndjson objects into a write stream', function(t) {
     common.getDat(t, function(dat, done) {
     
@@ -83,7 +83,7 @@ module.exports.multipleNdjsonObjects = function(test, Dat, common) {
 }
 
 
-module.exports.singleNdjsonObjectIdOnly = function(test, Dat, common) {
+module.exports.singleNdjsonObjectIdOnly = function(test, common) {
   test('piping a single ndjson object w/ only _id into a write stream', function(t) {
     common.getDat(t, function(dat, done) {
     
@@ -105,7 +105,7 @@ module.exports.singleNdjsonObjectIdOnly = function(test, Dat, common) {
   })
 }
 
-module.exports.singleBuff = function(test, Dat, common) {
+module.exports.singleBuff = function(test, common) {
   test('piping a single row of buff data with write stream', function(t) {
   
     var row = buff.pack([bops.from('bar')])
@@ -131,7 +131,7 @@ module.exports.singleBuff = function(test, Dat, common) {
   })
 }
 
-module.exports.multipleBuffs = function(test, Dat, common) {
+module.exports.multipleBuffs = function(test, common) {
   test('piping multiple rows of buff data with write stream', function(t) {
 
     var row1 = buff.pack([bops.from('1'), bops.from('2')])
@@ -161,7 +161,7 @@ module.exports.multipleBuffs = function(test, Dat, common) {
   })
 }
 
-module.exports.csvOneRow = function(test, Dat, common) {
+module.exports.csvOneRow = function(test, common) {
   test('piping a csv with 1 row into a write stream', function(t) {
     common.getDat(t, function(dat, done) {
     
@@ -185,7 +185,7 @@ module.exports.csvOneRow = function(test, Dat, common) {
   })
 }
 
-module.exports.csvMultipleRows = function(test, Dat, common) {
+module.exports.csvMultipleRows = function(test, common) {
   test('piping a csv with multiple rows into a write stream', function(t) {
     common.getDat(t, function(dat, done) {
     
@@ -212,7 +212,7 @@ module.exports.csvMultipleRows = function(test, Dat, common) {
   })
 }
 
-module.exports.multipleWriteStreams = function(test, Dat, common) {
+module.exports.multipleWriteStreams = function(test, common) {
   test('multiple writeStreams, updating rows', function(t) {
     common.getDat(t, function(dat, done) {
     
@@ -242,7 +242,7 @@ module.exports.multipleWriteStreams = function(test, Dat, common) {
   })
 }
 
-module.exports.multipleWriteStreamsUpdatingChanged = function(test, Dat, common) {
+module.exports.multipleWriteStreamsUpdatingChanged = function(test, common) {
   test('multiple writeStreams w/ updating data + primary key only updates rows that changed', function(t) {
     common.getDat(t, function(dat, done) {
       var ws1 = dat.createWriteStream({ json: true, primary: 'foo' })
@@ -271,7 +271,7 @@ module.exports.multipleWriteStreamsUpdatingChanged = function(test, Dat, common)
   })
 }
 
-module.exports.compositePrimaryKey = function(test, Dat, common) {
+module.exports.compositePrimaryKey = function(test, common) {
   test('composite primary key', function(t) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ objects: true, primary: ['a', 'b'] })
@@ -290,7 +290,7 @@ module.exports.compositePrimaryKey = function(test, Dat, common) {
   })
 }
 
-module.exports.compositePrimaryKeyCustomSeparator = function(test, Dat, common) {
+module.exports.compositePrimaryKeyCustomSeparator = function(test, common) {
   test('composite primary key w/ custom keySeparator', function(t) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ objects: true, primary: ['a', 'b'], separator: '@' })
@@ -310,7 +310,7 @@ module.exports.compositePrimaryKeyCustomSeparator = function(test, Dat, common) 
   
 }
 
-module.exports.compositePrimaryKeyHashing = function(test, Dat, common) {
+module.exports.compositePrimaryKeyHashing = function(test, common) {
   test('composite primary key w/ composite hashing enabled', function(t) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ objects: true, primary: ['a', 'b'], hash: true })
@@ -331,7 +331,7 @@ module.exports.compositePrimaryKeyHashing = function(test, Dat, common) {
   })
 }
 
-module.exports.writeStreamCsvNoHeaderRow = function(test, Dat, common) {
+module.exports.writeStreamCsvNoHeaderRow = function(test, common) {
   test('csv writeStream w/ headerRow false', function(t) {
     common.getDat(t, function(dat, done) {
     
@@ -353,7 +353,7 @@ module.exports.writeStreamCsvNoHeaderRow = function(test, Dat, common) {
   })
 }
 
-module.exports.writeStreamMultipleWithRandomIds = function(test, Dat, common) {
+module.exports.writeStreamMultipleWithRandomIds = function(test, common) {
   test('writeStream same json multiple times (random id generation)', function(t) {
     common.getDat(t, function(dat, done) {
       var ws1 = dat.createWriteStream({ json: true })
@@ -383,20 +383,20 @@ module.exports.writeStreamMultipleWithRandomIds = function(test, Dat, common) {
   })
 }
 
-module.exports.all = function (test, Dat, common) {
-  module.exports.singleNdjsonObject(test, Dat, common)
-  module.exports.singleNdjsonString(test, Dat, common)
-  module.exports.multipleNdjsonObjects(test, Dat, common)
-  module.exports.singleNdjsonObjectIdOnly(test, Dat, common)
-  module.exports.singleBuff(test, Dat, common)
-  module.exports.multipleBuffs(test, Dat, common)
-  module.exports.csvOneRow(test, Dat, common)
-  module.exports.csvMultipleRows(test, Dat, common)
-  module.exports.multipleWriteStreams(test, Dat, common)
-  module.exports.multipleWriteStreamsUpdatingChanged(test, Dat, common)
-  module.exports.compositePrimaryKey(test, Dat, common)
-  module.exports.compositePrimaryKeyCustomSeparator(test, Dat, common)
-  module.exports.compositePrimaryKeyHashing(test, Dat, common)
-  module.exports.writeStreamCsvNoHeaderRow(test, Dat, common)
-  module.exports.writeStreamMultipleWithRandomIds(test, Dat, common)
+module.exports.all = function (test, common) {
+  module.exports.singleNdjsonObject(test, common)
+  module.exports.singleNdjsonString(test, common)
+  module.exports.multipleNdjsonObjects(test, common)
+  module.exports.singleNdjsonObjectIdOnly(test, common)
+  module.exports.singleBuff(test, common)
+  module.exports.multipleBuffs(test, common)
+  module.exports.csvOneRow(test, common)
+  module.exports.csvMultipleRows(test, common)
+  module.exports.multipleWriteStreams(test, common)
+  module.exports.multipleWriteStreamsUpdatingChanged(test, common)
+  module.exports.compositePrimaryKey(test, common)
+  module.exports.compositePrimaryKeyCustomSeparator(test, common)
+  module.exports.compositePrimaryKeyHashing(test, common)
+  module.exports.writeStreamCsvNoHeaderRow(test, common)
+  module.exports.writeStreamMultipleWithRandomIds(test, common)
 }

@@ -2,18 +2,23 @@ var path = require('path')
 var datPath = path.join(__dirname, '..')
 var Dat = require(datPath)
 var test = require('tape')
-var helpers = require(path.join(__dirname, 'helpers'))
+var common = require(path.join(__dirname, 'common'))
 
-var specificTest = process.argv[2]
+var specificTests = process.argv.slice(2, process.argv.length)
 
-if (specificTest) require('./' + path.relative(__dirname, specificTest)).all(test, Dat, helpers)
-else runAll()
+if (specificTests.length > 0) {
+  specificTests.map(function(specificTest) {
+    require('./' + path.relative(__dirname, specificTest)).all(test, common)
+  })
+} else {
+  runAll()
+}
 
 function runAll() {
-  require('./tests/init').all(test, Dat, helpers)
-  require('./tests/crud').all(test, Dat, helpers)
-  require('./tests/read-streams').all(test, Dat, helpers)
-  require('./tests/write-streams').all(test, Dat, helpers)
-  require('./tests/replication').all(test, Dat, helpers)
-  require('./tests/rest').all(test, Dat, helpers)  
+  require('./tests/init').all(test, common)
+  require('./tests/crud').all(test, common)
+  require('./tests/read-streams').all(test, common)
+  require('./tests/write-streams').all(test, common)
+  require('./tests/replication').all(test, common)
+  require('./tests/rest').all(test, common)  
 }

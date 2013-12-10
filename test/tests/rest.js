@@ -1,7 +1,7 @@
 var request = require('request').defaults({json: true})
 var concat = require('concat-stream')
 
-module.exports.restGet = function(test, Dat, common) {
+module.exports.restGet = function(test, common) {
   test('rest get', function(t) {
     common.getDat(t, function(dat, cleanup) {
       dat.serve(function(err) {
@@ -21,7 +21,7 @@ module.exports.restGet = function(test, Dat, common) {
 }
 
 
-module.exports.restPut = function(test, Dat, common) {
+module.exports.restPut = function(test, common) {
   test('rest put', function(t) {
     common.getDat(t, function(dat, cleanup) {
       dat.serve(function(err) {
@@ -42,7 +42,7 @@ module.exports.restPut = function(test, Dat, common) {
 }
 
 
-module.exports.restBulkCsv = function(test, Dat, common) {
+module.exports.restBulkCsv = function(test, common) {
   test('rest bulk post csv', function(t) {
     common.getDat(t, function(dat, cleanup) {
       dat.serve(function(err) {
@@ -70,8 +70,8 @@ module.exports.restBulkCsv = function(test, Dat, common) {
   })
 }
 
-module.exports.all = function (test, Dat, common) {
-  module.exports.restGet(test, Dat, common)
-  module.exports.restPut(test, Dat, common)
-  module.exports.restBulkCsv(test, Dat, common)
+module.exports.all = function (test, common) {
+  module.exports.restGet(test, common)
+  module.exports.restPut(test, common)
+  module.exports.restBulkCsv(test, common)
 }

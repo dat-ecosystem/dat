@@ -1,7 +1,8 @@
 var path = require('path')
+var Dat = require('../../')
 
 // resets any existing DB
-module.exports.setup = function(test, Dat, common) {
+module.exports.setup = function(test, common) {
   test('setup', function(t) {
     common.destroyTmpDats(function() {
       t.end()
@@ -9,7 +10,7 @@ module.exports.setup = function(test, Dat, common) {
   })
 }
 
-module.exports.paths = function(test, Dat, common) {
+module.exports.paths = function(test, common) {
   test('.paths', function(t) {
     var dat = new Dat(common.dat1tmp, function ready() {
       var paths = dat.paths()
@@ -20,7 +21,7 @@ module.exports.paths = function(test, Dat, common) {
   })
 }
 
-module.exports.initExistsDestroy = function(test, Dat, common) {
+module.exports.initExistsDestroy = function(test, common) {
   test('.init, .exists, .destroy', function(t) {
     var dat = new Dat(common.dat1tmp, function ready() {
       create(function() {
@@ -58,7 +59,7 @@ module.exports.initExistsDestroy = function(test, Dat, common) {
   })
 }
 
-module.exports.existingRepo = function(test, Dat, common) {
+module.exports.existingRepo = function(test, common) {
   test('.init in existing repo', function(t) {
     var dat = new Dat(common.dat1tmp, function ready() {
       dat.init(function(err, msg) {
@@ -75,9 +76,9 @@ module.exports.existingRepo = function(test, Dat, common) {
   })  
 }
 
-module.exports.all = function (test, Dat, common) {
-  module.exports.setup(test, Dat, common)
-  module.exports.paths(test, Dat, common)
-  module.exports.initExistsDestroy(test, Dat, common)
-  module.exports.existingRepo(test, Dat, common)
+module.exports.all = function (test, common) {
+  module.exports.setup(test, common)
+  module.exports.paths(test, common)
+  module.exports.initExistsDestroy(test, common)
+  module.exports.existingRepo(test, common)
 }

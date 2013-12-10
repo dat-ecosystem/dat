@@ -4,7 +4,7 @@ var bops = require('bops')
 var concat = require('concat-stream')
 var os = require('os')
 
-module.exports.readStreamBuff = function(test, Dat, common) {
+module.exports.readStreamBuff = function(test, common) {
   test('readStream returns buff rows in same order they went in', function(t) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ columns: ['num'] })
@@ -32,7 +32,7 @@ module.exports.readStreamBuff = function(test, Dat, common) {
   })
 }
 
-module.exports.readStreamBuffPrimaryKey = function(test, Dat, common) {
+module.exports.readStreamBuffPrimaryKey = function(test, common) {
   test('readStream returns buff rows in same order they went in w/ custom primary key', function(t) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ columns: ['num'], primary: 'num' })
@@ -63,7 +63,7 @@ module.exports.readStreamBuffPrimaryKey = function(test, Dat, common) {
   })
 }
 
-module.exports.readStreamCsvPrimaryKey = function(test, Dat, common) {
+module.exports.readStreamCsvPrimaryKey = function(test, common) {
   test('readStream returns csv rows in same order they went in w/ custom primary key', function(t) {
     // lexicographic means longer strings come first
     var expected = ['100', '10', '1']
@@ -85,7 +85,7 @@ module.exports.readStreamCsvPrimaryKey = function(test, Dat, common) {
   })
 }
 
-module.exports.readStreamNdjPrimaryKey = function(test, Dat, common) {
+module.exports.readStreamNdjPrimaryKey = function(test, common) {
   test('readStream returns ndjson rows in same order they went in w/ custom primary key', function(t) {
     // lexicographic means longer strings come first
     var expected = ['100', '10', '1']
@@ -109,7 +109,7 @@ module.exports.readStreamNdjPrimaryKey = function(test, Dat, common) {
   })
 }
 
-module.exports.getSequences = function(test, Dat, common) {
+module.exports.getSequences = function(test, common) {
   test('getSequences', function(t) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true })
@@ -129,7 +129,7 @@ module.exports.getSequences = function(test, Dat, common) {
   })
 }
 
-module.exports.createReadStream = function(test, Dat, common) {
+module.exports.createReadStream = function(test, common) {
   test('createReadStream', function(t) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true })
@@ -148,7 +148,7 @@ module.exports.createReadStream = function(test, Dat, common) {
   })
 }
 
-module.exports.createReadStreamStartEndKeys = function(test, Dat, common) {
+module.exports.createReadStreamStartEndKeys = function(test, common) {
   test('createReadStream w/ start + end keys', function(t) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true, primary: 'a' })
@@ -170,12 +170,12 @@ module.exports.createReadStreamStartEndKeys = function(test, Dat, common) {
 }
 
 
-module.exports.all = function (test, Dat, common) {
-  module.exports.readStreamBuff(test, Dat, common)
-  module.exports.readStreamBuffPrimaryKey(test, Dat, common)
-  module.exports.readStreamCsvPrimaryKey(test, Dat, common)
-  module.exports.readStreamNdjPrimaryKey(test, Dat, common)
-  module.exports.getSequences(test, Dat, common)
-  module.exports.createReadStream(test, Dat, common)
-  module.exports.createReadStreamStartEndKeys(test, Dat, common)
+module.exports.all = function (test, common) {
+  module.exports.readStreamBuff(test, common)
+  module.exports.readStreamBuffPrimaryKey(test, common)
+  module.exports.readStreamCsvPrimaryKey(test, common)
+  module.exports.readStreamNdjPrimaryKey(test, common)
+  module.exports.getSequences(test, common)
+  module.exports.createReadStream(test, common)
+  module.exports.createReadStreamStartEndKeys(test, common)
 }

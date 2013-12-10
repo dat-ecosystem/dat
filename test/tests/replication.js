@@ -1,7 +1,8 @@
 var bops = require('bops')
 var concat = require('concat-stream')
+var Dat = require('../../')
 
-module.exports.pullReplication = function(test, Dat, common) {
+module.exports.pullReplication = function(test, common) {
   test('pull replication', function(t) {
     var expected = ["1", "2"]
     var dat2 = new Dat(common.dat2tmp, function ready() {
@@ -37,7 +38,7 @@ module.exports.pullReplication = function(test, Dat, common) {
   })
 }
 
-module.exports.pullReplicationMultiple = function(test, Dat, common) {
+module.exports.pullReplicationMultiple = function(test, common) {
   test('multiple pulls', function(t) {
     var expected = ["pizza", "walrus"]
     var dat2 = new Dat(common.dat2tmp, function ready() {
@@ -78,7 +79,7 @@ module.exports.pullReplicationMultiple = function(test, Dat, common) {
   })
 }
 
-module.exports.pullReplicationLive = function(test, Dat, common) {
+module.exports.pullReplicationLive = function(test, common) {
   test('live pull replication', function(t) {
     var dat2 = new Dat(common.dat2tmp, function ready() {
       common.getDat(t, function(dat, cleanup) {
@@ -109,7 +110,7 @@ module.exports.pullReplicationLive = function(test, Dat, common) {
   })
 }
 
-module.exports.tarballInit = function(test, Dat, common) {
+module.exports.tarballInit = function(test, common) {
   test('init from remote using tarball', function(t) {
     var dat2 = new Dat(common.dat2tmp, function ready() {
       common.getDat(t, function(dat, cleanup) {
@@ -136,9 +137,9 @@ module.exports.tarballInit = function(test, Dat, common) {
   })
 }
 
-module.exports.all = function (test, Dat, common) {
-  module.exports.pullReplication(test, Dat, common)
-  module.exports.pullReplicationMultiple(test, Dat, common)
-  module.exports.pullReplicationLive(test, Dat, common)
-  module.exports.tarballInit(test, Dat, common)
+module.exports.all = function (test, common) {
+  module.exports.pullReplication(test, common)
+  module.exports.pullReplicationMultiple(test, common)
+  module.exports.pullReplicationLive(test, common)
+  module.exports.tarballInit(test, common)
 }
