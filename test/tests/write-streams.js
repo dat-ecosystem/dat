@@ -25,7 +25,6 @@ module.exports.singleNdjsonObject = function(test, common) {
     
       ws.write(bops.from(JSON.stringify({"batman": "bruce wayne"})))
       ws.end()
-    
     })
   })
 }
@@ -50,7 +49,6 @@ module.exports.singleNdjsonString = function(test, common) {
     
       ws.write(JSON.stringify({"batman": "bruce wayne"}))
       ws.end()
-    
     })
   })
 }
@@ -100,7 +98,6 @@ module.exports.singleNdjsonObjectIdOnly = function(test, common) {
     
       ws.write(bops.from(JSON.stringify({"_id": "foo"})))
       ws.end()
-    
     })
   })
 }
