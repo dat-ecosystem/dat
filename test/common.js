@@ -49,17 +49,8 @@ module.exports.serveAndPull = function serveAndPull(dat1, dat2, cb) {
 module.exports.compareData = function compareData(t, dat1, dat2, cb) {
   dat1.db.createReadStream().pipe(concat(function(db1) {
     dat2.db.createReadStream().pipe(concat(function(db2) {
-      var db1data = db1.filter(filterData)
-      var db2data = db2.filter(filterData)
-      
-      t.equals(JSON.stringify(db1data), JSON.stringify(db2data), 'low level data matches')
-      
+      t.deepEquals(db1, db2, 'low level data matches')
       cb()
-      
-      function filterData(r) {
-        if (JSON.stringify(r).indexOf('meta') > -1) return false
-        return true
-      }
     }))
   }))
 }

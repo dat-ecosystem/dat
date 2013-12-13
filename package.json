@@ -27,7 +27,7 @@
     "rimraf": "~2.2.2",
     "byte-stream": "~0.0.1",
     "multibuffer-stream": "~2.0.0",
-    "multibuffer": "~2.0.0",
+    "multibuffer": "~2.1.1",
     "extend": "~1.2.1",
     "level-hyper": "~0.18.0",
     "lexicographic-integer": "~1.1.0",
@@ -46,7 +46,9 @@
     "csv-multibuffer-stream": "~0.0.1",
     "json-multibuffer-stream": "~0.0.1",
     "connections": "~0.0.1",
-    "ldjson-stream": "~0.0.1"
+    "ldjson-stream": "~0.0.1",
+    "sublevel": "~2.3.0",
+    "level-version": "~0.2.0"
   },
   "directories": {
     "example": "examples",
