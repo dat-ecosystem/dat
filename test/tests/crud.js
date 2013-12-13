@@ -76,10 +76,34 @@ module.exports.putBuff = function(test, common) {
   })
 }
 
+module.exports.schemaVersion = function(test, common) {
+  test('schema version should increment when schema changes', function(t) {
+    common.getDat(t, function(dat, done) {
+      t.equal(dat.meta.json.schemaVersion, 0, 'schemaVersion 0')
+      dat.put({"foo": "bar"}, function(err) {
+        if (err) throw err
+        t.equal(dat.meta.json.schemaVersion, 1, 'schemaVersion 1')
+        dat.put({"foo": "bar", "taco": "pizza"}, function(err) {
+          if (err) throw err
+          var cat = dat.schemas.createReadStream()
+          t.equal(dat.meta.json.schemaVersion, 2, 'schemaVersion 2')
+    
+          cat.pipe(concat(function(data) {
+            t.equal(data.length, 2, '2 schema versions')
+            t.equal(data[0].version, 2, 'latest version is 2')
+            t.equal(data[1].version, 1, 'older version is 1')
+            done()
+          }))
+        })
+      })
+    })
+  })
+}
 
 module.exports.all = function (test, common) {
   module.exports.buffToJson(test, common)
   module.exports.putJson(test, common)
   module.exports.multiplePutJson(test, common)
   module.exports.putBuff(test, common)
+  module.exports.schemaVersion(test, common)
 }
