@@ -6,6 +6,13 @@ var common = require(path.join(__dirname, 'common'))
 
 var specificTests = process.argv.slice(2, process.argv.length)
 
+// resets any existing DB
+test('setup', function(t) {
+  common.destroyTmpDats(function() {
+    t.end()
+  })
+})
+
 if (specificTests.length > 0) {
   specificTests.map(function(specificTest) {
     require('./' + path.relative(__dirname, specificTest)).all(test, common)

@@ -268,6 +268,35 @@ module.exports.multipleWriteStreamsUpdatingChanged = function(test, common) {
   })
 }
 
+module.exports.multipleCSVWriteStreamsChangingSchemas = function(test, common) {
+  test('multiple CSV writeStreams w/ different schemas', function(t) {
+    common.getDat(t, function(dat, done) {
+      var ws1 = dat.createWriteStream({ csv: true })
+  
+      ws1.on('close', function() {
+        var ws2 = dat.createWriteStream({ csv: true })
+
+        ws2.on('close', function() {
+          var cat = dat.createReadStream()
+  
+          cat.pipe(concat(function(data) {
+            t.equal(data.length, 1)
+            t.equal(data[0].foo, "bar")
+            done()
+          }))
+        })
+    
+        ws2.write(bops.from('d,e,f\nfoo,bar,baz'))
+        ws2.end()
+      })
+  
+      ws1.write(bops.from('a,b,c\n1,2,3\n4,5,6'))
+      ws1.end()
+  
+    })
+  })
+}
+
 module.exports.compositePrimaryKey = function(test, common) {
   test('composite primary key', function(t) {
     common.getDat(t, function(dat, done) {
@@ -391,6 +420,7 @@ module.exports.all = function (test, common) {
   module.exports.csvMultipleRows(test, common)
   module.exports.multipleWriteStreams(test, common)
   module.exports.multipleWriteStreamsUpdatingChanged(test, common)
+  module.exports.multipleCSVWriteStreamsChangingSchemas(test, common)
   module.exports.compositePrimaryKey(test, common)
   module.exports.compositePrimaryKeyCustomSeparator(test, common)
   module.exports.compositePrimaryKeyHashing(test, common)

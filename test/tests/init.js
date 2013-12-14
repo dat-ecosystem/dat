@@ -1,15 +1,6 @@
 var path = require('path')
 var Dat = require('../../')
 
-// resets any existing DB
-module.exports.setup = function(test, common) {
-  test('setup', function(t) {
-    common.destroyTmpDats(function() {
-      t.end()
-    })
-  })
-}
-
 module.exports.paths = function(test, common) {
   test('.paths', function(t) {
     var dat = new Dat(common.dat1tmp, function ready() {
@@ -77,7 +68,6 @@ module.exports.existingRepo = function(test, common) {
 }
 
 module.exports.all = function (test, common) {
-  module.exports.setup(test, common)
   module.exports.paths(test, common)
   module.exports.initExistsDestroy(test, common)
   module.exports.existingRepo(test, common)
