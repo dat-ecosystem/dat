@@ -35,6 +35,21 @@ module.exports.rowKeys = function(test, common) {
   })
 }
 
+module.exports.decodeKey = function(test, common) {
+  test('decodeKey parses key format correctly', function(t) {
+    var key = 'ÿdÿfooÿrÿ01-abcÿsÿ01ÿ01'
+    var obj = docUtils.decodeKey(key)
+    var expected = {
+      _id: 'foo',
+      _rev: '1-abc',
+      _seq: 1,
+      _ver: 1
+    }
+    t.deepEqual(obj, expected)
+    t.end()
+  })
+}
+
 module.exports.putJson = function(test, common) {
   test('.put json', function(t) {
     common.getDat(t, function(dat, done) {
@@ -121,6 +136,7 @@ module.exports.schemaVersion = function(test, common) {
 module.exports.all = function (test, common) {
   module.exports.buffToJson(test, common)
   module.exports.rowKeys(test, common)
+  module.exports.decodeKey(test, common)
   module.exports.putJson(test, common)
   module.exports.multiplePutJson(test, common)
   module.exports.putBuff(test, common)

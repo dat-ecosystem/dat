@@ -1,6 +1,7 @@
 var path = require('path')
 var meta = require(path.join(__dirname, 'lib', 'meta.js'))
 var commands = require(path.join(__dirname, 'lib', 'commands'))
+var concat = require('concat-stream')
 
 module.exports = Dat
 
@@ -44,9 +45,25 @@ function Dat(dir, opts, onReady) {
     if (err) return onReady()
     commands._ensureExists({path: self.dir}, function (err) {
       if (err) return onReady()
-      self._storage(opts, onReady)
+      self._storage(opts, function(err) {
+        if (err) return onReady(err)
+        loadAllSchemas(onReady)
+      })
     })
   })
+  
+  function loadAllSchemas(cb) {
+    if (self.meta.json.schemaVersion === 0) return cb()
+    self.schemas.createReadStream().pipe(concat(function(schemas) {
+      schemas.map(function(schema) {
+        self.meta.schemas[schema.version] = {
+          version: schema.version,
+          columns: JSON.parse(schema.value).columns
+        }
+      })
+      cb()
+    }))
+  }
 }
 
 Dat.prototype = commands
