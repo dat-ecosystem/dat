@@ -14,8 +14,13 @@ module.exports.buffToJson = function(test, common) {
     t.equal(JSON.stringify(test), JSON.stringify(decoded), 'encoded/decoded matches')
     t.end()
   })
-  
 }
+
+// module.exports.rowKeys = function() {
+//   test('storage.rowKeys returns correctly formatted keys', function(t) {
+//     
+//   })
+// }
 
 module.exports.putJson = function(test, common) {
   test('.put json', function(t) {
