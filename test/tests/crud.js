@@ -19,7 +19,7 @@ module.exports.buffToJson = function(test, common) {
 }
 
 module.exports.rowKeys = function(test, common) {
-  test('storage.rowKeys returns correctly formatted keys', function(t) {
+  test('rowKeys returns correctly formatted keys', function(t) {
     var sep = '\xff'
     
     var keys = {
@@ -28,11 +28,8 @@ module.exports.rowKeys = function(test, common) {
       rev:  'r'
     }
     
-    var a = docUtils.rowKeys(keys, sep, 'foo', '1-abc', '1')
-    t.deepEqual(a, { row: 'ÿdÿfooÿrÿ01-abcÿsÿ01', seq: 'ÿsÿ01' })
-    
-    var b = docUtils.rowKeys(keys, sep, 'foo', '1-abc')
-    t.deepEqual(b, { row: 'ÿdÿfooÿrÿ01-abc'})
+    var a = docUtils.rowKeys(keys, sep, 'foo', '1-abc', '1', '1')
+    t.deepEqual(a, { row: 'ÿdÿfooÿrÿ01-abcÿsÿ01ÿ01', seq: 'ÿsÿ01' })
     
     t.end()
   })
