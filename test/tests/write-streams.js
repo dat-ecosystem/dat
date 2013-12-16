@@ -20,7 +20,6 @@ module.exports.singleNdjsonObject = function(test, common) {
           t.equal(data[0].batman, "bruce wayne")
           done()
         }))
-    
       })
     
       ws.write(bops.from(JSON.stringify({"batman": "bruce wayne"})))

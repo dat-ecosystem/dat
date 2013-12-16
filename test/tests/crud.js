@@ -1,7 +1,9 @@
+var path = require('path')
 var jsonBuffStream = require('json-multibuffer-stream')
 var concat = require('concat-stream')
 var buff = require('multibuffer')
 var bops = require('bops')
+var docUtils = require(path.join(__dirname, '..', '..', 'lib', 'document'))
 
 module.exports.buffToJson = function(test, common) {
   test('buff <-> json', function(t) {
@@ -16,11 +18,25 @@ module.exports.buffToJson = function(test, common) {
   })
 }
 
-// module.exports.rowKeys = function() {
-//   test('storage.rowKeys returns correctly formatted keys', function(t) {
-//     
-//   })
-// }
+module.exports.rowKeys = function(test, common) {
+  test('storage.rowKeys returns correctly formatted keys', function(t) {
+    var sep = '\xff'
+    
+    var keys = {
+      seq:  's',
+      data: 'd',
+      rev:  'r'
+    }
+    
+    var a = docUtils.rowKeys(keys, sep, 'foo', '1-abc', '1')
+    t.deepEqual(a, { row: 'ÿdÿfooÿrÿ01-abcÿsÿ01', seq: 'ÿsÿ01' })
+    
+    var b = docUtils.rowKeys(keys, sep, 'foo', '1-abc')
+    t.deepEqual(b, { row: 'ÿdÿfooÿrÿ01-abc'})
+    
+    t.end()
+  })
+}
 
 module.exports.putJson = function(test, common) {
   test('.put json', function(t) {
@@ -107,6 +123,7 @@ module.exports.schemaVersion = function(test, common) {
 
 module.exports.all = function (test, common) {
   module.exports.buffToJson(test, common)
+  module.exports.rowKeys(test, common)
   module.exports.putJson(test, common)
   module.exports.multiplePutJson(test, common)
   module.exports.putBuff(test, common)
