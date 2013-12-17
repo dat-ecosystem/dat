@@ -279,8 +279,10 @@ module.exports.multipleCSVWriteStreamsChangingSchemas = function(test, common) {
           var cat = dat.createReadStream()
   
           cat.pipe(concat(function(data) {
-            t.equal(data.length, 1)
-            t.equal(data[0].foo, "bar")
+            t.equal(data.length, 3)
+            t.equal(data[0].a, "1")
+            t.equal(data[1].a, "4")
+            t.equal(data[2].d, "foo")
             done()
           }))
         })
