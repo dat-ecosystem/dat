@@ -48,7 +48,8 @@
     "ldjson-stream": "~0.0.1",
     "sublevel": "~2.3.0",
     "level-version": "~0.2.0",
-    "routes-router": "~1.5.3"
+    "routes-router": "~1.5.3",
+    "basic": "0.0.1"
   },
   "directories": {
     "example": "examples",

@@ -70,8 +70,58 @@ module.exports.restBulkCsv = function(test, common) {
   })
 }
 
+module.exports.basicAuthEnvVariables = function(test, common) {
+  test('basic auth through env variables', function(t) {
+    process.env['DAT_ADMIN_USER'] = 'user'
+    process.env['DAT_ADMIN_PASS'] = 'pass'
+    common.getDat(t, function(dat, cleanup) {
+      dat.serve(function(err) {
+        if (err) throw err
+        var body = {foo: 'bar'}
+        request({method: 'POST', uri: 'http://localhost:6461', json: body }, function(err, res, stored) {
+          if (err) throw err
+          t.equal(res.statusCode, 401, 'unauthorized')
+          request({method: 'POST', uri: 'http://user:pass@localhost:6461', json: body }, function(err, res, stored) {
+            if (err) throw err
+            t.equal(res.statusCode, 200, 'authorized')
+            delete process.env['DAT_ADMIN_USER']
+            delete process.env['DAT_ADMIN_PASS']
+            dat.close()
+            cleanup()
+          })
+        })
+      })
+    })
+  })
+}
+
+module.exports.basicAuthOptions = function(test, common) {
+  test('basic auth through dat options', function(t) {
+    common.getDat(t, function(dat, cleanup) {
+      dat.opts.adminUser = 'foo'
+      dat.opts.adminPass = 'bar'
+      dat.serve(function(err) {
+        if (err) throw err
+        var body = {foo: 'bar'}
+        request({method: 'POST', uri: 'http://localhost:6461', json: body }, function(err, res, stored) {
+          if (err) throw err
+          t.equal(res.statusCode, 401, 'unauthorized')
+          request({method: 'POST', uri: 'http://foo:bar@localhost:6461', json: body }, function(err, res, stored) {
+            if (err) throw err
+            t.equal(res.statusCode, 200, 'authorized')
+            dat.close()
+            cleanup()
+          })
+        })
+      })
+    })
+  })
+}
+
 module.exports.all = function (test, common) {
   module.exports.restGet(test, common)
   module.exports.restPut(test, common)
   module.exports.restBulkCsv(test, common)
+  module.exports.basicAuthEnvVariables(test, common)
+  module.exports.basicAuthOptions(test, common)
 }
