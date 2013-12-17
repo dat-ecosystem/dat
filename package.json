@@ -41,14 +41,14 @@
     "level-live-stream": "~1.4.7",
     "hyperlevel-backup": "~1.0.0",
     "folder-backup": "~0.0.1",
-    "routes": "~0.2.0",
     "head-stream": "~0.0.2",
     "csv-multibuffer-stream": "~0.0.1",
     "json-multibuffer-stream": "~0.0.2",
     "connections": "~0.0.1",
     "ldjson-stream": "~0.0.1",
     "sublevel": "~2.3.0",
-    "level-version": "~0.2.0"
+    "level-version": "~0.2.0",
+    "routes-router": "~1.5.3"
   },
   "directories": {
     "example": "examples",
