@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "2.4.0",
+  "version": "2.4.1",
   "description": "real-time replication and versioning for large tabular data sets",
   "main": "index.js",
   "bin": {
@@ -38,7 +38,7 @@
     "monot": "~0.1.1",
     "concat-stream": "~1.2.0",
     "datapackage-json": "~0.0.5",
-    "level-live-stream": "~1.4.7",
+    "level-live-stream": "1.4.7",
     "hyperlevel-backup": "~1.0.0",
     "folder-backup": "~0.0.1",
     "head-stream": "~0.0.2",
