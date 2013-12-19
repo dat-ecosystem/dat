@@ -17,29 +17,36 @@ cat some_csv.csv | dat --csv -d $'\r\n' # custom line delimiter, --delimiter= wo
 echo $'a,b,c\n1,2,3' | dat --csv --primary=a
 echo $'{"foo":"bar"}' | dat --json --primary=foo
 
-# retrieve a single row by key (for debugging)
-dat crud get foo
-dat crud get hello
-
 # stream the most recent of all rows
 dat cat
 
 # view raw data in the store
 dat dump
 
-# compact data (removes unnecessary metadata)
-dat compact
-
 # start a dat server
-dat serve
+dat serve  
+
+then you can poke around at the REST API:
+
+/_changes
+/_changes?include_data=true
+/_package
+/:docid
+POST /_bulk content-type: application/json (newline separated json)
+
+# pull data from another dat
+dat pull http://localhost:6461
+
+# push data to another dat
+dat push http://localhost:6461
 
 # delete the dat folder (removes all data + history)
 rm -rf .dat
-```
+rm package.json
 
-## Command reference
+### dat
 
-There are subject to change. See `lib/commands.js` for the source code
+you can pipe line separated JSON data into `dat` on stdin and it will be stored. otherwise entering `dat` with no arguments will just show you the usage instructions
 
 ### dat init
 
@@ -48,31 +55,3 @@ turns the current folder into a new empty dat store
 ### dat init --remote http://localhost:6461/_archive
 
 initializes a new dat store by copying a remote dat server
-
-### dat
-
-you can pipe line separated JSON data into `dat` on stdin and it will be stored. otherwise entering `dat` with no arguments will just show you the usage instructions
-
-### dat pull
-
-pulls new changes/data from a remote dat server
-
-### dat serve
-
-starts an http + tcp server on port `6461` that serves the data in the current dat store
-
-### dat compact
-
-removes duplicate copies of documents
-
-### dat cat
-
-writes line separated JSON objects to stdout, one object per key, only the newest version of each key, sorted by key
-
-### dat dump
-
-dumps out the entire dat store to stdout as JSON
-
-### dat crud
-
-used for debugging. usage: `dat crud <action> <key> <value>` e.g. `dat crud get foo` or `dat crud put foo bar`
