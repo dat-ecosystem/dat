@@ -40,18 +40,23 @@ dat pull http://localhost:6461
 # push data to another dat
 dat push http://localhost:6461
 
+# grab all the recent crime in Oakland
+dat init --remote=http://oaklandcrime.dathub.org
+
 # delete the dat folder (removes all data + history)
 rm -rf .dat
 rm package.json
 
-### dat
+# dat
 
-you can pipe line separated JSON data into `dat` on stdin and it will be stored. otherwise entering `dat` with no arguments will just show you the usage instructions
+you can pipe line separated JSON data into `dat` on stdin and it will be stored.
+otherwise entering `dat` with no arguments will just show you the usage instructions
 
-### dat init
+# dat init
 
 turns the current folder into a new empty dat store
 
-### dat init --remote http://localhost:6461/_archive
+# dat init --remote http://localhost:6461/_archive
 
 initializes a new dat store by copying a remote dat server
+```
