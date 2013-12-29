@@ -8,7 +8,7 @@ module.exports.restGet = function(test, common) {
         if (err) throw err
         dat.put({foo: 'bar'}, function(err, stored) {
           if (err) throw err
-          request('http://localhost:6461/' + stored._id, function(err, res, json) {
+          request('http://localhost:' + dat.defaultPort + '/' + stored._id, function(err, res, json) {
             t.false(err, 'no error')
             t.deepEqual(stored, json)
             dat.close()
@@ -27,7 +27,7 @@ module.exports.restPut = function(test, common) {
       dat.serve(function(err) {
         if (err) throw err
         var body = {foo: 'bar'}
-        request({method: 'POST', uri: 'http://localhost:6461', json: body }, function(err, res, stored) {
+        request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort, json: body }, function(err, res, stored) {
           if (err) throw err
           dat.get(stored._id, function(err, json) {
             t.false(err, 'no error')
@@ -48,7 +48,7 @@ module.exports.restBulkCsv = function(test, common) {
       dat.serve(function(err) {
         if (err) throw err
         var headers = {'content-type': 'text/csv'}
-        var post = request({method: 'POST', uri: 'http://localhost:6461/_bulk', headers: headers})
+        var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/_bulk', headers: headers})
         post.write('a,b,c\n')
         post.write('1,2,3')
         post.end()
@@ -78,10 +78,10 @@ module.exports.basicAuthEnvVariables = function(test, common) {
       dat.serve(function(err) {
         if (err) throw err
         var body = {foo: 'bar'}
-        request({method: 'POST', uri: 'http://localhost:6461', json: body }, function(err, res, stored) {
+        request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort, json: body }, function(err, res, stored) {
           if (err) throw err
           t.equal(res.statusCode, 401, 'unauthorized')
-          request({method: 'POST', uri: 'http://user:pass@localhost:6461', json: body }, function(err, res, stored) {
+          request({method: 'POST', uri: 'http://user:pass@localhost:' + dat.defaultPort, json: body }, function(err, res, stored) {
             if (err) throw err
             t.equal(res.statusCode, 200, 'authorized')
             delete process.env['DAT_ADMIN_USER']
@@ -103,10 +103,10 @@ module.exports.basicAuthOptions = function(test, common) {
       dat.serve(function(err) {
         if (err) throw err
         var body = {foo: 'bar'}
-        request({method: 'POST', uri: 'http://localhost:6461', json: body }, function(err, res, stored) {
+        request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort, json: body }, function(err, res, stored) {
           if (err) throw err
           t.equal(res.statusCode, 401, 'unauthorized')
-          request({method: 'POST', uri: 'http://foo:bar@localhost:6461', json: body }, function(err, res, stored) {
+          request({method: 'POST', uri: 'http://foo:bar@localhost:' + dat.defaultPort, json: body }, function(err, res, stored) {
             if (err) throw err
             t.equal(res.statusCode, 200, 'authorized')
             dat.close()

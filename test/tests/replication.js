@@ -118,7 +118,7 @@ module.exports.tarballInit = function(test, common) {
           if (err) throw err
           dat.serve(function(err) {
             if (err) throw err
-            dat2.init({remote: 'http://localhost:6461'}, function(err, msg) {
+            dat2.init({remote: 'http://localhost:' + dat.defaultPort}, function(err, msg) {
               if (err) throw err
               dat2.createReadStream().pipe(concat(function(data) {
                 t.equal(data.length, 1)
@@ -160,7 +160,7 @@ module.exports.pushReplication = function(test, common) {
         function putPushCompare(doc, cb) {
           dat.put(doc, function(err, doc) {
             if (err) throw err
-            dat.push('http://localhost:6461', function(err) {
+            dat.push('http://localhost:' + dat.defaultPort, function(err) {
               if (err) throw err
               common.compareData(t, dat, dat2, function() {
                 cb()

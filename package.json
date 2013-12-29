@@ -38,7 +38,7 @@
     "monot": "~0.1.1",
     "concat-stream": "~1.2.0",
     "datapackage-json": "~0.0.5",
-    "level-live-stream": "1.4.7",
+    "level-live-stream": "~1.4.9",
     "hyperlevel-backup": "~1.0.1",
     "folder-backup": "~0.0.2",
     "head-stream": "~0.0.2",
@@ -49,7 +49,8 @@
     "sublevel": "~2.3.0",
     "level-version": "~0.2.0",
     "routes-router": "~1.5.3",
-    "basic": "0.0.1"
+    "basic": "~0.0.1",
+    "getport": "~0.1.0"
   },
   "directories": {
     "example": "examples",
