@@ -1,7 +1,8 @@
 {
   "name": "dat",
-  "version": "2.4.1",
+  "version": "2.4.2",
   "description": "real-time replication and versioning for large tabular data sets",
+  "keywords": ["hyperdata", "synchronization", "dataset", "data package"],
   "main": "index.js",
   "bin": {
     "dat": "cli.js"
