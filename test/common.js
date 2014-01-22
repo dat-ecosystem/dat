@@ -17,10 +17,7 @@ module.exports.dat2tmp = dat2tmp
 module.exports.getDat = function getDat(t, cb) {
   var dat = new Dat(dat1tmp, function ready(err) {
     if (err) throw err
-    dat.init(function(err, msg) {
-      if (err) throw err
-      cb(dat, done)
-    })  
+    cb(dat, done)
   })
   
   function done() {

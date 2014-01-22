@@ -16,7 +16,7 @@ function Dat(dir, opts, onReady) {
   var self = this
   
   // if 'new' was not used
-  if (!(this instanceof Dat)) return new Dat(dir, opts)
+  if (!(this instanceof Dat)) return new Dat(dir, opts, onReady)
 
   if (typeof dir === 'function') {
     onReady = dir
@@ -36,20 +36,28 @@ function Dat(dir, opts, onReady) {
   }
   
   if (!onReady) onReady = function(){}
+  if (typeof opts.init === 'undefined') opts.init = true
   
   this.dir = dir
   this.opts = opts
-  
-  this.meta = meta(this, function(err) {
-    if (err) return onReady()
-    commands._ensureExists({ path: self.dir }, function (err) {
-      if (err) return onReady()
-      self._storage(opts, function(err) {
-        if (err) return onReady(err)
-        self.meta.loadAllSchemas(onReady)
-      })
+
+  self.meta = meta(self, function(err) {
+    if (err) return init()
+    self._storage(opts, function(err) {
+      if (err) return init(err)
+      self.meta.loadAllSchemas(init)
     })
   })
+  
+  function init() {
+    commands._ensureExists({ path: dir }, function (err) {
+      if (err) {
+        if (!opts.init) return onReady()
+        return self.init(opts, onReady)
+      }
+      return onReady()
+    })
+  }
 }
 
 Dat.prototype = commands

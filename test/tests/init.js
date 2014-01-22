@@ -7,7 +7,10 @@ module.exports.paths = function(test, common) {
       var paths = dat.paths()
       t.equal(paths.dat, path.join(common.dat1tmp, '.dat'), 'dat path')
       t.equal(paths.level, path.join(common.dat1tmp, '.dat', 'store.dat'), 'level path')
-      t.end()
+      dat.destroy(function(err) {
+        t.false(err, 'destroy ok')
+        t.end()
+      })
     })
   })
 }
@@ -15,33 +18,19 @@ module.exports.paths = function(test, common) {
 module.exports.initExistsDestroy = function(test, common) {
   test('.init, .exists, .destroy', function(t) {
     var dat = new Dat(common.dat1tmp, function ready() {
-      create(function() {
+      dat.exists(function(exists) {
+        t.true(exists, 'exists')
         destroy(function() {
           t.end()
         })
       })
     })
   
-    function create(cb) {
-      dat.exists(function(err, exists) {
-        t.false(err, 'no err')
-        t.false(exists, 'does not exist')
-        dat.init(function(err, msg) {
-          t.false(err, 'no err')
-          dat.exists(function(err, exists) {
-            t.false(err, 'no err')
-            t.true(exists, 'exists')
-            cb()
-          })
-        })
-      })
-    }
   
     function destroy(cb) {
       dat.destroy(function(err) {
         t.false(err, 'no err')
-        dat.exists(function(err, exists) {
-          t.false(err, 'no err')
+        dat.exists(function(exists) {
           t.false(exists, 'does not exist')
           cb()
         })
@@ -54,13 +43,10 @@ module.exports.existingRepo = function(test, common) {
   test('.init in existing repo', function(t) {
     var dat = new Dat(common.dat1tmp, function ready() {
       dat.init(function(err, msg) {
-        t.false(err, 'no err')
-        dat.init(function(err, msg) {
-          t.true(msg, msg)
-          dat.destroy(function(err) {
-            t.false(err, 'no err')
-            t.end()
-          })
+        t.true(msg, msg)
+        dat.destroy(function(err) {
+          t.false(err, 'no err')
+          t.end()
         })
       })
     })
