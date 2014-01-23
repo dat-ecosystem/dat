@@ -19,16 +19,21 @@ module.exports.getDat = function getDat(t, opts, cb) {
     cb = opts
     opts = {}
   }
-  var dat = new Dat(dat1tmp, opts, function ready(err) {
+  var dat = new Dat(opts.datPath || dat1tmp, opts, function ready(err) {
     if (err) throw err
     cb(dat, done)
   })
   
-  function done() {
+  function done(cb) {
     dat.destroy(function(err) {
       if (err) throw err
       module.exports.destroyTmpDats(function() {
+        if (opts.noTestEnd) {
+          if (cb) return cb()
+          return
+        }
         t.end()
+        if (cb) cb()
       })
     })
   }

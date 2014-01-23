@@ -2,7 +2,12 @@
   "name": "dat",
   "version": "2.5.0",
   "description": "real-time replication and versioning for large tabular data sets",
-  "keywords": ["hyperdata", "synchronization", "dataset", "data package"],
+  "keywords": [
+    "hyperdata",
+    "synchronization",
+    "dataset",
+    "data package"
+  ],
   "main": "index.js",
   "bin": {
     "dat": "cli.js"
@@ -50,7 +55,8 @@
     "level-version": "~0.2.0",
     "routes-router": "~1.5.3",
     "basic": "~0.0.1",
-    "getport": "~0.1.0"
+    "getport": "~0.1.0",
+    "debug": "~0.7.4"
   },
   "directories": {
     "example": "examples",
