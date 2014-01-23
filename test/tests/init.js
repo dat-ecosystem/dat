@@ -77,6 +77,7 @@ module.exports.autoPort = function(test, common) {
     
     common.getDat(t, { datPath: common.dat1tmp, noTestEnd: true }, function(dat1, cleanup1) {
       common.getDat(t, { datPath: common.dat2tmp, noTestEnd: true }, function(dat2, cleanup2) {
+        var portPaths = [dat1.paths().port, dat2.paths().port]
         var pending = 2
         verifyPort(dat1, done)
         verifyPort(dat2, done)
@@ -88,7 +89,11 @@ module.exports.autoPort = function(test, common) {
             cleanup2(cleanup)
             
             function cleanup() {
-              if (--pending === 0) t.end()
+              if (--pending === 0) {
+                t.false(fs.existsSync(portPaths[0]), 'dat1 deleted its PORT file on close')
+                t.false(fs.existsSync(portPaths[1]), 'dat2 deleted its PORT file on close')
+                t.end()
+              }
             }
           }
         }
