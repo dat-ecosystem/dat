@@ -1,6 +1,9 @@
 var path = require('path')
 var meta = require(path.join(__dirname, 'lib', 'meta.js'))
 var commands = require(path.join(__dirname, 'lib', 'commands'))
+var getPort = require(path.join(__dirname, 'lib', 'get-port'))
+var request = require('request').defaults({json: true})
+var fs = require('fs')
 
 module.exports = Dat
 
@@ -40,14 +43,30 @@ function Dat(dir, opts, onReady) {
   
   this.dir = dir
   this.opts = opts
-
-  self.meta = meta(self, function(err) {
-    if (err) return init()
-    self._storage(opts, function(err) {
-      if (err) return init(err)
-      self.meta.loadAllSchemas(init)
+  var paths = this.paths()
+  
+  getPort.readPort(paths.port, function(err, port) {
+    if (err) return loadSchemas()
+    var datAddress = 'http://127.0.0.1:' + port
+    request(datAddress + '/_manifest', function(err, resp, json) {
+      if (err || !json.dat) // assume PORT to be invalid
+        return fs.unlink(paths.port, loadSchemas)
+      // otherwise initialize in networked mode
+      opts.server = datAddress
+      opts.manifest = json
+      loadSchemas()
     })
   })
+  
+  function loadSchemas() {
+    self.meta = meta(self, function(err) {
+      if (err) return init()
+      self._storage(opts, function(err) {
+        if (err) return init(err)
+        self.meta.loadAllSchemas(init)
+      })
+    })
+  }
   
   function init() {
     commands._ensureExists({ path: dir }, function (err) {

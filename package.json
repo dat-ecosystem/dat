@@ -56,7 +56,9 @@
     "routes-router": "~1.5.3",
     "basic": "~0.0.1",
     "getport": "~0.1.0",
-    "debug": "~0.7.4"
+    "debug": "~0.7.4",
+    "level-manifest": "~1.2.0",
+    "multilevel": "~5.5.0"
   },
   "directories": {
     "example": "examples",

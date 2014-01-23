@@ -115,10 +115,28 @@ module.exports.autoPort = function(test, common) {
   })
 }
 
+module.exports.sameDir = function(test, common) {
+  test('multiple dat instances in the directory', function(t) {
+    
+    common.getDat(t, { datPath: common.dat1tmp, noTestEnd: true }, function(dat1, cleanup1) {
+      common.getDat(t, { datPath: common.dat1tmp, noTestEnd: true }, function(dat2, cleanup2) {
+        cleanup1(function() {
+          cleanup2(function() {
+            t.true(true, 'got here')
+            t.end()
+          })
+        })
+      })
+    })
+    
+  })
+}
+
 module.exports.all = function (test, common) {
   module.exports.paths(test, common)
   module.exports.initExistsDestroy(test, common)
   module.exports.existingRepo(test, common)
   module.exports.portFile(test, common)
   module.exports.autoPort(test, common)
+  module.exports.sameDir(test, common)
 }

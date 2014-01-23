@@ -19,6 +19,7 @@ module.exports.getDat = function getDat(t, opts, cb) {
     cb = opts
     opts = {}
   }
+  
   var dat = new Dat(opts.datPath || dat1tmp, opts, function ready(err) {
     if (err) throw err
     cb(dat, done)
