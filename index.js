@@ -37,7 +37,6 @@ function Dat(dir, opts, onReady) {
   
   if (!onReady) onReady = function(){}
   if (typeof opts.init === 'undefined') opts.init = true
-  if (typeof opts.serve === 'undefined' && opts.init) opts.serve = true
   
   this.dir = dir
   this.opts = opts
@@ -53,14 +52,19 @@ function Dat(dir, opts, onReady) {
   function init() {
     commands._ensureExists({ path: dir }, function (err) {
       if (err) {
-        if (!opts.init) return ready()
-        return self.init(opts, ready)
+        if (!opts.init) return serve()
+        return self.init(opts, function(err) {
+          if (err) return onReady(err)
+          if (typeof opts.serve === 'undefined') opts.serve = true
+          serve()
+        })
       }
-      return ready()
+      if (typeof opts.serve === 'undefined') opts.serve = true
+      return serve()
     })
   }
   
-  function ready() {
+  function serve() {
     if (opts.serve) return self.serve(opts, onReady)
     onReady()
   }
