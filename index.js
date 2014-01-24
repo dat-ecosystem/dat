@@ -49,10 +49,11 @@ function Dat(dir, opts, onReady) {
     if (err) return loadSchemas()
     var datAddress = 'http://127.0.0.1:' + port
     request(datAddress + '/_manifest', function(err, resp, json) {
-      if (err || !json.dat) // assume PORT to be invalid
+      if (err || !json.methods) // assume PORT to be invalid
         return fs.unlink(paths.port, loadSchemas)
       // otherwise initialize in networked mode
-      opts.server = datAddress
+      opts.serve = false
+      opts.remoteAddress = datAddress
       opts.manifest = json
       loadSchemas()
     })

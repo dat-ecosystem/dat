@@ -1,6 +1,7 @@
 var fs = require('fs')
 var request = require('request').defaults({json: true})
 var path = require('path')
+var concat = require('concat-stream')
 var Dat = require('../../')
 
 module.exports.paths = function(test, common) {
@@ -120,12 +121,28 @@ module.exports.sameDir = function(test, common) {
     
     common.getDat(t, { datPath: common.dat1tmp, noTestEnd: true }, function(dat1, cleanup1) {
       common.getDat(t, { datPath: common.dat1tmp, noTestEnd: true }, function(dat2, cleanup2) {
-        cleanup1(function() {
-          cleanup2(function() {
-            t.true(true, 'got here')
-            t.end()
+        dat2.put({"_id": "foo", "hello": "world"}, function(err) {
+          if (err) throw err
+          dat2.get('foo', function(err, data) {
+            console.log("GET FOO", err, data)
+            done()
           })
+          // cat.pipe(concat(function(data) {
+          //   t.equal(data.length, 1)
+          //   t.equal(data[0].foo, "bar")
+          //   done()
+          // }))
         })
+        
+        function done() {
+          cleanup2(function() {
+            cleanup1(function() {
+              t.true(true, 'got here')
+              t.end()
+            })
+          })
+        }
+        
       })
     })
     
