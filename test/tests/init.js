@@ -117,24 +117,22 @@ module.exports.autoPort = function(test, common) {
 }
 
 module.exports.sameDir = function(test, common) {
-  // TODO update dat1 with dat2 metadata
   test('multiple dat instances in the same directory (networked rpc)', function(t) {
     common.getDat(t, { datPath: common.dat1tmp, noTestEnd: true }, function(dat1, cleanup1) {
       common.getDat(t, { datPath: common.dat1tmp, noTestEnd: true }, function(dat2, cleanup2) {
         dat2.put({"_id": "foo", "hello": "world"}, function(err) {
           if (err) throw err
-          var cat = dat2.createReadStream()
-          cat.pipe(concat(function(data) {
-            t.equal(data.length, 1)
-            t.equal(data[0].hello, "world")
+          dat1.get('foo', function(err, row) {
+            t.false(err, 'no err')
+            t.equal(row.hello, "world", 'data matches')
             setImmediate(done)
-          }))
+          })
         })
         
         function done() {
           cleanup2(function() {
             cleanup1(function() {
-              t.true(true, 'got here')
+              t.true(true, 'cleaned up both dats')
               t.end()
             })
           })
