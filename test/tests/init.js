@@ -117,21 +117,18 @@ module.exports.autoPort = function(test, common) {
 }
 
 module.exports.sameDir = function(test, common) {
-  test('multiple dat instances in the directory', function(t) {
-    
+  // TODO update dat1 with dat2 metadata
+  test('multiple dat instances in the same directory (networked rpc)', function(t) {
     common.getDat(t, { datPath: common.dat1tmp, noTestEnd: true }, function(dat1, cleanup1) {
       common.getDat(t, { datPath: common.dat1tmp, noTestEnd: true }, function(dat2, cleanup2) {
         dat2.put({"_id": "foo", "hello": "world"}, function(err) {
           if (err) throw err
-          dat2.get('foo', function(err, data) {
-            console.log("GET FOO", err, data)
-            done()
-          })
-          // cat.pipe(concat(function(data) {
-          //   t.equal(data.length, 1)
-          //   t.equal(data[0].foo, "bar")
-          //   done()
-          // }))
+          var cat = dat2.createReadStream()
+          cat.pipe(concat(function(data) {
+            t.equal(data.length, 1)
+            t.equal(data[0].hello, "world")
+            setImmediate(done)
+          }))
         })
         
         function done() {
@@ -142,10 +139,8 @@ module.exports.sameDir = function(test, common) {
             })
           })
         }
-        
       })
     })
-    
   })
 }
 
