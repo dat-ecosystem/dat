@@ -117,7 +117,7 @@ module.exports.autoPort = function(test, common) {
 }
 
 module.exports.sameDir = function(test, common) {
-  test('multiple dat instances in the same directory (networked rpc)', function(t) {
+  test('multiple dat instances in the same directory', function(t) {
     common.getDat(t, { datPath: common.dat1tmp, noTestEnd: true }, function(dat1, cleanup1) {
       common.getDat(t, { datPath: common.dat1tmp, noTestEnd: true }, function(dat2, cleanup2) {
         dat2.put({"_id": "foo", "hello": "world"}, function(err) {
@@ -133,7 +133,7 @@ module.exports.sameDir = function(test, common) {
                 t.equal(data.length, 2)
                 t.equal(data[0].hello, "world")
                 t.equal(data[1].batman, "bruce wayne")
-                setImmediate(done)
+                done()
               }))
             })
             ws.write(JSON.stringify({"batman": "bruce wayne"}))

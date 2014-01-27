@@ -10,49 +10,78 @@ var tmp = os.tmpdir()
 var dat1tmp = path.join(tmp, 'dat1')
 var dat2tmp = path.join(tmp, 'dat2')
 
-module.exports.tmp = tmp
-module.exports.dat1tmp = dat1tmp
-module.exports.dat2tmp = dat2tmp
 
-module.exports.getDat = function getDat(t, opts, cb) {
-  if (typeof opts === 'function') {
-    cb = opts
-    opts = {}
-  }
+module.exports = function() {
+  var common = {}
+  common.rpc = false
+  common.testPrefix = ''
+  common.tmp = tmp
+  common.dat1tmp = dat1tmp
+  common.dat2tmp = dat2tmp
+
+  common.getDat = function getDat(t, opts, cb) {
+    if (typeof opts === 'function') {
+      cb = opts
+      opts = {}
+    }
   
-  var dat = new Dat(opts.datPath || dat1tmp, opts, function ready(err) {
-    if (err) throw err
-    cb(dat, done)
-  })
+    var dat2
   
-  function done(cb) {
-    dat.destroy(function(err) {
+    var datPath = opts.datPath || dat1tmp
+    var dat = new Dat(datPath, opts, function ready(err) {
       if (err) throw err
-      module.exports.destroyTmpDats(function() {
-        if (opts.noTestEnd) {
-          if (cb) return cb()
-          return
-        }
-        t.end()
-        if (cb) cb()
+      if (common.rpc) {
+        dat2 = new Dat(datPath, opts, function ready(err) {
+          cb(dat2, done)
+        })
+      } else {
+        cb(dat, done)
+      }
+    })
+  
+    function done(cb) {
+      setTimeout(function() {
+        dat.destroy(function(err) {
+          if (err) throw err
+          if (dat2) {
+            dat2.destroy(function(err) {
+              if (err) throw err
+              cleanup()
+            })
+          } else cleanup()
+      
+          function cleanup() {
+            common.destroyTmpDats(function() {
+              if (opts.noTestEnd) {
+                if (cb) return cb()
+                return
+              }
+              t.end()
+              if (cb) cb()
+            })
+          }
+        })
+      }, 10)
+    }
+  }
+
+  common.compareData = function compareData(t, dat1, dat2, cb) {
+    dat1.createReadStream().pipe(concat(function(db1) {
+      dat2.createReadStream().pipe(concat(function(db2) {
+        t.deepEquals(db1, db2, 'low level data matches')
+        cb()
+      }))
+    }))
+  }
+
+  common.destroyTmpDats = function destroyTmpDats(cb) {
+    rimraf(dat1tmp, function(err) {
+      rimraf(dat2tmp, function(err) {
+        cb()
       })
     })
   }
+  
+  return common
 }
 
-module.exports.compareData = function compareData(t, dat1, dat2, cb) {
-  dat1.createReadStream().pipe(concat(function(db1) {
-    dat2.createReadStream().pipe(concat(function(db2) {
-      t.deepEquals(db1, db2, 'low level data matches')
-      cb()
-    }))
-  }))
-}
-
-module.exports.destroyTmpDats = function destroyTmpDats(cb) {
-  rimraf(dat1tmp, function(err) {
-    rimraf(dat2tmp, function(err) {
-      cb()
-    })
-  })
-}

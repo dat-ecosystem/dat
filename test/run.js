@@ -1,8 +1,23 @@
 var path = require('path')
 var datPath = path.join(__dirname, '..')
 var Dat = require(datPath)
-var test = require('tape')
-var common = require(path.join(__dirname, 'common'))
+var tape = require('tape')
+var common = require(path.join(__dirname, 'common'))()
+
+function test(name, testFunction) {
+  return tape(common.testPrefix + name, testFunction)
+}
+
+var tests = [
+  require('./tests/init'),
+  require('./tests/crud'),
+  require('./tests/read-streams'),
+  require('./tests/write-streams'),
+  require('./tests/replication'),
+  require('./tests/rest')
+]
+
+var finish = require('./tests/finish')
 
 var specificTests = process.argv.slice(2, process.argv.length)
 
@@ -15,17 +30,21 @@ test('setup', function(t) {
 
 if (specificTests.length > 0) {
   specificTests.map(function(specificTest) {
-    require('./' + path.relative(__dirname, specificTest)).all(test, common)
+    var testModule = require('./' + path.relative(__dirname, specificTest))
+    testModule.all(test, common)
   })
 } else {
+  runAll()
+  finish(test, function() {
+    common.rpc = true
+    console.log('\n Running tests again in RPC mode\n')
+  })
+  common.testPrefix = 'RPC: '
   runAll()
 }
 
 function runAll() {
-  require('./tests/init').all(test, common)
-  require('./tests/crud').all(test, common)
-  require('./tests/read-streams').all(test, common)
-  require('./tests/write-streams').all(test, common)
-  require('./tests/replication').all(test, common)
-  require('./tests/rest').all(test, common)  
+  tests.map(function(t) {
+    t.all(test, common)
+  })
 }

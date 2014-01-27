@@ -102,34 +102,18 @@ module.exports.pullReplicationLive = function(test, common) {
   })
 }
 
-module.exports.tarballInit = function(test, common) {
-  test('init from remote using tarball', function(t) {
-    common.getDat(t, function(dat, cleanup) {
-      dat.put({foo: 'bar'}, function(err) {
-        if (err) throw err
-        var dat2 = new Dat(common.dat2tmp, {serve: false, remote: 'http://localhost:' + dat.defaultPort}, function ready() {
-          dat2.createReadStream().pipe(concat(function(data) {
-            t.equal(data.length, 1)
-            t.equal(data[0].foo, 'bar')
-            dat2.destroy(function(err) {
-              if (err) throw err
-              cleanup()
-            })
-          }))
-        })
-      })
-    })
-  })
-}
-
 module.exports.pushReplication = function(test, common) {
   test('push replication', function(t) {
     var expected = ["pizza", "walrus"]
-    common.getDat(t, { serve: false }, function(dat, cleanup) {
+    common.getDat(t, function(dat, cleanup) {
       var doc1 = {a: 'pizza'}
       var doc2 = {a: 'walrus'}
-  
-      var dat2 = new Dat(common.dat2tmp, function ready() {
+      var dat2port
+      
+      var dat2 = new Dat(common.dat2tmp, function ready(err) {
+        if (err) throw err
+        dat2port = dat2._server.address().port
+        
         putPushCompare(doc1, function() {
           putPushCompare(doc2, function() {
             done()
@@ -140,7 +124,7 @@ module.exports.pushReplication = function(test, common) {
       function putPushCompare(doc, cb) {
         dat.put(doc, function(err, doc) {
           if (err) throw err
-          dat.push('http://localhost:' + dat.defaultPort, function(err) {
+          dat.push('http://localhost:' + dat2port, function(err) {
             if (err) throw err
             common.compareData(t, dat, dat2, function() {
               cb()
@@ -162,6 +146,27 @@ module.exports.pushReplication = function(test, common) {
     })
   })
 }
+
+module.exports.tarballInit = function(test, common) {
+  test('init from remote using tarball', function(t) {
+    common.getDat(t, function(dat, cleanup) {
+      dat.put({foo: 'bar'}, function(err) {
+        if (err) throw err
+        var dat2 = new Dat(common.dat2tmp, {serve: false, remote: 'http://localhost:' + dat.defaultPort}, function ready() {
+          dat2.createReadStream().pipe(concat(function(data) {
+            t.equal(data.length, 1)
+            t.equal(data[0].foo, 'bar')
+            dat2.destroy(function(err) {
+              if (err) throw err
+              cleanup()
+            })
+          }))
+        })
+      })
+    })
+  })
+}
+
 
 module.exports.all = function (test, common) {
   module.exports.pullReplication(test, common)

@@ -53,14 +53,14 @@ module.exports.decodeKey = function(test, common) {
 module.exports.putJson = function(test, common) {
   test('.put json', function(t) {
     common.getDat(t, function(dat, done) {
-      dat.put({"foo": "bar"}, function(err) {
+      dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
         var cat = dat.createReadStream()
     
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
           t.equal(data[0].foo, "bar")
-          done()
+          setImmediate(done)
         }))
       })
     })
