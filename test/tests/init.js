@@ -125,7 +125,20 @@ module.exports.sameDir = function(test, common) {
           dat1.get('foo', function(err, row) {
             t.false(err, 'no err')
             t.equal(row.hello, "world", 'data matches')
-            setImmediate(done)
+            
+            var ws = dat2.createWriteStream({ json: true })
+            ws.on('close', function() {
+              var cat = dat1.createReadStream()
+              cat.pipe(concat(function(data) {
+                t.equal(data.length, 2)
+                t.equal(data[0].hello, "world")
+                t.equal(data[1].batman, "bruce wayne")
+                setImmediate(done)
+              }))
+            })
+            ws.write(JSON.stringify({"batman": "bruce wayne"}))
+            ws.end()
+            
           })
         })
         
