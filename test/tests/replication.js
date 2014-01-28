@@ -147,8 +147,8 @@ module.exports.pushReplication = function(test, common) {
   })
 }
 
-module.exports.tarballInit = function(test, common) {
-  test('init from remote using tarball', function(t) {
+module.exports.remoteInit = function(test, common) {
+  test('init using remote url', function(t) {
     common.getDat(t, function(dat, cleanup) {
       dat.put({foo: 'bar'}, function(err) {
         if (err) throw err
@@ -173,5 +173,5 @@ module.exports.all = function (test, common) {
   module.exports.pullReplicationMultiple(test, common)
   module.exports.pullReplicationLive(test, common)
   module.exports.pushReplication(test, common)
-  module.exports.tarballInit(test, common)
+  module.exports.remoteInit(test, common)
 }

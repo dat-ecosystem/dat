@@ -2,6 +2,7 @@ var path = require('path')
 var meta = require(path.join(__dirname, 'lib', 'meta.js'))
 var commands = require(path.join(__dirname, 'lib', 'commands'))
 var getPort = require(path.join(__dirname, 'lib', 'get-port'))
+var backend = require(path.join(__dirname, 'lib', 'backend'))
 var request = require('request').defaults({json: true})
 var fs = require('fs')
 
@@ -44,6 +45,7 @@ function Dat(dir, opts, onReady) {
   this.dir = dir
   this.opts = opts
   var paths = this.paths()
+  this._backend = backend(this)
   
   getPort.readPort(paths.port, function(err, port) {
     if (err) return loadSchemas()
