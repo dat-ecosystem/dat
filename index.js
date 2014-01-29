@@ -53,7 +53,11 @@ function Dat(dir, opts, onReady) {
   } else {
     getPort.readPort(paths.port, function(err, port) {
       if (err) return loadSchemas()
-      var datAddress = 'http://127.0.0.1:' + port
+      var adminu = opts.adminUser || process.env["DAT_ADMIN_USER"]
+      var adminp = opts.adminPass || process.env["DAT_ADMIN_PASS"]
+      var creds = ''
+      if (adminu && adminp) creds = adminu + ':' + adminp + '@'
+      var datAddress = 'http://' + creds + '127.0.0.1:' + port
       request(datAddress + '/_manifest', function(err, resp, json) {
         if (err || !json.methods) // assume PORT to be invalid
           return fs.unlink(paths.port, loadSchemas)
