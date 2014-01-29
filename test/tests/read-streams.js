@@ -135,7 +135,7 @@ module.exports.createReadStream = function(test, common) {
       var ws = dat.createWriteStream({ csv: true })
     
       ws.on('close', function() {
-        var readStream = dat.storage.createReadStream()
+        var readStream = dat.createReadStream()
         readStream.pipe(concat(function(rows) {
           t.equal(rows.length, 5, '5 rows')
           done()
@@ -154,11 +154,33 @@ module.exports.createReadStreamStartEndKeys = function(test, common) {
       var ws = dat.createWriteStream({ csv: true, primary: 'a' })
     
       ws.on('close', function() {
-        var readStream = dat.storage.createReadStream({ start: '2', end: '4'})
+        var readStream = dat.createReadStream({ start: '2', end: '4'})
         readStream.pipe(concat(function(rows) {
           t.equal(rows.length, 2, '2 rows')
           t.equal(rows[0].a, '2')
           t.equal(rows[1].a, '3')
+          done()
+        }))
+      })
+    
+      ws.write(bops.from('a\n1\n2\n3\n4\n5'))
+      ws.end()
+    })
+  })
+}
+
+module.exports.createReadStreamCSV = function(test, common) {
+  test('createReadStream csv', function(t) {
+    common.getDat(t, function(dat, done) {
+      var ws = dat.createWriteStream({ csv: true, primary: 'a' })
+    
+      ws.on('close', function() {
+        var readStream = dat.createReadStream({ csv: true })
+        readStream.pipe(concat(function(data) {
+          var rows = data.split('\n')
+          t.equal(rows[0].split(',').length, 3)
+          t.equal(rows[1].split(',').length, 3)
+          t.equal(rows.length, 7)
           done()
         }))
       })
@@ -178,4 +200,5 @@ module.exports.all = function (test, common) {
   module.exports.getSequences(test, common)
   module.exports.createReadStream(test, common)
   module.exports.createReadStreamStartEndKeys(test, common)
+  module.exports.createReadStreamCSV(test, common)
 }
