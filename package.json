@@ -59,7 +59,7 @@
     "level-manifest": "~1.2.0",
     "multilevel": "~5.5.0",
     "levelup": "~0.18.2",
-    "memdown": "~0.6.0"
+    "leveldown": "~0.10.2"
   },
   "directories": {
     "example": "examples",
