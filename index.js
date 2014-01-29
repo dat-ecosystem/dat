@@ -41,25 +41,30 @@ function Dat(dir, opts, onReady) {
   
   if (!onReady) onReady = function(){}
   if (typeof opts.init === 'undefined') opts.init = true
+  if (typeof opts.storage === 'undefined') opts.storage = true
   
   this.dir = dir
   this.opts = opts
   var paths = this.paths()
   this._backend = backend(this)
   
-  getPort.readPort(paths.port, function(err, port) {
-    if (err) return loadSchemas()
-    var datAddress = 'http://127.0.0.1:' + port
-    request(datAddress + '/_manifest', function(err, resp, json) {
-      if (err || !json.methods) // assume PORT to be invalid
-        return fs.unlink(paths.port, loadSchemas)
-      // otherwise initialize in networked mode
-      opts.serve = false
-      opts.remoteAddress = datAddress
-      opts.manifest = json
-      loadSchemas()
+  if (!opts.storage) {
+    self.meta = meta(self, onReady)
+  } else {
+    getPort.readPort(paths.port, function(err, port) {
+      if (err) return loadSchemas()
+      var datAddress = 'http://127.0.0.1:' + port
+      request(datAddress + '/_manifest', function(err, resp, json) {
+        if (err || !json.methods) // assume PORT to be invalid
+          return fs.unlink(paths.port, loadSchemas)
+        // otherwise initialize in networked mode
+        opts.serve = false
+        opts.remoteAddress = datAddress
+        opts.manifest = json
+        loadSchemas()
+      })
     })
-  })
+  }
   
   function loadSchemas() {
     self.meta = meta(self, function(err) {

@@ -8,7 +8,12 @@ var EOL = require('os').EOL
 
 var opts = optimist.usage("Usage: $0 <command> [<args>]" + EOL + EOL + "Enter 'dat help' for help")
 
-var dat = Dat(process.cwd(), { init: false }, function ready(err) {
+var datCommand = cli.command(opts)
+
+var datOpts = { init: false }
+if (datCommand.command === 'backend') datOpts.storage = false
+
+var dat = Dat(process.cwd(), datOpts, function ready(err) {
   if (err) return console.error(err)
-  cli.parse(dat, opts)
+  cli.exec(dat, opts, datCommand)
 })
