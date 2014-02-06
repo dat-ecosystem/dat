@@ -60,7 +60,8 @@
     "multilevel": "~5.5.0",
     "levelup": "~0.18.2",
     "leveldown": "~0.10.2",
-    "csv-write-stream": "~0.1.1"
+    "csv-write-stream": "~0.1.1",
+    "read-installed": "~0.2.5"
   },
   "directories": {
     "example": "examples",
