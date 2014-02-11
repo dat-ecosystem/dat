@@ -1,3 +1,4 @@
+var through2 = require('through2')
 var mbstream = require('multibuffer-stream')
 var buff = require('multibuffer')
 var bops = require('bops')
@@ -129,6 +130,24 @@ module.exports.getSequences = function(test, common) {
   })
 }
 
+module.exports.changesStream = function(test, common) {
+  test('simple put should trigger a change', function(t) {
+    common.getDat(t, function(dat, done) {
+      
+      var changes = dat.createChangesStream({ live: true, include_data: true })
+      
+      changes.pipe(through2({objectMode: true}, function(obj, enc, next) {
+        t.equal(obj.data.foo, "bar")
+        setImmediate(done)
+      }))
+      
+      dat.put({"foo": "bar"}, function(err, doc) {
+        if (err) throw err
+      })
+    })
+  })
+}
+
 module.exports.createReadStream = function(test, common) {
   test('createReadStream', function(t) {
     common.getDat(t, function(dat, done) {
@@ -222,6 +241,7 @@ module.exports.all = function (test, common) {
   module.exports.readStreamCsvPrimaryKey(test, common)
   module.exports.readStreamNdjPrimaryKey(test, common)
   module.exports.getSequences(test, common)
+  module.exports.changesStream(test, common)
   module.exports.createReadStream(test, common)
   module.exports.createReadStreamStartEndKeys(test, common)
   module.exports.createReadStreamCSV(test, common)

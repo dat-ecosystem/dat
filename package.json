@@ -61,7 +61,8 @@
     "levelup": "~0.18.2",
     "leveldown": "~0.10.2",
     "csv-write-stream": "~0.1.1",
-    "read-installed": "~0.2.5"
+    "read-installed": "~0.2.5",
+    "npm": "~1.3.26"
   },
   "directories": {
     "example": "examples",
