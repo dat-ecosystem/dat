@@ -135,9 +135,16 @@ module.exports.changesStream = function(test, common) {
     common.getDat(t, function(dat, done) {
       
       var changes = dat.createChangesStream({ live: true, include_data: true })
+      var gotChange = false
+      setTimeout(function() {
+        if (gotChange) return
+        t.false(true, 'timeout')
+        setImmediate(done)
+      }, 1000)
       
       changes.pipe(through2({objectMode: true}, function(obj, enc, next) {
         t.equal(obj.data.foo, "bar")
+        gotChange = true
         setImmediate(done)
       }))
       
