@@ -171,7 +171,6 @@ module.exports.getAtRev = function(test, common) {
   })
 }
 
-
 module.exports.all = function (test, common) {
   module.exports.buffToJson(test, common)
   module.exports.rowKeys(test, common)
