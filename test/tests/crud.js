@@ -12,8 +12,8 @@ module.exports.buffToJson = function(test, common) {
   
     var encoded = jsonBuffStream.encode(test)
     var decoded = jsonBuffStream.decode(columns, encoded)
-  
-    t.equal(JSON.stringify(test), JSON.stringify(decoded), 'encoded/decoded matches')
+    decoded.foo = JSON.parse(decoded.foo)
+    t.deepEqual(test, decoded, 'encoded/decoded matches')
     t.end()
   })
 }
@@ -133,6 +133,25 @@ module.exports.schemaVersion = function(test, common) {
   })
 }
 
+module.exports.deleteRow = function(test, common) {
+  test('delete row', function(t) {
+    common.getDat(t, function(dat, done) {
+      dat.put({"foo": "bar"}, function(err, doc) {
+        if (err) throw err
+        dat.delete(doc._id, function(err) {
+          t.false(err, 'should delete okay')
+          dat.get(doc._id, function(err, doc) {
+            t.true(err, 'doc should now be not found')
+            t.false(doc, 'doc should be null')
+            setTimeout(done, 10) // TODO WHY????
+          })
+        })
+      })
+    })
+  })
+}
+
+
 module.exports.all = function (test, common) {
   module.exports.buffToJson(test, common)
   module.exports.rowKeys(test, common)
@@ -141,4 +160,5 @@ module.exports.all = function (test, common) {
   module.exports.multiplePutJson(test, common)
   module.exports.putBuff(test, common)
   module.exports.schemaVersion(test, common)
+  module.exports.deleteRow(test, common)
 }
