@@ -151,6 +151,25 @@ module.exports.deleteRow = function(test, common) {
   })
 }
 
+module.exports.getAtRev = function(test, common) {
+  test('get row at specific rev', function(t) {
+    common.getDat(t, function(dat, done) {
+      dat.put({"foo": "bar"}, function(err, doc) {
+        if (err) throw err
+        doc.pizza = 'taco'
+        dat.put(doc, function(err, doc) {
+          if (err) throw err
+          dat.get(doc._id, {rev: doc._rev}, function(err, docAtRev) {
+            t.false(err, 'no err')
+            t.equal(docAtRev.pizza, 'taco', 'doc is version 2')
+            setImmediate(done)
+          })
+        })
+      })
+    })
+  })
+}
+
 
 module.exports.all = function (test, common) {
   module.exports.buffToJson(test, common)
@@ -161,4 +180,5 @@ module.exports.all = function (test, common) {
   module.exports.putBuff(test, common)
   module.exports.schemaVersion(test, common)
   module.exports.deleteRow(test, common)
+  module.exports.getAtRev(test, common)
 }
