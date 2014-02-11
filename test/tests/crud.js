@@ -156,12 +156,13 @@ module.exports.getAtRev = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
+        var rev1 = doc._rev
         doc.pizza = 'taco'
         dat.put(doc, function(err, doc) {
           if (err) throw err
-          dat.get(doc._id, {rev: doc._rev}, function(err, docAtRev) {
+          dat.get(doc._id, {rev: rev1}, function(err, docAtRev) {
             t.false(err, 'no err')
-            t.equal(docAtRev.pizza, 'taco', 'doc is version 2')
+            t.equal(docAtRev.pizza, undefined, 'doc is version 1')
             setImmediate(done)
           })
         })
