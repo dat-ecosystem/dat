@@ -174,6 +174,24 @@ module.exports.createReadStream = function(test, common) {
   })
 }
 
+module.exports.datCat = function(test, common) {
+  test('dat cat', function(t) {
+    common.getDat(t, function(dat, done) {
+      var ws = dat.createWriteStream({ csv: true })
+    
+      ws.on('close', function() {
+        dat.cat(function(err) {
+          t.false(err, err)
+          setImmediate(done)
+        })
+      })
+    
+      ws.write(bops.from('a,b,c\n10,1,1\n100,1,1'))
+      ws.end()
+    })
+  })
+}
+
 module.exports.createReadStreamStartEndKeys = function(test, common) {
   test('createReadStream w/ start + end keys', function(t) {
     common.getDat(t, function(dat, done) {
@@ -249,6 +267,7 @@ module.exports.all = function (test, common) {
   module.exports.readStreamNdjPrimaryKey(test, common)
   module.exports.getSequences(test, common)
   module.exports.changesStream(test, common)
+  module.exports.datCat(test, common)
   module.exports.createReadStream(test, common)
   module.exports.createReadStreamStartEndKeys(test, common)
   module.exports.createReadStreamCSV(test, common)
