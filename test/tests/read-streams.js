@@ -259,6 +259,40 @@ module.exports.createReadStreamBuff = function(test, common) {
   })
 }
 
+module.exports.createVersionStream = function(test, common) {
+  test('createVersionStream', function(t) {
+    common.getDat(t, function(dat, done) {
+      dat.put({"_id": "foo", "baz": "bar"}, function(err, doc) {
+        if (err) throw err
+        var rev1 = doc._rev
+        doc.pizza = 'taco'
+        dat.put(doc, function(err, doc) {
+          if (err) throw err
+          // put some data before and after to make sure they dont get returned too
+          dat.put({'_id': 'abc'}, function(err) {
+            t.false(err)
+            dat.put({'_id': 'xyz'}, function(err) {
+              t.false(err)
+              readVersions()
+            })
+          })
+        })
+      })
+      
+      function readVersions() {
+        dat.createVersionStream('foo').pipe(concat(function(versions) {
+          t.equal(versions.length, 2, '2 versions')
+          t.equal(versions[0]._rev[0], '1')
+          t.equal(versions[1]._rev[0], '2')
+          t.equal(versions[0].pizza, undefined, 'version 1')
+          t.equal(versions[1].pizza, 'taco', 'version 2')
+          setImmediate(done)
+        }))
+      }
+    })
+  })
+}
+
 
 module.exports.all = function (test, common) {
   module.exports.readStreamBuff(test, common)
@@ -272,4 +306,5 @@ module.exports.all = function (test, common) {
   module.exports.createReadStreamStartEndKeys(test, common)
   module.exports.createReadStreamCSV(test, common)
   module.exports.createReadStreamBuff(test, common)
+  module.exports.createVersionStream(test, common)
 }

@@ -59,8 +59,10 @@ function Dat(dir, opts, onReady) {
       if (adminu && adminp) creds = adminu + ':' + adminp + '@'
       var datAddress = 'http://' + creds + '127.0.0.1:' + port
       request(datAddress + '/_manifest', function(err, resp, json) {
-        if (err || !json.methods) // assume PORT to be invalid
+        if (err || !json.methods) {
+          // assume PORT to be invalid
           return fs.unlink(paths.port, loadSchemas)
+        } 
         // otherwise initialize in networked mode
         opts.serve = false
         opts.remoteAddress = datAddress
