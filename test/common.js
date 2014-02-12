@@ -40,7 +40,9 @@ module.exports = function() {
     })
   
     function done(cb) {
-      setImmediate(function() {
+      setTimeout(destroy, 25)
+      
+      function destroy() {
         dat.destroy(function(err) {
           if (err) throw err
           if (dat2) {
@@ -61,7 +63,7 @@ module.exports = function() {
             })
           }
         })
-      })
+      }
     }
   }
 
