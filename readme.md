@@ -1,5 +1,8 @@
 # dat
 
+[![NPM](https://nodei.co/npm/dat.png)](https://nodei.co/npm/dat/)
+[![Travis](https://api.travis-ci.org/maxogden/dat.png)](https://travis-ci.org/maxogden/dat)
+
 ## collaborative data
 
 `dat` is currently pre-alpha. You can test it out or hack on it now, but all things are subject to change.
@@ -13,8 +16,6 @@ If you are interested in testing out the pre-alpha version of `dat` you can inst
 `dat` is primarily intended as a command line tool. There is also a programmatic API that you can use in node.js programs for more advanced use cases, as well as a way to have `dat` call programs written in other programming languages to transform data.
 
 ## Install
-
-[![NPM](https://nodei.co/npm/dat.png)](https://nodei.co/npm/dat/)
 
 To get the currently published version (recommended):
 
