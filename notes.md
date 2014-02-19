@@ -27,6 +27,33 @@ if data gets written to dat later on that has a fourth column that column value 
 
 for example, if you convert the above csv to json it would be `{"a": 1, "b": 2, "c": 3}`. Storing this on disk as JSON would take up 19 bytes, storing the header array once is 13 bytes and then the cells 'a', 'b', 'c' is only ~5 bytes. with millions of rows the space savings add up.
 
+
+### keys
+
+```
+ÿdÿfooÿ01ÿ04
+````
+
+which breaks down to:
+
+```
+d id revision sequence
+```
+
+keys are prefixed with `d` which stands for `data`
+
+### values
+
+32bit hash of the schema + multibuffer
+
+## schema versions
+
+1. schemas (e.g. columns in a table) are append-only for backwards compatibility + simplicity reasons
+2. deletes are possible but require compaction
+3. if you try and write data to dat that doesn't match schemas you will get an error (this includes sync)
+4. the correct way to merge non-matching data is to transform data to match the local schema
+5. if you really want to merge two non-matching schemas you can do it with an override, but then you'll have weird sparse columns (not recommended)
+
 #### storage considerations
 
 to make a broad generalization: most tabular data will have short contents. rather than optimizing dat for spreadsheets where one cell might contain megabytes of data I have decided to instead optimize it for smaller cell values while also respecting disk space usage. this opinion may change in the future!
@@ -89,3 +116,4 @@ so for the above example the buffer would be something like this:
 ```
 4taco5pizza6walrus
 ```
+
