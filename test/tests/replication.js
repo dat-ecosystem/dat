@@ -23,7 +23,8 @@ module.exports.pullReplication = function(test, common) {
         ws.end()
  
         function done() {
-          dat2.createReadStream().pipe(concat(function(data) {
+          var rs = dat2.createReadStream()
+          rs.pipe(concat(function(data) {
             var results = data.map(function(r) { return r.a })
             t.equals(JSON.stringify(results), JSON.stringify(expected), 'createReadStream() matches')
             dat2.destroy(function(err) {
@@ -155,7 +156,8 @@ module.exports.remoteInit = function(test, common) {
         var dat2 = new Dat(common.dat2tmp, {serve: false, remote: 'http://localhost:' + dat.defaultPort}, function ready() {
           dat2.createReadStream().pipe(concat(function(data) {
             t.equal(data.length, 1)
-            t.equal(data[0].foo, 'bar')
+            var first = data[0] || {}
+            t.equal(first.foo, 'bar')
             dat2.destroy(function(err) {
               if (err) throw err
               cleanup()

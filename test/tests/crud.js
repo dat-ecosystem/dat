@@ -11,7 +11,7 @@ module.exports.buffToJson = function(test, common) {
     var columns = Object.keys(test)
   
     var encoded = jsonBuffStream.encode(test)
-    var decoded = jsonBuffStream.decode(columns, encoded)
+    var decoded = jsonBuffStream.decode(columns, encoded).decoded
     decoded.foo = JSON.parse(decoded.foo)
     t.deepEqual(test, decoded, 'encoded/decoded matches')
     t.end()
@@ -28,8 +28,8 @@ module.exports.rowKeys = function(test, common) {
       rev:  'r'
     }
     
-    var a = docUtils.rowKeys(keys, sep, 'foo', '1-abc', '1', '1')
-    t.deepEqual(a, { row: 'ÿdÿfooÿrÿ01-abcÿsÿ01ÿ01', seq: 'ÿsÿ01' })
+    var a = docUtils.rowKeys(keys, sep, 'foo', '1-abc', '4')
+    t.deepEqual(a, { row: 'ÿdÿfooÿ01-abcÿ04', seq: 'ÿsÿ04' })
     
     t.end()
   })
@@ -37,13 +37,12 @@ module.exports.rowKeys = function(test, common) {
 
 module.exports.decodeKey = function(test, common) {
   test('decodeKey parses key format correctly', function(t) {
-    var key = 'ÿdÿfooÿrÿ01-abcÿsÿ01ÿ01'
+    var key = 'ÿdÿfooÿ01-abcÿ04'
     var obj = docUtils.decodeKey(key)
     var expected = {
       _id: 'foo',
       _rev: '1-abc',
-      _seq: 1,
-      _ver: 1
+      _seq: 4
     }
     t.deepEqual(obj, expected)
     t.end()
@@ -109,30 +108,6 @@ module.exports.putBuff = function(test, common) {
   })
 }
 
-module.exports.schemaVersion = function(test, common) {
-  test('schema version should increment when schema changes', function(t) {
-    common.getDat(t, function(dat, done) {
-      t.equal(dat.meta.json.schemaVersion, 0, 'schemaVersion 0')
-      dat.put({"foo": "bar"}, function(err) {
-        if (err) throw err
-        t.equal(dat.meta.json.schemaVersion, 1, 'schemaVersion 1')
-        dat.put({"foo": "bar", "taco": "pizza"}, function(err) {
-          if (err) throw err
-          var cat = dat.schemas.createReadStream()
-          t.equal(dat.meta.json.schemaVersion, 2, 'schemaVersion 2')
-    
-          cat.pipe(concat(function(data) {
-            t.equal(data.length, 2, '2 schema versions')
-            t.equal(data[0].version, 2, 'latest version is 2')
-            t.equal(data[1].version, 1, 'older version is 1')
-            done()
-          }))
-        })
-      })
-    })
-  })
-}
-
 module.exports.deleteRow = function(test, common) {
   test('delete row', function(t) {
     common.getDat(t, function(dat, done) {
@@ -159,9 +134,11 @@ module.exports.getAtRev = function(test, common) {
         var rev1 = doc._rev
         doc.pizza = 'taco'
         dat.put(doc, function(err, doc) {
-          if (err) throw err
+          t.false(err)
+          if (!doc) doc = {}
           dat.get(doc._id, {rev: rev1}, function(err, docAtRev) {
             t.false(err, 'no err')
+            if (!docAtRev) docAtRev = {}
             t.equal(docAtRev.pizza, undefined, 'doc is version 1')
             setImmediate(done)
           })
@@ -178,7 +155,6 @@ module.exports.all = function (test, common) {
   module.exports.putJson(test, common)
   module.exports.multiplePutJson(test, common)
   module.exports.putBuff(test, common)
-  module.exports.schemaVersion(test, common)
   module.exports.deleteRow(test, common)
   module.exports.getAtRev(test, common)
 }

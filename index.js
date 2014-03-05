@@ -52,7 +52,7 @@ function Dat(dir, opts, onReady) {
     self.meta = meta(self, onReady)
   } else {
     getPort.readPort(paths.port, function(err, port) {
-      if (err) return loadSchemas()
+      if (err) return loadMeta()
       var adminu = opts.adminUser || process.env["DAT_ADMIN_USER"]
       var adminp = opts.adminPass || process.env["DAT_ADMIN_PASS"]
       var creds = ''
@@ -61,24 +61,21 @@ function Dat(dir, opts, onReady) {
       request(datAddress + '/_manifest', function(err, resp, json) {
         if (err || !json.methods) {
           // assume PORT to be invalid
-          return fs.unlink(paths.port, loadSchemas)
+          return fs.unlink(paths.port, loadMeta)
         } 
         // otherwise initialize in networked mode
         opts.serve = false
         opts.remoteAddress = datAddress
         opts.manifest = json
-        loadSchemas()
+        loadMeta()
       })
     })
   }
   
-  function loadSchemas() {
+  function loadMeta() {
     self.meta = meta(self, function(err) {
       if (err) return init()
-      self._storage(opts, function(err) {
-        if (err) return init(err)
-        self.meta.loadAllSchemas(init)
-      })
+      self._storage(opts, init)
     })
   }
   

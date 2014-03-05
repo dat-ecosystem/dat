@@ -116,6 +116,7 @@ module.exports.getSequences = function(test, common) {
       var ws = dat.createWriteStream({ csv: true })
     
       ws.on('close', function() {
+        dat.dump()
         dat.createChangesStream({include_data: true}).pipe(concat(function(data) {
           var seqs = data.map(function(r) { return r.seq })
           t.equal(JSON.stringify(seqs), JSON.stringify([1,2,3,4,5]) , 'ordered sequences 1 - 5 exist')
@@ -263,11 +264,11 @@ module.exports.createVersionStream = function(test, common) {
   test('createVersionStream', function(t) {
     common.getDat(t, function(dat, done) {
       dat.put({"_id": "foo", "baz": "bar"}, function(err, doc) {
-        if (err) throw err
+        t.false(err)
         var rev1 = doc._rev
         doc.pizza = 'taco'
         dat.put(doc, function(err, doc) {
-          if (err) throw err
+          t.false(err)
           // put some data before and after to make sure they dont get returned too
           dat.put({'_id': 'abc'}, function(err) {
             t.false(err)
@@ -282,10 +283,12 @@ module.exports.createVersionStream = function(test, common) {
       function readVersions() {
         dat.createVersionStream('foo').pipe(concat(function(versions) {
           t.equal(versions.length, 2, '2 versions')
-          t.equal(versions[0]._rev[0], '1')
-          t.equal(versions[1]._rev[0], '2')
-          t.equal(versions[0].pizza, undefined, 'version 1')
-          t.equal(versions[1].pizza, 'taco', 'version 2')
+          var v1 = versions[0] || {_rev: ""}
+          var v2 = versions[1] || {_rev: ""}
+          t.equal(v1._rev[0], '1')
+          t.equal(v2._rev[0], '2')
+          t.equal(v1.pizza, undefined, 'version 1')
+          t.equal(v2.pizza, 'taco', 'version 2')
           setImmediate(done)
         }))
       }

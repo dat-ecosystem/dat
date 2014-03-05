@@ -267,37 +267,6 @@ module.exports.multipleWriteStreamsUpdatingChanged = function(test, common) {
   })
 }
 
-module.exports.multipleCSVWriteStreamsChangingSchemas = function(test, common) {
-  test('multiple CSV writeStreams w/ different schemas', function(t) {
-    common.getDat(t, function(dat, done) {
-      var ws1 = dat.createWriteStream({ csv: true })
-  
-      ws1.on('close', function() {
-        var ws2 = dat.createWriteStream({ csv: true })
-
-        ws2.on('close', function() {
-          var cat = dat.createReadStream()
-  
-          cat.pipe(concat(function(data) {
-            t.equal(data.length, 3)
-            t.equal(data[0].a, "1")
-            t.equal(data[1].a, "4")
-            t.equal(data[2].d, "foo")
-            done()
-          }))
-        })
-    
-        ws2.write(bops.from('d,e,f\nfoo,bar,baz'))
-        ws2.end()
-      })
-  
-      ws1.write(bops.from('a,b,c\n1,2,3\n4,5,6'))
-      ws1.end()
-  
-    })
-  })
-}
-
 module.exports.compositePrimaryKey = function(test, common) {
   test('composite primary key', function(t) {
     common.getDat(t, function(dat, done) {
@@ -410,6 +379,56 @@ module.exports.writeStreamMultipleWithRandomIds = function(test, common) {
   })
 }
 
+module.exports.multipleCSVWriteStreamsChangingSchemas = function(test, common) {
+  test('multiple CSV writeStreams w/ different schemas', function(t) {
+    common.getDat(t, function(dat, done) {
+      var ws1 = dat.createWriteStream({ csv: true })
+  
+      ws1.on('close', function() {
+        var ws2 = dat.createWriteStream({ csv: true })
+
+        ws2.on('error', function(e) {
+          t.equal(e.type, 'columnMismatch')
+          done()
+        })
+        
+        ws2.write(bops.from('d,e,f\nfoo,bar,baz'))
+        ws2.end()
+      })
+  
+      ws1.write(bops.from('a,b,c\n1,2,3\n4,5,6'))
+      ws1.end()
+    })
+  })
+}
+
+module.exports.multipleCSVWriteStreamsChangingSchemasOverride = function(test, common) {
+  test('multiple CSV writeStreams w/ different schemas + column merge override', function(t) {
+    common.getDat(t, function(dat, done) {
+      var ws1 = dat.createWriteStream({ csv: true })
+  
+      ws1.on('close', function() {
+        var ws2 = dat.createWriteStream({ csv: true, merge: true })
+
+        ws2.on('error', function(e) {
+          t.equal(data.length, 3)
+          t.equal(data[0].a, "1")
+          t.equal(data[1].a, "4")
+          t.equal(data[2].d, "foo")
+          done()
+        })
+        
+        ws2.write(bops.from('d,e,f\nfoo,bar,baz'))
+        ws2.end()
+      })
+  
+      ws1.write(bops.from('a,b,c\n1,2,3\n4,5,6'))
+      ws1.end()
+  
+    })
+  })
+}
+
 module.exports.all = function (test, common) {
   module.exports.singleNdjsonObject(test, common)
   module.exports.singleNdjsonString(test, common)
@@ -421,10 +440,11 @@ module.exports.all = function (test, common) {
   module.exports.csvMultipleRows(test, common)
   module.exports.multipleWriteStreams(test, common)
   module.exports.multipleWriteStreamsUpdatingChanged(test, common)
-  module.exports.multipleCSVWriteStreamsChangingSchemas(test, common)
   module.exports.compositePrimaryKey(test, common)
   module.exports.compositePrimaryKeyCustomSeparator(test, common)
   module.exports.compositePrimaryKeyHashing(test, common)
   module.exports.writeStreamCsvNoHeaderRow(test, common)
   module.exports.writeStreamMultipleWithRandomIds(test, common)
+  module.exports.multipleCSVWriteStreamsChangingSchemas(test, common)
+  // module.exports.multipleCSVWriteStreamsChangingSchemasOverride(test, common)
 }
