@@ -131,12 +131,12 @@ module.exports.sameDir = function(test, common) {
               var cat = dat1.createReadStream()
               cat.pipe(concat(function(data) {
                 t.equal(data.length, 2)
-                t.equal(data[0].hello, "world")
-                t.equal(data[1].batman, "bruce wayne")
+                t.equal(data[0].hello, "bruce wayne")
+                t.equal(data[1].hello, "world")
                 done()
               }))
             })
-            ws.write(JSON.stringify({"batman": "bruce wayne"}))
+            ws.write(JSON.stringify({"hello": "bruce wayne"}))
             ws.end()
             
           })
