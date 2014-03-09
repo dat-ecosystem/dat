@@ -4,6 +4,7 @@ var bops = require('bops')
 var concat = require('concat-stream')
 var os = require('os')
 var crypto = require('crypto')
+var debug = require('debug')('test.write-streams')
 
 module.exports.singleNdjsonObject = function(test, common) {
   test('piping a single ndjson object into a write stream', function(t) {
@@ -60,9 +61,11 @@ module.exports.multipleNdjsonObjects = function(test, common) {
     
       ws.on('close', function() {
       
+        dat.dump()
         var cat = dat.createReadStream()
       
         cat.pipe(concat(function(data) {
+          debug('data', data)
           t.equal(data.length, 2)
           t.equal(data[0].foo, "bar")
           t.equal(data[1].foo, "baz")
@@ -89,6 +92,7 @@ module.exports.singleNdjsonObjectIdOnly = function(test, common) {
       ws.on('close', function() {
         var cat = dat.createReadStream()
         cat.pipe(concat(function(data) {
+          debug('data', data)
           t.equal(data.length, 1)
           t.equal(data[0]._id, "foo")
           done()
@@ -221,6 +225,9 @@ module.exports.multipleWriteStreams = function(test, common) {
           jws.on('close', function() {
             var cat = dat.createReadStream()
             cat.pipe(concat(function(data2) {
+              dat.dump()
+              dat.latest()
+
               t.equal(data.length, data2.length)
               done()
             }))
