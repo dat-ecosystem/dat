@@ -23,13 +23,14 @@ module.exports.rowKeys = function(test, common) {
     var sep = '\xff'
     
     var keys = {
-      seq:  's',
+      seq: 's',
       data: 'd',
-      rev:  'r'
+      rev: 'r',
+      cur: 'c'
     }
     
     var a = docUtils.rowKeys(keys, sep, 'foo', '1-abc', '4')
-    t.deepEqual(a, { row: 'ÿdÿfooÿ01-abcÿ04', seq: 'ÿsÿ04' })
+    t.deepEqual(a, { row: 'ÿdÿfooÿ01-abc', seq: 'ÿsÿ04', cur: "ÿcÿfoo" })
     
     t.end()
   })
@@ -37,12 +38,11 @@ module.exports.rowKeys = function(test, common) {
 
 module.exports.decodeKey = function(test, common) {
   test('decodeKey parses key format correctly', function(t) {
-    var key = 'ÿdÿfooÿ01-abcÿ04'
+    var key = 'ÿdÿfooÿ01-abc'
     var obj = docUtils.decodeKey(key)
     var expected = {
       _id: 'foo',
-      _rev: '1-abc',
-      _seq: 4
+      _rev: '1-abc'
     }
     t.deepEqual(obj, expected)
     t.end()
