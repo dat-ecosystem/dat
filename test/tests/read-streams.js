@@ -6,15 +6,15 @@ var concat = require('concat-stream')
 var os = require('os')
 
 module.exports.readStreamBuff = function(test, common) {
-  test('readStream returns buff rows in same order they went in', function(t) {
+  test('readStream returns all buff rows', function(t) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ columns: ['num'] })
       var nums = []
     
       ws.on('close', function() {
         dat.createReadStream().pipe(concat(function(data) {
-          var results = data.map(function(r) { return +r.num })
-          t.equals(JSON.stringify(nums), JSON.stringify(results), 'order matches')
+          var results = data.map(function(r) { return r.num })
+          t.equals(JSON.stringify(nums.sort()), JSON.stringify(results.sort()), 'matches')
           done()
         }))
       })
@@ -25,7 +25,7 @@ module.exports.readStreamBuff = function(test, common) {
       // create a bunch of single cell buff rows with incrementing integers in them
       for (var i = 0; i < 1000; i++) {
         packStream.write(buff.pack([bops.from(i + '')]))
-        nums.push(i)
+        nums.push(i + '')
       }
     
       packStream.end()
@@ -34,15 +34,15 @@ module.exports.readStreamBuff = function(test, common) {
 }
 
 module.exports.readStreamBuffPrimaryKey = function(test, common) {
-  test('readStream returns buff rows in same order they went in w/ custom primary key', function(t) {
+  test('readStream returns all buff rows w/ custom primary key', function(t) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ columns: ['num'], primary: 'num' })
       var nums = []
     
       ws.on('close', function() {
         dat.createReadStream().pipe(concat(function(data) {
-          var results = data.map(function(r) { return r.num + '\xff' })
-          t.equals(JSON.stringify(nums), JSON.stringify(results), 'order matches')
+          var results = data.map(function(r) { return r.num })
+          t.equals(JSON.stringify(nums.sort()), JSON.stringify(results.sort()), 'matches')
           done()
         }))
       })
@@ -53,11 +53,8 @@ module.exports.readStreamBuffPrimaryKey = function(test, common) {
       // create a bunch of single cell buff rows with incrementing integers in them
       for (var i = 0; i < 1000; i++) {
         packStream.write(buff.pack([bops.from(i + '')]))
-        nums.push(i + '\xff')
+        nums.push(i + '')
       }
-    
-      // sort lexicographically
-      nums.sort()
     
       packStream.end()
     })
@@ -65,9 +62,8 @@ module.exports.readStreamBuffPrimaryKey = function(test, common) {
 }
 
 module.exports.readStreamCsvPrimaryKey = function(test, common) {
-  test('readStream returns csv rows in same order they went in w/ custom primary key', function(t) {
-    // lexicographic means longer strings come first
-    var expected = ['100', '10', '1']
+  test('readStream returns all csv rows w/ custom primary key', function(t) {
+    var expected = ['1', '10', '100']
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true, primary: 'a' })
       var nums = []
@@ -75,21 +71,20 @@ module.exports.readStreamCsvPrimaryKey = function(test, common) {
       ws.on('close', function() {
         dat.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r._id })
-          t.equals(JSON.stringify(results), JSON.stringify(expected), 'order matches')
+          t.equals(JSON.stringify(results), JSON.stringify(expected), 'matches')
           done()
         }))
       })
     
-      ws.write(bops.from('a,b,c\n10,1,1\n100,1,1\n1,1,1'))
+      ws.write(bops.from('a,b,c\n1,1,1\n10,1,1\n100,1,1'))
       ws.end()
     })
   })
 }
 
 module.exports.readStreamNdjPrimaryKey = function(test, common) {
-  test('readStream returns ndjson rows in same order they went in w/ custom primary key', function(t) {
-    // lexicographic means longer strings come first
-    var expected = ['100', '10', '1']
+  test('readStream returns all ndjson rows w/ custom primary key', function(t) {
+    var expected = ['1', '10', '100']
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ json: true, primary: 'a' })
       var nums = []
@@ -201,9 +196,10 @@ module.exports.createReadStreamStartEndKeys = function(test, common) {
       ws.on('close', function() {
         var readStream = dat.createReadStream({ start: '2', end: '4'})
         readStream.pipe(concat(function(rows) {
-          t.equal(rows.length, 2, '2 rows')
+          t.equal(rows.length, 3, '3 rows')
           t.equal(rows[0].a, '2')
           t.equal(rows[1].a, '3')
+          t.equal(rows[2].a, '4')
           done()
         }))
       })

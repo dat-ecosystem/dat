@@ -225,8 +225,6 @@ module.exports.multipleWriteStreams = function(test, common) {
           jws.on('close', function() {
             var cat = dat.createReadStream()
             cat.pipe(concat(function(data2) {
-              dat.dump()
-              dat.latest()
 
               t.equal(data.length, data2.length)
               done()
