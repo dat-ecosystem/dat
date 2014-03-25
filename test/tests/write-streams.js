@@ -393,7 +393,7 @@ module.exports.multipleCSVWriteStreamsChangingSchemas = function(test, common) {
         var ws2 = dat.createWriteStream({ csv: true })
 
         ws2.on('error', function(e) {
-          t.equal(e.type, 'columnMismatch')
+          t.equal(e.type, 'columnMismatch', 'column mismatch')
           done()
         })
         

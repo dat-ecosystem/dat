@@ -40,7 +40,7 @@ module.exports = function() {
     })
   
     function done(cb) {
-      setTimeout(destroy, 25)
+      setTimeout(destroy, 100) // fixes weird test errors on travis-ci
       
       function destroy() {
         dat.destroy(function(err) {
