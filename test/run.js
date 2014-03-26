@@ -28,6 +28,11 @@ test('setup', function(t) {
   })
 })
 
+if (process.env['RPC']) {
+  common.rpc = true
+  common.testPrefix = 'RPC: '
+}
+
 if (specificTests.length > 0) {
   specificTests.map(function(specificTest) {
     var testModule = require('./' + path.relative(__dirname, specificTest))
@@ -36,9 +41,11 @@ if (specificTests.length > 0) {
 } else {
   runAll()
   finish(test, function() {
+    if (process.env['RPC']) return
     common.rpc = true
     console.log('\n Running tests again in RPC mode\n')
   })
+  if (process.env['RPC']) return
   common.testPrefix = 'RPC: '
   runAll()
 }

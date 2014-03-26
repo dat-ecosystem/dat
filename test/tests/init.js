@@ -138,7 +138,6 @@ module.exports.sameDir = function(test, common) {
             })
             ws.write(JSON.stringify({"hello": "bruce wayne"}))
             ws.end()
-            
           })
         })
         
