@@ -9,7 +9,7 @@ module.exports.pullReplication = function(test, common) {
       common.getDat(t, function(dat, cleanup) {
         var ws = dat.createWriteStream({ csv: true })
         var nums = []
-    
+        
         ws.on('close', function() {
           dat2.pull(function(err) {
             if (err) throw err
@@ -18,10 +18,10 @@ module.exports.pullReplication = function(test, common) {
             })
           })
         })
-    
+        
         ws.write(bops.from('a\n1\n2'))
         ws.end()
- 
+        
         function done() {
           var rs = dat2.createReadStream()
           rs.pipe(concat(function(data) {
