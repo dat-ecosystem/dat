@@ -43,10 +43,25 @@ module.exports.initExistsDestroy = function(test, common) {
 }
 
 module.exports.existingRepo = function(test, common) {
-  test('.init in existing repo', function(t) {
+  test('.init in existing repo should return error', function(t) {
     var dat = new Dat(common.dat1tmp, function ready() {
-      dat.init(function(err, msg) {
-        t.true(msg, msg)
+      dat.init(function(err) {
+        t.true(err, err)
+        dat.destroy(function(err) {
+          t.false(err, 'no err')
+          t.end()
+        })
+      })
+    })
+  })  
+}
+
+
+module.exports.existingRepoClone = function(test, common) {
+  test('.clone in existing repo should return error', function(t) {
+    var dat = new Dat(common.dat1tmp, function ready() {
+      dat.clone("http://localhost", function(err) {
+        t.true(err, err)
         dat.destroy(function(err) {
           t.false(err, 'no err')
           t.end()
@@ -158,6 +173,7 @@ module.exports.all = function (test, common) {
   module.exports.paths(test, common)
   module.exports.initExistsDestroy(test, common)
   module.exports.existingRepo(test, common)
+  module.exports.existingRepoClone(test, common)
   module.exports.portFile(test, common)
   module.exports.autoPort(test, common)
   module.exports.sameDir(test, common)
