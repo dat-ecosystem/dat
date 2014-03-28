@@ -71,7 +71,7 @@ module.exports.readStreamCsvPrimaryKey = function(test, common) {
       ws.on('close', function() {
         dat.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r._id })
-          t.equals(JSON.stringify(results), JSON.stringify(expected), 'matches')
+          t.equals(JSON.stringify(results.sort()), JSON.stringify(expected.sort()), 'matches')
           done()
         }))
       })
@@ -92,7 +92,7 @@ module.exports.readStreamNdjPrimaryKey = function(test, common) {
       ws.on('close', function() {
         dat.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r._id })
-          t.equals(JSON.stringify(results), JSON.stringify(expected), 'order matches')
+          t.equals(JSON.stringify(results.sort()), JSON.stringify(expected.sort()), 'order matches')
           done()
         }))
       })
