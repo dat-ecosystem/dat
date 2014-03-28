@@ -139,6 +139,7 @@ module.exports.changesStream = function(test, common) {
       }, 1000)
       
       changes.pipe(through2({objectMode: true}, function(obj, enc, next) {
+        changes.end()
         t.equal(obj.data.foo, "bar")
         gotChange = true
         setImmediate(done)
