@@ -38,6 +38,48 @@ module.exports.pullReplication = function(test, common) {
   })
 }
 
+module.exports.pullReplicationSparse = function(test, common) {
+  test('pull replication with sparse data', function(t) {
+    var dat2 = new Dat(common.dat2tmp, { serve: false }, function ready() {
+      common.getDat(t, function(dat, cleanup) {
+        var ws = dat.createWriteStream({ objects: true })
+        
+        ws.on('close', function() {
+          dat2.pull(function(err) {
+            if (err) throw err
+            dat.createReadStream().pipe(concat(function(db1) {
+              dat2.createReadStream().pipe(concat(function(db2) {
+                // HACK since revisions have a hashed based on the row buffer which is non deterministic w/ sparse data
+                function removeRevs(docs) { return docs.map(function(d) { delete d._rev; return d } )}
+                db1 = removeRevs(db1)
+                db2 = removeRevs(db2)
+                t.deepEquals(db1, db2, 'low level data matches')
+                done()
+              }))
+            }))
+          })
+        })
+        
+        ws.on('error', function(e) {
+          t.notOk(e, e.message)
+        })
+        
+        ws.write({"doc1": "val1"})
+        ws.write({"doc2": "val2"})
+        ws.write({"doc3": "val3"})
+        ws.end()
+        
+        function done() {
+          dat2.destroy(function(err) {
+            t.false(err, 'no err')
+            cleanup()
+          })
+        }
+      })
+    })
+  })
+}
+
 module.exports.pullReplicationMultiple = function(test, common) {
   test('multiple pulls', function(t) {
     var expected = ["pizza", "walrus"]
@@ -172,6 +214,7 @@ module.exports.remoteInit = function(test, common) {
 
 module.exports.all = function (test, common) {
   module.exports.pullReplication(test, common)
+  module.exports.pullReplicationSparse(test, common)
   module.exports.pullReplicationMultiple(test, common)
   module.exports.pullReplicationLive(test, common)
   module.exports.pushReplication(test, common)
