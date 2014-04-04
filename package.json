@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "2.9.0",
+  "version": "2.10.0",
   "description": "real-time replication and versioning for large tabular data sets",
   "keywords": [
     "hyperdata",
@@ -47,7 +47,7 @@
     "folder-backup": "~0.0.2",
     "head-stream": "~0.0.3",
     "csv-multibuffer-stream": "~0.0.1",
-    "json-multibuffer-stream": "~2.0.0",
+    "json-multibuffer-stream": "~3.0.0",
     "connections": "~0.0.1",
     "ldjson-stream": "~0.0.1",
     "sublevel": "~2.3.0",
