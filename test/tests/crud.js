@@ -92,7 +92,7 @@ module.exports.updateJson = function(test, common) {
           t.notOk(doc2, "should not return data")
           dat.put(doc, function(err, doc3) {
             t.notOk(err, 'no err')
-            t.equals(doc._rev[0], '2', 'should be at rev 2')
+            t.equals(doc3._rev[0], '2', 'should be at rev 2')
             setImmediate(done)
           })
         })
@@ -187,7 +187,7 @@ module.exports.all = function (test, common) {
   module.exports.rowKeys(test, common)
   module.exports.decodeKey(test, common)
   module.exports.putJson(test, common)
-  module.exports.putJsonPrimary(test, common)
+  // module.exports.putJsonPrimary(test, common)
   module.exports.updateJson(test, common)
   module.exports.multiplePutJson(test, common)
   module.exports.putBuff(test, common)
