@@ -66,6 +66,20 @@ module.exports.putJson = function(test, common) {
   })
 }
 
+module.exports.putJsonPrimary = function(test, common) {
+  test('.put json w/ primary key option', function(t) {
+    common.getDat(t, function(dat, done) {
+      dat.put({"foo": "bar"}, {primary: 'foo'}, function(err, doc) {
+        if (err) throw err
+        dat.get('bar', function(err, data) {
+          t.notOk(err, 'no err')
+          t.equal(data.foo, "bar")
+          setImmediate(done)
+        })
+      })
+    })
+  })
+}
 
 module.exports.multiplePutJson = function(test, common) {
   test('.put same json multiple times (random id generation)', function(t) {
@@ -153,6 +167,7 @@ module.exports.all = function (test, common) {
   module.exports.rowKeys(test, common)
   module.exports.decodeKey(test, common)
   module.exports.putJson(test, common)
+  module.exports.putJsonPrimary(test, common)
   module.exports.multiplePutJson(test, common)
   module.exports.putBuff(test, common)
   module.exports.deleteRow(test, common)
