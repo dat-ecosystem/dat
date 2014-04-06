@@ -81,6 +81,26 @@ module.exports.putJsonPrimary = function(test, common) {
   })
 }
 
+module.exports.updateJson = function(test, common) {
+  test('.put and then update json', function(t) {
+    common.getDat(t, function(dat, done) {
+      dat.put({"_id": "foo"}, function(err, doc) {
+        if (err) throw err
+        t.ok(doc._rev, 'should return doc w/ rev')
+        dat.put({"_id": "foo"}, function(err, doc2) {
+          t.ok(err, 'should err')
+          t.notOk(doc2, "should not return data")
+          dat.put(doc, function(err, doc3) {
+            t.notOk(err, 'no err')
+            t.equals(doc._rev[0], '2', 'should be at rev 2')
+            setImmediate(done)
+          })
+        })
+      })
+    })
+  })
+}
+
 module.exports.multiplePutJson = function(test, common) {
   test('.put same json multiple times (random id generation)', function(t) {
     common.getDat(t, function(dat, done) {
@@ -168,6 +188,7 @@ module.exports.all = function (test, common) {
   module.exports.decodeKey(test, common)
   module.exports.putJson(test, common)
   module.exports.putJsonPrimary(test, common)
+  module.exports.updateJson(test, common)
   module.exports.multiplePutJson(test, common)
   module.exports.putBuff(test, common)
   module.exports.deleteRow(test, common)
