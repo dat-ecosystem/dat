@@ -250,8 +250,9 @@ module.exports.multipleWriteStreamsUpdatingChanged = function(test, common) {
   
       ws1.on('close', function() {
         var ws2 = dat.createWriteStream({ json: true, primary: 'foo' })
-
-        ws2.on('close', function() {
+        
+        ws2.on('error', function(e) {
+          t.ok(e, 'should error')
           var cat = dat.createReadStream()
   
           cat.pipe(concat(function(data) {
@@ -260,7 +261,7 @@ module.exports.multipleWriteStreamsUpdatingChanged = function(test, common) {
             done()
           }))
         })
-    
+
         ws2.write(bops.from(JSON.stringify({"foo": "bar"})))
         ws2.end()
       })
@@ -331,6 +332,60 @@ module.exports.compositePrimaryKeyHashing = function(test, common) {
     })
   })
 }
+
+
+module.exports.writeStreamConflicts = function(test, common) {
+  test('csv writeStream w/ conflicting updates', function(t) {
+    common.getDat(t, function(dat, done) {
+      
+      function writeAndVerify(obj, cb) {
+        var ws = dat.createWriteStream({ objects: true })
+
+        var errored
+        
+        ws.on('close', function() {
+          if (errored) return
+          var cat = dat.createReadStream()
+          cat.pipe(concat(function(data) {
+            cb(null, data)
+          }))
+        })
+        
+        ws.on('error', function(e) {
+          errored = true
+          cb(e)
+        })
+    
+        ws.write(obj)
+        ws.end()
+      }
+      
+      var rev1 = {_id: 'foo', 'name': 'bob'}
+      
+      writeAndVerify(rev1, function(err1, stored1) {
+        t.notOk(err1, 'no err')
+        t.equals(stored1.length, 1, '1 row in db')
+        t.equals(stored1[0].name, 'bob', 'bob is in db')
+        t.equals(stored1[0]._rev[0], '1', 'bob is at rev 1')
+        writeAndVerify(rev1, function(err2, stored2) {
+          t.ok(err2, 'should have errored')
+          t.equals(stored1.length, 1, '1 row in db')
+          t.equals(stored1[0].name, 'bob', 'bob is in db')
+          t.equals(stored1[0]._rev[0], '1', 'bob is at rev 1')
+          writeAndVerify(stored1[0], function(err3, stored3) {
+            t.notOk(err3, 'no err')
+            t.equals(stored3.length, 1, '1 row in db')
+            t.equals(stored3[0].name, 'bob', 'bob is in db')
+            t.equals(stored3[0]._rev[0], '2', 'bob is at rev 2')
+            done()
+          })
+        })
+      })
+    
+    })
+  })
+}
+
 
 module.exports.writeStreamCsvNoHeaderRow = function(test, common) {
   test('csv writeStream w/ headerRow false', function(t) {
@@ -448,6 +503,7 @@ module.exports.all = function (test, common) {
   module.exports.compositePrimaryKey(test, common)
   module.exports.compositePrimaryKeyCustomSeparator(test, common)
   module.exports.compositePrimaryKeyHashing(test, common)
+  module.exports.writeStreamConflicts(test, common)
   module.exports.writeStreamCsvNoHeaderRow(test, common)
   module.exports.writeStreamMultipleWithRandomIds(test, common)
   module.exports.multipleCSVWriteStreamsChangingSchemas(test, common)

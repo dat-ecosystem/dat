@@ -170,7 +170,7 @@ module.exports.getAtRev = function(test, common) {
         dat.put(doc, function(err, doc) {
           t.false(err)
           if (!doc) doc = {}
-          dat.get(doc._id, {rev: rev1}, function(err, docAtRev) {
+          dat.get(doc._id, { rev: rev1 }, function(err, docAtRev) {
             t.false(err, 'no err')
             if (!docAtRev) docAtRev = {}
             t.equal(docAtRev.pizza, undefined, 'doc is version 1')
