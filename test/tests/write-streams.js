@@ -333,6 +333,26 @@ module.exports.compositePrimaryKeyHashing = function(test, common) {
   })
 }
 
+module.exports.compositePrimaryKeySeparator = function(test, common) {
+  test('composite primary key w/ custom separator', function(t) {
+    common.getDat(t, function(dat, done) {
+      var ws = dat.createWriteStream({ objects: true, primary: ['a', 'b'], separator: '-' })
+    
+      ws.on('close', function() {
+
+        dat.get('foo-bar', function(err, data) {
+          t.false(err, 'no error')
+          t.equal(data.c, "hello")
+          done()
+        })
+      })
+    
+      ws.write({"a": "foo", "b": "bar", "c": "hello"})
+      ws.end()
+    })
+  })
+}
+
 
 module.exports.writeStreamConflicts = function(test, common) {
   test('csv writeStream w/ conflicting updates', function(t) {
@@ -503,6 +523,7 @@ module.exports.all = function (test, common) {
   module.exports.compositePrimaryKey(test, common)
   module.exports.compositePrimaryKeyCustomSeparator(test, common)
   module.exports.compositePrimaryKeyHashing(test, common)
+  module.exports.compositePrimaryKeySeparator(test, common)
   module.exports.writeStreamConflicts(test, common)
   module.exports.writeStreamCsvNoHeaderRow(test, common)
   module.exports.writeStreamMultipleWithRandomIds(test, common)
