@@ -40,6 +40,9 @@ function Dat(dir, opts, onReady) {
   }
   
   if (!onReady) onReady = function(){}
+  
+  // TODO figure out more descriptive names for these two options
+  // maybe 'readOnly' instead of 'storage' ?
   if (typeof opts.init === 'undefined') opts.init = true
   if (typeof opts.storage === 'undefined') opts.storage = true
   

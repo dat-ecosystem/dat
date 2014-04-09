@@ -190,21 +190,25 @@ module.exports.pushReplication = function(test, common) {
   })
 }
 
-module.exports.remoteInit = function(test, common) {
-  test('init using remote url', function(t) {
+module.exports.remoteClone = function(test, common) {
+  test('clone from remote', function(t) {
     common.getDat(t, function(dat, cleanup) {
       dat.put({foo: 'bar'}, function(err) {
         if (err) throw err
-        var dat2 = new Dat(common.dat2tmp, {serve: false, remote: 'http://localhost:' + dat.defaultPort}, function ready() {
-          dat2.createReadStream().pipe(concat(function(data) {
-            t.equal(data.length, 1)
-            var first = data[0] || {}
-            t.equal(first.foo, 'bar')
-            dat2.destroy(function(err) {
-              if (err) throw err
-              cleanup()
-            })
-          }))
+        var dat2 = new Dat(common.dat2tmp, { init: false }, function ready() {
+          var remote = 'http://localhost:' + dat.defaultPort
+          dat2.clone(remote, function(err) {
+            t.notOk(err, 'no err on clone')
+            dat2.createReadStream().pipe(concat(function(data) {
+              t.equal(data.length, 1)
+              var first = data[0] || {}
+              t.equal(first.foo, 'bar')
+              dat2.destroy(function(err) {
+                if (err) throw err
+                cleanup()
+              })
+            }))
+          })
         })
       })
     })
@@ -218,5 +222,5 @@ module.exports.all = function (test, common) {
   module.exports.pullReplicationMultiple(test, common)
   module.exports.pullReplicationLive(test, common)
   module.exports.pushReplication(test, common)
-  module.exports.remoteInit(test, common)
+  module.exports.remoteClone(test, common)
 }

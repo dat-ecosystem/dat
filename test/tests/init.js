@@ -68,7 +68,7 @@ module.exports.existingRepoClone = function(test, common) {
         })
       })
     })
-  })  
+  })
 }
 
 module.exports.portFile = function(test, common) {
@@ -169,6 +169,14 @@ module.exports.sameDir = function(test, common) {
   })
 }
 
+
+module.exports.close = function(test, common) {
+  test('.close closes db and server', function(t) {
+    t.ok(false, 'IMPLEMENT ME')
+    t.end()
+  })
+}
+
 module.exports.all = function (test, common) {
   module.exports.paths(test, common)
   module.exports.initExistsDestroy(test, common)
@@ -176,5 +184,5 @@ module.exports.all = function (test, common) {
   module.exports.existingRepoClone(test, common)
   module.exports.portFile(test, common)
   module.exports.autoPort(test, common)
-  module.exports.sameDir(test, common)
+  module.exports.close(test, common)
 }
