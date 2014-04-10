@@ -41,7 +41,7 @@ dat pull http://localhost:6461
 dat push http://localhost:6461
 
 # grab all the recent crime in Oakland
-dat init --remote=http://oaklandcrime.dathub.org
+dat clone http://oaklandcrime.dathub.org
 
 # delete the dat folder (removes all data + history)
 rm -rf .dat
