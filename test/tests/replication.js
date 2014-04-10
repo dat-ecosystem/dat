@@ -10,7 +10,7 @@ module.exports.pullReplication = function(test, common) {
         var ws = dat.createWriteStream({ csv: true })
         var nums = []
         
-        ws.on('close', function() {
+        ws.on('end', function() {
           dat2.pull(function(err) {
             if (err) throw err
             common.compareData(t, dat, dat2, function() {
@@ -44,7 +44,7 @@ module.exports.pullReplicationSparse = function(test, common) {
       common.getDat(t, function(dat, cleanup) {
         var ws = dat.createWriteStream({ objects: true })
         
-        ws.on('close', function() {
+        ws.on('end', function() {
           dat2.pull(function(err) {
             if (err) throw err
             dat.createReadStream().pipe(concat(function(db1) {
@@ -131,14 +131,14 @@ module.exports.pullReplicationLive = function(test, common) {
           setTimeout(function() {
             dat2.createReadStream().pipe(concat(function(data) {
               t.equal(data.length, 1)
-              t.equal(data[0].foo, 'bar')
+              if (data.length) t.equal(data[0].foo, 'bar')
               pull.stream.end()
               dat2.destroy(function(err) {
                 if (err) throw err
                 cleanup()
               })
             }))
-          }, 250)
+          }, 500)
         })
       })
     })

@@ -11,7 +11,7 @@ module.exports.readStreamBuff = function(test, common) {
       var ws = dat.createWriteStream({ columns: ['num'] })
       var nums = []
     
-      ws.on('close', function() {
+      ws.on('end', function() {
         dat.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r.num })
           t.equals(JSON.stringify(nums.sort()), JSON.stringify(results.sort()), 'matches')
@@ -39,7 +39,7 @@ module.exports.readStreamBuffPrimaryKey = function(test, common) {
       var ws = dat.createWriteStream({ columns: ['num'], primary: 'num' })
       var nums = []
     
-      ws.on('close', function() {
+      ws.on('end', function() {
         dat.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r.num })
           t.equals(JSON.stringify(nums.sort()), JSON.stringify(results.sort()), 'matches')
@@ -68,7 +68,7 @@ module.exports.readStreamCsvPrimaryKey = function(test, common) {
       var ws = dat.createWriteStream({ csv: true, primary: 'a' })
       var nums = []
     
-      ws.on('close', function() {
+      ws.on('end', function() {
         dat.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r._id })
           t.equals(JSON.stringify(results.sort()), JSON.stringify(expected.sort()), 'matches')
@@ -89,7 +89,7 @@ module.exports.readStreamNdjPrimaryKey = function(test, common) {
       var ws = dat.createWriteStream({ json: true, primary: 'a' })
       var nums = []
     
-      ws.on('close', function() {
+      ws.on('end', function() {
         dat.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r._id })
           t.equals(JSON.stringify(results.sort()), JSON.stringify(expected.sort()), 'order matches')
@@ -110,7 +110,7 @@ module.exports.getSequences = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true })
     
-      ws.on('close', function() {
+      ws.on('end', function() {
         dat.dump()
         dat.createChangesStream({include_data: true}).pipe(concat(function(data) {
           var seqs = data.map(function(r) { return r.seq })
@@ -157,7 +157,7 @@ module.exports.createReadStream = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true })
     
-      ws.on('close', function() {
+      ws.on('end', function() {
         var readStream = dat.createReadStream()
         readStream.pipe(concat(function(rows) {
           t.equal(rows.length, 5, '5 rows')
@@ -176,7 +176,7 @@ module.exports.createReadStreamStartEndKeys = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true, primary: 'a' })
     
-      ws.on('close', function() {
+      ws.on('end', function() {
         var readStream = dat.createReadStream({ start: '2', end: '4'})
         readStream.pipe(concat(function(rows) {
           t.equal(rows.length, 3, '3 rows')
@@ -198,7 +198,7 @@ module.exports.createReadStreamCSV = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true, primary: 'a' })
     
-      ws.on('close', function() {
+      ws.on('end', function() {
         var readStream = dat.createReadStream({ csv: true })
         readStream.pipe(concat(function(data) {
           var rows = data.split('\n')
@@ -221,7 +221,7 @@ module.exports.createReadStreamBuff = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true, primary: 'a' })
     
-      ws.on('close', function() {
+      ws.on('end', function() {
         var readStream = dat.createReadStream({ buff: true })
         readStream.pipe(concat(function(data) {
           var fields = buff.unpack(data).map(function(d) { return d.toString() })
