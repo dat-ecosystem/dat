@@ -15,7 +15,15 @@ if (datCommand.command === 'backend' || datCommand.command === 'clone') {
   datOpts.storage = false
 }
 
-var dat = Dat(process.cwd(), datOpts, function ready(err) {
+var datPath = process.cwd()
+
+if (datCommand.command === 'clone') {
+  var customPath = opts.argv._[2] || opts.argv.dir
+  if (customPath) datPath = customPath
+  else datPath = path.join(datPath, opts.argv._[1])
+}
+
+var dat = Dat(datPath, datOpts, function ready(err) {
   if (err) return console.error(err)
   
   if (inputStream) {
@@ -25,7 +33,7 @@ var dat = Dat(process.cwd(), datOpts, function ready(err) {
   var validationError = cli.validate(dat, opts)
   
   if (validationError) {
-    process.stdout.write(error)
+    process.stdout.write(validationError)
     dat.close()
     return
   }

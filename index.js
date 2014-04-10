@@ -28,22 +28,23 @@ function Dat(dir, opts, onReady) {
     dir = process.cwd()
   }
   
-  if (typeof opts === 'function') {
-    onReady = opts
-    opts = {}
-  }
-  
   if (typeof dir === 'object') {
     onReady = opts
     opts = dir
     dir = process.cwd()
   }
   
+  if (typeof opts === 'function') {
+    onReady = opts
+    opts = {}
+  }
+  
   if (!onReady) onReady = function(){}
   
-  // TODO figure out more descriptive names for these two options
-  // maybe 'readOnly' instead of 'storage' ?
+  // TODO figure out more descriptive names/API for these
+  // read dat dir but don't init empty database
   if (typeof opts.init === 'undefined') opts.init = true
+  // read dat dir but don't read database
   if (typeof opts.storage === 'undefined') opts.storage = true
   
   this.dir = dir
@@ -52,7 +53,9 @@ function Dat(dir, opts, onReady) {
   this._backend = backend(this)
   
   if (!opts.storage) {
-    self.meta = meta(self, onReady)
+    self.meta = meta(self, function(err) {
+      onReady()
+    })
   } else {
     getPort.readPort(paths.port, function(err, port) {
       if (err) return loadMeta()

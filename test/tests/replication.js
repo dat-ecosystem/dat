@@ -1,6 +1,7 @@
 var bops = require('bops')
 var concat = require('concat-stream')
 var Dat = require('../../')
+var os = require('os')
 
 module.exports.pullReplication = function(test, common) {
   test('pull replication', function(t) {
@@ -193,24 +194,30 @@ module.exports.pushReplication = function(test, common) {
 module.exports.remoteClone = function(test, common) {
   test('clone from remote', function(t) {
     common.getDat(t, function(dat, cleanup) {
+      
       dat.put({foo: 'bar'}, function(err) {
         if (err) throw err
         var dat2 = new Dat(common.dat2tmp, { init: false }, function ready() {
           var remote = 'http://localhost:' + dat.defaultPort
-          dat2.clone(remote, function(err) {
+          dat2.clone({ remote: remote, path: common.dat2tmp }, function(err) {
             t.notOk(err, 'no err on clone')
-            dat2.createReadStream().pipe(concat(function(data) {
-              t.equal(data.length, 1)
-              var first = data[0] || {}
-              t.equal(first.foo, 'bar')
-              dat2.destroy(function(err) {
-                if (err) throw err
-                cleanup()
-              })
-            }))
+            verify(dat2)
           })
         })
       })
+      
+      function verify(dat2) {
+        dat2.createReadStream().pipe(concat(function(data) {
+          t.equal(data.length, 1)
+          var first = data[0] || {}
+          t.equal(first.foo, 'bar')
+          dat2.destroy(function(err) {
+            if (err) throw err
+            cleanup()
+          })
+        }))
+      }
+      
     })
   })
 }
