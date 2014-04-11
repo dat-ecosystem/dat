@@ -48,7 +48,25 @@ module.exports.importCSV = function(test, common) {
   })
 }
 
+module.exports.badCommand = function(test, common) {
+  test('CLI dat command that doesnt exist', function(t) {
+    common.destroyTmpDats(function() {
+      mkdirp(common.dat1tmp, function(err) {
+        t.notOk(err, 'no err')
+        var dat = child.exec('dat pizza', {cwd: common.dat1tmp}, function (error, stdout, stderr) {
+          console.log('stderr', stdout, stderr)
+          t.ok(stderr.toString().indexOf('Command not found') > -1, 'output matches')
+          common.destroyTmpDats(function() {
+            t.end()
+          })
+        })
+      })
+    })
+  })
+}
+
 module.exports.all = function (test, common) {
   module.exports.init(test, common)
   module.exports.importCSV(test, common)
+  module.exports.badCommand(test, common)
 }

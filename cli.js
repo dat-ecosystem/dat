@@ -36,24 +36,25 @@ var dat = Dat(datPath, datOpts, function ready(err) {
     dat.close()
     return
   } 
-
+  
   if (inputStream) {
     return cli.writeInputStream(inputStream, dat, opts)
   }
   
-  var validationError = cli.validate(dat, opts)
-  
-  if (validationError) {
-    process.stdout.write(validationError)
+  if (opts.argv._.length === 0) {
     dat.close()
-    return
+    return process.stderr.write(opts.help())
+  }
+  
+  if (!cliCommands[datCommand.command]) {
+    dat.close()
+    return process.stderr.write(['Command not found: ' + datCommand.command, '', opts.help()].join(EOL))
   }
   
   cliCommands[datCommand.command].call(dat, datCommand.options, function(err, message) {
     if (err) {
-      console.error(err.message)
       dat.close()
-      return
+      return console.error(err.message)
     }
     if (typeof message === 'object') message = JSON.stringify(message)
     if (!opts.argv.quiet && message) process.stdout.write(message.toString() + EOL)
