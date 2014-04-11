@@ -73,6 +73,7 @@
     "url": "https://github.com/maxogden/dat/issues"
   },
   "devDependencies": {
+    "stdout": "0.0.3",
     "tape": "~2.1.0"
   }
 }
