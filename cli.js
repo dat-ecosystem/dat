@@ -8,7 +8,14 @@ var EOL = require('os').EOL
 
 var opts = optimist.usage("Usage: $0 <command> [<args>]" + EOL + EOL + "Enter 'dat help' for help")
 var datCommand = cli.command(opts)
-var inputStream = cli.getInputStream(opts, datCommand)
+
+var first = opts.argv._[0] || ''
+if (first === 'import' || !first) {
+  var inputStream = cli.getInputStream(opts, datCommand)
+} else {
+  var inputStream = false
+}
+
 var datOpts = { init: !!inputStream }
 
 if (datCommand.command === 'backend' || datCommand.command === 'clone') {
@@ -24,8 +31,12 @@ if (datCommand.command === 'clone') {
 }
 
 var dat = Dat(datPath, datOpts, function ready(err) {
-  if (err) return console.error(err)
-  
+  if (err) {
+    console.error(err)
+    dat.close()
+    return
+  } 
+
   if (inputStream) {
     return cli.writeInputStream(inputStream, dat, opts)
   }

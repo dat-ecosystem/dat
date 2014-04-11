@@ -10,12 +10,12 @@ dat init
 echo '{"hello": "world"}' | dat --json
 
 # stream a CSV into dat
-cat some_csv.csv | dat --csv
-cat some_csv.csv | dat --csv -d $'\r\n' # custom line delimiter, --delimiter= works too
+cat some_csv.csv | dat import --csv
+cat some_csv.csv | dat import --csv -d $'\r\n' # custom line delimiter, --delimiter= works too
 
 # specify a primary key to use
-echo $'a,b,c\n1,2,3' | dat --csv --primary=a
-echo $'{"foo":"bar"}' | dat --json --primary=foo
+echo $'a,b,c\n1,2,3' | dat import --csv --primary=a
+echo $'{"foo":"bar"}' | dat import --json --primary=foo
 
 # stream the most recent of all rows
 dat cat
@@ -45,18 +45,13 @@ dat clone http://oaklandcrime.dathub.org
 
 # delete the dat folder (removes all data + history)
 rm -rf .dat
-rm package.json
 
-# dat
+# dat import
 
-you can pipe line separated JSON data into `dat` on stdin and it will be stored.
-otherwise entering `dat` with no arguments will just show you the usage instructions
+you can pipe line separated JSON data into `dat import` on stdin and it will be stored.
 
 # dat init
 
 turns the current folder into a new empty dat store
 
-# dat init --remote http://localhost:6461/_archive
-
-initializes a new dat store by copying a remote dat server
 ```

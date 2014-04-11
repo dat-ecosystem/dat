@@ -9,6 +9,7 @@ function test(name, testFunction) {
 }
 
 var tests = [
+  require('./tests/cli'),
   require('./tests/init'),
   require('./tests/crud'),
   require('./tests/read-streams'),
