@@ -44,7 +44,7 @@
     "concat-stream": "~1.4.3",
     "level-live-stream": "~1.4.9",
     "hyperlevel-backup": "~1.0.1",
-    "folder-backup": "~0.0.2",
+    "folder-backup": "^1.0.0",
     "head-stream": "~0.0.3",
     "csv-multibuffer-stream": "~0.0.1",
     "json-multibuffer-stream": "~3.0.0",
