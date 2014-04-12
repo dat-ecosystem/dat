@@ -5,6 +5,7 @@ var Dat = require(__dirname)
 var cli = require(path.join(__dirname, 'lib', 'parse-cli'))
 var optimist = require('optimist')
 var EOL = require('os').EOL
+var url = require('url')
 
 var opts = optimist.usage("Usage: $0 <command> [<args>]" + EOL + EOL + "Enter 'dat help' for help")
 var datCommand = cli.command(opts)
@@ -25,9 +26,10 @@ if (datCommand.command === 'backend' || datCommand.command === 'clone') {
 var datPath = process.cwd()
 
 if (datCommand.command === 'clone') {
+  var remote = url.parse(Dat.prototype.normalizeURL(opts.argv._[1]))
   var customPath = opts.argv._[2] || opts.argv.dir
   if (customPath) datPath = customPath
-  else datPath = path.join(datPath, opts.argv._[1])
+  else datPath = path.join(datPath, remote.hostname)
 }
 
 var dat = Dat(datPath, datOpts, function ready(err) {
