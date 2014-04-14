@@ -34,7 +34,7 @@
     "csv-write-stream": "~0.1.1",
     "debug": "~0.7.4",
     "extend": "~1.2.1",
-    "folder-backup": "^1.0.0",
+    "folder-backup": "^2.0.0",
     "getport": "~0.1.0",
     "hat": "~0.0.3",
     "head-stream": "~0.0.3",
