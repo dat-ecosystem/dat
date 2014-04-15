@@ -11,7 +11,7 @@ echo '{"hello": "world"}' | dat --json
 
 # stream a CSV into dat
 cat some_csv.csv | dat import --csv
-cat some_csv.csv | dat import --csv -d $'\r\n' # custom line delimiter, --delimiter= works too
+cat some_csv.csv | dat import --csv -d $'\r\n' # custom line delimiter, --delimiter works too
 
 # specify a primary key to use
 echo $'a,b,c\n1,2,3' | dat import --csv --primary=a
@@ -40,8 +40,8 @@ dat pull http://localhost:6461
 # push data to another dat
 dat push http://localhost:6461
 
-# grab all the recent crime in Oakland
-dat clone http://oaklandcrime.dathub.org
+# grab all the NPM registry metadata
+dat clone http://dat-npm.mathiasbuus.eu
 
 # delete the dat folder (removes all data + history)
 rm -rf .dat
@@ -49,9 +49,5 @@ rm -rf .dat
 # dat import
 
 you can pipe line separated JSON data into `dat import` on stdin and it will be stored.
-
-# dat init
-
-turns the current folder into a new empty dat store
 
 ```
