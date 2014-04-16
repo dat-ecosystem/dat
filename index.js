@@ -57,24 +57,9 @@ function Dat(dir, opts, onReady) {
       onReady()
     })
   } else {
-    getPort.readPort(paths.port, function(err, port) {
-      if (err) return loadMeta()
-      var adminu = opts.adminUser || process.env["DAT_ADMIN_USER"]
-      var adminp = opts.adminPass || process.env["DAT_ADMIN_PASS"]
-      var creds = ''
-      if (adminu && adminp) creds = adminu + ':' + adminp + '@'
-      var datAddress = 'http://' + creds + '127.0.0.1:' + port
-      request(datAddress + '/_manifest', function(err, resp, json) {
-        if (err || !json.methods) {
-          // assume PORT to be invalid
-          return fs.unlink(paths.port, loadMeta)
-        } 
-        // otherwise initialize in networked mode
-        opts.serve = false
-        opts.remoteAddress = datAddress
-        opts.manifest = json
-        loadMeta()
-      })
+    readPort(paths.port, opts, function(err) {
+      // ignore err
+      loadMeta()
     })
   }
   
@@ -104,6 +89,28 @@ function Dat(dir, opts, onReady) {
     if (opts.serve) return self.serve(opts, onReady)
     onReady()
   }
+}
+
+function readPort(portPath, opts, cb) {
+  getPort.readPort(portPath, function(err, port) {
+    if (err) return cb(err)
+    var adminu = opts.adminUser || process.env["DAT_ADMIN_USER"]
+    var adminp = opts.adminPass || process.env["DAT_ADMIN_PASS"]
+    var creds = ''
+    if (adminu && adminp) creds = adminu + ':' + adminp + '@'
+    var datAddress = 'http://' + creds + '127.0.0.1:' + port
+    request(datAddress + '/_manifest', function(err, resp, json) {
+      if (err || !json.methods) {
+        // assume PORT to be invalid
+        return fs.unlink(portPath, cb)
+      } 
+      // otherwise initialize in networked mode
+      opts.serve = false
+      opts.remoteAddress = datAddress
+      opts.manifest = json
+      cb()
+    })
+  })
 }
 
 Dat.prototype = commands

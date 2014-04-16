@@ -22,6 +22,7 @@
   "author": "max ogden",
   "license": "BSD",
   "dependencies": {
+    "ansidown": "0.0.1",
     "basic": "~0.0.1",
     "binary-csv": "~0.1.6",
     "binary-split": "~0.1.0",
