@@ -69,6 +69,7 @@ var cliCommands = {
   init: dat.init,
   cat: dat.cat,
   dump: dat.dump,
+  help: dat.help,
   pull: dat.pull,
   push: dat.push,
   clone: dat.clone,
