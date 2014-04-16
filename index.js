@@ -47,6 +47,8 @@ function Dat(dir, opts, onReady) {
   // read dat dir but don't read database
   if (typeof opts.storage === 'undefined') opts.storage = true
   
+  this.lockRetries = 0
+  this.retryLimit = 3
   this.dir = dir
   this.opts = opts
   var paths = this.paths()
@@ -57,16 +59,30 @@ function Dat(dir, opts, onReady) {
       onReady()
     })
   } else {
-    readPort(paths.port, opts, function(err) {
-      // ignore err
-      loadMeta()
-    })
+    function read() {
+      readPort(paths.port, opts, function(err) {
+        // ignore err
+        loadMeta()
+      })
+    }
+    if (!process.stdin.isTTY) setTimeout(read, 2000)
+    else read()
   }
   
   function loadMeta() {
     self.meta = meta(self, function(err) {
       if (err) return init()
-      self._storage(opts, init)
+      self._storage(opts, function(err) {
+        if (err && self.lockRetries < self.retryLimit) {
+          readPort(paths.port, opts, function(err) {
+            // ignore err
+            loadMeta()
+          })
+          self.lockRetries++
+          return
+        }
+        init()
+      })
     })
   }
   
@@ -86,7 +102,13 @@ function Dat(dir, opts, onReady) {
   }
   
   function serve() {
-    if (opts.serve) return self.serve(opts, onReady)
+    if (opts.serve) {
+      self._storage(opts, function(err) {
+        if (err) return onReady(err)
+        self.serve(opts, onReady)
+      })
+      return
+    }
     onReady()
   }
 }
