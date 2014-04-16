@@ -13,7 +13,8 @@
     "dat": "cli.js"
   },
   "scripts": {
-    "test": "node test/run.js"
+    "test": "node test/run.js",
+    "bench": "node benchmarks/bulk-replication.js"
   },
   "repository": {
     "type": "git",

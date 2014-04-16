@@ -25,48 +25,44 @@ function noop() {}
 
 var sourcePath = path.join(os.tmpdir(), 'datsource')
 var destPath = path.join(os.tmpdir(), 'datdest')
+var len = process.argv[2] || process.env["BENCHSIZE"]
 
 cleanup(function() {
   fs.mkdirSync(sourcePath)
   fs.mkdirSync(destPath)
-  testReplication(process.argv[2])
+  testReplication(len)
 })
 
 function testReplication(size) {
   size = size || 1000
-  var dat = new Dat(sourcePath)
-  dat.init(function(err, msg) {
+  var dat = new Dat(sourcePath, function(err) {
     var ws = dat.createWriteStream({ csv: true })
     console.time('writestream ' + size)
-    ws.on('close', function() {
+    ws.on('end', function() {
       console.timeEnd('writestream ' + size)
-      dat.serve(function(err, msg) {
+      var opts = {}
+      console.time('replicate ' + size)
+    
+      var dat2 = new Dat(destPath, {serve: false}, function(err) {
         if (err) throw err
-        var dat2 = new Dat(destPath)
-        var opts = {}
-        if (process.argv[3]) opts.remote = 'http://localhost:6461/_archive'
-        console.time('replicate ' + size)
-        
-        dat2.init(opts, function(err, msg) {
-          if (err) throw err          
-          if (opts.remote) return done()
-          
-          dat2.pull(function(err) {
-            if (err) throw err
-            done()
-          })
-          
-          function done() {
-            console.timeEnd('replicate ' + size)
-            dat.close() // stops http server
-            cleanup()
-          }
+      
+        dat2.pull(function(err) {
+          if (err) throw err
+          done()
         })
+      
+        function done() {
+          console.timeEnd('replicate ' + size)
+          dat.close() // stops http server
+          cleanup()
+        }
       })
     })
     
+    ws.write(new Buffer('a,b,c\n'))
+    
     for (var i = 0; i < size; i++) {
-      ws.write(new Buffer('a,b,c\n' + i + ',2,3'))
+      ws.write(new Buffer(i + ',2,3\n'))
     }
 
     ws.end()
