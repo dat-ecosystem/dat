@@ -67,7 +67,8 @@
     "split": "~0.2.10",
     "stream-combiner": "~0.0.2",
     "sublevel": "~2.3.0",
-    "through2": "~0.4.1"
+    "through2": "~0.4.1",
+    "stdout-stream": "^1.0.2"
   },
   "directories": {
     "example": "examples",
