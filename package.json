@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "description": "real-time replication and versioning for large tabular data sets",
   "keywords": [
     "hyperdata",
