@@ -6,13 +6,14 @@ var child = require('child_process')
 var mkdirp = require('mkdirp')
 var ldj = require('ldjson-stream')
 var stdout = require('stdout')
+var datCmd = path.resolve(__dirname, '..', '..', 'cli.js')
 
 module.exports.init = function(test, common) {
   test('CLI dat init', function(t) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        var dat = child.exec('dat init', {cwd: common.dat1tmp}, function (error, stdout, stderr) {
+        var dat = child.exec(datCmd + ' init', {cwd: common.dat1tmp}, function (error, stdout, stderr) {
           t.ok(stdout.indexOf('Initialized dat store') > -1, 'output matches')
           common.destroyTmpDats(function() {
             t.end()
@@ -28,9 +29,9 @@ module.exports.importCSV = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        child.exec('dat init', {cwd: common.dat1tmp}, function (error, stdo, stde) {
+        child.exec(datCmd + ' init', {cwd: common.dat1tmp}, function (error, stdo, stde) {
           t.ok(stdo.indexOf('Initialized dat store') > -1, 'init ok')
-          var dat = child.spawn('dat', ['import', '--csv'], {cwd: common.dat1tmp})
+          var dat = child.spawn(datCmd, ['import', '--csv'], {cwd: common.dat1tmp})
           dat.stderr.pipe(stdout())
           dat.stdout.pipe(ldj.parse()).pipe(concat(function(rows) {
             t.equal(rows.length, 3)
@@ -53,7 +54,7 @@ module.exports.badCommand = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        var dat = child.exec('dat pizza', {cwd: common.dat1tmp}, function (error, stdout, stderr) {
+        var dat = child.exec(datCmd + ' pizza', {cwd: common.dat1tmp}, function (error, stdout, stderr) {
           console.log('stderr', stdout, stderr)
           t.ok(stderr.toString().indexOf('Command not found') > -1, 'output matches')
           common.destroyTmpDats(function() {

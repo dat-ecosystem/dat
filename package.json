@@ -9,9 +9,7 @@
     "data package"
   ],
   "main": "index.js",
-  "bin": {
-    "dat": "cli.js"
-  },
+  "bin": "cli.js",
   "scripts": {
     "test": "node test/run.js",
     "bench": "node benchmarks/bulk-replication.js"
