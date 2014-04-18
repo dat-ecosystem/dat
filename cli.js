@@ -83,18 +83,11 @@ function close() {
   // if _server exists it means dat is the rpc server
   if (dat._server) {
     // since the server process can't exit yet we must manually close stdout
-    // flushes stdout
-    stdout.write(new Buffer(0), function() {
-      // close stdout
-      fs.close(1, function(err) {
-        if (err) console.error('close err', err)
-        dat._server.unref()
-        dat._server.on('close', function(err) {
-          if (err) console.error('server close err', err)
-          dat.close()
-        })
-      })
+    stdout.end()
+    dat.connections.on('idle', function() {
+      dat.close()
     })
+    
   } else {
     dat.close()
   }
