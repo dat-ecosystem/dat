@@ -5,6 +5,7 @@ var getPort = require(path.join(__dirname, 'lib', 'get-port'))
 var backend = require(path.join(__dirname, 'lib', 'backend'))
 var request = require('request').defaults({json: true})
 var fs = require('fs')
+var tty = require('tty')
 
 module.exports = Dat
 
@@ -65,7 +66,7 @@ function Dat(dir, opts, onReady) {
         loadMeta()
       })
     }
-    if (!process.stdin.isTTY) setTimeout(read, 2000)
+    if (!tty.isatty(0)) setTimeout(read, 2000)
     else read()
   }
   
