@@ -70,6 +70,7 @@ var dat = Dat(datPath, datOpts, function ready(err) {
 var cliCommands = {
   init: dat.init,
   cat: dat.cat,
+  "export": dat.cat,
   dump: dat.dump,
   help: dat.help,
   pull: dat.pull,
