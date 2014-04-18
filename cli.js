@@ -60,7 +60,16 @@ var dat = Dat(datPath, datOpts, function ready(err) {
     }
     if (typeof message === 'object') message = JSON.stringify(message)
     if (!opts.argv.quiet && message) process.stdout.write(message.toString() + EOL)
-    if (datCommand.command !== 'serve') dat.close()
+    if (datCommand.command !== 'serve') {
+      if (dat._server) {
+        dat._server.unref()
+        dat._server.on('close', function() {
+          dat.close()
+        })
+      } else {
+        dat.close()
+      }
+    }
   })
 })
 
