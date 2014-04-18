@@ -6,6 +6,8 @@ var cli = require(path.join(__dirname, 'lib', 'parse-cli'))
 var optimist = require('optimist')
 var EOL = require('os').EOL
 var url = require('url')
+var stdout = require('stdout-stream')
+var fs = require('fs')
 
 var opts = optimist.usage("Usage: $0 <command> [<args>]" + EOL + EOL + "Enter 'dat help' for help")
 var datCommand = cli.command(opts)
@@ -59,17 +61,8 @@ var dat = Dat(datPath, datOpts, function ready(err) {
       return console.error(err.message)
     }
     if (typeof message === 'object') message = JSON.stringify(message)
-    if (!opts.argv.quiet && message) process.stdout.write(message.toString() + EOL)
-    if (datCommand.command !== 'serve') {
-      if (dat._server) {
-        dat._server.unref()
-        dat._server.on('close', function() {
-          dat.close()
-        })
-      } else {
-        dat.close()
-      }
-    }
+    if (!opts.argv.quiet && message) stdout.write(message.toString() + EOL)
+    if (datCommand.command !== 'serve') close()
   })
 })
 
@@ -84,4 +77,25 @@ var cliCommands = {
   clone: dat.clone,
   backend: dat.backend,
   serve: dat.serve
+}
+
+function close() {
+  // if _server exists it means dat is the rpc server
+  if (dat._server) {
+    // since the server process can't exit yet we must manually close stdout
+    // flushes stdout
+    stdout.write(new Buffer(0), function() {
+      // close stdout
+      fs.close(1, function(err) {
+        if (err) console.error('close err', err)
+        dat._server.unref()
+        dat._server.on('close', function(err) {
+          if (err) console.error('server close err', err)
+          dat.close()
+        })
+      })
+    })
+  } else {
+    dat.close()
+  }
 }
