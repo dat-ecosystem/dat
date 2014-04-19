@@ -169,6 +169,25 @@ module.exports.sameDir = function(test, common) {
   })
 }
 
+module.exports.customBackend = function(test, common) {
+  test('instantiate + pass in custom leveldown instance', function(t) {
+    var memdown = require('memdown')
+    var dat = new Dat(common.dat1tmp, { backend: memdown }, function ready() {
+      dat.put({'foo': 'bar'}, function(err) {
+        t.notOk(err, 'no put err')
+        var onDiskDat = fs.existsSync(path.join(common.dat1tmp, '.dat', 'store.dat'))
+        t.notOk(onDiskDat, 'no dat folder was created')
+        dat.destroy(function(err) {
+          t.false(err, 'destroy ok')
+          t.end()
+        })
+        
+      })
+    })
+  })
+}
+
+
 module.exports.close = function(test, common) {
   test('.close closes db and server', function(t) {
     t.ok(false, 'IMPLEMENT ME')
@@ -183,5 +202,6 @@ module.exports.all = function (test, common) {
   module.exports.existingRepoClone(test, common)
   module.exports.portFile(test, common)
   module.exports.autoPort(test, common)
+  module.exports.customBackend(test, common)
   // module.exports.close(test, common)
 }
