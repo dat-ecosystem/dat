@@ -124,7 +124,7 @@ module.exports.autoPort = function(test, common) {
         t.equal(json.dat, 'Hello', JSON.stringify(json))
         dat.close(function(err) {
           t.false(err, 'no err')
-          cb()
+          setImmediate(cb)
         })
       })
     }
