@@ -10,7 +10,9 @@
     "data package"
   ],
   "main": "index.js",
-  "bin": "cli.js",
+  "bin": {
+    "dat": "cli.js"
+  },
   "scripts": {
     "test": "node test/run.js",
     "bench": "node benchmarks/bulk-replication.js"
@@ -94,5 +96,6 @@
       "firefox/latest",
       "chrome/latest"
     ]
-  }
+  },
+  "homepage": "https://github.com/maxogden/dat"
 }
