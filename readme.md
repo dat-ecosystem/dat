@@ -6,7 +6,7 @@ Platform      | Build Status
 ------------- | -------------
 Windows       | [![Build status](https://ci.appveyor.com/api/projects/status/s236036xnglo4v5l)](https://ci.appveyor.com/project/maxogden/dat)
 Mac/Linux     | [![Travis](https://api.travis-ci.org/maxogden/dat.png)](https://travis-ci.org/maxogden/dat)
-Browser       | [![testling badge](https://ci.testling.com/maxogden/dat.png)](https://ci.testling.com/maxogden/dat.js)
+Browser       | [![testling badge](https://ci.testling.com/maxogden/dat.png)](https://ci.testling.com/maxogden/dat)
 
 ## collaborative data
 
