@@ -2,6 +2,7 @@
   "name": "dat",
   "version": "4.1.4",
   "description": "real-time replication and versioning for large tabular data sets",
+  "preferGlobal": true,
   "keywords": [
     "hyperdata",
     "synchronization",
@@ -78,5 +79,13 @@
   "devDependencies": {
     "stdout": "0.0.3",
     "tape": "~2.1.0"
+  },
+  "testling": {
+    "files": "test/run.js",
+    "browsers": [
+      "ie/latest",
+      "firefox/latest",
+      "chrome/latest"
+    ]
   }
 }

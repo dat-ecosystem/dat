@@ -1,7 +1,12 @@
 # dat
 
-[![NPM](https://nodei.co/npm/dat.png)](https://nodei.co/npm/dat/)
-[![Travis](https://api.travis-ci.org/maxogden/dat.png)](https://travis-ci.org/maxogden/dat)
+[![NPM](https://nodei.co/npm/dat.png?global=true)](https://nodei.co/npm/dat/)
+
+Platform      | Build Status
+------------- | -------------
+Windows       | [![Build status](https://ci.appveyor.com/api/projects/status/s236036xnglo4v5l)](https://ci.appveyor.com/project/maxogden/dat)
+Mac/Linux     | [![Travis](https://api.travis-ci.org/maxogden/dat.png)](https://travis-ci.org/maxogden/dat)
+Browser       | [![testling badge](https://ci.testling.com/maxogden/dat.png)](https://ci.testling.com/maxogden/dat.js)
 
 ## collaborative data
 
