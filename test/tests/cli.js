@@ -6,7 +6,8 @@ var child = require('child_process')
 var mkdirp = require('mkdirp')
 var ldj = require('ldjson-stream')
 var stdout = require('stdout')
-var datCmd = path.resolve(__dirname, '..', '..', 'cli.js')
+var os = require('os')
+var datCmd = '"' + process.execPath + '" "' + path.resolve(__dirname, '..', '..', 'cli.js') + '"'
 
 module.exports.init = function(test, common) {
   test('CLI dat init', function(t) {
@@ -31,18 +32,25 @@ module.exports.importCSV = function(test, common) {
         t.notOk(err, 'no err')
         child.exec(datCmd + ' init', {cwd: common.dat1tmp}, function (error, stdo, stde) {
           t.ok(stdo.indexOf('Initialized dat store') > -1, 'init ok')
-          var dat = child.spawn(datCmd, ['import', '--csv'], {cwd: common.dat1tmp})
-          dat.stderr.pipe(stdout())
-          dat.stdout.pipe(ldj.parse()).pipe(concat(function(rows) {
+          var testCsv = path.join(os.tmpdir(), 'test.csv')
+          fs.writeFileSync(testCsv, 'a,b,c\n1,2,3\n4,5,6\n7,8,9')
+          var cmd = datCmd + ' import "' + testCsv + '" --csv'
+          child.exec(cmd, {timeout: 5000, cwd: common.dat1tmp}, done)
+          
+          function done(err, stdo, stde) {
+            t.notOk(err, 'no err')
+            t.equals(stde.toString(), '', 'empty stderr')
+            var lines = stdo.toString().split('\n')
+            var rows = []
+            lines.map(function(l) {
+              if (l !== '') rows.push(JSON.parse(l))
+            })
             t.equal(rows.length, 3)
             rows.map(function(r) { t.ok(r._id, 'row has _id') })
             common.destroyTmpDats(function() {
               t.end()
             })
-          }))
-          
-          dat.stdin.write('a,b,c\n1,2,3\n4,5,6\n7,8,9')
-          dat.stdin.end()
+          }
         })
       })
     })

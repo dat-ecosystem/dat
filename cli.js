@@ -8,12 +8,14 @@ var EOL = require('os').EOL
 var url = require('url')
 var stdout = require('stdout-stream')
 var fs = require('fs')
+var debug = require('debug')('dat.cli')
 
 var opts = optimist.usage("Usage: $0 <command> [<args>]" + EOL + EOL + "Enter 'dat help' for help")
 var datCommand = cli.command(opts)
 
 var first = opts.argv._[0] || ''
 if (first === 'import' || !first) {
+  debug('import', opts.argv._[1])
   var inputStream = cli.getInputStream(opts, datCommand)
 } else {
   var inputStream = false
