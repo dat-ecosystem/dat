@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "4.3.1",
+  "version": "4.3.2",
   "description": "real-time replication and versioning for large tabular data sets",
   "preferGlobal": true,
   "keywords": [
@@ -58,6 +58,7 @@
     "multilevel": "~5.5.0",
     "npm": "~1.3.26",
     "optimist": "~0.6.0",
+    "pretty-bytes": "^0.1.0",
     "progress-stream": "^0.4.0",
     "read-installed": "~0.2.5",
     "request": "~2.27.0",
