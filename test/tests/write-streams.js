@@ -509,6 +509,28 @@ module.exports.multipleCSVWriteStreamsChangingSchemasOverride = function(test, c
   })
 }
 
+module.exports.keepTotalRowCount = function(test, common) {
+  test('keeps row count for streams', function(t) {
+    common.getDat(t, function(dat, done) {
+
+      var ws = dat.createWriteStream({ csv: true })
+
+      ws.on('end', function() {
+        var cat = dat.createReadStream()
+        cat.pipe(concat(function(data) {
+          t.equal(dat.getRowCount(), 2)
+          done()
+        }))
+      })
+
+      ws.write(bops.from('a,b,c\n1,2,3\n4,5,6'))
+      ws.end()
+
+    })
+  })
+}
+
+
 module.exports.all = function (test, common) {
   module.exports.singleNdjsonObject(test, common)
   module.exports.singleNdjsonString(test, common)
@@ -528,5 +550,6 @@ module.exports.all = function (test, common) {
   module.exports.writeStreamCsvNoHeaderRow(test, common)
   module.exports.writeStreamMultipleWithRandomIds(test, common)
   module.exports.multipleCSVWriteStreamsChangingSchemas(test, common)
+  module.exports.keepTotalRowCount(test, common)
   // module.exports.multipleCSVWriteStreamsChangingSchemasOverride(test, common)
 }
