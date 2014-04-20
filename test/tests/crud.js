@@ -182,6 +182,75 @@ module.exports.getAtRev = function(test, common) {
   })
 }
 
+module.exports.keepTotalRowCount = function(test, common) {
+  test('dat has a getRowCount cmd', function(t) {
+    common.getDat(t, function(dat, done) {
+      t.equal(typeof dat.getRowCount, 'function')
+      setImmediate(done)
+    })
+  })
+
+  test('dat initializes with 0 rows', function(t) {
+    common.getDat(t, function(dat, done) {
+      t.equal(dat.getRowCount(), 0)
+      setImmediate(done)
+    })
+  })
+
+  test('inc row count on put', function(t) {
+    common.getDat(t, function(dat, done) {
+      dat.put({"foo": "bar"}, function(err, doc) {
+        if (err) throw err
+        t.equal(dat.getRowCount(), 1)
+        setImmediate(done)
+      })
+    })
+  })
+
+  test('dec row count on del', function(t) {
+    common.getDat(t, function(dat, done) {
+      dat.put({"foo": "bar"}, function(err, doc) {
+        if (err) throw err
+        t.equal(dat.getRowCount(), 1)
+        dat.delete(doc._id, function(err) {
+          if (err) throw err
+          t.equal(dat.getRowCount(), 0)
+          setImmediate(done)
+        })
+      })
+    })
+  })
+
+  test('do not change row count on update', function(t) {
+    common.getDat(t, function(dat, done) {
+      dat.put({"_id": "foo"}, function(err, doc) {
+        if (err) throw err
+        t.equal(dat.getRowCount(), 1)
+        dat.put({"_id": "foo"}, function(err, doc2) {
+          t.ok(err, 'should err')
+          t.equal(dat.getRowCount(), 1)
+          setImmediate(done)
+        })
+      })
+    })
+  })
+
+  test('persist the row count', function(t) {
+    common.getDat(t, function(dat, done) {
+      dat.put({"foo": "bar"}, function(err, doc) {
+        dat.put({"bar": "foo"}, function(err, doc) {
+          dat.storage.getRowCount(function(err, val) {
+            if (err) throw err
+            t.equal(val, 2)
+            t.equal(dat.getRowCount(), val)
+            setImmediate(done)
+          });
+        })
+      })
+    })
+  })
+}
+
 module.exports.all = function (test, common) {
   module.exports.buffToJson(test, common)
   module.exports.rowKeys(test, common)
@@ -193,4 +262,5 @@ module.exports.all = function (test, common) {
   module.exports.putBuff(test, common)
   module.exports.deleteRow(test, common)
   module.exports.getAtRev(test, common)
+  module.exports.keepTotalRowCount(test, common)
 }
