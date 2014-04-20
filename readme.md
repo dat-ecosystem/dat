@@ -2,11 +2,9 @@
 
 [![NPM](https://nodei.co/npm/dat.png?global=true)](https://nodei.co/npm/dat/)
 
-Platform      | Build Status
-------------- | -------------
-Windows       | [![Build status](https://ci.appveyor.com/api/projects/status/s236036xnglo4v5l)](https://ci.appveyor.com/project/maxogden/dat)
-Mac/Linux     | [![Travis](https://api.travis-ci.org/maxogden/dat.png)](https://travis-ci.org/maxogden/dat)
-Browser       | [![testling badge](https://ci.testling.com/maxogden/dat.png)](https://ci.testling.com/maxogden/dat)
+Windows        | Mac/Linux    | Browsers (WIP) 
+-------------- | ------------ | --------------
+[![Build status](https://ci.appveyor.com/api/projects/status/s236036xnglo4v5l)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](http://img.shields.io/travis/maxogden/dat.svg?style=flat)](https://travis-ci.org/maxogden/dat) | [![testling badge](https://ci.testling.com/maxogden/dat.png)](https://ci.testling.com/maxogden/dat)
 
 ## collaborative data
 
