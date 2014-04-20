@@ -97,10 +97,51 @@ module.exports.basicAuthOptions = function(test, common) {
   })
 }
 
+module.exports.archiveExport = function(test, common) {
+  test('GET _archive returns proper error (on leveldown)', function(t) {
+    common.getDat(t, function(dat, cleanup) {
+      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/_archive', json: true}, function(err, res, json) {
+        if (err) throw err
+        t.ok(!!json.error, 'got error in json response')
+        cleanup()
+      })
+    })
+  })
+}
+
+
+module.exports.csvExport = function(test, common) {
+  test('GET _csv returns proper csv', function(t) {
+    common.getDat(t, function(dat, cleanup) {
+      var headers = {'content-type': 'text/csv'}
+      var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/_bulk', headers: headers})
+      post.write('a,b,c\n')
+      post.write('1,2,3\n')
+      post.write('4,5,6')
+      post.end()
+      
+      post.on('response', function(resp) {
+        resp.on('end', function() {
+          request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/_csv'}, function(err, res, csv) {
+            if (err) throw err
+            var lines = csv.split('\n')
+            t.equal(lines[0].split(',').length, 5, '5 columns (_id, _rev, a, b, c)')
+            t.equal(lines.length, 4, '4 rows')
+            t.equal(lines[lines.length - 1], '', '4th row is empty')
+            cleanup()
+          })
+        })
+      })
+    })
+  })
+}
+
 module.exports.all = function (test, common) {
   module.exports.restGet(test, common)
   module.exports.restPut(test, common)
   module.exports.restBulkCsv(test, common)
   module.exports.basicAuthEnvVariables(test, common)
   module.exports.basicAuthOptions(test, common)
+  module.exports.archiveExport(test, common)
+  module.exports.csvExport(test, common)
 }
