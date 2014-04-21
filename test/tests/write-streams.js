@@ -212,6 +212,33 @@ module.exports.csvMultipleRows = function(test, common) {
   })
 }
 
+module.exports.csvCustomDelimiter = function(test, common) {
+  test('piping a csv with multiple rows + custom delimiter into a write stream', function(t) {
+    common.getDat(t, function(dat, done) {
+    
+      var ws = dat.createWriteStream({ csv: true, separator: '\t' })
+    
+      ws.on('end', function() {
+        var cat = dat.createReadStream()
+        cat.pipe(concat(function(data) {
+          t.equal(data.length, 2)
+          t.equal(data[0].a, '1')
+          t.equal(data[0].b, '2')
+          t.equal(data[0].c, '3')
+          t.equal(data[1].a, '4')
+          t.equal(data[1].b, '5')
+          t.equal(data[1].c, '6')
+          done()
+        }))
+      })
+    
+      ws.write(bops.from('a\tb\tc\n1\t2\t3\n4\t5\t6'))
+      ws.end()
+    
+    })
+  })
+}
+
 module.exports.multipleWriteStreams = function(test, common) {
   test('multiple writeStreams, updating rows', function(t) {
     common.getDat(t, function(dat, done) {
@@ -540,6 +567,7 @@ module.exports.all = function (test, common) {
   module.exports.multipleBuffs(test, common)
   module.exports.csvOneRow(test, common)
   module.exports.csvMultipleRows(test, common)
+  module.exports.csvCustomDelimiter(test, common)
   module.exports.multipleWriteStreams(test, common)
   module.exports.multipleWriteStreamsUpdatingChanged(test, common)
   module.exports.compositePrimaryKey(test, common)
