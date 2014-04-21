@@ -33,7 +33,7 @@
     "concat-stream": "~1.4.3",
     "connections": "~1.0.0",
     "corsify": "~1.0.2",
-    "csv-multibuffer-stream": "~0.0.1",
+    "csv-multibuffer-stream": "^1.0.0",
     "csv-write-stream": "~0.1.1",
     "debug": "~0.7.4",
     "extend": "~1.2.1",
