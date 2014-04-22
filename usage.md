@@ -18,8 +18,18 @@ echo '{"hello": "world"}' | dat --json
 
 ```
 cat some_csv.csv | dat import --csv
-custom delimiter, --delimiter works too
-cat some_csv.csv | dat import --csv -d $'\r\n'
+```
+
+use a custom newline delimiter:
+
+```
+cat some_csv.csv | dat import --csv --newline $'\r\n'
+```
+
+use a custom value separator:
+
+```
+cat some_tsv.tsv | dat import --csv --separator $'\t'
 ```
 
 ## specify a primary key to use
