@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "4.3.3",
+  "version": "4.4.0",
   "description": "real-time replication and versioning for large tabular data sets",
   "preferGlobal": true,
   "keywords": [
@@ -65,7 +65,7 @@
     "rimraf": "~2.2.2",
     "routes-router": "~1.5.3",
     "single-line-log": "^0.3.1",
-    "sleep-ref": "~1.0.0",
+    "sleep-ref": "^1.1.0",
     "split": "~0.2.10",
     "stdout-stream": "~1.2.0",
     "stream-combiner": "~0.0.2",

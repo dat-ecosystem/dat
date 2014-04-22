@@ -152,6 +152,37 @@ module.exports.changesStream = function(test, common) {
   })
 }
 
+module.exports.changesStreamTail = function(test, common) {
+  test('createChangesStream tail:true', function(t) {
+    common.getDat(t, function(dat, done) {
+      
+      dat.put({"foo": "old"}, function(err) {
+        t.notOk(err, 'should not err')
+        
+        var changes = dat.createChangesStream({ live: true, tail: true, include_data: true })
+        var gotChange = false
+        setTimeout(function() {
+          if (gotChange) return
+          t.false(true, 'timeout')
+          setImmediate(done)
+        }, 1000)
+      
+        changes.pipe(through2({objectMode: true}, function(obj, enc, next) {
+          changes.end()
+          t.equal(obj.data.foo, "new", 'should only get new row, not old row')
+          gotChange = true
+          setImmediate(done)
+        }))
+      
+        dat.put({"foo": "new"}, function(err) {
+          t.notOk(err, 'should not err')
+        })
+      })
+
+    })
+  })
+}
+
 module.exports.createReadStream = function(test, common) {
   test('createReadStream', function(t) {
     common.getDat(t, function(dat, done) {
@@ -283,6 +314,7 @@ module.exports.all = function (test, common) {
   module.exports.readStreamNdjPrimaryKey(test, common)
   module.exports.getSequences(test, common)
   module.exports.changesStream(test, common)
+  module.exports.changesStreamTail(test, common)
   module.exports.createReadStream(test, common)
   module.exports.createReadStreamStartEndKeys(test, common)
   module.exports.createReadStreamCSV(test, common)
