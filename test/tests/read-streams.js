@@ -111,7 +111,6 @@ module.exports.getSequences = function(test, common) {
       var ws = dat.createWriteStream({ csv: true })
     
       ws.on('end', function() {
-        dat.dump()
         dat.createChangesStream({include_data: true}).pipe(concat(function(data) {
           var seqs = data.map(function(r) { return r.seq })
           t.equal(JSON.stringify(seqs), JSON.stringify([1,2,3,4,5]) , 'ordered sequences 1 - 5 exist')
@@ -179,6 +178,46 @@ module.exports.changesStreamTail = function(test, common) {
         })
       })
 
+    })
+  })
+}
+
+module.exports.changesStreamTailNum = function(test, common) {
+  test('createChangesStream tail:1', function(t) {
+    common.getDat(t, function(dat, done) {
+      
+      var ws = dat.createWriteStream({objects: true})
+      
+      ws.on('error', function(err) {
+        t.notOk(err)
+        setImmediate(done)
+      })
+      
+      ws.on('end', function() {
+        dat.dump()
+        var changes = dat.createChangesStream({ live: true, tail: 1, include_data: true })
+
+        var gotChange = false
+        setTimeout(function() {
+          if (gotChange) return
+          t.false(true, 'timeout')
+          setImmediate(done)
+        }, 1000)
+      
+        changes.pipe(through2({objectMode: true}, function(obj, enc, next) {
+          changes.end()
+          t.equal(obj.data.foo, "taco", 'should only get 1 newest row, not older rows')
+          gotChange = true
+          setImmediate(done)
+          next()
+        }))
+      })
+      
+      ws.write({'foo': 'bar'})
+      ws.write({'foo': 'baz'})
+      ws.write({'foo': 'taco'})
+      ws.end()
+      
     })
   })
 }
@@ -315,6 +354,7 @@ module.exports.all = function (test, common) {
   module.exports.getSequences(test, common)
   module.exports.changesStream(test, common)
   module.exports.changesStreamTail(test, common)
+  module.exports.changesStreamTailNum(test, common)
   module.exports.createReadStream(test, common)
   module.exports.createReadStreamStartEndKeys(test, common)
   module.exports.createReadStreamCSV(test, common)
