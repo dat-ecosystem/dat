@@ -79,7 +79,8 @@ var cliCommands = {
   push: dat.push,
   clone: dat.clone,
   backend: dat.backend,
-  serve: dat.serve
+  serve: dat.serve,
+  ass: dat.ass
 }
 
 function close() {
