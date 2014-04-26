@@ -1,5 +1,5 @@
 var path = require('path')
-var datPath = path.join(__dirname, '..')
+var datPath = path.join(__dirname, '../')
 var Dat = require(datPath)
 var tape = require('tape')
 var common = require(path.join(__dirname, 'common'))()
