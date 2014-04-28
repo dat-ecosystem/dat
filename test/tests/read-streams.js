@@ -251,9 +251,9 @@ module.exports.createReadStreamValues = function(test, common) {
         readStream.pipe(concat({encoding: 'object'}, function(rows) {
           t.equal(rows.length, 5, '5 rows')
           t.ok(Array.isArray(rows[0]), 'row is array, not object')
-          t.equal(rows[0][0], '10')
-          t.equal(rows[1][0], '100')
-          t.equal(rows[0][1], '1')
+          t.equal(rows[0][2], '10')
+          t.equal(rows[1][2], '100')
+          t.equal(rows[0][3], '1')
           done()
         }))
       })
