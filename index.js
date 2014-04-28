@@ -3,6 +3,7 @@ var meta = require(path.join(__dirname, 'lib', 'meta.js'))
 var commands = require(path.join(__dirname, 'lib', 'commands'))
 var getPort = require(path.join(__dirname, 'lib', 'get-port'))
 var backend = require(path.join(__dirname, 'lib', 'backend'))
+var datVersion = require(path.join(__dirname, 'package.json')).version
 var request = require('request').defaults({json: true})
 var fs = require('fs')
 var tty = require('tty')
@@ -22,6 +23,8 @@ function Dat(dir, opts, onReady) {
   
   // if 'new' was not used
   if (!(this instanceof Dat)) return new Dat(dir, opts, onReady)
+  
+  this.version = datVersion
 
   if (typeof dir === 'function') {
     onReady = dir

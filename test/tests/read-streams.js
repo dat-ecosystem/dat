@@ -241,6 +241,29 @@ module.exports.createReadStream = function(test, common) {
   })
 }
 
+module.exports.createReadStreamValues = function(test, common) {
+  test('createReadStream keys:false', function(t) {
+    common.getDat(t, function(dat, done) {
+      var ws = dat.createWriteStream({ csv: true })
+    
+      ws.on('end', function() {
+        var readStream = dat.createReadStream({keys: false})
+        readStream.pipe(concat({encoding: 'object'}, function(rows) {
+          t.equal(rows.length, 5, '5 rows')
+          t.ok(Array.isArray(rows[0]), 'row is array, not object')
+          t.equal(rows[0][0], '10')
+          t.equal(rows[1][0], '100')
+          t.equal(rows[0][1], '1')
+          done()
+        }))
+      })
+    
+      ws.write(bops.from('a,b,c\n10,1,1\n100,1,1\n1,1,1\n1,1,1\n1,1,1'))
+      ws.end()
+    })
+  })
+}
+
 module.exports.createReadStreamStartEndKeys = function(test, common) {
   test('createReadStream w/ start + end keys', function(t) {
     common.getDat(t, function(dat, done) {
@@ -356,6 +379,7 @@ module.exports.all = function (test, common) {
   module.exports.changesStreamTail(test, common)
   module.exports.changesStreamTailNum(test, common)
   module.exports.createReadStream(test, common)
+  module.exports.createReadStreamValues(test, common)
   module.exports.createReadStreamStartEndKeys(test, common)
   module.exports.createReadStreamCSV(test, common)
   module.exports.createReadStreamBuff(test, common)
