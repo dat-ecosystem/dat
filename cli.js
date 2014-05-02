@@ -79,7 +79,8 @@ var cliCommands = {
   push: dat.push,
   clone: dat.clone,
   backend: dat.backend,
-  serve: dat.serve
+  serve: dat.serve,
+  config: dat.config
 }
 
 function close() {
@@ -88,6 +89,7 @@ function close() {
     // since the server process can't exit yet we must manually close stdout
     stdout.end()
     dat.connections.on('idle', function() {
+      debug('dat close due to idle')
       dat.close()
     })
     
