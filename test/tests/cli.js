@@ -34,7 +34,7 @@ module.exports.importCSV = function(test, common) {
           t.ok(stdo.indexOf('Initialized dat store') > -1, 'init ok')
           var testCsv = path.join(os.tmpdir(), 'test.csv')
           fs.writeFileSync(testCsv, 'a,b,c\n1,2,3\n4,5,6\n7,8,9')
-          var cmd = datCmd + ' import "' + testCsv + '" --csv'
+          var cmd = datCmd + ' import "' + testCsv + '" --csv --verbose'
           child.exec(cmd, {timeout: 20000, cwd: common.dat1tmp}, done)
           
           function done(err, stdo, stde) {
