@@ -101,6 +101,21 @@ module.exports.updateJson = function(test, common) {
   })
 }
 
+module.exports.reviseConflictsOption = function(test, common) {
+  test('.put and then update json', function(t) {
+    common.getDat(t, function(dat, done) {
+      dat.put({"_id": "foo"}, function(err, doc) {
+        if (err) throw err
+        dat.put({"_id": "foo"}, {"reviseConflicts": true}, function(err, doc2) {
+          t.notOk(err, 'no err')
+          t.equals(doc2._rev[0], '2', 'should be at rev 2')
+          setImmediate(done)
+        })
+      })
+    })
+  })
+}
+
 module.exports.multiplePutJson = function(test, common) {
   test('.put same json multiple times (random id generation)', function(t) {
     common.getDat(t, function(dat, done) {
@@ -258,6 +273,7 @@ module.exports.all = function (test, common) {
   module.exports.putJson(test, common)
   // module.exports.putJsonPrimary(test, common)
   module.exports.updateJson(test, common)
+  module.exports.reviseConflictsOption(test, common)
   module.exports.multiplePutJson(test, common)
   module.exports.putBuff(test, common)
   module.exports.deleteRow(test, common)

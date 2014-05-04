@@ -555,6 +555,33 @@ module.exports.keepTotalRowCount = function(test, common) {
 
     })
   })
+
+  test('keeps row count for streams after updates', function(t) {
+    common.getDat(t, function(dat, done) {
+      var ws1 = dat.createWriteStream({ json: true })
+
+      ws1.on('end', function() {
+        var ws2 = dat.createWriteStream({ json: true })
+
+        ws2.on('error', function(e) {
+          var cat = dat.createReadStream()
+
+          cat.pipe(concat(function(data) {
+            t.equal(data.length, 1)
+            t.equal(dat.getRowCount(), 1)
+            done()
+          }))
+        })
+
+        ws2.write(bops.from(JSON.stringify({'_id': 'foo'})))
+        ws2.end()
+      })
+
+      ws1.write(bops.from(JSON.stringify({'_id': 'foo'})))
+      ws1.end()
+
+    })
+  })
 }
 
 
