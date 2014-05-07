@@ -383,7 +383,7 @@ module.exports.compositePrimaryKeySeparator = function(test, common) {
 module.exports.primaryKeyFunction = function(test, common) {
   test('primary key function', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({objects: true, primaryFunction: function () { return 'P-Funk' }})
+      var ws = dat.createWriteStream({objects: true, primaryFormat: function () { return 'P-Funk' }})
 
       ws.on('end', function() {
         dat.get('P-Funk', function(err, data) {
@@ -402,7 +402,7 @@ module.exports.primaryKeyFunction = function(test, common) {
 module.exports.primaryKeyFunctionUsingPrimaryVal = function(test, common) {
   test('primary key function', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({objects: true, primary: 'a', primaryFunction: function (val) { return 'P-' + val }})
+      var ws = dat.createWriteStream({objects: true, primary: 'a', primaryFormat: function (val) { return 'P-' + val }})
 
       ws.on('end', function() {
         dat.get('P-Funk', function(err, data) {
