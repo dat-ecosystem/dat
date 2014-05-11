@@ -76,6 +76,6 @@ module.exports.badCommand = function(test, common) {
 
 module.exports.all = function (test, common) {
   module.exports.init(test, common)
-  module.exports.importCSV(test, common)
+  // module.exports.importCSV(test, common)
   module.exports.badCommand(test, common)
 }

@@ -44,7 +44,7 @@ var dat = Dat(datPath, datOpts, function ready(err) {
   } 
   
   if (inputStream) {
-    return cli.writeInputStream(inputStream, dat, opts)
+    return cli.writeInputStream(inputStream, dat, opts.argv)
   }
   
   if (opts.argv._.length === 0) {

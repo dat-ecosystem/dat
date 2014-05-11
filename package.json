@@ -61,7 +61,6 @@
     "npm": "~1.3.26",
     "optimist": "~0.6.0",
     "pretty-bytes": "^0.1.0",
-    "progress-stream": "^0.4.0",
     "read-installed": "~0.2.5",
     "request": "~2.27.0",
     "rimraf": "~2.2.2",
