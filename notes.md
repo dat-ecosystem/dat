@@ -8,7 +8,7 @@ all are streaming parsers
 - .csv (powered by [binary-csv](http://npmjs.org/binary-csv))
 - .json (w/ [JSONStream](http://npmjs.org/JSONStream) query syntax)
 - .buff ([multibuffer](http://npmjs.org/multibuffer))
-- potentially redis protocol, though it may required features we don't need
+- protocol buffers - https://developers.google.com/protocol-buffers/docs/proto#scalar
 
 ## on disk format
 
