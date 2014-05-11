@@ -191,6 +191,52 @@ module.exports.pushReplication = function(test, common) {
   })
 }
 
+module.exports.pushReplicationURLNormalize = function(test, common) {
+  test('push replication w/ non normalized url', function(t) {
+    var expected = ["pizza", "walrus"]
+    common.getDat(t, function(dat, cleanup) {
+      var doc1 = {a: 'pizza'}
+      var doc2 = {a: 'walrus'}
+      var dat2port
+      
+      var dat2 = new Dat(common.dat2tmp, function ready(err) {
+        if (err) throw err
+        dat2port = dat2._server.address().port
+        
+        putPushCompare(doc1, function() {
+          putPushCompare(doc2, function() {
+            done()
+          })
+        })
+      })
+
+      function putPushCompare(doc, cb) {
+        dat.put(doc, function(err, doc) {
+          if (err) throw err
+          dat.push('localhost:' + dat2port, function(err) {
+            if (err) throw err
+            common.compareData(t, dat, dat2, function() {
+              cb()
+            })                
+          })
+        })
+      }
+    
+      function done() {
+        dat2.createReadStream().pipe(concat(function(data) {
+          var results = data.map(function(r) { return r.a })
+          t.equals(JSON.stringify(results), JSON.stringify(expected), 'createReadStream() matches')
+          dat2.destroy(function(err) {
+            t.false(err, 'no err')
+            cleanup()
+          })
+        }))
+      }
+    })
+  })
+}
+
+
 module.exports.remoteClone = function(test, common) {
   test('clone from remote', function(t) {
     common.getDat(t, function(dat, cleanup) {
@@ -229,5 +275,6 @@ module.exports.all = function (test, common) {
   module.exports.pullReplicationMultiple(test, common)
   module.exports.pullReplicationLive(test, common)
   module.exports.pushReplication(test, common)
+  module.exports.pushReplicationURLNormalize(test, common)
   module.exports.remoteClone(test, common)
 }
