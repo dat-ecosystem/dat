@@ -60,11 +60,11 @@ dat serve
 then you can poke around at the REST API:
 
 ```
-/_changes
-/_changes?include_data=true
-/_package
-/:docid
-POST /_bulk content-type: application/json (newline separated json)
+/api/changes
+/api/changes?include_data=true
+/api/package
+/api/:docid
+POST /api/bulk content-type: application/json (newline separated json)
 ```
 
 ## pull data from another dat
