@@ -111,7 +111,7 @@ module.exports.getChanges = function(test, common) {
       var ws = dat.createWriteStream({ csv: true })
     
       ws.on('end', function() {
-        dat.createChangesStream({include_data: true}).pipe(concat(function(data) {
+        dat.createChangesStream({data: true}).pipe(concat(function(data) {
           var changes = data.map(function(r) { return r.change })
           t.equal(JSON.stringify(changes), JSON.stringify([1,2,3,4,5]) , 'ordered changes 1 - 5 exist')
           t.equal(!!data[0].data, true)
@@ -129,7 +129,7 @@ module.exports.changesStream = function(test, common) {
   test('simple put should trigger a change', function(t) {
     common.getDat(t, function(dat, done) {
       
-      var changes = dat.createChangesStream({ live: true, include_data: true })
+      var changes = dat.createChangesStream({ live: true, data: true })
       var gotChange = false
       setTimeout(function() {
         if (gotChange) return
@@ -158,7 +158,7 @@ module.exports.changesStreamTail = function(test, common) {
       dat.put({"foo": "old"}, function(err) {
         t.notOk(err, 'should not err')
         
-        var changes = dat.createChangesStream({ live: true, tail: true, include_data: true })
+        var changes = dat.createChangesStream({ live: true, tail: true, data: true })
         var gotChange = false
         setTimeout(function() {
           if (gotChange) return
@@ -195,7 +195,7 @@ module.exports.changesStreamTailNum = function(test, common) {
       
       ws.on('end', function() {
         dat.dump()
-        var changes = dat.createChangesStream({ live: true, tail: 1, include_data: true })
+        var changes = dat.createChangesStream({ live: true, tail: 1, data: true })
 
         var gotChange = false
         setTimeout(function() {
