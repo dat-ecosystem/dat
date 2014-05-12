@@ -84,7 +84,7 @@ module.exports.multipleNdjsonObjects = function(test, common) {
 
 
 module.exports.singleNdjsonObjectIdOnly = function(test, common) {
-  test('piping a single ndjson object w/ only _id into a write stream', function(t) {
+  test('piping a single ndjson object w/ only id into a write stream', function(t) {
     common.getDat(t, function(dat, done) {
     
       var ws = dat.createWriteStream({ json: true })
@@ -94,12 +94,12 @@ module.exports.singleNdjsonObjectIdOnly = function(test, common) {
         cat.pipe(concat(function(data) {
           debug('data', data)
           t.equal(data.length, 1)
-          t.equal(data[0]._id, "foo")
+          t.equal(data[0].id, "foo")
           done()
         }))
       })
     
-      ws.write(bops.from(JSON.stringify({"_id": "foo"})))
+      ws.write(bops.from(JSON.stringify({"id": "foo"})))
       ws.end()
     })
   })
@@ -445,23 +445,23 @@ module.exports.writeStreamConflicts = function(test, common) {
         ws.end()
       }
       
-      var rev1 = {_id: 'foo', 'name': 'bob'}
+      var ver1 = {id: 'foo', 'name': 'bob'}
       
-      writeAndVerify(rev1, function(err1, stored1) {
+      writeAndVerify(ver1, function(err1, stored1) {
         t.notOk(err1, 'no err')
         t.equals(stored1.length, 1, '1 row in db')
         t.equals(stored1[0].name, 'bob', 'bob is in db')
-        t.equals(stored1[0]._rev[0], '1', 'bob is at rev 1')
-        writeAndVerify(rev1, function(err2, stored2) {
+        t.equals(stored1[0].version, 1, 'bob is at ver 1')
+        writeAndVerify(ver1, function(err2, stored2) {
           t.ok(err2, 'should have errored')
           t.equals(stored1.length, 1, '1 row in db')
           t.equals(stored1[0].name, 'bob', 'bob is in db')
-          t.equals(stored1[0]._rev[0], '1', 'bob is at rev 1')
+          t.equals(stored1[0].version, 1, 'bob is at ver 1')
           writeAndVerify(stored1[0], function(err3, stored3) {
             t.notOk(err3, 'no err')
             t.equals(stored3.length, 1, '1 row in db')
             t.equals(stored3[0].name, 'bob', 'bob is in db')
-            t.equals(stored3[0]._rev[0], '2', 'bob is at rev 2')
+            t.equals(stored3[0].version, 2, 'bob is at ver 2')
             done()
           })
         })
@@ -611,11 +611,11 @@ module.exports.keepTotalRowCount = function(test, common) {
           }))
         })
 
-        ws2.write(bops.from(JSON.stringify({'_id': 'foo'})))
+        ws2.write(bops.from(JSON.stringify({'id': 'foo'})))
         ws2.end()
       })
 
-      ws1.write(bops.from(JSON.stringify({'_id': 'foo'})))
+      ws1.write(bops.from(JSON.stringify({'id': 'foo'})))
       ws1.end()
 
     })

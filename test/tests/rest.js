@@ -6,7 +6,7 @@ module.exports.restGet = function(test, common) {
     common.getDat(t, function(dat, cleanup) {
       dat.put({foo: 'bar'}, function(err, stored) {
         if (err) throw err
-        request('http://localhost:' + dat.defaultPort + '/' + stored._id, function(err, res, json) {
+        request('http://localhost:' + dat.defaultPort + '/api/' + stored.id, function(err, res, json) {
           t.false(err, 'no error')
           t.deepEqual(stored, json)
           cleanup()
@@ -23,7 +23,7 @@ module.exports.restPut = function(test, common) {
       var body = {foo: 'bar'}
       request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort, json: body }, function(err, res, stored) {
         if (err) throw err
-        dat.get(stored._id, function(err, json) {
+        dat.get(stored.id, function(err, json) {
           t.false(err, 'no error')
           t.deepEqual(stored, json)
           cleanup()
@@ -38,7 +38,7 @@ module.exports.restBulkCsv = function(test, common) {
   test('rest bulk post csv', function(t) {
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
-      var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/_bulk', headers: headers})
+      var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
       post.write('a,b,c\n')
       post.write('1,2,3')
       post.end()
@@ -46,7 +46,7 @@ module.exports.restBulkCsv = function(test, common) {
         var ldj = resp.toString()
         ldj = ldj.slice(0, ldj.length - 1)
         var obj = ldj.split('\n').map(function(o) { return JSON.parse(o).row })[0]
-        dat.get(obj._id, function(err, json) {
+        dat.get(obj.id, function(err, json) {
           t.false(err, 'no error')
           t.equal(json.a, '1', 'data matches')
           t.equal(json.b, '2', 'data matches')
@@ -100,7 +100,7 @@ module.exports.basicAuthOptions = function(test, common) {
 module.exports.archiveExport = function(test, common) {
   test('GET _archive returns proper error (on leveldown)', function(t) {
     common.getDat(t, function(dat, cleanup) {
-      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/_archive', json: true}, function(err, res, json) {
+      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/archive', json: true}, function(err, res, json) {
         if (err) throw err
         t.ok(!!json.error, 'got error in json response')
         cleanup()
@@ -114,7 +114,7 @@ module.exports.csvExport = function(test, common) {
   test('GET _csv returns proper csv', function(t) {
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
-      var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/_bulk', headers: headers})
+      var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
       post.write('a,b,c\n')
       post.write('1,2,3\n')
       post.write('4,5,6')
@@ -122,10 +122,10 @@ module.exports.csvExport = function(test, common) {
       
       post.on('response', function(resp) {
         resp.on('end', function() {
-          request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/_csv'}, function(err, res, csv) {
+          request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/csv'}, function(err, res, csv) {
             if (err) throw err
             var lines = csv.split('\n')
-            t.equal(lines[0].split(',').length, 5, '5 columns (_id, _rev, a, b, c)')
+            t.equal(lines[0].split(',').length, 5, '5 columns (id, version, a, b, c)')
             t.equal(lines.length, 4, '4 rows')
             t.equal(lines[lines.length - 1], '', '4th row is empty')
             cleanup()

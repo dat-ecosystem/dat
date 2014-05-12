@@ -50,10 +50,6 @@ module.exports.pullReplicationSparse = function(test, common) {
             if (err) throw err
             dat.createReadStream().pipe(concat(function(db1) {
               dat2.createReadStream().pipe(concat(function(db2) {
-                // HACK since revisions have a hashed based on the row buffer which is non deterministic w/ sparse data
-                function removeRevs(docs) { return docs.map(function(d) { delete d._rev; return d } )}
-                db1 = removeRevs(db1)
-                db2 = removeRevs(db2)
                 t.deepEquals(db1, db2, 'low level data matches')
                 done()
               }))

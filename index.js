@@ -125,7 +125,7 @@ function readPort(portPath, opts, cb) {
     var creds = ''
     if (adminu && adminp) creds = adminu + ':' + adminp + '@'
     var datAddress = 'http://' + creds + '127.0.0.1:' + port
-    request(datAddress + '/_manifest', function(err, resp, json) {
+    request(datAddress + '/api/manifest', function(err, resp, json) {
       if (err || !json.methods) {
         // assume PORT to be invalid
         return fs.unlink(portPath, cb)

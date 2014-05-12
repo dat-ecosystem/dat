@@ -135,7 +135,7 @@ module.exports.sameDir = function(test, common) {
   test('multiple dat instances in the same directory', function(t) {
     common.getDat(t, { datPath: common.dat1tmp, noTestEnd: true }, function(dat1, cleanup1) {
       common.getDat(t, { datPath: common.dat1tmp, noTestEnd: true }, function(dat2, cleanup2) {
-        dat2.put({"_id": "foo", "hello": "world"}, function(err) {
+        dat2.put({"id": "foo", "hello": "world"}, function(err) {
           if (err) throw err
           dat1.get('foo', function(err, row) {
             t.false(err, 'no err')

@@ -23,14 +23,14 @@ module.exports.rowKeys = function(test, common) {
     var sep = '\xff'
     
     var keys = {
-      seq: 's',
+      change: 's',
       data: 'd',
-      rev: 'r',
+      version: 'r',
       cur: 'c'
     }
     
-    var a = docUtils.rowKeys(keys, sep, 'foo', '1-abc', '4')
-    t.deepEqual(a, { row: 'ÿdÿfooÿ01-abc', seq: 'ÿsÿ04', cur: "ÿcÿfoo" })
+    var a = docUtils.rowKeys(keys, sep, 'foo', '1', '4')
+    t.deepEqual(a, { row: 'ÿdÿfooÿ01', change: 'ÿsÿ04', cur: "ÿcÿfoo" })
     
     t.end()
   })
@@ -38,11 +38,11 @@ module.exports.rowKeys = function(test, common) {
 
 module.exports.decodeKey = function(test, common) {
   test('decodeKey parses key format correctly', function(t) {
-    var key = 'ÿdÿfooÿ01-abc'
+    var key = 'ÿdÿfooÿ01'
     var obj = docUtils.decodeKey(key)
     var expected = {
-      _id: 'foo',
-      _rev: '1-abc'
+      id: 'foo',
+      version: 1
     }
     t.deepEqual(obj, expected)
     t.end()
@@ -84,15 +84,15 @@ module.exports.putJsonPrimary = function(test, common) {
 module.exports.updateJson = function(test, common) {
   test('.put and then update json', function(t) {
     common.getDat(t, function(dat, done) {
-      dat.put({"_id": "foo"}, function(err, doc) {
+      dat.put({"id": "foo"}, function(err, doc) {
         if (err) throw err
-        t.ok(doc._rev, 'should return doc w/ rev')
-        dat.put({"_id": "foo"}, function(err, doc2) {
+        t.ok(doc.version, 'should return doc w/ version')
+        dat.put({"id": "foo"}, function(err, doc2) {
           t.ok(err, 'should err')
           t.notOk(doc2, "should not return data")
           dat.put(doc, function(err, doc3) {
             t.notOk(err, 'no err')
-            t.equals(doc3._rev[0], '2', 'should be at rev 2')
+            t.equals(doc3.version, 2, 'should be version 2')
             setImmediate(done)
           })
         })
@@ -104,11 +104,11 @@ module.exports.updateJson = function(test, common) {
 module.exports.reviseConflictsOption = function(test, common) {
   test('.put and then update json', function(t) {
     common.getDat(t, function(dat, done) {
-      dat.put({"_id": "foo"}, function(err, doc) {
+      dat.put({"id": "foo"}, function(err, doc) {
         if (err) throw err
-        dat.put({"_id": "foo"}, {"reviseConflicts": true}, function(err, doc2) {
+        dat.put({"id": "foo"}, {"reviseConflicts": true}, function(err, doc2) {
           t.notOk(err, 'no err')
-          t.equals(doc2._rev[0], '2', 'should be at rev 2')
+          t.equals(doc2.version, 2, 'should be at version 2')
           setImmediate(done)
         })
       })
@@ -162,9 +162,9 @@ module.exports.deleteRow = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
-        dat.delete(doc._id, function(err) {
+        dat.delete(doc.id, function(err) {
           t.false(err, 'should delete okay')
-          dat.get(doc._id, function(err, doc) {
+          dat.get(doc.id, function(err, doc) {
             t.true(err, 'doc should now be not found')
             t.false(doc, 'doc should be null')
             setTimeout(done, 10) // TODO WHY????
@@ -175,20 +175,20 @@ module.exports.deleteRow = function(test, common) {
   })
 }
 
-module.exports.getAtRev = function(test, common) {
-  test('get row at specific rev', function(t) {
+module.exports.getAtVersion = function(test, common) {
+  test('get row at specific version', function(t) {
     common.getDat(t, function(dat, done) {
       dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
-        var rev1 = doc._rev
+        var ver1 = doc.version
         doc.pizza = 'taco'
         dat.put(doc, function(err, doc) {
           t.false(err)
           if (!doc) doc = {}
-          dat.get(doc._id, { rev: rev1 }, function(err, docAtRev) {
+          dat.get(doc.id, { version: ver1 }, function(err, docAtVer) {
             t.false(err, 'no err')
-            if (!docAtRev) docAtRev = {}
-            t.equal(docAtRev.pizza, undefined, 'doc is version 1')
+            if (!docAtVer) docAtVer = {}
+            t.equal(docAtVer.pizza, undefined, 'doc is version 1')
             setImmediate(done)
           })
         })
@@ -227,7 +227,7 @@ module.exports.keepTotalRowCount = function(test, common) {
       dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
         t.equal(dat.getRowCount(), 1)
-        dat.delete(doc._id, function(err) {
+        dat.delete(doc.id, function(err) {
           if (err) throw err
           t.equal(dat.getRowCount(), 0)
           setImmediate(done)
@@ -238,10 +238,10 @@ module.exports.keepTotalRowCount = function(test, common) {
 
   test('do not change row count on update', function(t) {
     common.getDat(t, function(dat, done) {
-      dat.put({"_id": "foo"}, function(err, doc) {
+      dat.put({"id": "foo"}, function(err, doc) {
         if (err) throw err
         t.equal(dat.getRowCount(), 1)
-        dat.put({"_id": "foo"}, function(err, doc2) {
+        dat.put({"id": "foo"}, function(err, doc2) {
           t.ok(err, 'should err')
           t.equal(dat.getRowCount(), 1)
           setImmediate(done)
@@ -277,6 +277,6 @@ module.exports.all = function (test, common) {
   module.exports.multiplePutJson(test, common)
   module.exports.putBuff(test, common)
   module.exports.deleteRow(test, common)
-  module.exports.getAtRev(test, common)
+  module.exports.getAtVersion(test, common)
   module.exports.keepTotalRowCount(test, common)
 }

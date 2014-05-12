@@ -46,7 +46,7 @@ module.exports.importCSV = function(test, common) {
               if (l !== '') rows.push(JSON.parse(l))
             })
             t.equal(rows.length, 3)
-            rows.map(function(r) { t.ok(r._id, 'row has _id') })
+            rows.map(function(r) { t.ok(r.id, 'row has id') })
             common.destroyTmpDats(function() {
               t.end()
             })

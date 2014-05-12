@@ -70,7 +70,7 @@ module.exports.readStreamCsvPrimaryKey = function(test, common) {
     
       ws.on('end', function() {
         dat.createReadStream().pipe(concat(function(data) {
-          var results = data.map(function(r) { return r._id })
+          var results = data.map(function(r) { return r.id })
           t.equals(JSON.stringify(results.sort()), JSON.stringify(expected.sort()), 'matches')
           done()
         }))
@@ -91,7 +91,7 @@ module.exports.readStreamNdjPrimaryKey = function(test, common) {
     
       ws.on('end', function() {
         dat.createReadStream().pipe(concat(function(data) {
-          var results = data.map(function(r) { return r._id })
+          var results = data.map(function(r) { return r.id })
           t.equals(JSON.stringify(results.sort()), JSON.stringify(expected.sort()), 'order matches')
           done()
         }))
@@ -105,15 +105,15 @@ module.exports.readStreamNdjPrimaryKey = function(test, common) {
   })
 }
 
-module.exports.getSequences = function(test, common) {
-  test('getSequences', function(t) {
+module.exports.getChanges = function(test, common) {
+  test('getChanges', function(t) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true })
     
       ws.on('end', function() {
         dat.createChangesStream({include_data: true}).pipe(concat(function(data) {
-          var seqs = data.map(function(r) { return r.seq })
-          t.equal(JSON.stringify(seqs), JSON.stringify([1,2,3,4,5]) , 'ordered sequences 1 - 5 exist')
+          var changes = data.map(function(r) { return r.change })
+          t.equal(JSON.stringify(changes), JSON.stringify([1,2,3,4,5]) , 'ordered changes 1 - 5 exist')
           t.equal(!!data[0].data, true)
           done()
         }))
@@ -318,9 +318,9 @@ module.exports.createReadStreamBuff = function(test, common) {
         var readStream = dat.createReadStream({ buff: true })
         readStream.pipe(concat(function(data) {
           var fields = buff.unpack(data).map(function(d) { return d.toString() })
-          var expected = [ '_id', '_rev', 'a', 'b', 'c', '1', '1-b6d8970cd4a5e19012f592df2c6377c4', '1', '2', '3' ]
+          var expected = [ 'id', 'version', 'a', 'b', 'c', '1', '1-b6d8970cd4a5e19012f592df2c6377c4', '1', '2', '3' ]
           t.equal(fields.length, 10)
-          t.equal(fields[0], '_id')
+          t.equal(fields[0], 'id')
           t.equal(fields[5], '1')
           done()
         }))
@@ -335,16 +335,16 @@ module.exports.createReadStreamBuff = function(test, common) {
 module.exports.createVersionStream = function(test, common) {
   test('createVersionStream', function(t) {
     common.getDat(t, function(dat, done) {
-      dat.put({"_id": "foo", "baz": "bar"}, function(err, doc) {
+      dat.put({"id": "foo", "baz": "bar"}, function(err, doc) {
         t.false(err)
-        var rev1 = doc._rev
+        var ver1 = doc.version
         doc.pizza = 'taco'
         dat.put(doc, function(err, doc) {
           t.false(err)
           // put some data before and after to make sure they dont get returned too
-          dat.put({'_id': 'abc'}, function(err) {
+          dat.put({'id': 'abc'}, function(err) {
             t.false(err)
-            dat.put({'_id': 'xyz'}, function(err) {
+            dat.put({'id': 'xyz'}, function(err) {
               t.false(err)
               readVersions()
             })
@@ -355,10 +355,10 @@ module.exports.createVersionStream = function(test, common) {
       function readVersions() {
         dat.createVersionStream('foo').pipe(concat(function(versions) {
           t.equal(versions.length, 2, '2 versions')
-          var v1 = versions[0] || {_rev: ""}
-          var v2 = versions[1] || {_rev: ""}
-          t.equal(v1._rev[0], '1')
-          t.equal(v2._rev[0], '2')
+          var v1 = versions[0] || {version: ""}
+          var v2 = versions[1] || {version: ""}
+          t.equal(v1.version, 1)
+          t.equal(v2.version, 2)
           t.equal(v1.pizza, undefined, 'version 1')
           t.equal(v2.pizza, 'taco', 'version 2')
           setImmediate(done)
@@ -374,7 +374,7 @@ module.exports.all = function (test, common) {
   module.exports.readStreamBuffPrimaryKey(test, common)
   module.exports.readStreamCsvPrimaryKey(test, common)
   module.exports.readStreamNdjPrimaryKey(test, common)
-  module.exports.getSequences(test, common)
+  module.exports.getChanges(test, common)
   module.exports.changesStream(test, common)
   module.exports.changesStreamTail(test, common)
   module.exports.changesStreamTailNum(test, common)
