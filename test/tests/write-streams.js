@@ -12,7 +12,7 @@ module.exports.blobWriteStream = function(test, common) {
   test('piping a blob into a blob write stream', function(t) {
     common.getDat(t, function(dat, done) {
       
-      var ws = dat.createBlobWriteStream(undefined, 'write-streams.js', function(err, doc) {
+      var ws = dat.createBlobWriteStream('write-streams.js', function(err, doc) {
         t.notOk(err, 'no blob write err')
         t.ok(doc.attachments['write-streams.js'], 'doc has attachment')
         done()
