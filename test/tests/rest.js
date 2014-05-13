@@ -33,6 +33,26 @@ module.exports.restPut = function(test, common) {
   })
 }
 
+module.exports.restPutBlob = function(test, common) {
+  test('rest put blob', function(t) {
+    common.getDat(t, function(dat, cleanup) {
+      var body = {id: 'foo'}
+      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort, json: body }, function(err, res, stored) {
+        t.notOk(err, 'no POST err')
+        var uploadUrl = 'http://localhost:' + dat.defaultPort + '/api/foo/data.txt?version=' + stored.version
+        var post = request({method: 'POST', uri: uploadUrl, body: 'hello'}, function(err, res, updated) {
+          t.notOk(err, 'no upload err')
+          t.ok(updated.version, 2, 'version 2')
+          request('http://localhost:' + dat.defaultPort + '/api/foo/data.txt', function(err, resp, attachment) {
+            t.notOk(err, 'no get err')
+            t.equals(attachment.toString(), 'hello', 'got data.txt')
+            cleanup()
+          })
+        })
+      })
+    })
+  })
+}
 
 module.exports.restBulkCsv = function(test, common) {
   test('rest bulk post csv', function(t) {
@@ -139,6 +159,7 @@ module.exports.csvExport = function(test, common) {
 module.exports.all = function (test, common) {
   module.exports.restGet(test, common)
   module.exports.restPut(test, common)
+  module.exports.restPutBlob(test, common)
   module.exports.restBulkCsv(test, common)
   module.exports.basicAuthEnvVariables(test, common)
   module.exports.basicAuthOptions(test, common)
