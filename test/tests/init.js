@@ -187,6 +187,18 @@ module.exports.customBackend = function(test, common) {
   })
 }
 
+module.exports.customBlobBackend = function(test, common) {
+  test('instantiate + pass in custom blob backend', function(t) {
+    var fakeBlobBackend = function() { return { pizza: true } }
+    var dat = new Dat(common.dat1tmp, { blobs: fakeBlobBackend }, function ready() {
+      t.ok(dat.blobs.pizza, 'dat.blobs is our custom backend')
+      dat.destroy(function(err) {
+        t.false(err, 'destroy ok')
+        t.end()
+      })
+    })
+  })
+}
 
 module.exports.close = function(test, common) {
   test('.close closes db and server', function(t) {
@@ -203,5 +215,6 @@ module.exports.all = function (test, common) {
   module.exports.portFile(test, common)
   module.exports.autoPort(test, common)
   module.exports.customBackend(test, common)
+  module.exports.customBlobBackend(test, common)
   // module.exports.close(test, common)
 }
