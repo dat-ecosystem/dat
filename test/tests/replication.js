@@ -39,6 +39,46 @@ module.exports.pullReplication = function(test, common) {
   })
 }
 
+module.exports.pullReplicationBlob = function(test, common) {
+  test('pull replication should copy blobs', function(t) {
+    var dat2 = new Dat(common.dat2tmp, { serve: false }, function ready() {
+      common.getDat(t, function(dat, cleanup) {
+        
+        var ws = dat.createBlobWriteStream('foo.txt', function(err, doc) {
+          t.notOk(err, 'no blob write err')
+          t.ok(doc.attachments['foo.txt'], 'doc has attachment')
+          pull(doc)
+        })
+        
+        ws.write('bar')
+        ws.end()
+        
+        function pull(doc) {
+          dat2.pull(function(err) {
+            if (err) throw err
+            var blobRead = dat2.blobs.createReadStream(doc.attachments['foo.txt'].hash)
+            blobRead.on('error', function(e) {
+              t.notOk(e, 'should not error')
+              done()
+            })
+            blobRead.pipe(concat(function(data) {
+              t.equals(data.toString(), 'bar', 'data matches')
+              done()
+            }))
+          })
+        }
+        
+        function done() {
+          dat2.destroy(function(err) {
+            t.false(err, 'no destroy err')
+            cleanup()
+          })
+        }
+      })
+    })
+  })
+}
+
 module.exports.pullReplicationSparse = function(test, common) {
   test('pull replication with sparse data', function(t) {
     var dat2 = new Dat(common.dat2tmp, { serve: false }, function ready() {
@@ -267,6 +307,7 @@ module.exports.remoteClone = function(test, common) {
 
 module.exports.all = function (test, common) {
   module.exports.pullReplication(test, common)
+  module.exports.pullReplicationBlob(test, common)
   module.exports.pullReplicationSparse(test, common)
   module.exports.pullReplicationMultiple(test, common)
   module.exports.pullReplicationLive(test, common)
