@@ -129,7 +129,7 @@ module.exports.pullReplicationLive = function(test, common) {
             dat2.createReadStream().pipe(concat(function(data) {
               t.equal(data.length, 1)
               if (data.length) t.equal(data[0].foo, 'bar')
-              pull.stream.end()
+              pull.end()
               dat2.destroy(function(err) {
                 if (err) throw err
                 cleanup()
@@ -168,7 +168,7 @@ module.exports.pushReplication = function(test, common) {
             if (err) throw err
             common.compareData(t, dat, dat2, function() {
               cb()
-            })                
+            })
           })
         })
       }
@@ -213,7 +213,7 @@ module.exports.pushReplicationURLNormalize = function(test, common) {
             if (err) throw err
             common.compareData(t, dat, dat2, function() {
               cb()
-            })                
+            })
           })
         })
       }
