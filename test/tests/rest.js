@@ -21,7 +21,7 @@ module.exports.restPut = function(test, common) {
   test('rest put', function(t) {
     common.getDat(t, function(dat, cleanup) {
       var body = {foo: 'bar'}
-      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort, json: body }, function(err, res, stored) {
+      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api', json: body }, function(err, res, stored) {
         if (err) throw err
         dat.get(stored.id, function(err, json) {
           t.false(err, 'no error')
@@ -37,7 +37,7 @@ module.exports.restPutBlob = function(test, common) {
   test('rest put blob', function(t) {
     common.getDat(t, function(dat, cleanup) {
       var body = {id: 'foo'}
-      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort, json: body }, function(err, res, stored) {
+      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api', json: body }, function(err, res, stored) {
         t.notOk(err, 'no POST err')
         var uploadUrl = 'http://localhost:' + dat.defaultPort + '/api/foo/data.txt?version=' + stored.version
         var post = request({method: 'POST', uri: uploadUrl, body: 'hello'}, function(err, res, updated) {
@@ -84,10 +84,10 @@ module.exports.basicAuthEnvVariables = function(test, common) {
     process.env['DAT_ADMIN_PASS'] = 'pass'
     common.getDat(t, function(dat, cleanup) {
       var body = {foo: 'bar'}
-      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort, json: body }, function(err, res, stored) {
+      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api', json: body }, function(err, res, stored) {
         if (err) throw err
         t.equal(res.statusCode, 401, 'unauthorized')
-        request({method: 'POST', uri: 'http://user:pass@localhost:' + dat.defaultPort, json: body }, function(err, res, stored) {
+        request({method: 'POST', uri: 'http://user:pass@localhost:' + dat.defaultPort + '/api', json: body }, function(err, res, stored) {
           if (err) throw err
           t.equal(res.statusCode, 200, 'authorized')
           delete process.env['DAT_ADMIN_USER']
@@ -104,10 +104,10 @@ module.exports.basicAuthOptions = function(test, common) {
     var opts = { adminUser: 'foo', adminPass: 'bar' }
     common.getDat(t, opts, function(dat, cleanup) {
       var body = {foo: 'bar'}
-      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort, json: body }, function(err, res, stored) {
+      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api', json: body }, function(err, res, stored) {
         if (err) throw err
         t.equal(res.statusCode, 401, 'unauthorized')
-        request({method: 'POST', uri: 'http://foo:bar@localhost:' + dat.defaultPort, json: body }, function(err, res, stored) {
+        request({method: 'POST', uri: 'http://foo:bar@localhost:' + dat.defaultPort + '/api', json: body }, function(err, res, stored) {
           if (err) throw err
           t.equal(res.statusCode, 200, 'authorized')
           cleanup()
