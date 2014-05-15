@@ -107,12 +107,70 @@ Changes are emitted as JS objects that look like `{change: 352, id: 'foo', versi
 * `limit` (default unlimited) - how many changes to return before stopping
 * `live` (default `falss`) - if true will emit new changes as they happen + never end (unless you manually end the stream)
 
-## createBlobWriteStream
 ## createWriteStream
+
+```js
+var writeStream = db.createWriteStream([opts])
+```
+
+Returns a new write stream. You can write data to it. For every thing you write it will write back the success/fail status as a JS object.
+
+You can write:
+
+- raw CSV (e.g. `fs.createReadStream('data.csv')`)
+- raw line separated JSON objects
+- JS objects (e.g. `objectMode`)
+
+### Options
+
+* `format` (defaults to multibuffer), set this equal to `json`, `objects`, `csv` to tell the write stream how to parse the data you write to it
+* `csv` - setting to true is equivalent to `{format: 'csv'}`
+* `json` - setting to true is equivalent to `{format: 'json'}`
+* `objects` - setting to true is equivalent to `{format: 'objects'}`
+* `primary` (default `id`) - the column or array of columns to use as the primary key
+* `hash` (default `false`) - if true `id` will be set to the md5 hex hash of the string of the primary key(s)
+* `primaryFormat` - a function that formats the key before it gets inserted. accepts `(val)` and must return a string to set as the key.
+* `columns` - specify the column names to use when parsing multibuffer/csv. Mandatory for multibuffer, optional for csv (csv headers are automatically parsed but this can be used to override them)
+* `headerRow` (default `true`) - set to false if your csv doesn't have a header row. you'll also have to manually specify `columns`
+* `separator` (default `,`) - passed to the csv parser
+* `delimiter` (default `\n`) - passed to the csv parser
+
 ## createVersionStream
 
+```js
+var versions = db.createVersionStream(id, [opts])
+```
+
+Returns a read stream that emits all versions of a given key
+
+### Options
+
+* `start` (default 0) - version to start at
+* `end` (default infinity) - version to stop at
+
+## createBlobWriteStream
+
+```js
+var blobWriter = db.createBlobWriteStream(filename, [row], [cb])
+```
+
+Returns a writable stream that you can stream a binary blob attachment into. Calls `cb` with `(err, updated)` where `updated` is the new version of the row that the blob was attached to.
+
+`filename` may be either simply a string for the filename you want to save the blob as, or an options object e.g. `{filename: 'foo.txt'}`. `filename` will get passed to the underlying blob store backend as the `options` argument.
+
+If specified `row` should be a JS object you want to attach the blob to, obeying the same update/conflict rules as `db.put`. If not specified a new row will be created.
+
 ## serve
+
+```js
+dat.serve([port], [cb])
+```
+
+Starts the dat HTTP server. `port` defaults to `6461` or the next largest available open port, `cb` gets called with `(err)` when the server has started/failed.
+
 ## push
+
+
 ## pull
 ## clone
 
