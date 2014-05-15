@@ -168,25 +168,120 @@ dat.serve([port], [cb])
 
 Starts the dat HTTP server. `port` defaults to `6461` or the next largest available open port, `cb` gets called with `(err)` when the server has started/failed.
 
+## clone
+
+```js
+dat.clone(remote, [cb])
+```
+
+Initializes a new dat (if not already initialized) and makes a local replica of `remote` in the folder where dat was instantiated. May be faster than `dat.pull` if the remote server has faster clone capabilities (e.g. hyperleveldb's `liveBackup`)
+
 ## push
+
+```js
+dat.push(remote, [cb])
+```
+
+Synchronizes local dat with a remote dat by pushing all changes to the remote dat over HTTP. Calls `cb` with `(err)` when done.
+
+`remote` should be the base HTTP address of the remote dat, e.g. `http://localhost:6461`
 
 
 ## pull
-## clone
+
+```js
+dat.push(remote, [cb])
+```
+
+Synchronizes local dat with a remote dat by pushing all changes to the remote dat over HTTP. Calls `cb` with `(err)` when done.
+
+`remote` should be the base HTTP address of the remote dat, e.g. `http://localhost:6461`
+
+### Options
+
+* `live` (default `false`) - if true will keep the pull open forever and will receive new changes as they happen from the remote
+* `quiet` (default `false`) - if true will suppress progress messages
 
 ## init
+
+```js
+dat.init(path, [cb])
+```
+
+Creates a new empty dat folder and database at `path/.dat`. This method is called by default when you create a dat instance.
+
 ## paths
+
+```
+var paths = dat.paths(path)
+```
+
+Returns an object with the various absolute paths (calculated using `path` as the base dir) for different parts of dat, e.g. the `.dat` folder, the leveldb folder, the blob store. 
+
 ## exists
+
+```
+dat.exists(path, cb)
+```
+
+Checks if `path` has a dat store in it. Calls `cb` with `(err, exists)` where `exists` is a boolean.
+
 ## close
+
+```js
+dat.close(cb)
+```
+
+Closes the http server, RPC client (if present), database and cleans up the `.dat/PORT` file. Calls `cb` with `(err)` when done.
+
 ## destroy
 
+```js
+dat.destroy(path, cb)
+```
+
+Calls `.close` and then destroys the `.dat` folder in `path`. Calls `cb` with `(err)` when done.
+
 ## cat
+
+```js
+dat.cat()
+```
+
+Prints a line separated JSON serialized version of a `dat.createReadStream()` (the newest version of all rows) to stdout.
+
 ## dump
 
+```js
+dat.dump()
+```
+
+Prints the raw encoded key/value data from leveldb to stdout as line separated JSON. Used for debugging.
+
 ## getRowCount
+
+```js
+var number = dat.getRowCount()
+```
+
+Returns the current number of rows in the db.
+
 ## headers
-## level
+
+```js
+var headers = dat.headers()
+```
+
+Returns an array of all the current column names in the db. Used for generating CSVs.
+
 ## backend
+
+```
+dat.backend(backend, cb)
+```
+
+Switches levelup to use `require(backend)` as it's leveldown. Will install it from NPM if it isn't available and put it in `.dat/node_modules`. Calls `cb` with `(err)` when done. Before the backend gets loaded you have to close and re-instantiate the dat store.
+
 ## config
 ## normalizeURL
 ## supportsLiveBackup
@@ -194,6 +289,10 @@ Starts the dat HTTP server. `port` defaults to `6461` or the next largest availa
 ## progressLogStream
 ## dbOptions
 ## defaultPort
+
+# Internal methods
+
+## _level
 ## _storage
 ## _ensureExists
 ## _sleep
