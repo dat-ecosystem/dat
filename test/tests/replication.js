@@ -175,7 +175,7 @@ module.exports.pullReplicationLive = function(test, common) {
                 cleanup()
               })
             }))
-          }, 500)
+          }, 2000)
         })
       })
     })
