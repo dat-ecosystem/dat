@@ -1,7 +1,7 @@
 {
   "name": "dat",
   "version": "4.5.2",
-  "description": "real-time replication and versioning for large tabular data sets",
+  "description": "real-time replication and versioning for data sets (tabular and blobs)",
   "preferGlobal": true,
   "keywords": [
     "hyperdata",
@@ -36,6 +36,7 @@
     "corsify": "~1.0.2",
     "csv-multibuffer-stream": "^1.0.0",
     "csv-write-stream": "~0.1.1",
+    "cuid": "^1.2.4",
     "data-table": "^1.0.1",
     "debug": "~0.7.4",
     "extend": "~1.2.1",
@@ -55,7 +56,6 @@
     "levelup": "~0.18.2",
     "lexicographic-integer": "~1.1.0",
     "mkdirp": "~0.3.5",
-    "monot": "~0.1.1",
     "multibuffer": "~2.2.0",
     "multibuffer-stream": "~2.1.0",
     "multilevel": "~5.5.0",
