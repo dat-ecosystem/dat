@@ -1,15 +1,18 @@
+var fs = require('fs')
+var tty = require('tty')
 var path = require('path')
+
+var request = require('request').defaults({json: true})
+
 var meta = require(path.join(__dirname, 'lib', 'meta.js'))
 var commands = require(path.join(__dirname, 'lib', 'commands'))
 var getPort = require(path.join(__dirname, 'lib', 'get-port'))
 var backend = require(path.join(__dirname, 'lib', 'backend'))
 var datVersion = require(path.join(__dirname, 'package.json')).version
-var request = require('request').defaults({json: true})
-var fs = require('fs')
-var tty = require('tty')
 
 module.exports = Dat
 
+// new Dat()
 // new Dat(cb)
 // new Dat({foo: bar})
 // new Dat({foo: bar}, cb)
@@ -25,7 +28,7 @@ function Dat(dir, opts, onReady) {
   if (!(this instanceof Dat)) return new Dat(dir, opts, onReady)
   
   this.version = datVersion
-
+  
   if (typeof dir === 'function') {
     onReady = dir
     opts = {}
@@ -43,6 +46,8 @@ function Dat(dir, opts, onReady) {
     opts = {}
   }
   
+  if (typeof opts === 'undefined') opts = {}
+  
   if (!onReady) onReady = function(){}
   
   // TODO figure out more descriptive names/API for these
@@ -53,9 +58,9 @@ function Dat(dir, opts, onReady) {
   
   this.lockRetries = 0
   this.retryLimit = 3
-  this.dir = dir
+  this.dir = dir || opts.path || process.cwd()
   this.opts = opts
-  var paths = this.paths()
+  var paths = this.paths(dir)
   this._backend = backend(this)
   
   if (!opts.storage) {
@@ -69,6 +74,7 @@ function Dat(dir, opts, onReady) {
         loadMeta()
       })
     }
+    // the 2000 here is thanks to windows server, which errors w/ lower values
     if (!tty.isatty(0)) setTimeout(read, 2000)
     else read()
   }

@@ -10,7 +10,7 @@ Windows        | Mac/Linux    | Browsers (WIP)
 
 `dat` is currently pre-alpha. You can test it out or hack on it now, but all things are subject to change.
 
-To learn more about `dat` please read [what is `dat`?](what-is-dat.md).
+To learn more about `dat` please read [what is `dat`?](docs/what-is-dat.md).
 
 # Hacking on dat
 
@@ -39,7 +39,7 @@ npm link
 
 ### How to use `dat`
 
-See [usage.md](usage.md) for usage, or type `dat help`.
+See [docs/usage.md](docs/usage.md) for usage, or type `dat help`.
 
 ### BSD Licensed
 
