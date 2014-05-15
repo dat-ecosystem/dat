@@ -6,17 +6,16 @@ Windows        | Mac/Linux    | Browsers (WIP)
 -------------- | ------------ | --------------
 [![Build status](https://ci.appveyor.com/api/projects/status/s236036xnglo4v5l)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](http://img.shields.io/travis/maxogden/dat.svg?style=flat)](https://travis-ci.org/maxogden/dat) | [![testling badge](https://ci.testling.com/maxogden/dat.png)](https://ci.testling.com/maxogden/dat)
 
-## collaborative data
+## Getting started
 
-`dat` is currently pre-alpha. You can test it out or hack on it now, but all things are subject to change.
-
-To learn more about `dat` please read [what is `dat`?](docs/what-is-dat.md).
-
-# Hacking on dat
+`dat` is currently **pre-alpha**. You can test it out or hack on it now, but all things are subject to change.
 
 If you are interested in testing out the pre-alpha version of `dat` you can install it using `npm` (which usually gets installed when you [install `node`](http://nodejs.org/))
 
 `dat` is primarily intended as a command line tool. There is also a programmatic API that you can use in node.js programs for more advanced use cases, as well as a way to have `dat` call programs written in other programming languages to transform data.
+
+* Read [what is `dat`?](docs/what-is-dat.md).
+* Check out the [JS API docs](docs/api.md) or the [CLI usage docs](docs/usage.md).
 
 ## Install
 
@@ -36,10 +35,6 @@ cd dat
 npm install
 npm link
 ```
-
-### How to use `dat`
-
-See [docs/usage.md](docs/usage.md) for usage, or type `dat help`.
 
 ### BSD Licensed
 
