@@ -118,7 +118,7 @@ module.exports.basicAuthOptions = function(test, common) {
 }
 
 module.exports.archiveExport = function(test, common) {
-  test('GET _archive returns proper error (on leveldown)', function(t) {
+  test('GET /api/archive returns proper error (on leveldown)', function(t) {
     common.getDat(t, function(dat, cleanup) {
       request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/archive', json: true}, function(err, res, json) {
         if (err) throw err
@@ -131,7 +131,7 @@ module.exports.archiveExport = function(test, common) {
 
 
 module.exports.csvExport = function(test, common) {
-  test('GET _csv returns proper csv', function(t) {
+  test('GET /api/csv returns proper csv', function(t) {
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
       var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
@@ -156,6 +156,30 @@ module.exports.csvExport = function(test, common) {
   })
 }
 
+module.exports.jsonExport = function(test, common) {
+  test('GET /api/json returns json array', function(t) {
+    common.getDat(t, function(dat, cleanup) {
+      var headers = {'content-type': 'text/csv'}
+      var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
+      post.write('a,b,c\n')
+      post.write('1,2,3\n')
+      post.write('4,5,6')
+      post.end()
+      
+      post.on('response', function(resp) {
+        resp.on('end', function() {
+          request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/json', json: true}, function(err, res, json) {
+            if (err) throw err
+            t.equal(json.rows.length, 2, '3 objects returned')
+            t.equal(json.rows[0]['a'], '1', 'data matches')
+            cleanup()
+          })
+        })
+      })
+    })
+  })
+}
+
 module.exports.all = function (test, common) {
   module.exports.restGet(test, common)
   module.exports.restPut(test, common)
@@ -165,4 +189,5 @@ module.exports.all = function (test, common) {
   module.exports.basicAuthOptions(test, common)
   module.exports.archiveExport(test, common)
   module.exports.csvExport(test, common)
+  module.exports.jsonExport(test, common)
 }
