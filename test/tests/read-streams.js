@@ -22,7 +22,7 @@ module.exports.readStreamBuff = function(test, common) {
 
       var packStream = mbstream.packStream()
       packStream.pipe(ws)
-      var schema = protobuf([{name:'num', type:'string'}]);
+      var schema = protobuf([{name:'num', type:'json'}]);
 
       // create a bunch of single cell buff rows with incrementing integers in them
       for (var i = 0; i < 1000; i++) {
@@ -51,7 +51,7 @@ module.exports.readStreamBuffPrimaryKey = function(test, common) {
       var packStream = mbstream.packStream()
       packStream.pipe(ws)
     
-      var schema = protobuf([{name:'num', type:'string'}]);
+      var schema = protobuf([{name:'num', type:'json'}]);
 
       // create a bunch of single cell buff rows with incrementing integers in them
       for (var i = 0; i < 1000; i++) {

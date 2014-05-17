@@ -29,7 +29,7 @@ module.exports.singleNdjsonObject = function(test, common) {
     common.getDat(t, function(dat, done) {
 
       var ws = dat.createWriteStream({ json: true })
-    
+
       ws.on('end', function() {
     
         var cat = dat.createReadStream()
@@ -126,7 +126,7 @@ module.exports.singleNdjsonObjectIdOnly = function(test, common) {
 module.exports.singleBuff = function(test, common) {
   test('piping a single row of buff data with write stream', function(t) {
   
-    var schema = protobuf([{name:'foo', type:'string'}])
+    var schema = protobuf([{name:'foo', type:'json'}])
     var row = schema.encode({foo:'bar'})
   
     common.getDat(t, function(dat, done) {
@@ -153,7 +153,7 @@ module.exports.singleBuff = function(test, common) {
 module.exports.multipleBuffs = function(test, common) {
   test('piping multiple rows of buff data with write stream', function(t) {
 
-    var schema = protobuf([{name:'a', type:'string'}, {name:'b', type:'string'}])
+    var schema = protobuf([{name:'a', type:'json'}, {name:'b', type:'json'}])
     var row1 = schema.encode({a:'1',b:'2'})
     var row2 = schema.encode({a:'3',b:'4'})
 
