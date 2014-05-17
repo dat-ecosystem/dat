@@ -3,6 +3,7 @@ var jsonBuffStream = require('json-multibuffer-stream')
 var concat = require('concat-stream')
 var buff = require('multibuffer')
 var bops = require('bops')
+var protobuf = require('protocol-buffers')
 var docUtils = require(path.join(__dirname, '..', '..', 'lib', 'document'))
 
 module.exports.buffToJson = function(test, common) {
@@ -141,9 +142,10 @@ module.exports.multiplePutJson = function(test, common) {
 module.exports.putBuff = function(test, common) {
   test('.put buff', function(t) {
     common.getDat(t, function(dat, done) {
-      var row = buff.pack([bops.from('bar')])
+      var schema = protobuf([{name:'foo', type:'string'}]);
+      var row = schema.encode({foo:'bar'});
     
-      dat.put(row, {columns: ['foo']}, function(err) {
+      dat.put(row, {columns: schema.toJSON()}, function(err) {
         if (err) throw err
         var cat = dat.createReadStream()
     
@@ -271,7 +273,7 @@ module.exports.all = function (test, common) {
   module.exports.rowKeys(test, common)
   module.exports.decodeKey(test, common)
   module.exports.putJson(test, common)
-  // module.exports.putJsonPrimary(test, common)
+    // module.exports.putJsonPrimary(test, common)
   module.exports.updateJson(test, common)
   module.exports.reviseConflictsOption(test, common)
   module.exports.multiplePutJson(test, common)

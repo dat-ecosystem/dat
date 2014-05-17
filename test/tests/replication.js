@@ -43,16 +43,16 @@ module.exports.pullReplicationBlob = function(test, common) {
   test('pull replication should copy blobs', function(t) {
     var dat2 = new Dat(common.dat2tmp, { serve: false }, function ready() {
       common.getDat(t, function(dat, cleanup) {
-        
+
         var ws = dat.createBlobWriteStream('foo.txt', function(err, doc) {
           t.notOk(err, 'no blob write err')
           t.ok(doc.attachments['foo.txt'], 'doc has attachment')
           pull(doc)
         })
-        
+
         ws.write('bar')
         ws.end()
-        
+
         function pull(doc) {
           dat2.pull(function(err) {
             if (err) throw err
@@ -67,7 +67,7 @@ module.exports.pullReplicationBlob = function(test, common) {
             }))
           })
         }
-        
+
         function done() {
           dat2.destroy(function(err) {
             t.false(err, 'no destroy err')
@@ -208,7 +208,7 @@ module.exports.pushReplication = function(test, common) {
             if (err) throw err
             common.compareData(t, dat, dat2, function() {
               cb()
-            })
+            })                
           })
         })
       }
@@ -253,7 +253,7 @@ module.exports.pushReplicationURLNormalize = function(test, common) {
             if (err) throw err
             common.compareData(t, dat, dat2, function() {
               cb()
-            })
+            })                
           })
         })
       }

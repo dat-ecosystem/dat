@@ -5,6 +5,7 @@ var crypto = require('crypto')
 var mbstream = require('multibuffer-stream')
 var buff = require('multibuffer')
 var bops = require('bops')
+var protobuf = require('protocol-buffers')
 var concat = require('concat-stream')
 var debug = require('debug')('test.write-streams')
 
@@ -125,7 +126,8 @@ module.exports.singleNdjsonObjectIdOnly = function(test, common) {
 module.exports.singleBuff = function(test, common) {
   test('piping a single row of buff data with write stream', function(t) {
   
-    var row = buff.pack([bops.from('bar')])
+    var schema = protobuf([{name:'foo', type:'string'}])
+    var row = schema.encode({foo:'bar'})
   
     common.getDat(t, function(dat, done) {
     
@@ -151,8 +153,9 @@ module.exports.singleBuff = function(test, common) {
 module.exports.multipleBuffs = function(test, common) {
   test('piping multiple rows of buff data with write stream', function(t) {
 
-    var row1 = buff.pack([bops.from('1'), bops.from('2')])
-    var row2 = buff.pack([bops.from('3'), bops.from('4')])
+    var schema = protobuf([{name:'a', type:'string'}, {name:'b', type:'string'}])
+    var row1 = schema.encode({a:'1',b:'2'})
+    var row2 = schema.encode({a:'3',b:'4'})
 
     common.getDat(t, function(dat, done) {
     
