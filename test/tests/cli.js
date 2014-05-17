@@ -63,7 +63,6 @@ module.exports.badCommand = function(test, common) {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
         var dat = child.exec(datCmd + ' pizza', {cwd: common.dat1tmp}, function (error, stdout, stderr) {
-          console.log('stderr', stdout, stderr)
           t.ok(stderr.toString().indexOf('Command not found') > -1, 'output matches')
           common.destroyTmpDats(function() {
             t.end()
