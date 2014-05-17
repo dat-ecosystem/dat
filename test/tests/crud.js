@@ -1,23 +1,9 @@
 var path = require('path')
-var jsonBuffStream = require('json-multibuffer-stream')
 var concat = require('concat-stream')
 var buff = require('multibuffer')
 var bops = require('bops')
 var protobuf = require('protocol-buffers')
 var docUtils = require(path.join(__dirname, '..', '..', 'lib', 'document'))
-
-module.exports.buffToJson = function(test, common) {
-  test('buff <-> json', function(t) {
-    var test = {'hello': 'world', 'foo': {'bar': '[baz]', 'pizza': [1,2,3]}}
-    var columns = Object.keys(test)
-  
-    var encoded = jsonBuffStream.encode(test)
-    var decoded = jsonBuffStream.decode(columns, encoded).decoded
-    decoded.foo = JSON.parse(decoded.foo)
-    t.deepEqual(test, decoded, 'encoded/decoded matches')
-    t.end()
-  })
-}
 
 module.exports.rowKeys = function(test, common) {
   test('rowKeys returns correctly formatted keys', function(t) {
@@ -269,7 +255,6 @@ module.exports.keepTotalRowCount = function(test, common) {
 }
 
 module.exports.all = function (test, common) {
-  module.exports.buffToJson(test, common)
   module.exports.rowKeys(test, common)
   module.exports.decodeKey(test, common)
   module.exports.putJson(test, common)

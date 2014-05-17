@@ -46,8 +46,6 @@
     "hat": "~0.0.3",
     "head-stream": "~0.0.3",
     "hyperlevel-backup": "~1.0.1",
-    "json-multibuffer-stream": "~3.0.0",
-    "json-protobuf-stream": "^0.2.0",
     "ldjson-stream": "~0.0.1",
     "level-js": "^2.1.3",
     "level-live-stream": "~1.4.9",

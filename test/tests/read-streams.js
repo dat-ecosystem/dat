@@ -313,30 +313,6 @@ module.exports.createReadStreamCSV = function(test, common) {
   })
 }
 
-
-module.exports.createReadStreamBuff = function(test, common) {
-  test('createReadStream buff', function(t) {
-    common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ csv: true, primary: 'a' })
-    
-      ws.on('end', function() {
-        var readStream = dat.createReadStream({ buff: true })
-        readStream.pipe(concat(function(data) {
-          var fields = buff.unpack(data).map(function(d) { return d.toString() })
-          var expected = [ 'id', 'version', 'a', 'b', 'c', '1', '1-b6d8970cd4a5e19012f592df2c6377c4', '1', '2', '3' ]
-          t.equal(fields.length, 10)
-          t.equal(fields[0], 'id')
-          t.equal(fields[5], '1')
-          done()
-        }))
-      })
-    
-      ws.write(bops.from('a,b,c\n1,2,3'))
-      ws.end()
-    })
-  })
-}
-
 module.exports.createVersionStream = function(test, common) {
   test('createVersionStream', function(t) {
     common.getDat(t, function(dat, done) {
@@ -387,6 +363,5 @@ module.exports.all = function (test, common) {
   module.exports.createReadStreamValues(test, common)
   module.exports.createReadStreamStartEndKeys(test, common)
   module.exports.createReadStreamCSV(test, common)
-  module.exports.createReadStreamBuff(test, common)
   module.exports.createVersionStream(test, common)
 }
