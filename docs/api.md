@@ -62,7 +62,7 @@ If `buffer` is specified (and `Buffer.isBuffer(buffer)` is truthy) then instead 
 
 ### Options
 
-* `override` (default `false`) - if true it will bypass revision checking and overwrite any data that may already exist
+* `force` (default `false`) - if true it will bypass revision checking and override any conflicts that may normally happen + create a new version of the row
 
 ## delete
 
