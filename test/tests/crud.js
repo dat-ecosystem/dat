@@ -53,6 +53,23 @@ module.exports.putJson = function(test, common) {
   })
 }
 
+module.exports.putJsonSetVersion = function(test, common) {
+  test('.put json at specific version', function(t) {
+    common.getDat(t, function(dat, done) {
+      dat.put({"foo": "bar", version: 5}, function(err, doc) {
+        if (err) throw err
+        var cat = dat.createReadStream()
+    
+        cat.pipe(concat(function(data) {
+          t.equal(data.length, 1)
+          t.equal(data[0].version, 5)
+          setImmediate(done)
+        }))
+      })
+    })
+  })
+}
+
 module.exports.putJsonPrimary = function(test, common) {
   test('.put json w/ primary key option', function(t) {
     common.getDat(t, function(dat, done) {
@@ -88,12 +105,12 @@ module.exports.updateJson = function(test, common) {
   })
 }
 
-module.exports.reviseConflictsOption = function(test, common) {
-  test('.put and then update json', function(t) {
+module.exports.forceOption = function(test, common) {
+  test('.put and then force update json', function(t) {
     common.getDat(t, function(dat, done) {
       dat.put({"id": "foo"}, function(err, doc) {
         if (err) throw err
-        dat.put({"id": "foo"}, {"reviseConflicts": true}, function(err, doc2) {
+        dat.put({"id": "foo"}, {"force": true}, function(err, doc2) {
           t.notOk(err, 'no err')
           t.equals(doc2.version, 2, 'should be at version 2')
           setImmediate(done)
@@ -229,8 +246,8 @@ module.exports.keepTotalRowCount = function(test, common) {
       dat.put({"id": "foo"}, function(err, doc) {
         if (err) throw err
         t.equal(dat.getRowCount(), 1)
-        dat.put({"id": "foo"}, function(err, doc2) {
-          t.ok(err, 'should err')
+        dat.put(doc, function(err, doc2) {
+          t.notOk(err, 'should not err')
           t.equal(dat.getRowCount(), 1)
           setImmediate(done)
         })
@@ -258,9 +275,10 @@ module.exports.all = function (test, common) {
   module.exports.rowKeys(test, common)
   module.exports.decodeKey(test, common)
   module.exports.putJson(test, common)
-    // module.exports.putJsonPrimary(test, common)
+  module.exports.putJsonSetVersion(test, common)
+  // module.exports.putJsonPrimary(test, common)
   module.exports.updateJson(test, common)
-  module.exports.reviseConflictsOption(test, common)
+  module.exports.forceOption(test, common)
   module.exports.multiplePutJson(test, common)
   module.exports.putBuff(test, common)
   module.exports.deleteRow(test, common)
