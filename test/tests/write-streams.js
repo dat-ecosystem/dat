@@ -15,7 +15,10 @@ module.exports.blobWriteStream = function(test, common) {
       
       var ws = dat.createBlobWriteStream('write-streams.js', function(err, doc) {
         t.notOk(err, 'no blob write err')
-        t.ok(doc.attachments['write-streams.js'], 'doc has attachment')
+        var attachment = doc.attachments['write-streams.js']
+        t.ok(attachment, 'doc has attachment')
+        t.ok(attachment.size, 'attachment has size')
+        t.ok(attachment.hash, 'attachment has hash')
         done()
       })
       
