@@ -27,7 +27,6 @@
     "JSONStream": "^0.8.2",
     "ansimd": "0.0.1",
     "basic": "~0.0.1",
-    "binary-csv": "~0.1.6",
     "binary-split": "~0.1.0",
     "bops": "~0.1.0",
     "byte-stream": "~2.0.2",
