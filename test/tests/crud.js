@@ -53,6 +53,23 @@ module.exports.putJson = function(test, common) {
   })
 }
 
+module.exports.putWeirdKeys = function(test, common) {
+  test('key starting + ending with .', function(t) {
+    common.getDat(t, function(dat, done) {
+      dat.put({"id": ".error.", "foo": "bar"}, function(err, doc) {
+        if (err) throw err
+        console.log(doc)
+        var cat = dat.createReadStream()
+        cat.pipe(concat(function(data) {
+          t.equal(data.length, 1)
+          t.equal(data[0]['foo'], "bar")
+          setImmediate(done)
+        }))
+      })
+    })
+  })
+}
+
 module.exports.putJsonSetVersion = function(test, common) {
   test('.put json at specific version', function(t) {
     common.getDat(t, function(dat, done) {
@@ -172,7 +189,12 @@ module.exports.deleteRow = function(test, common) {
           dat.get(doc.id, function(err, doc) {
             t.true(err, 'doc should now be not found')
             t.false(doc, 'doc should be null')
-            setTimeout(done, 10) // TODO WHY????
+            var cat = dat.createReadStream()
+            
+            cat.pipe(concat(function(data) {
+              t.equal(data.length, 0, 'should return no data')
+              setImmediate(done)
+            }))
           })
         })
       })
@@ -275,6 +297,7 @@ module.exports.all = function (test, common) {
   module.exports.rowKeys(test, common)
   module.exports.decodeKey(test, common)
   module.exports.putJson(test, common)
+  module.exports.putWeirdKeys(test, common)
   module.exports.putJsonSetVersion(test, common)
   // module.exports.putJsonPrimary(test, common)
   module.exports.updateJson(test, common)
