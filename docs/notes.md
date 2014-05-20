@@ -12,7 +12,7 @@ all are streaming parsers
 
 ## on disk format
 
-when inserting data into dat you have to specify a primary column with unique ids. if one isn't specified then unique monotonic unique ids will be generated for each row. data comes out of dat in primary key sorted order.
+when inserting data into dat you have to specify a primary column with unique ids. if one isn't specified then unique ids (a [cuid](https://www.npmjs.org/package/cuid)) will be generated for each row. data comes out of dat in primary key sorted order.
 
 for the following explanations refer to this example CSV:
 
@@ -21,38 +21,37 @@ a,b,c
 1,2,3
 ```
 
-in dat all data are stored as [multibuffers](http://npmjs.org/multibuffer) (aka 'buff'), which represents a single row, where each cell is a buffer and the row is persisted to disk as a multibuffer. each dat store has a header array, so for the above csv it would be `['a','b','c']`
+in dat all data are stored as [protocol buffers](http://npmjs.org/https://developers.google.com/protocol-buffers/docs/proto#scalar) (aka 'protobuf'), which represents a single row, where each cell is a field on the protobuf and the row is persisted to disk as a single protobuf object. each dat store stores the protobuf schema (aka the headers/column names), so for the above csv it would store something like `'a','b','c'`
 
-if data gets written to dat later on that has a fourth column that column value will have to get added to the header array
+if data gets written to dat later on that has a fourth column that column value will get added to the schema by dat
 
 for example, if you convert the above csv to json it would be `{"a": 1, "b": 2, "c": 3}`. Storing this on disk as JSON would take up 19 bytes, storing the header array once is 13 bytes and then the cells 'a', 'b', 'c' is only ~5 bytes. with millions of rows the space savings add up.
 
+dat can store JSON in protobuf and read it back out as JSON. this isn't normally part of the protobuf spec but we cheat a little bit because JSON is useful :) protobuf gives us the ability to store any of the types that it supports (e.g. 64 bit integers) in a way that is backwards compatible if the schema changes
 
 ### keys
 
+dat has 3 indexes: a primary key, a change log index and a current revision index.
+
+an example of a data key (the primary key index):
+
 ```
-ÿdÿfooÿ01ÿ04
+ÿdÿfooÿ01
 ````
 
 which breaks down to:
 
 ```
-d id revision sequence
+d - id - version
 ```
 
-keys are prefixed with `d` which stands for `data`
-
-### values
-
-32bit hash of the schema + multibuffer
+data keys are prefixed with `d` which stands for `data`
 
 ## schema versions
 
-1. schemas (e.g. columns in a table) are append-only for backwards compatibility + simplicity reasons
-2. deletes are possible but require compaction
-3. if you try and write data to dat that doesn't match schemas you will get an error (this includes sync)
-4. the correct way to merge non-matching data is to transform data to match the local schema
-5. if you really want to merge two non-matching schemas you can do it with an override, but then you'll have weird sparse columns (not recommended)
+1. if you try and write data to dat that doesn't match schemas you will get an error (this includes sync)
+2. the correct way to merge non-matching data is to transform data to match the local schema
+3. if you really want to merge two non-matching schemas you can do it with an override, but then you'll have weird sparse columns (not recommended)
 
 #### storage considerations
 
@@ -64,25 +63,6 @@ cell based storage was discussed here: https://github.com/maxogden/dat/issues/10
 
 the downside is that it adds complexity as you have to store revision numbers for every cell. what isn't mentioned in that thread is the performance impact. when keys are, say, 10 bytes and values are 5 bytes (or 1 byte as in the above example csv) then write throughput with leveldb goes down as opposed to row based storage where keys are the same but values are usually in 100 byte range (depending on how many columns exist of course, but roughly hundreds - thousands of bytes per row rather than double digits as with cellular storage)
 
-##### delimited vs framed
-
-csv is a delimited format, whereas things like msgpack or the redis protocol are framed formats.
-
-to store the above csv in a simple framed format would look something like this
-
-```
-[4 byte length integer][first cell][4 byte length integer][second cell][4 byte length integer][third cell]
-```
-
-or, when written out with 4byte integer (UInt32BE) framing length precision:
-
-```
-[0001 1 0001 2 0001 3]
-```
-
-which means for 3 bytes of data there are 12 bytes of overhead (4 bytes for each cell). instead of using fixed width framing sections dat uses [varints](https://npmjs.org/package/varint) instead
-
-generally speaking, delimited data is more intensive as you have to scan the full data for all of the instances of your delimiter, but for smaller values the performance impact shouldn't be as noticable. the benefit is that you can store single byte delimiters instead of having to use larger bit precision framing indexes
 
 #### the .buff format
 
