@@ -65,7 +65,8 @@ module.exports.restBulkCsv = function(test, common) {
       post.pipe(concat(function(resp) {
         var ldj = resp.toString()
         ldj = ldj.slice(0, ldj.length - 1)
-        var obj = ldj.split('\n').map(function(o) { return JSON.parse(o).row })[0]
+        var obj = ldj.split('\n').map(function(o) { return JSON.parse(o) })[0]
+
         dat.get(obj.id, function(err, json) {
           t.false(err, 'no error')
           t.equal(json.a, '1', 'data matches')
