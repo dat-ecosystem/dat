@@ -36,6 +36,7 @@
     "content-addressable-store": "^1.5.0",
     "corsify": "~1.0.2",
     "csv-multibuffer-stream": "^1.0.0",
+    "csv-parser": "^1.2.1",
     "csv-write-stream": "~0.1.1",
     "cuid": "^1.2.4",
     "data-table": "^2.0.0",
