@@ -76,7 +76,7 @@ module.exports.portFile = function(test, common) {
     var dat = new Dat(common.dat1tmp, function ready() {
       var port = fs.readFileSync(dat.paths().port).toString()
       t.true(port, port)
-      request('http://localhost:' + port, function(err, resp, json) {
+      request('http://localhost:' + port + '/api', function(err, resp, json) {
         t.false(err, 'no GET err')
         t.equal(json.dat, 'Hello', JSON.stringify(json))
         dat.destroy(function(err) {
@@ -119,7 +119,7 @@ module.exports.autoPort = function(test, common) {
     function verifyPort(dat, cb) {
       var port = fs.readFileSync(dat.paths().port).toString()
       t.true(port, port)
-      request('http://localhost:' + port, function(err, resp, json) {
+      request('http://localhost:' + port + '/api', function(err, resp, json) {
         t.false(err, 'no GET err')
         t.equal(json.dat, 'Hello', JSON.stringify(json))
         dat.close(function(err) {

@@ -3,6 +3,7 @@ var concat = require('concat-stream')
 
 module.exports.restHello = function(test, common) {
   test('rest get /api returns stats', function(t) {
+    if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       dat.put({foo: 'bar'}, function(err, stored) {
         if (err) throw err
@@ -26,6 +27,7 @@ module.exports.restHello = function(test, common) {
 
 module.exports.restGet = function(test, common) {
   test('rest get', function(t) {
+    if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       dat.put({foo: 'bar'}, function(err, stored) {
         if (err) throw err
@@ -42,6 +44,7 @@ module.exports.restGet = function(test, common) {
 
 module.exports.restPut = function(test, common) {
   test('rest put', function(t) {
+    if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var body = {foo: 'bar'}
       request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api', json: body }, function(err, res, stored) {
@@ -58,6 +61,7 @@ module.exports.restPut = function(test, common) {
 
 module.exports.restPutBlob = function(test, common) {
   test('rest put blob', function(t) {
+    if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var body = {id: 'foo'}
       request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api', json: body }, function(err, res, stored) {
@@ -79,6 +83,7 @@ module.exports.restPutBlob = function(test, common) {
 
 module.exports.restBulkCsv = function(test, common) {
   test('rest bulk post csv', function(t) {
+    if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
       var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
@@ -104,6 +109,7 @@ module.exports.restBulkCsv = function(test, common) {
 
 module.exports.basicAuthEnvVariables = function(test, common) {
   test('basic auth through env variables', function(t) {
+    if (common.rpc) return t.end()
     process.env['DAT_ADMIN_USER'] = 'user'
     process.env['DAT_ADMIN_PASS'] = 'pass'
     common.getDat(t, function(dat, cleanup) {
@@ -125,6 +131,7 @@ module.exports.basicAuthEnvVariables = function(test, common) {
 
 module.exports.basicAuthOptions = function(test, common) {
   test('basic auth through dat options', function(t) {
+    if (common.rpc) return t.end()
     var opts = { adminUser: 'foo', adminPass: 'bar' }
     common.getDat(t, opts, function(dat, cleanup) {
       var body = {foo: 'bar'}
@@ -143,6 +150,7 @@ module.exports.basicAuthOptions = function(test, common) {
 
 module.exports.archiveExport = function(test, common) {
   test('GET /api/archive returns proper error (on leveldown)', function(t) {
+    if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/archive', json: true}, function(err, res, json) {
         if (err) throw err
@@ -156,6 +164,7 @@ module.exports.archiveExport = function(test, common) {
 
 module.exports.csvExport = function(test, common) {
   test('GET /api/csv returns proper csv', function(t) {
+    if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
       var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
@@ -182,6 +191,7 @@ module.exports.csvExport = function(test, common) {
 
 module.exports.jsonExport = function(test, common) {
   test('GET /api/json returns json array', function(t) {
+    if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
       var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
