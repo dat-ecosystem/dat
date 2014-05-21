@@ -1,6 +1,29 @@
 var request = require('request').defaults({json: true})
 var concat = require('concat-stream')
 
+module.exports.restHello = function(test, common) {
+  test('rest get /api returns stats', function(t) {
+    common.getDat(t, function(dat, cleanup) {
+      dat.put({foo: 'bar'}, function(err, stored) {
+        if (err) throw err
+        request('http://localhost:' + dat.defaultPort + '/api', function(err, res, json) {
+          t.false(err, 'no error')
+          verify(json)
+          cleanup()
+        })
+        
+        function verify(json) {
+          t.ok(json.dat, 'has .dat')
+          t.ok(json.version, 'has .version')
+          t.equal(json.changes, 1, 'has 1 change')
+          t.equal(json.rows, 1, 'has 1 row')
+          t.ok(json.approximateSize.documents, 'has approximate doc size')
+        }
+      })
+    })
+  })
+}
+
 module.exports.restGet = function(test, common) {
   test('rest get', function(t) {
     common.getDat(t, function(dat, cleanup) {
@@ -66,7 +89,7 @@ module.exports.restBulkCsv = function(test, common) {
         var ldj = resp.toString()
         ldj = ldj.slice(0, ldj.length - 1)
         var obj = ldj.split('\n').map(function(o) { return JSON.parse(o) })[0]
-
+        
         dat.get(obj.id, function(err, json) {
           t.false(err, 'no error')
           t.equal(json.a, '1', 'data matches')
@@ -182,6 +205,7 @@ module.exports.jsonExport = function(test, common) {
 }
 
 module.exports.all = function (test, common) {
+  module.exports.restHello(test, common)
   module.exports.restGet(test, common)
   module.exports.restPut(test, common)
   module.exports.restPutBlob(test, common)
