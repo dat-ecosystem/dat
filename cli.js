@@ -64,7 +64,7 @@ var dat = Dat(datPath, datOpts, function ready(err) {
     }
     if (typeof message === 'object') message = JSON.stringify(message)
     if (!opts.argv.quiet && message) stdout.write(message.toString() + EOL)
-    if (datCommand.command !== 'serve') close()
+    if (datCommand.command !== 'serve' || datCommand.command !== 'listen') close()
   })
 })
 
@@ -79,8 +79,9 @@ var cliCommands = {
   push: dat.push,
   clone: dat.clone,
   backend: dat.backend,
-  serve: dat.serve,
-  config: dat.config
+  config: dat.config,
+  serve: dat.listen,
+  listen: dat.listen
 }
 
 function close() {

@@ -1,6 +1,7 @@
 var fs = require('fs')
 var tty = require('tty')
 var path = require('path')
+var debug = require('debug')('dat.init')
 
 var request = require('request').defaults({json: true})
 
@@ -63,6 +64,8 @@ function Dat(dir, opts, onReady) {
   var paths = this.paths(dir)
   this._backend = backend(this)
   
+  debug(JSON.stringify(opts))
+  
   if (!opts.storage) {
     self.meta = meta(self, function(err) {
       onReady()
@@ -99,27 +102,12 @@ function Dat(dir, opts, onReady) {
   function init() {
     commands._ensureExists({ path: dir }, function (err) {
       if (err) {
-        if (!opts.init) return serve()
-        return self.init(opts, function(err) {
-          if (err) return onReady(err)
-          if (typeof opts.serve === 'undefined') opts.serve = true
-          serve()
-        })
+        if (!opts.init) return onReady()
+        return self.init(opts, onReady)
+      } else {
+        onReady()
       }
-      if (typeof opts.serve === 'undefined') opts.serve = true
-      return serve()
     })
-  }
-  
-  function serve() {
-    if (opts.serve) {
-      self._storage(opts, function(err) {
-        if (err) return onReady(err)
-        self.serve(opts, onReady)
-      })
-      return
-    }
-    onReady()
   }
 }
 
@@ -136,8 +124,6 @@ function readPort(portPath, opts, cb) {
         // assume PORT to be invalid
         return fs.unlink(portPath, cb)
       } 
-      // otherwise initialize in networked mode
-      opts.serve = false
       opts.remoteAddress = datAddress
       opts.manifest = json
       cb()

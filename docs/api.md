@@ -23,8 +23,6 @@ Returns a new dat instance and either opens the existing underlying database or 
 * `backend` (default `require('leveldown-prebuilt')`) - pass in a custom leveldown backend
 * `blobs` (default `require('lib/blobs.js')`) - pass in a custom blob store
 * `replicator` (default `require('lib/replicator.js')`) - pass in a custom replicator
-* `serve` (default `true`) - if `false` then dat will not start a local http server automatically
-* `port` (default `6461`) - the port to listen on if starting the http server
 * `remoteAddress` (default `undefined`) - if specified then dat will run in RPC client mode
 * `manifest` (default `undefined`) - if `remoteAddress` is also true this RPC manifest object will be used by `multilevel.client`
 
@@ -160,10 +158,10 @@ Returns a writable stream that you can stream a binary blob attachment into. Cal
 
 If specified `row` should be a JS object you want to attach the blob to, obeying the same update/conflict rules as `db.put`. If not specified a new row will be created.
 
-## serve
+## listen
 
 ```js
-dat.serve([port], [cb])
+dat.listen([port], [cb])
 ```
 
 Starts the dat HTTP server. `port` defaults to `6461` or the next largest available open port, `cb` gets called with `(err)` when the server has started/failed.

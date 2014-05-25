@@ -54,7 +54,7 @@ dat dump
 ## start a dat server
 
 ```
-dat serve
+dat listen
 ```
 
 then you can poke around at the REST API:

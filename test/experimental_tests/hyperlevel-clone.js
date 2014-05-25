@@ -8,7 +8,7 @@ module.exports.clone = function(test, common) {
     
     // opens dat1tmp, isntalls leveldown-hyper, closes
     function setup() {
-      var dat = new Dat(common.dat1tmp, { serve: false }, function ready(err) {
+      var dat = new Dat(common.dat1tmp, function ready(err) {
         t.notOk(err, 'no open err')
         dat.backend('leveldown-hyper', function(err) {
           t.notOk(err, 'backend should not err')

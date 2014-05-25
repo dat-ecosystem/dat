@@ -71,23 +71,6 @@ module.exports.existingRepoClone = function(test, common) {
   })
 }
 
-module.exports.portFile = function(test, common) {
-  test('create does init and serve by default', function(t) {
-    var dat = new Dat(common.dat1tmp, function ready() {
-      var port = fs.readFileSync(dat.paths().port).toString()
-      t.true(port, port)
-      request('http://localhost:' + port + '/api', function(err, resp, json) {
-        t.false(err, 'no GET err')
-        t.equal(json.dat, 'Hello', JSON.stringify(json))
-        dat.destroy(function(err) {
-          t.false(err, 'no err')
-          t.end()
-        })
-      })
-    })
-  })
-}
-
 module.exports.autoPort = function(test, common) {
   test('dat gets an open port by default', function(t) {
     
@@ -212,7 +195,6 @@ module.exports.all = function (test, common) {
   module.exports.initExistsDestroy(test, common)
   module.exports.existingRepo(test, common)
   module.exports.existingRepoClone(test, common)
-  module.exports.portFile(test, common)
   module.exports.autoPort(test, common)
   module.exports.customBackend(test, common)
   module.exports.customBlobBackend(test, common)

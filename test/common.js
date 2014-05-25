@@ -30,13 +30,16 @@ module.exports = function() {
     var datPath = opts.datPath || dat1tmp
     var dat = new Dat(datPath, opts, function ready(err) {
       if (err) throw err
-      if (common.rpc) {
-        dat2 = new Dat(datPath, opts, function ready(err) {
-          cb(dat2, done)
-        })
-      } else {
-        cb(dat, done)
-      }
+      dat.listen(function(err) {
+        if (err) throw err
+        if (common.rpc) {
+          dat2 = new Dat(datPath, opts, function ready(err) {
+            cb(dat2, done)
+          })
+        } else {
+          cb(dat, done)
+        }
+      })
     })
   
     function done(cb) {

@@ -6,7 +6,7 @@ var os = require('os')
 module.exports.pullReplication = function(test, common) {
   test('pull replication', function(t) {
     var expected = ["1", "2"]
-    var dat2 = new Dat(common.dat2tmp, { serve: false }, function ready() {
+    var dat2 = new Dat(common.dat2tmp, function ready() {
       common.getDat(t, function(dat, cleanup) {
         var ws = dat.createWriteStream({ csv: true })
         var nums = []
@@ -41,7 +41,7 @@ module.exports.pullReplication = function(test, common) {
 
 module.exports.pullReplicationBlob = function(test, common) {
   test('pull replication should copy blobs', function(t) {
-    var dat2 = new Dat(common.dat2tmp, { serve: false }, function ready() {
+    var dat2 = new Dat(common.dat2tmp, function ready() {
       common.getDat(t, function(dat, cleanup) {
 
         var ws = dat.createBlobWriteStream('foo.txt', function(err, doc) {
@@ -81,7 +81,7 @@ module.exports.pullReplicationBlob = function(test, common) {
 
 module.exports.pullReplicationSparse = function(test, common) {
   test('pull replication with sparse data', function(t) {
-    var dat2 = new Dat(common.dat2tmp, { serve: false }, function ready() {
+    var dat2 = new Dat(common.dat2tmp, function ready() {
       common.getDat(t, function(dat, cleanup) {
         var ws = dat.createWriteStream({ objects: true })
         
@@ -120,7 +120,7 @@ module.exports.pullReplicationSparse = function(test, common) {
 module.exports.pullReplicationMultiple = function(test, common) {
   test('multiple pulls', function(t) {
     var expected = ["pizza", "walrus"]
-    var dat2 = new Dat(common.dat2tmp, { serve: false }, function ready() {
+    var dat2 = new Dat(common.dat2tmp, function ready() {
       common.getDat(t, function(dat, cleanup) {
         var doc1 = {a: 'pizza'}
         var doc2 = {a: 'walrus'}
@@ -160,7 +160,7 @@ module.exports.pullReplicationMultiple = function(test, common) {
 
 module.exports.pullReplicationLive = function(test, common) {
   test('live pull replication', function(t) {
-    var dat2 = new Dat(common.dat2tmp, { serve: false }, function ready() {
+    var dat2 = new Dat(common.dat2tmp, function ready() {
       common.getDat(t, function(dat, cleanup) {
         var pull = dat2.pull({ live: true })
         dat.put({foo: 'bar'}, function(err) {
@@ -192,13 +192,19 @@ module.exports.pushReplication = function(test, common) {
       
       var dat2 = new Dat(common.dat2tmp, function ready(err) {
         if (err) throw err
-        dat2port = dat2._server.address().port
         
-        putPushCompare(doc1, function() {
-          putPushCompare(doc2, function() {
-            done()
+        dat2.listen(function(err) {
+          if (err) throw err
+          dat2port = dat2._server.address().port
+        
+          putPushCompare(doc1, function() {
+            putPushCompare(doc2, function() {
+              done()
+            })
           })
+          
         })
+        
       })
 
       function putPushCompare(doc, cb) {
@@ -237,11 +243,16 @@ module.exports.pushReplicationURLNormalize = function(test, common) {
       
       var dat2 = new Dat(common.dat2tmp, function ready(err) {
         if (err) throw err
-        dat2port = dat2._server.address().port
         
-        putPushCompare(doc1, function() {
-          putPushCompare(doc2, function() {
-            done()
+        dat2.listen(function(err) {
+          if (err) throw err
+        
+          dat2port = dat2._server.address().port
+        
+          putPushCompare(doc1, function() {
+            putPushCompare(doc2, function() {
+              done()
+            })
           })
         })
       })
