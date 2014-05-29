@@ -71,8 +71,8 @@ module.exports = function() {
   }
 
   common.compareData = function compareData(t, dat1, dat2, cb) {
-    dat1.createReadStream().pipe(concat(function(db1) {
-      dat2.createReadStream().pipe(concat(function(db2) {
+    dat1.createValueStream().pipe(concat(function(db1) {
+      dat2.createValueStream().pipe(concat(function(db2) {
         t.deepEquals(db1, db2, 'low level data matches')
         cb()
       }))

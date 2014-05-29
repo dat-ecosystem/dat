@@ -126,7 +126,7 @@ module.exports.sameDir = function(test, common) {
             
             var ws = dat2.createWriteStream({ json: true })
             ws.on('end', function() {
-              var cat = dat1.createReadStream()
+              var cat = dat1.createValueStream()
               cat.pipe(concat(function(data) {
                 t.equal(data.length, 2)
                 t.equal(data[0].hello, "bruce wayne")

@@ -78,6 +78,8 @@ var readStream = db.createReadStream([opts])
 
 Returns a [read stream](https://github.com/rvagg/node-levelup#createReadStream) over the most recent version of all rows in the dat store.
 
+Rows are returned in the format `{key: key, value: value}` where key is by default a string and value is by default a JS object.
+
 ### Options
 
 * `start` (defaults to the beginning of the possible keyspace) - key to start iterating from
@@ -86,6 +88,28 @@ Returns a [read stream](https://github.com/rvagg/node-levelup#createReadStream) 
 * `keys` (default `true`) - if false you won't get JS objects with k/v pairs but rather only the raw columnized values from the data store
 
 Note: not all options from `levelup.createReadStream` are supported at this time
+
+## createValueStream
+
+```js
+var valueStream = db.createValueStream([opts])
+```
+
+Returns a [value stream](https://github.com/rvagg/node-levelup#createValueStream) over the most recent version of all rows in the dat store.
+
+By default the returned stream is a readable object stream that will emit 1 JS object per row (equivalent to the `.value` object returned by `createReadStream`). This differs slightly from levelup where the value stream is not an object stream by default.
+
+You can also pass in options to serialize the values as either CSV or line-delimited JSON (see below).
+
+### Options
+
+* `start` (defaults to the beginning of the possible keyspace) - key to start iterating from
+* `end` (defaults to the end of the possible keyspace) - key to stop iterating at
+* `limit` (default unlimited) - how many rows to return before stopping
+* `keys` (default `true`) - if false you won't get JS objects with k/v pairs but rather only the raw columnized values from the data store
+* `format` (default `objects`) - if set to `csv` or `json` the stream will not be an object mode stream and will emit serialized data
+* `csv` (default `false`) - if true is equivalent to setting `format` to `csv`
+* `json` (default `false`) - if true is equivalent to setting `format` to `json`
 
 ## createChangesStream
 

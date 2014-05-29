@@ -41,7 +41,7 @@ module.exports.putJson = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
-        var cat = dat.createReadStream()
+        var cat = dat.createValueStream()
     
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
@@ -58,7 +58,7 @@ module.exports.putWeirdKeys = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put(".error.", {"foo": "bar"}, function(err, doc) {
         if (err) throw err
-        var cat = dat.createReadStream()
+        var cat = dat.createValueStream()
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
           t.equal(data[0]['foo'], "bar")
@@ -74,7 +74,7 @@ module.exports.putJsonSetVersion = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put({"foo": "bar", version: 5}, function(err, doc) {
         if (err) throw err
-        var cat = dat.createReadStream()
+        var cat = dat.createValueStream()
     
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
@@ -143,7 +143,7 @@ module.exports.multiplePutJson = function(test, common) {
         if (err) throw err
         dat.put({"foo": "bar"}, function(err) {
           if (err) throw err
-          var cat = dat.createReadStream()
+          var cat = dat.createValueStream()
     
           cat.pipe(concat(function(data) {
             t.equal(data.length, 2)
@@ -166,7 +166,7 @@ module.exports.putBuff = function(test, common) {
     
       dat.put(row, {columns: schema.toJSON()}, function(err) {
         if (err) throw err
-        var cat = dat.createReadStream()
+        var cat = dat.createValueStream()
     
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
@@ -188,7 +188,7 @@ module.exports.deleteRow = function(test, common) {
           dat.get(doc.id, function(err, doc) {
             t.true(err, 'doc should now be not found')
             t.false(doc, 'doc should be null')
-            var cat = dat.createReadStream()
+            var cat = dat.createValueStream()
             
             cat.pipe(concat(function(data) {
               t.equal(data.length, 0, 'should return no data')

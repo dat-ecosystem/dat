@@ -32,7 +32,7 @@ module.exports.clone = function(test, common) {
             // var remote = 'http://localhost:' + dat.defaultPort
             // dat2.clone(remote, function(err) {
             //   t.notOk(err, 'no err on clone')
-            //   dat2.createReadStream().pipe(concat(function(data) {
+            //   dat2.createValueStream().pipe(concat(function(data) {
             //     t.equal(data.length, 1)
             //     var first = data[0] || {}
             //     t.equal(first.foo, 'bar')

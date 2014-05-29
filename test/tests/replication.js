@@ -26,7 +26,7 @@ module.exports.pullReplication = function(test, common) {
         function done() {
           var rs = dat2.createReadStream()
           rs.pipe(concat(function(data) {
-            var results = data.map(function(r) { return r.a })
+            var results = data.map(function(r) { return r.value.a })
             t.equals(JSON.stringify(results), JSON.stringify(expected), 'createReadStream() matches')
             dat2.destroy(function(err) {
               t.false(err, 'no err')
@@ -145,7 +145,7 @@ module.exports.pullReplicationMultiple = function(test, common) {
         
         function done() {
           dat2.createReadStream().pipe(concat(function(data) {
-            var results = data.map(function(r) { return r.a })
+            var results = data.map(function(r) { return r.value.a })
             t.equals(JSON.stringify(results), JSON.stringify(expected), 'createReadStream() matches')
             dat2.destroy(function(err) {
               t.false(err, 'no err')
@@ -168,7 +168,7 @@ module.exports.pullReplicationLive = function(test, common) {
           setTimeout(function() {
             dat2.createReadStream().pipe(concat(function(data) {
               t.equal(data.length, 1)
-              if (data.length) t.equal(data[0].foo, 'bar')
+              if (data.length) t.equal(data[0].value.foo, 'bar')
               pull.end()
               dat2.destroy(function(err) {
                 if (err) throw err
@@ -221,7 +221,7 @@ module.exports.pushReplication = function(test, common) {
     
       function done() {
         dat2.createReadStream().pipe(concat(function(data) {
-          var results = data.map(function(r) { return r.a })
+          var results = data.map(function(r) { return r.value.a })
           t.equals(JSON.stringify(results), JSON.stringify(expected), 'createReadStream() matches')
           dat2.destroy(function(err) {
             t.false(err, 'no err')
@@ -271,7 +271,7 @@ module.exports.pushReplicationURLNormalize = function(test, common) {
     
       function done() {
         dat2.createReadStream().pipe(concat(function(data) {
-          var results = data.map(function(r) { return r.a })
+          var results = data.map(function(r) { return r.value.a })
           t.equals(JSON.stringify(results), JSON.stringify(expected), 'createReadStream() matches')
           dat2.destroy(function(err) {
             t.false(err, 'no err')
@@ -303,7 +303,7 @@ module.exports.remoteClone = function(test, common) {
         dat2.createReadStream().pipe(concat(function(data) {
           t.equal(data.length, 1)
           var first = data[0] || {}
-          t.equal(first.foo, 'bar')
+          t.equal(first.value.foo, 'bar')
           dat2.destroy(function(err) {
             if (err) throw err
             cleanup()
