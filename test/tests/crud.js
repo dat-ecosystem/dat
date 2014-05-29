@@ -39,7 +39,7 @@ module.exports.decodeKey = function(test, common) {
 module.exports.putJson = function(test, common) {
   test('.put json', function(t) {
     common.getDat(t, function(dat, done) {
-      dat.put(null, {"foo": "bar"}, function(err, doc) {
+      dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
         var cat = dat.createReadStream()
     
@@ -58,7 +58,6 @@ module.exports.putWeirdKeys = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put(".error.", {"foo": "bar"}, function(err, doc) {
         if (err) throw err
-        console.log(doc)
         var cat = dat.createReadStream()
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
@@ -73,7 +72,7 @@ module.exports.putWeirdKeys = function(test, common) {
 module.exports.putJsonSetVersion = function(test, common) {
   test('.put json at specific version', function(t) {
     common.getDat(t, function(dat, done) {
-      dat.put(null, {"foo": "bar", version: 5}, function(err, doc) {
+      dat.put({"foo": "bar", version: 5}, function(err, doc) {
         if (err) throw err
         var cat = dat.createReadStream()
     
@@ -90,7 +89,7 @@ module.exports.putJsonSetVersion = function(test, common) {
 module.exports.putJsonPrimary = function(test, common) {
   test('.put json w/ primary key option', function(t) {
     common.getDat(t, function(dat, done) {
-      dat.put(null, {"foo": "bar"}, {primary: 'foo'}, function(err, doc) {
+      dat.put({"foo": "bar"}, {primary: 'foo'}, function(err, doc) {
         if (err) throw err
         dat.get('bar', function(err, data) {
           t.notOk(err, 'no err')
@@ -111,7 +110,7 @@ module.exports.updateJson = function(test, common) {
         dat.put("foo", {bar: 'baz'}, function(err, doc2) {
           t.ok(err, 'should err')
           t.notOk(doc2, "should not return data")
-          dat.put(null, doc, function(err, doc3) {
+          dat.put(doc, function(err, doc3) {
             t.notOk(err, 'no err')
             t.equals(doc3.version, 2, 'should be version 2')
             setImmediate(done)
@@ -140,9 +139,9 @@ module.exports.forceOption = function(test, common) {
 module.exports.multiplePutJson = function(test, common) {
   test('.put same json multiple times (random id generation)', function(t) {
     common.getDat(t, function(dat, done) {
-      dat.put(null, {"foo": "bar"}, function(err) {
+      dat.put({"foo": "bar"}, function(err) {
         if (err) throw err
-        dat.put(null, {"foo": "bar"}, function(err) {
+        dat.put({"foo": "bar"}, function(err) {
           if (err) throw err
           var cat = dat.createReadStream()
     
@@ -165,7 +164,7 @@ module.exports.putBuff = function(test, common) {
       var schema = protobuf([{name:'foo', type:'string'}]);
       var row = schema.encode({foo:'bar'});
     
-      dat.put(null, row, {columns: schema.toJSON()}, function(err) {
+      dat.put(row, {columns: schema.toJSON()}, function(err) {
         if (err) throw err
         var cat = dat.createReadStream()
     
@@ -182,7 +181,7 @@ module.exports.putBuff = function(test, common) {
 module.exports.deleteRow = function(test, common) {
   test('delete row', function(t) {
     common.getDat(t, function(dat, done) {
-      dat.put(null, {"foo": "bar"}, function(err, doc) {
+      dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
         dat.delete(doc.id, function(err) {
           t.false(err, 'should delete okay')
@@ -205,11 +204,11 @@ module.exports.deleteRow = function(test, common) {
 module.exports.getAtVersion = function(test, common) {
   test('get row at specific version', function(t) {
     common.getDat(t, function(dat, done) {
-      dat.put(null, {"foo": "bar"}, function(err, doc) {
+      dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
         var ver1 = doc.version
         doc.pizza = 'taco'
-        dat.put(null, doc, function(err, doc) {
+        dat.put(doc, function(err, doc) {
           t.false(err)
           if (!doc) doc = {}
           dat.get(doc.id, { version: ver1 }, function(err, docAtVer) {
@@ -241,7 +240,7 @@ module.exports.keepTotalRowCount = function(test, common) {
 
   test('inc row count on put', function(t) {
     common.getDat(t, function(dat, done) {
-      dat.put(null, {"foo": "bar"}, function(err, doc) {
+      dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
         t.equal(dat.getRowCount(), 1)
         setImmediate(done)
@@ -251,7 +250,7 @@ module.exports.keepTotalRowCount = function(test, common) {
 
   test('dec row count on del', function(t) {
     common.getDat(t, function(dat, done) {
-      dat.put(null, {"foo": "bar"}, function(err, doc) {
+      dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
         t.equal(dat.getRowCount(), 1)
         dat.delete(doc.id, function(err) {
@@ -268,7 +267,7 @@ module.exports.keepTotalRowCount = function(test, common) {
       dat.put("foo", {bar: 'baz'}, function(err, doc) {
         if (err) throw err
         t.equal(dat.getRowCount(), 1)
-        dat.put(null, doc, function(err, doc2) {
+        dat.put(doc, function(err, doc2) {
           t.notOk(err, 'should not err')
           t.equal(dat.getRowCount(), 1)
           setImmediate(done)
@@ -279,8 +278,8 @@ module.exports.keepTotalRowCount = function(test, common) {
 
   test('persist the row count', function(t) {
     common.getDat(t, function(dat, done) {
-      dat.put(null, {"foo": "bar"}, function(err, doc) {
-        dat.put(null, {"bar": "foo"}, function(err, doc) {
+      dat.put({"foo": "bar"}, function(err, doc) {
+        dat.put({"bar": "foo"}, function(err, doc) {
           dat.storage.getRowCount(function(err, val) {
             if (err) throw err
             t.equal(val, 2)

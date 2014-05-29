@@ -5,7 +5,7 @@ module.exports.restHello = function(test, common) {
   test('rest get /api returns stats', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
-      dat.put(null, {foo: 'bar'}, function(err, stored) {
+      dat.put({foo: 'bar'}, function(err, stored) {
         if (err) throw err
         request('http://localhost:' + dat.defaultPort + '/api', function(err, res, json) {
           t.false(err, 'no error')
@@ -29,7 +29,7 @@ module.exports.restGet = function(test, common) {
   test('rest get', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
-      dat.put(null, {foo: 'bar'}, function(err, stored) {
+      dat.put({foo: 'bar'}, function(err, stored) {
         if (err) throw err
         request('http://localhost:' + dat.defaultPort + '/api/' + stored.id, function(err, res, json) {
           t.false(err, 'no error')

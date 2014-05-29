@@ -45,10 +45,10 @@ Gets a key, calls callback with `(error, value)`. `value` is a JS object
 ## put
 
 ```js
-db.put([json], [buffer], [opts], [cb])
+db.put([key], value, [opts], cb)
 ```
 
-Puts JSON into the database by key. Specify the key you want by setting it as `json.id`, e.g. `db.put({id: 'bob'} ... )`.
+Puts value into the database by key. Specify the key you want by setting it as either `key` or `value.id`, e.g. `db.put({id: 'bob'} ... )`. `key` is optional to be compatible with the levelup API
 
 `cb` will be called with `(error, newVersion)` where `newVersion` will be be a JS object with `id` and `version` properties.
 
@@ -56,7 +56,7 @@ If something already exists in the database with the key you specified you may r
 
 All versions of all rows are persisted and replicated.
 
-If `buffer` is specified (and `Buffer.isBuffer(buffer)` is truthy) then instead of storing `json` as the value it will store whatever data is in `buffer` (only use this if you know what you are doing)
+If `Buffer.isBuffer(value)` is truthy then it will store whatever binary data is in `value` (only use this if you know what you are doing)
 
 ### Options
 

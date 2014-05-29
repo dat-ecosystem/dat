@@ -156,7 +156,7 @@ module.exports.customBackend = function(test, common) {
   test('instantiate + pass in custom leveldown instance', function(t) {
     var memdown = require('memdown')
     var dat = new Dat(common.dat1tmp, { backend: memdown }, function ready() {
-      dat.put(null, {'foo': 'bar'}, function(err) {
+      dat.put({'foo': 'bar'}, function(err) {
         t.notOk(err, 'no put err')
         var onDiskDat = fs.existsSync(path.join(common.dat1tmp, '.dat', 'store.dat'))
         t.notOk(onDiskDat, 'no dat folder was created')

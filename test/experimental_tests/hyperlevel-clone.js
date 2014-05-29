@@ -23,7 +23,7 @@ module.exports.clone = function(test, common) {
     function clone(cb) {
       var dat = new Dat(common.dat1tmp, function ready(err) {
         t.notOk(err, 'no open err on leveldown-hyper db')
-        dat.put(null, {foo: 'bar'}, function(err) {
+        dat.put({foo: 'bar'}, function(err) {
           t.notOk(err, 'no put err')
           var dat2 = new Dat(common.dat2tmp, function ready(err) {
             t.notOk(err, 'no open err on leveldown db')

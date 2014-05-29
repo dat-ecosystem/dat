@@ -132,7 +132,7 @@ module.exports.pullReplicationMultiple = function(test, common) {
         })
         
         function putPullCompare(doc, cb) {
-          dat.put(null, doc, function(err, doc) {
+          dat.put(doc, function(err, doc) {
             if (err) throw err
             dat2.pull(function(err) {
               if (err) throw err
@@ -163,7 +163,7 @@ module.exports.pullReplicationLive = function(test, common) {
     var dat2 = new Dat(common.dat2tmp, function ready() {
       common.getDat(t, function(dat, cleanup) {
         var pull = dat2.pull({ live: true })
-        dat.put(null, {foo: 'bar'}, function(err) {
+        dat.put({foo: 'bar'}, function(err) {
           if (err) throw err
           setTimeout(function() {
             dat2.createReadStream().pipe(concat(function(data) {
@@ -208,7 +208,7 @@ module.exports.pushReplication = function(test, common) {
       })
 
       function putPushCompare(doc, cb) {
-        dat.put(null, doc, function(err, doc) {
+        dat.put(doc, function(err, doc) {
           if (err) throw err
           dat.push('http://localhost:' + dat2port, function(err) {
             if (err) throw err
@@ -258,7 +258,7 @@ module.exports.pushReplicationURLNormalize = function(test, common) {
       })
 
       function putPushCompare(doc, cb) {
-        dat.put(null, doc, function(err, doc) {
+        dat.put(doc, function(err, doc) {
           if (err) throw err
           dat.push('localhost:' + dat2port, function(err) {
             if (err) throw err
@@ -288,7 +288,7 @@ module.exports.remoteClone = function(test, common) {
   test('clone from remote', function(t) {
     common.getDat(t, function(dat, cleanup) {
       
-      dat.put(null, {foo: 'bar'}, function(err) {
+      dat.put({foo: 'bar'}, function(err) {
         if (err) throw err
         var dat2 = new Dat(common.dat2tmp, { init: false }, function ready() {
           var remote = 'http://localhost:' + dat.defaultPort
