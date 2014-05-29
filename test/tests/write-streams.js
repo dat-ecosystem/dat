@@ -131,7 +131,7 @@ module.exports.multipleNdjsonObjects = function(test, common) {
 }
 
 
-module.exports.singleNdjsonObjectIdOnly = function(test, common) {
+module.exports.singleNdjsonObjectKeyOnly = function(test, common) {
   test('piping a single ndjson object w/ only key into a write stream', function(t) {
     common.getDat(t, function(dat, done) {
     
@@ -544,7 +544,7 @@ module.exports.writeStreamCsvNoHeaderRow = function(test, common) {
   })
 }
 
-module.exports.writeStreamMultipleWithRandomIds = function(test, common) {
+module.exports.writeStreamMultipleWithRandomKeys = function(test, common) {
   test('writeStream same json multiple times (random key generation)', function(t) {
     common.getDat(t, function(dat, done) {
       var ws1 = dat.createWriteStream({ json: true })
@@ -652,7 +652,7 @@ module.exports.all = function (test, common) {
   module.exports.singleNdjsonObject(test, common)
   module.exports.singleNdjsonString(test, common)
   module.exports.multipleNdjsonObjects(test, common)
-  module.exports.singleNdjsonObjectIdOnly(test, common)
+  module.exports.singleNdjsonObjectKeyOnly(test, common)
   module.exports.singleBuff(test, common)
   module.exports.multipleBuffs(test, common)
   module.exports.csvOneRow(test, common)
@@ -668,7 +668,7 @@ module.exports.all = function (test, common) {
   module.exports.primaryKeyFunctionUsingPrimaryVal(test, common)
   module.exports.writeStreamConflicts(test, common)
   module.exports.writeStreamCsvNoHeaderRow(test, common)
-  module.exports.writeStreamMultipleWithRandomIds(test, common)
+  module.exports.writeStreamMultipleWithRandomKeys(test, common)
   module.exports.multipleCSVWriteStreamsChangingSchemas(test, common)
   module.exports.keepTotalRowCount(test, common)
 }
