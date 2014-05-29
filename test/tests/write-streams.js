@@ -27,6 +27,33 @@ module.exports.blobWriteStream = function(test, common) {
   })
 }
 
+module.exports.blobReadStream = function(test, common) {
+  test('getting a blob read stream by row key + name', function(t) {
+    common.getDat(t, function(dat, done) {
+      
+      var ws = dat.createBlobWriteStream('write-streams.js', function(err, doc) {
+        t.notOk(err, 'no blob write err')
+        var attachment = doc.attachments['write-streams.js']
+        t.ok(attachment, 'doc has attachment')
+
+        var rs = dat.createBlobReadStream(doc.id, 'write-streams.js')
+
+        rs.on('error', function(e) {
+          t.false(e, 'no read stream err')
+          done()
+        })
+
+        rs.pipe(concat(function(file) {
+          t.equal(file.length, attachment.size, 'attachment size is correct')
+          done()
+        }))
+      })
+      
+      fs.createReadStream(path.join(__dirname, 'write-streams.js')).pipe(ws)
+    })
+  })
+}
+
 module.exports.singleNdjsonObject = function(test, common) {
   test('piping a single ndjson object into a write stream', function(t) {
     common.getDat(t, function(dat, done) {
@@ -648,6 +675,7 @@ module.exports.keepTotalRowCount = function(test, common) {
 
 module.exports.all = function (test, common) {
   module.exports.blobWriteStream(test, common)
+  module.exports.blobReadStream(test, common)
   module.exports.singleNdjsonObject(test, common)
   module.exports.singleNdjsonString(test, common)
   module.exports.multipleNdjsonObjects(test, common)

@@ -1,6 +1,7 @@
 var fs = require('fs')
 var tty = require('tty')
 var path = require('path')
+var os = require('os')
 var debug = require('debug')('dat.init')
 
 var request = require('request').defaults({json: true})
@@ -77,8 +78,9 @@ function Dat(dir, opts, onReady) {
         loadMeta()
       })
     }
-    // the 2000 here is thanks to windows server, which errors w/ lower values
-    if (!tty.isatty(0)) setTimeout(read, 2000)
+    // windows server fails when timeout is lower than 2000
+    // timeout if called from CLI && is not a mac
+    if (!tty.isatty(0) && !(os.platform().match('darwin'))) setTimeout(read, 2000)
     else read()
   }
   

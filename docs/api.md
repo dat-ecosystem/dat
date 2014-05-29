@@ -158,6 +158,20 @@ Returns a writable stream that you can stream a binary blob attachment into. Cal
 
 If specified `row` should be a JS object you want to attach the blob to, obeying the same update/conflict rules as `db.put`. If not specified a new row will be created.
 
+## createBlobReadStream
+
+```js
+var blobWriter = db.createBlobReadStream(key, filename, [options])
+```
+
+Returns a readable stream of blob data.
+
+`key` is the key of the row where the blob is stored. `filename` is the name of the attached blob. both are required.
+
+### Options
+
+* `version` (default latest) - the version of the row to get
+
 ## listen
 
 ```js
