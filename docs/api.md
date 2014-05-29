@@ -85,7 +85,6 @@ Rows are returned in the format `{key: key, value: value}` where key is by defau
 * `start` (defaults to the beginning of the possible keyspace) - key to start iterating from
 * `end` (defaults to the end of the possible keyspace) - key to stop iterating at
 * `limit` (default unlimited) - how many rows to return before stopping
-* `keys` (default `true`) - if false you won't get JS objects with k/v pairs but rather only the raw columnized values from the data store
 
 Note: not all options from `levelup.createReadStream` are supported at this time
 
@@ -106,10 +105,25 @@ You can also pass in options to serialize the values as either CSV or line-delim
 * `start` (defaults to the beginning of the possible keyspace) - key to start iterating from
 * `end` (defaults to the end of the possible keyspace) - key to stop iterating at
 * `limit` (default unlimited) - how many rows to return before stopping
-* `keys` (default `true`) - if false you won't get JS objects with k/v pairs but rather only the raw columnized values from the data store
 * `format` (default `objects`) - if set to `csv` or `json` the stream will not be an object mode stream and will emit serialized data
 * `csv` (default `false`) - if true is equivalent to setting `format` to `csv`
 * `json` (default `false`) - if true is equivalent to setting `format` to `json`
+
+## createKeyStream
+
+```js
+var keyStream = db.createKeyStream([opts])
+```
+
+Returns a [key stream](https://github.com/rvagg/node-levelup#createKeyStream) over the most recent version of all keys in the dat store.
+
+By default the returned stream is a readable object stream that will emit 1 JS object per row in the form `{id: key, version: number, deleted: boolean}`. This differs slightly from levelup where the value stream is not an object stream by default. Dat stores the id, version and deleted status in the key on disk which is why all 3 properties are returned by this stream.
+
+### Options
+* `start` (defaults to the beginning of the possible keyspace) - key to start iterating from
+* `end` (defaults to the end of the possible keyspace) - key to stop iterating at
+* `limit` (default unlimited) - how many rows to return before stopping
+
 
 ## createChangesStream
 
