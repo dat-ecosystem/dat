@@ -48,11 +48,11 @@ Gets a key, calls callback with `(error, value)`. `value` is a JS object
 db.put([key], value, [opts], cb)
 ```
 
-Puts value into the database by key. Specify the key you want by setting it as either `key` or `value.id`, e.g. `db.put({id: 'bob'} ... )`. `key` is optional to be compatible with the levelup API
+Puts value into the database by key. Specify the key you want by setting it as either `key` or `value.key`, e.g. `db.put({key: 'bob'} ... )`. `key` is optional to be compatible with the levelup API
 
-`cb` will be called with `(error, newVersion)` where `newVersion` will be be a JS object with `id` and `version` properties.
+`cb` will be called with `(error, newVersion)` where `newVersion` will be be a JS object with `key` and `version` properties.
 
-If something already exists in the database with the key you specified you may receive a conflict error. To ensure you do not overwrite data accidentally you must pass in the current version of the key you wish to update, e.g. if `bob` is in the database at version 1 and you want to update it to add a `foo` key: `db.put({id: 'bob', version: 1, 'foo': 'bar'})`, which will update the row to version 2.
+If something already exists in the database with the key you specified you may receive a conflict error. To ensure you do not overwrite data accidentally you must pass in the current version of the key you wish to update, e.g. if `bob` is in the database at version 1 and you want to update it to add a `foo` key: `db.put({key: 'bob', version: 1, 'foo': 'bar'})`, which will update the row to version 2.
 
 All versions of all rows are persisted and replicated.
 
@@ -117,7 +117,7 @@ var keyStream = db.createKeyStream([opts])
 
 Returns a [key stream](https://github.com/rvagg/node-levelup#createKeyStream) over the most recent version of all keys in the dat store.
 
-By default the returned stream is a readable object stream that will emit 1 JS object per row in the form `{id: key, version: number, deleted: boolean}`. This differs slightly from levelup where the value stream is not an object stream by default. Dat stores the id, version and deleted status in the key on disk which is why all 3 properties are returned by this stream.
+By default the returned stream is a readable object stream that will emit 1 JS object per row in the form `{key: key, version: number, deleted: boolean}`. This differs slightly from levelup where the value stream is not an object stream by default. Dat stores the key, version and deleted status in the key on disk which is why all 3 properties are returned by this stream.
 
 ### Options
 * `start` (defaults to the beginning of the possible keyspace) - key to start iterating from
@@ -133,7 +133,7 @@ var changes = db.createChangesStream([opts])
 
 Returns a read stream that iterates over the dat store change log (a log of all CRUD in the history of the database).
 
-Changes are emitted as JS objects that look like `{change: 352, id: 'foo', version: 2}`
+Changes are emitted as JS objects that look like `{change: 352, key: 'foo', version: 2}`
 
 ### Options
 
@@ -163,8 +163,8 @@ You can write:
 * `csv` - setting to true is equivalent to `{format: 'csv'}`
 * `json` - setting to true is equivalent to `{format: 'json'}`
 * `objects` - setting to true is equivalent to `{format: 'objects'}`
-* `primary` (default `id`) - the column or array of columns to use as the primary key
-* `hash` (default `false`) - if true `id` will be set to the md5 hex hash of the string of the primary key(s)
+* `primary` (default `key`) - the column or array of columns to use as the primary key
+* `hash` (default `false`) - if true `key` will be set to the md5 hex hash of the string of the primary key(s)
 * `primaryFormat` - a function that formats the key before it gets inserted. accepts `(val)` and must return a string to set as the key.
 * `columns` - specify the column names to use when parsing multibuffer/csv. Mandatory for multibuffer, optional for csv (csv headers are automatically parsed but this can be used to override them)
 * `headerRow` (default `true`) - set to false if your csv doesn't have a header row. you'll also have to manually specify `columns`
@@ -174,7 +174,7 @@ You can write:
 ## createVersionStream
 
 ```js
-var versions = db.createVersionStream(id, [opts])
+var versions = db.createVersionStream(key, [opts])
 ```
 
 Returns a read stream that emits all versions of a given key

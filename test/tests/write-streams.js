@@ -36,7 +36,7 @@ module.exports.blobReadStream = function(test, common) {
         var attachment = doc.attachments['write-streams.js']
         t.ok(attachment, 'doc has attachment')
 
-        var rs = dat.createBlobReadStream(doc.id, 'write-streams.js')
+        var rs = dat.createBlobReadStream(doc.key, 'write-streams.js')
 
         rs.on('error', function(e) {
           t.false(e, 'no read stream err')
@@ -132,7 +132,7 @@ module.exports.multipleNdjsonObjects = function(test, common) {
 
 
 module.exports.singleNdjsonObjectIdOnly = function(test, common) {
-  test('piping a single ndjson object w/ only id into a write stream', function(t) {
+  test('piping a single ndjson object w/ only key into a write stream', function(t) {
     common.getDat(t, function(dat, done) {
     
       var ws = dat.createWriteStream({ json: true })
@@ -147,7 +147,7 @@ module.exports.singleNdjsonObjectIdOnly = function(test, common) {
         }))
       })
     
-      ws.write(bops.from(JSON.stringify({"id": "foo"})))
+      ws.write(bops.from(JSON.stringify({"key": "foo"})))
       ws.end()
     })
   })
@@ -495,7 +495,7 @@ module.exports.writeStreamConflicts = function(test, common) {
         ws.end()
       }
       
-      var ver1 = {id: 'foo', 'name': 'bob'}
+      var ver1 = {key: 'foo', 'name': 'bob'}
       
       writeAndVerify(ver1, function(err1, stored1) {
         t.notOk(err1, 'no err')
@@ -545,7 +545,7 @@ module.exports.writeStreamCsvNoHeaderRow = function(test, common) {
 }
 
 module.exports.writeStreamMultipleWithRandomIds = function(test, common) {
-  test('writeStream same json multiple times (random id generation)', function(t) {
+  test('writeStream same json multiple times (random key generation)', function(t) {
     common.getDat(t, function(dat, done) {
       var ws1 = dat.createWriteStream({ json: true })
     
@@ -597,33 +597,6 @@ module.exports.multipleCSVWriteStreamsChangingSchemas = function(test, common) {
   })
 }
 
-module.exports.multipleCSVWriteStreamsChangingSchemasOverride = function(test, common) {
-  test('multiple CSV writeStreams w/ different schemas + column merge override', function(t) {
-    common.getDat(t, function(dat, done) {
-      var ws1 = dat.createWriteStream({ csv: true })
-  
-      ws1.on('end', function() {
-        var ws2 = dat.createWriteStream({ csv: true, merge: true })
-
-        ws2.on('error', function(e) {
-          t.equal(data.length, 3)
-          t.equal(data[0].a, "1")
-          t.equal(data[1].a, "4")
-          t.equal(data[2].d, "foo")
-          done()
-        })
-        
-        ws2.write(bops.from('d,e,f\nfoo,bar,baz'))
-        ws2.end()
-      })
-  
-      ws1.write(bops.from('a,b,c\n1,2,3\n4,5,6'))
-      ws1.end()
-  
-    })
-  })
-}
-
 module.exports.keepTotalRowCount = function(test, common) {
   test('keeps row count for streams', function(t) {
     common.getDat(t, function(dat, done) {
@@ -661,11 +634,11 @@ module.exports.keepTotalRowCount = function(test, common) {
           }))
         })
 
-        ws2.write(bops.from(JSON.stringify({'id': 'foo'})))
+        ws2.write(bops.from(JSON.stringify({'key': 'foo'})))
         ws2.end()
       })
 
-      ws1.write(bops.from(JSON.stringify({'id': 'foo'})))
+      ws1.write(bops.from(JSON.stringify({'key': 'foo'})))
       ws1.end()
 
     })
@@ -698,5 +671,4 @@ module.exports.all = function (test, common) {
   module.exports.writeStreamMultipleWithRandomIds(test, common)
   module.exports.multipleCSVWriteStreamsChangingSchemas(test, common)
   module.exports.keepTotalRowCount(test, common)
-  // module.exports.multipleCSVWriteStreamsChangingSchemasOverride(test, common)
 }

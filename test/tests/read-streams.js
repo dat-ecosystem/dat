@@ -73,7 +73,7 @@ module.exports.valueStreamCsvPrimaryKey = function(test, common) {
     
       ws.on('end', function() {
         dat.createValueStream().pipe(concat(function(data) {
-          var results = data.map(function(r) { return r.id })
+          var results = data.map(function(r) { return r.key })
           t.equals(JSON.stringify(results.sort()), JSON.stringify(expected.sort()), 'matches')
           done()
         }))
@@ -94,7 +94,7 @@ module.exports.valueStreamNdjPrimaryKey = function(test, common) {
     
       ws.on('end', function() {
         dat.createValueStream().pipe(concat(function(data) {
-          var results = data.map(function(r) { return r.id })
+          var results = data.map(function(r) { return r.key })
           t.equals(JSON.stringify(results.sort()), JSON.stringify(expected.sort()), 'order matches')
           done()
         }))

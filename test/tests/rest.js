@@ -31,7 +31,7 @@ module.exports.restGet = function(test, common) {
     common.getDat(t, function(dat, cleanup) {
       dat.put({foo: 'bar'}, function(err, stored) {
         if (err) throw err
-        request('http://localhost:' + dat.defaultPort + '/api/' + stored.id, function(err, res, json) {
+        request('http://localhost:' + dat.defaultPort + '/api/' + stored.key, function(err, res, json) {
           t.false(err, 'no error')
           t.deepEqual(stored, json)
           cleanup()
@@ -49,7 +49,7 @@ module.exports.restPut = function(test, common) {
       var body = {foo: 'bar'}
       request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api', json: body }, function(err, res, stored) {
         if (err) throw err
-        dat.get(stored.id, function(err, json) {
+        dat.get(stored.key, function(err, json) {
           t.false(err, 'no error')
           t.deepEqual(stored, json)
           cleanup()
@@ -63,7 +63,7 @@ module.exports.restPutBlob = function(test, common) {
   test('rest put blob', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
-      var body = {id: 'foo'}
+      var body = {key: 'foo'}
       request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api', json: body }, function(err, res, stored) {
         t.notOk(err, 'no POST err')
         var uploadUrl = 'http://localhost:' + dat.defaultPort + '/api/foo/data.txt?version=' + stored.version
@@ -95,7 +95,7 @@ module.exports.restBulkCsv = function(test, common) {
         ldj = ldj.slice(0, ldj.length - 1)
         var obj = ldj.split('\n').map(function(o) { return JSON.parse(o) })[0]
         
-        dat.get(obj.id, function(err, json) {
+        dat.get(obj.key, function(err, json) {
           t.false(err, 'no error')
           t.equal(json.a, '1', 'data matches')
           t.equal(json.b, '2', 'data matches')
@@ -178,7 +178,7 @@ module.exports.csvExport = function(test, common) {
           request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/csv'}, function(err, res, csv) {
             if (err) throw err
             var lines = csv.split('\n')
-            t.equal(lines[0].split(',').length, 5, '5 columns (id, version, a, b, c)')
+            t.equal(lines[0].split(',').length, 5, '5 columns (key, version, a, b, c)')
             t.equal(lines.length, 4, '4 rows')
             t.equal(lines[lines.length - 1], '', '4th row is empty')
             cleanup()

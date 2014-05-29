@@ -108,7 +108,7 @@ module.exports.createKeyStream = function(test, common) {
         var rs = dat.createKeyStream()
         rs.pipe(concat(function(rows) {
           t.equal(rows.length, 1, '1 key')
-          t.equal(rows[0].id, 'foo')
+          t.equal(rows[0].key, 'foo')
           t.equal(rows[0].version, 1)
           setImmediate(done)
         }))
@@ -125,7 +125,7 @@ module.exports.keyStream = function(test, common) {
         var rs = dat.keyStream()
         rs.pipe(concat(function(rows) {
           t.equal(rows.length, 1, '1 key')
-          t.equal(rows[0].id, 'foo')
+          t.equal(rows[0].key, 'foo')
           t.equal(rows[0].version, 1)
           setImmediate(done)
         }))
@@ -143,13 +143,13 @@ module.exports.createWriteStream = function(test, common) {
         var rs = dat.keyStream()
         rs.pipe(concat(function(rows) {
           t.equal(rows.length, 1, '1 key')
-          t.equal(rows[0].id, 'foo')
+          t.equal(rows[0].key, 'foo')
           t.equal(rows[0].version, 1)
           setImmediate(done)
         }))
       })
     
-      ws.write({"id": "foo", "b": "bar", "c": "hello"})
+      ws.write({"key": "foo", "b": "bar", "c": "hello"})
       ws.end()
     })
   })
@@ -164,13 +164,13 @@ module.exports.writeStream = function(test, common) {
         var rs = dat.keyStream()
         rs.pipe(concat(function(rows) {
           t.equal(rows.length, 1, '1 key')
-          t.equal(rows[0].id, 'foo')
+          t.equal(rows[0].key, 'foo')
           t.equal(rows[0].version, 1)
           setImmediate(done)
         }))
       })
     
-      ws.write({"id": "foo", "b": "bar", "c": "hello"})
+      ws.write({"key": "foo", "b": "bar", "c": "hello"})
       ws.end()
     })
   })

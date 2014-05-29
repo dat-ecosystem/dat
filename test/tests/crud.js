@@ -28,7 +28,7 @@ module.exports.decodeKey = function(test, common) {
     var key = 'ÿdÿfooÿ01'
     var obj = docUtils.decodeKey(key)
     var expected = {
-      id: 'foo',
+      key: 'foo',
       version: 1
     }
     t.deepEqual(obj, expected)
@@ -137,7 +137,7 @@ module.exports.forceOption = function(test, common) {
 }
 
 module.exports.multiplePutJson = function(test, common) {
-  test('.put same json multiple times (random id generation)', function(t) {
+  test('.put same json multiple times (random key generation)', function(t) {
     common.getDat(t, function(dat, done) {
       dat.put({"foo": "bar"}, function(err) {
         if (err) throw err
@@ -183,9 +183,9 @@ module.exports.deleteRow = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
-        dat.delete(doc.id, function(err) {
+        dat.delete(doc.key, function(err) {
           t.false(err, 'should delete okay')
-          dat.get(doc.id, function(err, doc) {
+          dat.get(doc.key, function(err, doc) {
             t.true(err, 'doc should now be not found')
             t.false(doc, 'doc should be null')
             var cat = dat.createValueStream()
@@ -211,7 +211,7 @@ module.exports.getAtVersion = function(test, common) {
         dat.put(doc, function(err, doc) {
           t.false(err)
           if (!doc) doc = {}
-          dat.get(doc.id, { version: ver1 }, function(err, docAtVer) {
+          dat.get(doc.key, { version: ver1 }, function(err, docAtVer) {
             t.false(err, 'no err')
             if (!docAtVer) docAtVer = {}
             t.equal(docAtVer.pizza, undefined, 'doc is version 1')
@@ -253,7 +253,7 @@ module.exports.keepTotalRowCount = function(test, common) {
       dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
         t.equal(dat.getRowCount(), 1)
-        dat.delete(doc.id, function(err) {
+        dat.delete(doc.key, function(err) {
           if (err) throw err
           t.equal(dat.getRowCount(), 0)
           setImmediate(done)
