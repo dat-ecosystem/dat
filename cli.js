@@ -64,7 +64,8 @@ var dat = Dat(datPath, datOpts, function ready(err) {
     }
     if (typeof message === 'object') message = JSON.stringify(message)
     if (!opts.argv.quiet && message) stdout.write(message.toString() + EOL)
-    if (datCommand.command !== 'serve' || datCommand.command !== 'listen') close()
+    var persist = ['serve', 'listen']
+    if (persist.indexOf(datCommand.command) === -1) close()
   })
 })
 

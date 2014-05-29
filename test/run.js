@@ -12,6 +12,7 @@ var tests = [
   require('./tests/cli'),
   require('./tests/init'),
   require('./tests/crud'),
+  require('./tests/levelup'),
   require('./tests/read-streams'),
   require('./tests/write-streams'),
   require('./tests/replication'),

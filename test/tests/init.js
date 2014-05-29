@@ -118,7 +118,7 @@ module.exports.sameDir = function(test, common) {
   test('multiple dat instances in the same directory', function(t) {
     common.getDat(t, { datPath: common.dat1tmp, noTestEnd: true }, function(dat1, cleanup1) {
       common.getDat(t, { datPath: common.dat1tmp, noTestEnd: true }, function(dat2, cleanup2) {
-        dat2.put({"id": "foo", "hello": "world"}, function(err) {
+        dat2.put("foo", {"hello": "world"}, function(err) {
           if (err) throw err
           dat1.get('foo', function(err, row) {
             t.false(err, 'no err')
@@ -156,7 +156,7 @@ module.exports.customBackend = function(test, common) {
   test('instantiate + pass in custom leveldown instance', function(t) {
     var memdown = require('memdown')
     var dat = new Dat(common.dat1tmp, { backend: memdown }, function ready() {
-      dat.put({'foo': 'bar'}, function(err) {
+      dat.put(null, {'foo': 'bar'}, function(err) {
         t.notOk(err, 'no put err')
         var onDiskDat = fs.existsSync(path.join(common.dat1tmp, '.dat', 'store.dat'))
         t.notOk(onDiskDat, 'no dat folder was created')

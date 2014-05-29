@@ -146,7 +146,7 @@ module.exports.changesStream = function(test, common) {
         setImmediate(done)
       }))
       
-      dat.put({"foo": "bar"}, function(err, doc) {
+      dat.put(null, {"foo": "bar"}, function(err, doc) {
         if (err) throw err
       })
     })
@@ -157,7 +157,7 @@ module.exports.changesStreamTail = function(test, common) {
   test('createChangesStream tail:true', function(t) {
     common.getDat(t, function(dat, done) {
       
-      dat.put({"foo": "old"}, function(err) {
+      dat.put(null, {"foo": "old"}, function(err) {
         t.notOk(err, 'should not err')
         
         var changes = dat.createChangesStream({ live: true, tail: true, data: true })
@@ -175,7 +175,7 @@ module.exports.changesStreamTail = function(test, common) {
           setImmediate(done)
         }))
       
-        dat.put({"foo": "new"}, function(err) {
+        dat.put(null, {"foo": "new"}, function(err) {
           t.notOk(err, 'should not err')
         })
       })
@@ -316,16 +316,16 @@ module.exports.createReadStreamCSV = function(test, common) {
 module.exports.createVersionStream = function(test, common) {
   test('createVersionStream', function(t) {
     common.getDat(t, function(dat, done) {
-      dat.put({"id": "foo", "baz": "bar"}, function(err, doc) {
+      dat.put("foo", {"baz": "bar"}, function(err, doc) {
         t.false(err)
         var ver1 = doc.version
         doc.pizza = 'taco'
-        dat.put(doc, function(err, doc) {
+        dat.put(null, doc, function(err, doc) {
           t.false(err)
           // put some data before and after to make sure they dont get returned too
-          dat.put({'id': 'abc'}, function(err) {
+          dat.put("abc", {'bar': 'baz'}, function(err) {
             t.false(err)
-            dat.put({'id': 'xyz'}, function(err) {
+            dat.put("xyz", {'bar': 'baz'}, function(err) {
               t.false(err)
               readVersions()
             })
