@@ -71,11 +71,10 @@ module.exports.createValueStream = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put('foo', {"bar": "baz"}, function(err, doc) {
         if (err) throw err
-        var rs = dat.readStream()
+        var rs = dat.createValueStream()
         rs.pipe(concat(function(rows) {
           t.equal(rows.length, 1, '1 row')
-          t.ok(rows[0], '.key')
-          t.ok(rows[0], '.value')
+          t.equal(rows[0].bar, 'baz', 'baz')
           setImmediate(done)
         }))
       })
@@ -88,11 +87,10 @@ module.exports.valueStream = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put('foo', {"bar": "baz"}, function(err, doc) {
         if (err) throw err
-        var rs = dat.readStream()
+        var rs = dat.valueStream()
         rs.pipe(concat(function(rows) {
           t.equal(rows.length, 1, '1 row')
-          t.ok(rows[0], '.key')
-          t.ok(rows[0], '.value')
+          t.equal(rows[0].bar, 'baz', 'baz')
           setImmediate(done)
         }))
       })
