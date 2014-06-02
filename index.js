@@ -9,7 +9,6 @@ var request = require('request').defaults({json: true})
 var meta = require(path.join(__dirname, 'lib', 'meta.js'))
 var commands = require(path.join(__dirname, 'lib', 'commands'))
 var getPort = require(path.join(__dirname, 'lib', 'get-port'))
-var backend = require(path.join(__dirname, 'lib', 'backend'))
 var datVersion = require(path.join(__dirname, 'package.json')).version
 
 module.exports = Dat
@@ -63,7 +62,6 @@ function Dat(dir, opts, onReady) {
   this.dir = dir || opts.path || process.cwd()
   this.opts = opts
   var paths = this.paths(dir)
-  this._backend = backend(this)
   
   debug(JSON.stringify(opts))
   

@@ -324,14 +324,6 @@ var headers = dat.headers()
 
 Returns an array of all the current column names in the db. Used for generating CSVs.
 
-## backend
-
-```
-dat.backend(backend, cb)
-```
-
-Switches levelup to use `require(backend)` as it's leveldown. Will install it from NPM if it isn't available and put it in `.dat/node_modules`. Calls `cb` with `(err)` when done. Before the backend gets loaded you have to close and re-instantiate the dat store.
-
 ## config
 
 ```js

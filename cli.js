@@ -23,7 +23,7 @@ if (first === 'import' || !first) {
 
 var datOpts = { init: !!inputStream }
 
-if (datCommand.command === 'backend' || datCommand.command === 'clone') {
+if (datCommand.command === 'clone') {
   datOpts.storage = false
 }
 
@@ -79,7 +79,6 @@ var cliCommands = {
   pull: dat.pull,
   push: dat.push,
   clone: dat.clone,
-  backend: dat.backend,
   config: dat.config,
   serve: dat.listen,
   listen: dat.listen

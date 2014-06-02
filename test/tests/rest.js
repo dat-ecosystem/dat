@@ -148,20 +148,6 @@ module.exports.basicAuthOptions = function(test, common) {
   })
 }
 
-module.exports.archiveExport = function(test, common) {
-  test('GET /api/archive returns proper error (on leveldown)', function(t) {
-    if (common.rpc) return t.end()
-    common.getDat(t, function(dat, cleanup) {
-      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/archive', json: true}, function(err, res, json) {
-        if (err) throw err
-        t.ok(!!json.error, 'got error in json response')
-        cleanup()
-      })
-    })
-  })
-}
-
-
 module.exports.csvExport = function(test, common) {
   test('GET /api/csv returns proper csv', function(t) {
     if (common.rpc) return t.end()
@@ -222,7 +208,6 @@ module.exports.all = function (test, common) {
   module.exports.restBulkCsv(test, common)
   module.exports.basicAuthEnvVariables(test, common)
   module.exports.basicAuthOptions(test, common)
-  module.exports.archiveExport(test, common)
   module.exports.csvExport(test, common)
   module.exports.jsonExport(test, common)
 }
