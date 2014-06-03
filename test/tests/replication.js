@@ -165,17 +165,25 @@ module.exports.pullReplicationLive = function(test, common) {
         var pull = dat2.pull({ live: true })
         dat.put({foo: 'bar'}, function(err) {
           if (err) throw err
+          var ok = false
+          
+          dat2.createChangesStream({ live: true, data: true }).on('data', function(change) {
+            var data = change.data
+            ok = true
+            t.equal(data.foo, 'bar')
+            pull.end()
+            dat2.destroy(function(err) {
+              if (err) throw err
+              cleanup()
+            })
+          })
+
           setTimeout(function() {
-            dat2.createReadStream().pipe(concat(function(data) {
-              t.equal(data.length, 1)
-              if (data.length) t.equal(data[0].value.foo, 'bar')
-              pull.end()
-              dat2.destroy(function(err) {
-                if (err) throw err
-                cleanup()
-              })
-            }))
-          }, 2000)
+            if (!ok) {
+              t.ok(ok, 'should not get here')
+              t.end()
+            }
+          }, 4000)
         })
       })
     })

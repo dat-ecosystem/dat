@@ -298,7 +298,7 @@ module.exports.all = function (test, common) {
   module.exports.putJson(test, common)
   module.exports.putWeirdKeys(test, common)
   module.exports.putJsonSetVersion(test, common)
-  // module.exports.putJsonPrimary(test, common)
+  module.exports.putJsonPrimary(test, common)
   module.exports.updateJson(test, common)
   module.exports.forceOption(test, common)
   module.exports.multiplePutJson(test, common)
