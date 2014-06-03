@@ -46,8 +46,8 @@ var dat = Dat(datPath, datOpts, function ready(err) {
   if (inputStream) {
     return cli.writeInputStream(inputStream, dat, opts.argv)
   }
-  
-  if (opts.argv._.length === 0) {
+
+  if (!datCommand) {
     dat.close()
     return process.stderr.write(opts.help())
   }
@@ -81,7 +81,8 @@ var cliCommands = {
   clone: dat.clone,
   config: dat.config,
   serve: dat.listen,
-  listen: dat.listen
+  listen: dat.listen,
+  version: dat.versionCmd
 }
 
 function close() {
