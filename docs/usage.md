@@ -81,6 +81,8 @@ dat push http://localhost:6461
 
 ## grab all the NPM registry metadata
 
+With `dat clone <repository> [<directory>]`.  For example:
+
 ```
 dat clone http://dat-npm.mathiasbuus.eu
 ```
