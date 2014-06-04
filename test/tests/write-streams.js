@@ -328,8 +328,8 @@ module.exports.multipleWriteStreamsUpdatingChanged = function(test, common) {
       ws1.on('end', function() {
         var ws2 = dat.createWriteStream({ json: true, primary: 'foo' })
         
-        ws2.on('error', function(e) {
-          t.ok(e, 'should error')
+        ws2.on('conflict', function(e) {
+          t.ok(e, 'should conflict')
           var cat = dat.createReadStream()
   
           cat.pipe(concat(function(data) {
@@ -476,18 +476,18 @@ module.exports.writeStreamConflicts = function(test, common) {
       function writeAndVerify(obj, cb) {
         var ws = dat.createWriteStream({ objects: true })
 
-        var errored
+        var conflicted
         
         ws.on('end', function() {
-          if (errored) return
+          if (conflicted) return
           var cat = dat.createValueStream()
           cat.pipe(concat(function(data) {
             cb(null, data)
           }))
         })
         
-        ws.on('error', function(e) {
-          errored = true
+        ws.on('conflict', function(e) {
+          conflicted = true
           cb(e)
         })
     
@@ -503,7 +503,7 @@ module.exports.writeStreamConflicts = function(test, common) {
         t.equals(stored1[0].name, 'bob', 'bob is in db')
         t.equals(stored1[0].version, 1, 'bob is at ver 1')
         writeAndVerify(ver1, function(err2, stored2) {
-          t.ok(err2, 'should have errored')
+          t.ok(err2, 'should have conflicted')
           t.equals(stored1.length, 1, '1 row in db')
           t.equals(stored1[0].name, 'bob', 'bob is in db')
           t.equals(stored1[0].version, 1, 'bob is at ver 1')
@@ -624,7 +624,7 @@ module.exports.keepTotalRowCount = function(test, common) {
       ws1.on('end', function() {
         var ws2 = dat.createWriteStream({ json: true })
 
-        ws2.on('error', function(e) {
+        ws2.on('conflict', function(e) {
           var cat = dat.createReadStream()
 
           cat.pipe(concat(function(data) {
