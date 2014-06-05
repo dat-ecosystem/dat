@@ -80,7 +80,7 @@
   "devDependencies": {
     "memdown": "^0.7.1",
     "stdout": "0.0.3",
-    "tape": "~2.1.0"
+    "tape": "^2.13.2"
   },
   "browser": {
     "leveldown-prebuilt": "level-js"
