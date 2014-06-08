@@ -59,6 +59,24 @@ module.exports.restPut = function(test, common) {
   })
 }
 
+module.exports.restConflict = function(test, common) {
+  test('rest conflict', function(t) {
+    if (common.rpc) return t.end()
+    common.getDat(t, function(dat, cleanup) {
+      var body = {key: 'foo'}
+      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api', json: body }, function(err, res, stored) {
+        if (err) throw err
+        request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api', json: body }, function(err, res, json) {
+          t.equal(res.statusCode, 409, '409')
+          t.false(err, 'no req error')
+          t.ok(json.conflict, 'body.conflict')
+          cleanup()
+        })
+      })
+    })
+  })
+}
+
 module.exports.restPutBlob = function(test, common) {
   test('rest put blob', function(t) {
     if (common.rpc) return t.end()
@@ -204,6 +222,7 @@ module.exports.all = function (test, common) {
   module.exports.restHello(test, common)
   module.exports.restGet(test, common)
   module.exports.restPut(test, common)
+  module.exports.restConflict(test, common)
   module.exports.restPutBlob(test, common)
   module.exports.restBulkCsv(test, common)
   module.exports.basicAuthEnvVariables(test, common)
