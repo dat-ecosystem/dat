@@ -117,7 +117,7 @@ module.exports.getChanges = function(test, common) {
         dat.createChangesStream({data: true}).pipe(concat(function(data) {
           var changes = data.map(function(r) { return r.change })
           t.equal(JSON.stringify(changes), JSON.stringify([1,2,3,4,5]) , 'ordered changes 1 - 5 exist')
-          t.equal(!!data[0].data, true)
+          t.equal(!!data[0].value, true)
           done()
         }))
       })
@@ -141,7 +141,7 @@ module.exports.changesStream = function(test, common) {
       
       changes.pipe(through2({objectMode: true}, function(obj, enc, next) {
         changes.end()
-        t.equal(obj.data.foo, "bar")
+        t.equal(obj.value.foo, "bar")
         gotChange = true
         setImmediate(done)
       }))
@@ -170,7 +170,7 @@ module.exports.changesStreamTail = function(test, common) {
       
         changes.pipe(through2({objectMode: true}, function(obj, enc, next) {
           changes.end()
-          t.equal(obj.data.foo, "new", 'should only get new row, not old row')
+          t.equal(obj.value.foo, "new", 'should only get new row, not old row')
           gotChange = true
           setImmediate(done)
         }))
@@ -208,7 +208,7 @@ module.exports.changesStreamTailNum = function(test, common) {
       
         changes.pipe(through2({objectMode: true}, function(obj, enc, next) {
           changes.end()
-          t.equal(obj.data.foo, "taco", 'should only get 1 newest row, not older rows')
+          t.equal(obj.value.foo, "taco", 'should only get 1 newest row, not older rows')
           gotChange = true
           setImmediate(done)
           next()

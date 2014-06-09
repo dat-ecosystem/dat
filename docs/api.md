@@ -137,7 +137,7 @@ Changes are emitted as JS objects that look like `{change: 352, key: 'foo', vers
 
 ### Options
 
-* `data` (default `false`) - if true will `get` the row data at the change version and include it `change.data`
+* `data` (default `false`) - if true will `get` the row data at the change version and include it `change.value`
 * `since` (default `0`) - change ID to start from
 * `tail` (default `false`) - if true it will set `since` to the very last change so you only get new changes
 * `limit` (default unlimited) - how many changes to return before stopping

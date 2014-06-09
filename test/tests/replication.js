@@ -168,7 +168,7 @@ module.exports.pullReplicationLive = function(test, common) {
           var ok = false
           
           dat2.createChangesStream({ live: true, data: true }).on('data', function(change) {
-            var data = change.data
+            var data = change.value
             ok = true
             t.equal(data.foo, 'bar')
             pull.end()
