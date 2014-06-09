@@ -161,7 +161,7 @@ module.exports.singleBuff = function(test, common) {
   
     common.getDat(t, function(dat, done) {
     
-      var ws = dat.createWriteStream({ columns: ['foo'] })
+      var ws = dat.createWriteStream({ columns: ['foo'], protobuf: true })
     
       ws.on('end', function() {
         dat.createReadStream().pipe(concat(function(data) {
@@ -189,7 +189,7 @@ module.exports.multipleBuffs = function(test, common) {
 
     common.getDat(t, function(dat, done) {
     
-      var ws = dat.createWriteStream({ columns: ['a', 'b'] })
+      var ws = dat.createWriteStream({ columns: ['a', 'b'], protobuf: true })
       ws.on('end', function() {
         dat.createReadStream().pipe(concat(function(data) {
           t.equal(data.length, 2)
@@ -353,7 +353,7 @@ module.exports.multipleWriteStreamsUpdatingChanged = function(test, common) {
 module.exports.compositePrimaryKey = function(test, common) {
   test('composite primary key', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ objects: true, primary: ['a', 'b'] })
+      var ws = dat.createWriteStream({ primary: ['a', 'b'] })
     
       ws.on('end', function() {
         dat.get('foobar', function(err, data) {
@@ -372,7 +372,7 @@ module.exports.compositePrimaryKey = function(test, common) {
 module.exports.compositePrimaryKeyCustomSeparator = function(test, common) {
   test('composite primary key w/ custom keySeparator', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ objects: true, primary: ['a', 'b'], separator: '@' })
+      var ws = dat.createWriteStream({ primary: ['a', 'b'], separator: '@' })
     
       ws.on('end', function() {
         dat.get('foo@bar', function(err, data) {
@@ -392,7 +392,7 @@ module.exports.compositePrimaryKeyCustomSeparator = function(test, common) {
 module.exports.compositePrimaryKeyHashing = function(test, common) {
   test('composite primary key w/ composite hashing enabled', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ objects: true, primary: ['a', 'b'], hash: true })
+      var ws = dat.createWriteStream({ primary: ['a', 'b'], hash: true })
     
       ws.on('end', function() {
         var key = crypto.createHash('md5').update('foobar').digest("hex")
@@ -413,7 +413,7 @@ module.exports.compositePrimaryKeyHashing = function(test, common) {
 module.exports.compositePrimaryKeySeparator = function(test, common) {
   test('composite primary key w/ custom separator', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ objects: true, primary: ['a', 'b'], separator: '-' })
+      var ws = dat.createWriteStream({ primary: ['a', 'b'], separator: '-' })
     
       ws.on('end', function() {
 
@@ -433,7 +433,7 @@ module.exports.compositePrimaryKeySeparator = function(test, common) {
 module.exports.primaryKeyFunction = function(test, common) {
   test('primary key function', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({objects: true, primaryFormat: function () { return 'P-Funk' }})
+      var ws = dat.createWriteStream({primaryFormat: function () { return 'P-Funk' }})
 
       ws.on('end', function() {
         dat.get('P-Funk', function(err, data) {
@@ -452,7 +452,7 @@ module.exports.primaryKeyFunction = function(test, common) {
 module.exports.primaryKeyFunctionUsingPrimaryVal = function(test, common) {
   test('primary key function', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({objects: true, primary: 'a', primaryFormat: function (val) { return 'P-' + val }})
+      var ws = dat.createWriteStream({primary: 'a', primaryFormat: function (val) { return 'P-' + val }})
 
       ws.on('end', function() {
         dat.get('P-Funk', function(err, data) {
@@ -474,7 +474,7 @@ module.exports.writeStreamConflicts = function(test, common) {
     common.getDat(t, function(dat, done) {
       
       function writeAndVerify(obj, cb) {
-        var ws = dat.createWriteStream({ objects: true })
+        var ws = dat.createWriteStream()
 
         var conflicted
         

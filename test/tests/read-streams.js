@@ -9,7 +9,7 @@ var protobuf = require('protocol-buffers')
 module.exports.valueStreamBuff = function(test, common) {
   test('valueStream returns all buff rows', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ columns: ['num'] })
+      var ws = dat.createWriteStream({ columns: ['num'], protobuf: true })
       var nums = []
     
       ws.on('end', function() {
@@ -37,7 +37,7 @@ module.exports.valueStreamBuff = function(test, common) {
 module.exports.valueStreamBuffPrimaryKey = function(test, common) {
   test('valueStream returns all buff rows w/ custom primary key', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ columns: ['num'], primary: 'num' })
+      var ws = dat.createWriteStream({ columns: ['num'], primary: 'num', protobuf: true })
       var nums = []
     
       ws.on('end', function() {
@@ -188,7 +188,7 @@ module.exports.changesStreamTailNum = function(test, common) {
   test('createChangesStream tail:1', function(t) {
     common.getDat(t, function(dat, done) {
       
-      var ws = dat.createWriteStream({objects: true})
+      var ws = dat.createWriteStream()
       
       ws.on('error', function(err) {
         t.notOk(err)

@@ -105,7 +105,7 @@ You can also pass in options to serialize the values as either CSV or line-delim
 * `start` (defaults to the beginning of the possible keyspace) - key to start iterating from
 * `end` (defaults to the end of the possible keyspace) - key to stop iterating at
 * `limit` (default unlimited) - how many rows to return before stopping
-* `format` (default `objects`) - if set to `csv` or `json` the stream will not be an object mode stream and will emit serialized data
+* `format` (default `objectMode`) - if set to `csv` or `json` the stream will not be an object mode stream and will emit serialized data
 * `csv` (default `false`) - if true is equivalent to setting `format` to `csv`
 * `json` (default `false`) - if true is equivalent to setting `format` to `json`
 
@@ -159,10 +159,10 @@ You can write:
 
 ### Options
 
-* `format` (defaults to multibuffer), set this equal to `json`, `objects`, `csv` to tell the write stream how to parse the data you write to it
-* `csv` - setting to true is equivalent to `{format: 'csv'}`
-* `json` - setting to true is equivalent to `{format: 'json'}`
-* `objects` - setting to true is equivalent to `{format: 'objects'}`
+* `format` (defaults to `objectMode`), set this equal to `json`, `csv`, or `protobuf` to tell the write stream how to parse the data you write to it
+* `csv` - raw CSV data. setting to true is equivalent to `{format: 'csv'}`
+* `json` - line-delimited JSON objects. setting to true is equivalent to `{format: 'json'}`
+* `protobuf` - protocol buffers encoded binary data. setting to true is equivalent to `{format: 'protobuf'}`
 * `primary` (default `key`) - the column or array of columns to use as the primary key
 * `hash` (default `false`) - if true `key` will be set to the md5 hex hash of the string of the primary key(s)
 * `primaryFormat` - a function that formats the key before it gets inserted. accepts `(val)` and must return a string to set as the key.

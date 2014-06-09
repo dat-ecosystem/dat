@@ -83,7 +83,7 @@ module.exports.pullReplicationSparse = function(test, common) {
   test('pull replication with sparse data', function(t) {
     var dat2 = new Dat(common.dat2tmp, function ready() {
       common.getDat(t, function(dat, cleanup) {
-        var ws = dat.createWriteStream({ objects: true })
+        var ws = dat.createWriteStream()
         
         ws.on('end', function() {
           dat2.pull(function(err) {
