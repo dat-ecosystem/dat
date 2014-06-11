@@ -38,9 +38,11 @@
     "csv-parser": "^1.2.1",
     "csv-write-stream": "~0.1.1",
     "cuid": "^1.2.4",
-    "dat-replicator": "^0.6.1",
     "dat-editor": "^1.0.1",
+    "dat-replicator": "^0.6.1",
     "debug": "~0.7.4",
+    "duplexer2": "0.0.2",
+    "execspawn": "^0.2.0",
     "extend": "~1.2.1",
     "getport": "~0.1.0",
     "hat": "~0.0.3",
@@ -68,6 +70,7 @@
     "speedometer": "^0.1.2",
     "stdout-stream": "~1.2.0",
     "stream-combiner": "~0.0.2",
+    "stream-splicer": "^1.1.0",
     "through2": "~0.4.1"
   },
   "directories": {
