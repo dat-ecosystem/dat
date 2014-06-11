@@ -166,6 +166,55 @@ module.exports.basicAuthOptions = function(test, common) {
   })
 }
 
+module.exports.createSession = function(test, common) {
+  test('create a session w/ basic auth', function(t) {
+    if (common.rpc) return t.end()
+    var opts = { adminUser: 'foo', adminPass: 'bar' }
+    common.getDat(t, opts, function(dat, cleanup) {
+      var headers = {
+        authorization: 'Basic ' + new Buffer('foo:bar').toString('base64')
+      }
+      request({uri: 'http://localhost:' + dat.defaultPort + '/api/session', headers: headers, json: true }, function(err, res, json) {
+        if (err) throw err
+        t.equal(res.statusCode, 200, '200 OK')
+        t.ok(res.headers['set-cookie'], 'got set-cookie header')
+        t.ok(json.session, 'got session in response')
+        cleanup()
+      })
+    })
+  })
+}
+
+module.exports.logout = function(test, common) {
+  test('logout of a session', function(t) {
+    if (common.rpc) return t.end()
+    var opts = { adminUser: 'foo', adminPass: 'bar' }
+    common.getDat(t, opts, function(dat, cleanup) {
+      var headers = {
+        authorization: 'Basic ' + new Buffer('foo:bar').toString('base64')
+      }
+      request({uri: 'http://localhost:' + dat.defaultPort + '/api/session', headers: headers, json: true }, function(err, res, json) {
+        if (err) throw err
+        t.equal(res.statusCode, 200, '200 OK')
+        var sessionHeaders = {
+          cookie: res.headers['set-cookie']
+        }
+        request({uri: 'http://localhost:' + dat.defaultPort + '/api/logout', headers: sessionHeaders, json: true}, function(err, res, json) {
+          t.equal(res.statusCode, 401, '401 Unauthorized')
+          t.ok(res.headers['set-cookie'], 'got set-cookie header')
+          t.ok(json.loggedOut, 'got loggedOut in response')
+          request({uri: 'http://localhost:' + dat.defaultPort + '/api/session', headers: sessionHeaders, json: true}, function(err, res, json) {
+            t.equal(res.statusCode, 401, '401 Unauthorized')
+            t.ok(res.headers['set-cookie'], 'got set-cookie header')
+            t.ok(json.loggedOut, 'got loggedOut in response')
+            cleanup()
+          })
+        })
+      })
+    })
+  })
+}
+
 module.exports.csvExport = function(test, common) {
   test('GET /api/csv returns proper csv', function(t) {
     if (common.rpc) return t.end()
@@ -227,6 +276,8 @@ module.exports.all = function (test, common) {
   module.exports.restBulkCsv(test, common)
   module.exports.basicAuthEnvVariables(test, common)
   module.exports.basicAuthOptions(test, common)
+  module.exports.createSession(test, common)
+  module.exports.logout(test, common)
   module.exports.csvExport(test, common)
   module.exports.jsonExport(test, common)
 }
