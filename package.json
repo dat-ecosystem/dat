@@ -33,6 +33,7 @@
     "concat-stream": "~1.4.3",
     "connections": "~1.0.0",
     "content-addressable-store": "^1.5.0",
+    "cookie-cutter": "^0.1.1",
     "corsify": "~1.0.2",
     "csv-multibuffer-stream": "^1.0.0",
     "csv-parser": "^1.2.1",
