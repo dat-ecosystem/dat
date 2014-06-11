@@ -6,6 +6,7 @@ var debug = require('debug')('dat.init')
 
 var request = require('request').defaults({json: true})
 
+var transformations = require('./lib/transformations')
 var meta = require(path.join(__dirname, 'lib', 'meta.js'))
 var commands = require(path.join(__dirname, 'lib', 'commands'))
 var getPort = require(path.join(__dirname, 'lib', 'get-port'))
@@ -65,22 +66,30 @@ function Dat(dir, opts, onReady) {
   
   debug(JSON.stringify(opts))
   
-  if (!opts.storage) {
-    self.meta = meta(self, function(err) {
-      onReady()
-    })
-  } else {
-    function read() {
-      readPort(paths.port, opts, function(err) {
-        // ignore err
-        loadMeta()
+  readDatJSON(function(err, data) {
+    if (err) throw err // TODO: emit when Dat is becomes an eventemitter
+
+    self.package = data
+    if (data.transformations.put) self.beforePut = transformations(data.transformations.put)
+    if (data.transformations.get) self.afterGet = transformations(data.transformations.get)
+
+    if (!opts.storage) {
+      self.meta = meta(self, function(err) {
+        onReady()
       })
+    } else {
+      function read() {
+        readPort(paths.port, opts, function(err) {
+          // ignore err
+          loadMeta()
+        })
+      }
+      // windows server fails when timeout is lower than 2000
+      // timeout if called from CLI && is not a mac
+      if (!tty.isatty(0) && !(os.platform().match('darwin'))) setTimeout(read, 2000)
+      else read()
     }
-    // windows server fails when timeout is lower than 2000
-    // timeout if called from CLI && is not a mac
-    if (!tty.isatty(0) && !(os.platform().match('darwin'))) setTimeout(read, 2000)
-    else read()
-  }
+  })
   
   function loadMeta() {
     self.meta = meta(self, function(err) {
@@ -108,6 +117,25 @@ function Dat(dir, opts, onReady) {
         onReady()
       }
     })
+  }
+
+  function readDatJSON(cb) {
+    fs.readFile(path.join(dir, 'dat.json'), 'utf-8', function(err, data) {
+      if (err && err.code !== 'ENOENT') return cb(err)
+
+      try {
+        data = JSON.parse(data || '{}')
+      } catch (err) {
+        return cb(new Error('Invalid dat.json file'))
+      }
+
+      // normalize
+      if (!data.transformations) data.transformations = {}
+      if (Array.isArray(data.transformations)) data.transformations = {put:data.transformations}
+
+      cb(null, data)
+    })
+
   }
 }
 
