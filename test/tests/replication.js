@@ -162,7 +162,7 @@ module.exports.pullReplicationLive = function(test, common) {
   test('live pull replication', function(t) {
     var dat2 = new Dat(common.dat2tmp, function ready() {
       common.getDat(t, function(dat, cleanup) {
-        var pull = dat2.pull({ live: true })
+        var pull = dat2.pull({ quiet: true, live: true })
         dat.put({foo: 'bar'}, function(err) {
           if (err) throw err
           var ok = false
@@ -170,7 +170,7 @@ module.exports.pullReplicationLive = function(test, common) {
           dat2.createChangesStream({ live: true, data: true }).on('data', function(change) {
             var data = change.value
             ok = true
-            t.equal(data.foo, 'bar')
+            t.equal(data.foo, 'bar', 'change matches')
             pull.end()
             dat2.destroy(function(err) {
               if (err) throw err
@@ -180,10 +180,10 @@ module.exports.pullReplicationLive = function(test, common) {
 
           setTimeout(function() {
             if (!ok) {
-              t.ok(ok, 'should not get here')
-              t.end()
+              t.ok(ok, 'should not time out but did')
+              cleanup()
             }
-          }, 4000)
+          }, 10000)
         })
       })
     })
