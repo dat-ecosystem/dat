@@ -19,7 +19,7 @@ The initial prototype of `dat` will be developed thanks to support from the Knig
 
 See ['how `dat` works'](#how-dat-works) below for technical descriptions. The transformation and sync modules are where `dat` really shines in that they define a way for data tools and scripts to talk to each other so that these components can be made generic and shared.
 
-[![](img/dat-diagram.png)](https://jlord.s3.amazonaws.com/dat-diagram.png)
+[![](../img/dat-diagram.png)](https://jlord.s3.amazonaws.com/dat-diagram.png)
 
 ### Get involved with `dat`
 
@@ -152,7 +152,7 @@ Git is designed this way for a good reason: to make working with large repositor
 
 Here is what happens when you try to view a 25MB text file in a browser through GitHub.com:
 
-![25mbfile](img/25mb-txt.png)
+![25mbfile](../img/25mb-txt.png)
 
 Note: I can only speculate as to why these limitations exist on GitHub, `git` is capable of cloning a 25MB file. Watch [Git: the stupid NOSQL database](http://www.confreaks.com/videos/443-rubyconf2010-git-the-stupid-nosql-database) by GitHub's Rick Olson to learn more.
 
