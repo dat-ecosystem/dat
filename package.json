@@ -64,6 +64,7 @@
     "pretty-bytes": "^0.1.1",
     "protocol-buffers": "^0.4.1",
     "request": "~2.27.0",
+    "resolve": "^0.7.1",
     "rimraf": "~2.2.2",
     "routes-router": "~1.5.3",
     "single-line-log": "^0.3.1",
