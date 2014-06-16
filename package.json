@@ -48,7 +48,7 @@
     "getport": "~0.1.0",
     "hat": "~0.0.3",
     "head-stream": "~0.0.4",
-    "ldjson-stream": "~0.0.1",
+    "ldjson-stream": "~1.0.0",
     "level-js": "^2.1.3",
     "level-live-stream": "~1.4.9",
     "level-manifest": "~1.2.0",

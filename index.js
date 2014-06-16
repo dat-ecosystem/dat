@@ -68,11 +68,11 @@ function Dat(dir, opts, onReady) {
   
   readDatJSON(function(err, data) {
     if (err) throw err // TODO: emit when Dat is becomes an eventemitter
-
+    
     self.package = data
     if (data.transformations.put) self.beforePut = transformations(data.transformations.put)
     if (data.transformations.get) self.afterGet = transformations(data.transformations.get)
-
+    
     if (!opts.storage) {
       self.meta = meta(self, function(err) {
         onReady()
