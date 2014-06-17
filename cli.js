@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
 var path = require('path')
-var Dat = require(__dirname)
-var cli = require(path.join(__dirname, 'lib', 'parse-cli'))
+var Dat = require('./')
+var cli = require('./lib/parse-cli.js')
 var optimist = require('optimist')
 var EOL = require('os').EOL
 var url = require('url')

@@ -109,7 +109,6 @@ module.exports.multipleNdjsonObjects = function(test, common) {
     
       ws.on('end', function() {
       
-        dat.dump()
         var cat = dat.createReadStream()
       
         cat.pipe(concat(function(data) {

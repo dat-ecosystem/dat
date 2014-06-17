@@ -1,25 +1,25 @@
 var path = require('path')
 var datPath = path.join(__dirname, '../')
-var Dat = require(datPath)
+var Dat = require('../')
 var tape = require('tape')
-var common = require(path.join(__dirname, 'common'))()
+var common = require('./common.js')()
 
 function test(name, testFunction) {
   return tape(common.testPrefix + name, testFunction)
 }
 
 var tests = [
-  require('./tests/cli'),
-  require('./tests/init'),
-  require('./tests/crud'),
-  require('./tests/levelup'),
-  require('./tests/read-streams'),
-  require('./tests/write-streams'),
-  require('./tests/replication'),
-  require('./tests/rest')
+  require('./tests/cli.js'),
+  require('./tests/init.js'),
+  require('./tests/crud.js'),
+  require('./tests/levelup.js'),
+  require('./tests/read-streams.js'),
+  require('./tests/write-streams.js'),
+  require('./tests/replication.js'),
+  require('./tests/rest.js')
 ]
 
-var finish = require('./tests/finish')
+var finish = require('./tests/finish.js')
 
 var specificTests = process.argv.slice(2, process.argv.length)
 

@@ -6,11 +6,11 @@ var debug = require('debug')('dat.init')
 
 var request = require('request').defaults({json: true})
 
-var transformations = require('./lib/transformations')
-var meta = require(path.join(__dirname, 'lib', 'meta.js'))
-var commands = require(path.join(__dirname, 'lib', 'commands'))
-var getPort = require(path.join(__dirname, 'lib', 'get-port'))
-var datVersion = require(path.join(__dirname, 'package.json')).version
+var transformations = require('./lib/transformations.js')
+var meta = require('./lib/meta.js')
+var commands = require('./lib/commands.js')
+var getPort = require('./lib/get-port.js')
+var datVersion = require('./package.json').version
 
 module.exports = Dat
 

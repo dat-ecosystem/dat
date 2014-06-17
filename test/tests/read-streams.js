@@ -196,7 +196,6 @@ module.exports.changesStreamTailNum = function(test, common) {
       })
       
       ws.on('end', function() {
-        dat.dump()
         var changes = dat.createChangesStream({ live: true, tail: 1, data: true })
 
         var gotChange = false
