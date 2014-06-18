@@ -40,6 +40,7 @@
     "dat-editor": "^1.0.1",
     "dat-replicator": "^0.6.1",
     "debug": "~0.7.4",
+    "debug-stream": "^2.0.0",
     "duplexer2": "0.0.2",
     "execspawn": "^0.2.0",
     "extend": "~1.2.1",
