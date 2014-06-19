@@ -14,7 +14,7 @@
     "dat": "cli.js"
   },
   "scripts": {
-    "test": "node test/run.js",
+    "test": "node test/run.js | tap-spec",
     "bench": "node benchmarks/bulk-replication.js"
   },
   "repository": {
@@ -83,6 +83,7 @@
   },
   "devDependencies": {
     "memdown": "^0.7.1",
+    "tap-spec": "^0.2.0",
     "tape": "^2.13.3"
   },
   "browser": {
