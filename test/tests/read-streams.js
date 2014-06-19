@@ -9,7 +9,7 @@ var protobuf = require('protocol-buffers')
 module.exports.valueStreamBuff = function(test, common) {
   test('valueStream returns all buff rows', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ columns: ['num'], protobuf: true })
+      var ws = dat.createWriteStream({ columns: ['num'], protobuf: true, quiet: true })
       var nums = []
     
       ws.on('end', function() {
@@ -37,7 +37,7 @@ module.exports.valueStreamBuff = function(test, common) {
 module.exports.valueStreamBuffPrimaryKey = function(test, common) {
   test('valueStream returns all buff rows w/ custom primary key', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ columns: ['num'], primary: 'num', protobuf: true })
+      var ws = dat.createWriteStream({ columns: ['num'], primary: 'num', protobuf: true, quiet: true })
       var nums = []
     
       ws.on('end', function() {
@@ -68,7 +68,7 @@ module.exports.valueStreamCsvPrimaryKey = function(test, common) {
   test('valueStream returns all csv rows w/ custom primary key', function(t) {
     var expected = ['1', '10', '100']
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ csv: true, primary: 'a' })
+      var ws = dat.createWriteStream({ csv: true, primary: 'a', quiet: true })
       var nums = []
     
       ws.on('end', function() {
@@ -89,7 +89,7 @@ module.exports.valueStreamNdjPrimaryKey = function(test, common) {
   test('valueStream returns all ndjson rows w/ custom primary key', function(t) {
     var expected = ['1', '10', '100']
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ json: true, primary: 'a' })
+      var ws = dat.createWriteStream({ json: true, primary: 'a', quiet: true })
       var nums = []
     
       ws.on('end', function() {
@@ -111,7 +111,7 @@ module.exports.valueStreamNdjPrimaryKey = function(test, common) {
 module.exports.getChanges = function(test, common) {
   test('getChanges', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ csv: true })
+      var ws = dat.createWriteStream({ csv: true, quiet: true })
     
       ws.on('end', function() {
         dat.createChangesStream({data: true}).pipe(concat(function(data) {
@@ -188,7 +188,7 @@ module.exports.changesStreamTailNum = function(test, common) {
   test('createChangesStream tail:1', function(t) {
     common.getDat(t, function(dat, done) {
       
-      var ws = dat.createWriteStream()
+      var ws = dat.createWriteStream({quiet: true})
       
       ws.on('error', function(err) {
         t.notOk(err)
@@ -226,7 +226,7 @@ module.exports.changesStreamTailNum = function(test, common) {
 module.exports.createReadStream = function(test, common) {
   test('createReadStream', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ csv: true })
+      var ws = dat.createWriteStream({ csv: true, quiet: true })
     
       ws.on('end', function() {
         var readStream = dat.createReadStream()
@@ -245,7 +245,7 @@ module.exports.createReadStream = function(test, common) {
 module.exports.createValueStream = function(test, common) {
   test('createValueStream', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ csv: true })
+      var ws = dat.createWriteStream({ csv: true, quiet: true })
     
       ws.on('end', function() {
         var readStream = dat.createValueStream()
@@ -264,7 +264,7 @@ module.exports.createValueStream = function(test, common) {
 module.exports.createReadStreamStartEndKeys = function(test, common) {
   test('createReadStream w/ start + end keys', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ csv: true, primary: 'a' })
+      var ws = dat.createWriteStream({ csv: true, primary: 'a', quiet: true })
     
       ws.on('end', function() {
         var readStream = dat.createReadStream({ start: '2', end: '4'})
@@ -286,7 +286,7 @@ module.exports.createReadStreamStartEndKeys = function(test, common) {
 module.exports.createValueStreamCSV = function(test, common) {
   test('createValueStream csv', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ csv: true, primary: 'a' })
+      var ws = dat.createWriteStream({ csv: true, primary: 'a', quiet: true })
     
       ws.on('end', function() {
         var readStream = dat.createValueStream({ csv: true })

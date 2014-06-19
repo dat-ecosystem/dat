@@ -14,7 +14,8 @@ module.exports.init = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        var dat = child.exec(datCmd + ' init', {cwd: common.dat1tmp}, function (error, stdout, stderr) {
+        var dat = child.exec(datCmd + ' init', {cwd: common.dat1tmp, timeout: 5000, env: process.env}, function (error, stdout, stderr) {
+          if (process.env['DEBUG']) process.stdout.write(stderr)
           t.ok(stdout.indexOf('Initialized dat store') > -1, 'output matches')
           common.destroyTmpDats(function() {
             t.end()
@@ -30,7 +31,7 @@ module.exports.importCSV = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        child.exec(datCmd + ' init', {cwd: common.dat1tmp}, function (error, stdo, stde) {
+        child.exec(datCmd + ' init', {cwd: common.dat1tmp, timeout: 5000}, function (error, stdo, stde) {
           t.ok(stdo.indexOf('Initialized dat store') > -1, 'init ok')
           var testCsv = path.join(os.tmpdir(), 'test.csv')
           fs.writeFileSync(testCsv, 'a,b,c\n1,2,3\n4,5,6\n7,8,9')
@@ -62,7 +63,8 @@ module.exports.badCommand = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        var dat = child.exec(datCmd + ' pizza', {cwd: common.dat1tmp}, function (error, stdout, stderr) {
+        var dat = child.exec(datCmd + ' pizza', {cwd: common.dat1tmp, timeout: 5000}, function (error, stdout, stderr) {
+          if (process.env['DEBUG']) process.stdout.write(stderr)
           t.ok(stderr.toString().indexOf('Command not found') > -1, 'output matches')
           common.destroyTmpDats(function() {
             t.end()

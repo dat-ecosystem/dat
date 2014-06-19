@@ -58,7 +58,7 @@
     "multibuffer": "~2.2.0",
     "multibuffer-stream": "~2.1.0",
     "multilevel": "~5.5.0",
-    "optimist": "~0.6.0",
+    "minimist": "~0.2.0",
     "pretty-bytes": "^0.1.1",
     "protocol-buffers": "^0.4.1",
     "request": "~2.27.0",
@@ -83,7 +83,7 @@
   },
   "devDependencies": {
     "memdown": "^0.7.1",
-    "tape": "^2.13.2"
+    "tape": "^2.13.3"
   },
   "browser": {
     "leveldown-prebuilt": "level-js"

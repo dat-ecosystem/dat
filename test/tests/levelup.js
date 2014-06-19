@@ -135,7 +135,7 @@ module.exports.keyStream = function(test, common) {
 module.exports.createWriteStream = function(test, common) {
   test('.createWriteStream', function(t) {
     common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream()
+      var ws = dat.createWriteStream({quiet: true})
     
       ws.on('end', function() {
         var rs = dat.keyStream()

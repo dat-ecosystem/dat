@@ -8,11 +8,11 @@ module.exports.pullReplication = function(test, common) {
     var expected = ["1", "2"]
     var dat2 = new Dat(common.dat2tmp, function ready() {
       common.getDat(t, function(dat, cleanup) {
-        var ws = dat.createWriteStream({ csv: true })
+        var ws = dat.createWriteStream({ csv: true, quiet: true })
         var nums = []
         
         ws.on('end', function() {
-          dat2.pull(function(err) {
+          dat2.pull({ quiet: true }, function(err) {
             if (err) throw err
             common.compareData(t, dat, dat2, function() {
               done()
@@ -54,7 +54,7 @@ module.exports.pullReplicationBlob = function(test, common) {
         ws.end()
 
         function pull(doc) {
-          dat2.pull(function(err) {
+          dat2.pull({ quiet: true }, function(err) {
             if (err) throw err
             var blobRead = dat2.blobs.createReadStream(doc.attachments['foo.txt'].hash)
             blobRead.on('error', function(e) {
@@ -83,10 +83,10 @@ module.exports.pullReplicationSparse = function(test, common) {
   test('pull replication with sparse data', function(t) {
     var dat2 = new Dat(common.dat2tmp, function ready() {
       common.getDat(t, function(dat, cleanup) {
-        var ws = dat.createWriteStream()
+        var ws = dat.createWriteStream({ quiet: true })
         
         ws.on('end', function() {
-          dat2.pull(function(err) {
+          dat2.pull({ quiet: true },function(err) {
             if (err) throw err
             dat.createReadStream().pipe(concat(function(db1) {
               dat2.createReadStream().pipe(concat(function(db2) {
@@ -134,7 +134,7 @@ module.exports.pullReplicationMultiple = function(test, common) {
         function putPullCompare(doc, cb) {
           dat.put(doc, function(err, doc) {
             if (err) throw err
-            dat2.pull(function(err) {
+            dat2.pull({ quiet: true }, function(err) {
               if (err) throw err
               common.compareData(t, dat, dat2, function() {
                 cb()
@@ -218,7 +218,7 @@ module.exports.pushReplication = function(test, common) {
       function putPushCompare(doc, cb) {
         dat.put(doc, function(err, doc) {
           if (err) throw err
-          dat.push('http://localhost:' + dat2port, function(err) {
+          dat.push({remote: 'http://localhost:' + dat2port, quiet: true}, function(err) {
             if (err) throw err
             common.compareData(t, dat, dat2, function() {
               cb()
@@ -268,7 +268,7 @@ module.exports.pushReplicationURLNormalize = function(test, common) {
       function putPushCompare(doc, cb) {
         dat.put(doc, function(err, doc) {
           if (err) throw err
-          dat.push('localhost:' + dat2port, function(err) {
+          dat.push({remote: 'localhost:' + dat2port, quiet: true}, function(err) {
             if (err) throw err
             common.compareData(t, dat, dat2, function() {
               cb()
@@ -300,7 +300,7 @@ module.exports.remoteClone = function(test, common) {
         if (err) throw err
         var dat2 = new Dat(common.dat2tmp, { init: false }, function ready() {
           var remote = 'http://localhost:' + dat.defaultPort
-          dat2.clone({ remote: remote, path: common.dat2tmp }, function(err) {
+          dat2.clone({ remote: remote, path: common.dat2tmp, quiet: true }, function(err) {
             t.notOk(err, 'no err on clone')
             verify(dat2)
           })

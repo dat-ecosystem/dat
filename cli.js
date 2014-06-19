@@ -3,20 +3,20 @@
 var path = require('path')
 var Dat = require('./')
 var cli = require('./lib/parse-cli.js')
-var optimist = require('optimist')
+var minimist = require('minimist')
 var EOL = require('os').EOL
 var url = require('url')
 var stdout = require('stdout-stream')
 var fs = require('fs')
 var debug = require('debug')('dat.cli')
 
-var opts = optimist.usage("Usage: $0 <command> [<args>]" + EOL + EOL + "Enter 'dat help' for help")
-var datCommand = cli.command(opts)
+var argv = minimist(process.argv.slice(2))
+var defaultMessage = "Usage: dat <command> [<args>]" + EOL + EOL + "Enter 'dat help' for help"
+var datCommand = cli.command(argv)
 
-var first = opts.argv._[0] || ''
+var first = argv._[0] || ''
 if (first === 'import' || !first) {
-  debug('import', opts.argv._[1])
-  var inputStream = cli.getInputStream(opts, datCommand)
+  var inputStream = cli.getInputStream(argv, datCommand)
 } else {
   var inputStream = false
 }
@@ -30,8 +30,8 @@ if (datCommand.command === 'clone') {
 var datPath = process.cwd()
 
 if (datCommand.command === 'clone') {
-  var remote = url.parse(Dat.prototype.normalizeURL(opts.argv._[1]))
-  var customPath = opts.argv._[2] || opts.argv.dir
+  var remote = url.parse(Dat.prototype.normalizeURL(argv._[1]))
+  var customPath = argv._[2] || argv.dir
   if (customPath) datPath = customPath
   else datPath = path.join(datPath, remote.hostname)
 }
@@ -44,17 +44,17 @@ var dat = Dat(datPath, datOpts, function ready(err) {
   } 
   
   if (inputStream) {
-    return cli.writeInputStream(inputStream, dat, opts.argv)
+    return cli.writeInputStream(inputStream, dat, argv)
   }
 
-  if (!datCommand) {
+  if (!datCommand || !datCommand.command) {
     dat.close()
-    return process.stderr.write(opts.help())
+    return process.stderr.write(defaultMessage + EOL)
   }
   
   if (!cliCommands[datCommand.command]) {
     dat.close()
-    return process.stderr.write(['Command not found: ' + datCommand.command, '', opts.help()].join(EOL))
+    return process.stderr.write(['Command not found: ' + datCommand.command, '', defaultMessage].join(EOL))
   }
   
   cliCommands[datCommand.command].call(dat, datCommand.options, function(err, message) {
@@ -63,7 +63,7 @@ var dat = Dat(datPath, datOpts, function ready(err) {
       return console.error(err.message)
     }
     if (typeof message === 'object') message = JSON.stringify(message)
-    if (!opts.argv.quiet && message) stdout.write(message.toString() + EOL)
+    if (!argv.quiet && message) stdout.write(message.toString() + EOL)
     var persist = ['serve', 'listen']
     if (persist.indexOf(datCommand.command) === -1) close()
   })
