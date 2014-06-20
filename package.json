@@ -72,7 +72,8 @@
     "stdout-stream": "~1.2.0",
     "stream-combiner": "~0.0.2",
     "stream-splicer": "^1.1.0",
-    "through2": "~0.4.1"
+    "through2": "~0.4.1",
+    "nomnom": "~1.7.0"
   },
   "directories": {
     "example": "examples",
