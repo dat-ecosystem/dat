@@ -3,20 +3,19 @@
 var path = require('path')
 var Dat = require('./')
 var cli = require('./lib/parse-cli.js')
-var minimist = require('minimist')
 var EOL = require('os').EOL
 var url = require('url')
 var stdout = require('stdout-stream')
 var fs = require('fs')
 var debug = require('debug')('dat.cli')
 
-var argv = minimist(process.argv.slice(2))
 var defaultMessage = "Usage: dat <command> [<args>]" + EOL + EOL + "Enter 'dat help' for help"
-var datCommand = cli.command(argv)
+var datCommand = cli.command()
 
-var first = argv._[0] || ''
+var first = datCommand.command || ''
+
 if (first === 'import' || !first) {
-  var inputStream = cli.getInputStream(argv, datCommand)
+  var inputStream = cli.getInputStream(datCommand)
 } else {
   var inputStream = false
 }
@@ -30,8 +29,8 @@ if (datCommand.command === 'clone') {
 var datPath = process.cwd()
 
 if (datCommand.command === 'clone') {
-  var remote = url.parse(Dat.prototype.normalizeURL(argv._[1]))
-  var customPath = argv._[2] || argv.dir
+  var remote = url.parse(Dat.prototype.normalizeURL(datCommand.options['1']))
+  var customPath = datCommand.options['2'] || datCommand.options.dir
   if (customPath) datPath = customPath
   else datPath = path.join(datPath, remote.hostname)
 }
@@ -44,7 +43,7 @@ var dat = Dat(datPath, datOpts, function ready(err) {
   } 
   
   if (inputStream) {
-    return cli.writeInputStream(inputStream, dat, argv)
+    return cli.writeInputStream(inputStream, dat, datCommand)
   }
 
   if (!datCommand || !datCommand.command) {
@@ -63,7 +62,7 @@ var dat = Dat(datPath, datOpts, function ready(err) {
       return console.error(err.message)
     }
     if (typeof message === 'object') message = JSON.stringify(message)
-    if (!argv.quiet && message) stdout.write(message.toString() + EOL)
+    if (!datCommand.options.quiet && message) stdout.write(message.toString() + EOL)
     var persist = ['serve', 'listen']
     if (persist.indexOf(datCommand.command) === -1) close()
   })
