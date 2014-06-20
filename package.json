@@ -58,7 +58,6 @@
     "multibuffer": "~2.2.0",
     "multibuffer-stream": "~2.1.0",
     "multilevel": "~5.5.0",
-    "minimist": "~0.2.0",
     "pretty-bytes": "^0.1.1",
     "protocol-buffers": "^0.4.1",
     "request": "~2.27.0",
