@@ -16,7 +16,8 @@ var tests = [
   require('./tests/read-streams.js'),
   require('./tests/write-streams.js'),
   require('./tests/replication.js'),
-  require('./tests/rest.js')
+  require('./tests/rest.js'),
+  require('./tests/transformations.js')
 ]
 
 var finish = require('./tests/finish.js')
