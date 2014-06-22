@@ -78,13 +78,15 @@ function Dat(dir, opts, onReady) {
     if (err) throw err // TODO: emit when Dat is becomes an eventemitter
     
     self.package = data
+    normalizeTransformations(opts)
 
-    var put = data.transformations.put
-    var get = data.transformations.get
+    var put = opts.transformations.put || data.transformations.put
+    var get = opts.transformations.get || data.transformations.get
 
     if (put) self.beforePut = writeread(transformations(put))
     if (get) self.afterGet = writeread(transformations(get))
     
+
     if (!opts.storage) {
       self.meta = meta(self, function(err) {
         onReady()
@@ -141,14 +143,18 @@ function Dat(dir, opts, onReady) {
         return cb(new Error('Invalid dat.json file'))
       }
 
-      // normalize
-      if (!data.transformations) data.transformations = {}
-      if (Array.isArray(data.transformations)) data.transformations = {put:data.transformations}
-
+      normalizeTransformations(data)
       cb(null, data)
     })
 
   }
+}
+
+function normalizeTransformations(opts) {
+  if (!opts.transformations) opts.transformations = {}
+  if (Array.isArray(opts.transformations)) opts.transformations = {put:opts.transformations}
+  if (opts.transformations.get) opts.transformations.get = [].concat(opts.transformations.get)
+  if (opts.transformations.put) opts.transformations.put = [].concat(opts.transformations.put)
 }
 
 function readPort(portPath, opts, cb) {
