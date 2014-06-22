@@ -2,6 +2,7 @@ var fs = require('fs')
 var tty = require('tty')
 var path = require('path')
 var os = require('os')
+var writeread = require('write-transform-read')
 var debug = require('debug')('dat.init')
 
 var request = require('request').defaults({json: true})
@@ -22,6 +23,10 @@ module.exports = Dat
 // new Dat('./foo', cb)
 // new Dat('./foo', {foo: bar})
 // new Dat('./foo', {foo: bar}, cb)
+
+function echo(val, cb) {
+  cb(null, val)
+}
 
 function Dat(dir, opts, onReady) {
   var self = this
@@ -62,6 +67,9 @@ function Dat(dir, opts, onReady) {
   this.retryLimit = 3
   this.dir = dir || opts.path || process.cwd()
   this.opts = opts
+  this.beforePut = echo
+  this.afterGet = echo
+
   var paths = this.paths(dir)
   
   debug(JSON.stringify(opts))
@@ -70,8 +78,12 @@ function Dat(dir, opts, onReady) {
     if (err) throw err // TODO: emit when Dat is becomes an eventemitter
     
     self.package = data
-    if (data.transformations.put) self.beforePut = transformations(data.transformations.put)
-    if (data.transformations.get) self.afterGet = transformations(data.transformations.get)
+
+    var put = data.transformations.put
+    var get = data.transformations.get
+
+    if (put) self.beforePut = writeread(transformations(put))
+    if (get) self.afterGet = writeread(transformations(get))
     
     if (!opts.storage) {
       self.meta = meta(self, function(err) {

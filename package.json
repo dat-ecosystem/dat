@@ -54,11 +54,11 @@
     "leveldown-prebuilt": "~0.10.2",
     "levelup": "~0.18.2",
     "lexicographic-integer": "~1.1.0",
+    "minimist": "~0.2.0",
     "mkdirp": "~0.3.5",
     "multibuffer": "~2.2.0",
     "multibuffer-stream": "~2.1.0",
     "multilevel": "~5.5.0",
-    "minimist": "~0.2.0",
     "pretty-bytes": "^0.1.1",
     "protocol-buffers": "^0.4.1",
     "request": "~2.27.0",
@@ -72,7 +72,8 @@
     "stdout-stream": "~1.2.0",
     "stream-combiner": "~0.0.2",
     "stream-splicer": "^1.1.0",
-    "through2": "~0.4.1"
+    "through2": "~0.4.1",
+    "write-transform-read": "^1.0.0"
   },
   "directories": {
     "example": "examples",
