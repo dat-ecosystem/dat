@@ -1,4 +1,5 @@
 var request = require('request').defaults({json: true})
+var parallel = require('run-parallel')
 var concat = require('concat-stream')
 
 module.exports.restHello = function(test, common) {
@@ -228,7 +229,7 @@ module.exports.csvExport = function(test, common) {
       
       post.on('response', function(resp) {
         resp.on('end', function() {
-          request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/csv'}, function(err, res, csv) {
+          request({uri: 'http://localhost:' + dat.defaultPort + '/api/csv'}, function(err, res, csv) {
             if (err) throw err
             var lines = csv.split('\n')
             t.equal(lines[0].split(',').length, 5, '5 columns (key, version, a, b, c)')
@@ -255,14 +256,112 @@ module.exports.jsonExport = function(test, common) {
       
       post.on('response', function(resp) {
         resp.on('end', function() {
-          request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/json', json: true}, function(err, res, json) {
+          request({uri: 'http://localhost:' + dat.defaultPort + '/api/json', json: true}, function(err, res, json) {
             if (err) throw err
-            t.equal(json.rows.length, 2, '3 objects returned')
+            t.equal(json.rows.length, 2, '2 objects returned')
             t.equal(json.rows[0]['a'], '1', 'data matches')
             cleanup()
           })
         })
       })
+    })
+  })
+}
+
+module.exports.pagination = function(test, common) {
+  test('GET various pagination APIs', function(t) {
+    if (common.rpc) return t.end()
+    common.getDat(t, function(dat, cleanup) {
+      var headers = {'content-type': 'text/csv'}
+      var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
+      post.write('key,a,b\n')
+      post.write('a,1,4\n')
+      post.write('b,2,5\n')
+      post.write('c,3,6')
+      post.end()
+      
+      post.on('response', function(resp) {
+        resp.on('end', run)
+      })
+      
+      function run() {
+        parallel([
+          function(cb) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json', json: true}, function(err, res, json) {
+              if (err) throw err
+              t.equal(json.rows.length, 3, '3 objects returned')
+              cb()
+            })
+          },
+          function(cb) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?start=b', json: true}, function(err, res, json) {
+              if (err) throw err
+              t.equal(json.rows.length, 2, '2 objects returned')
+              t.equal(json.rows[0]['key'], 'b', 'data matches')
+              cb()
+            })
+          },
+          function(cb) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?end=b', json: true}, function(err, res, json) {
+              if (err) throw err
+              t.equal(json.rows.length, 2, '2 objects returned')
+              t.equal(json.rows[0]['key'], 'a', 'data matches')
+              cb()
+            })
+          },
+          function(cb) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?gt=b', json: true}, function(err, res, json) {
+              if (err) throw err
+              t.equal(json.rows.length, 1, '1 objects returned')
+              t.equal(json.rows[0]['key'], 'c', 'data matches')
+              cb()
+            })
+          },
+          function(cb) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?gte=b', json: true}, function(err, res, json) {
+              if (err) throw err
+              t.equal(json.rows.length, 2, '2 objects returned')
+              t.equal(json.rows[0]['key'], 'b', 'data matches')
+              cb()
+            })
+          },
+          function(cb) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?lt=c', json: true}, function(err, res, json) {
+              if (err) throw err
+              t.equal(json.rows.length, 2, '2 objects returned')
+              t.equal(json.rows[0]['key'], 'a', 'data matches')
+              cb()
+            })
+          },
+          function(cb) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?lte=c', json: true}, function(err, res, json) {
+              if (err) throw err
+              t.equal(json.rows.length, 3, '3 objects returned')
+              t.equal(json.rows[0]['key'], 'a', 'data matches')
+              cb()
+            })
+          },
+          function(cb) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?reverse=true', json: true}, function(err, res, json) {
+              if (err) throw err
+              t.equal(json.rows.length, 3, '3 objects returned')
+              t.equal(json.rows[0]['key'], 'c', 'data matches')
+              cb()
+            })
+          },
+          function(cb) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?reverse=true&lt=c', json: true}, function(err, res, json) {
+              if (err) throw err
+              t.equal(json.rows.length, 2, '2 objects returned')
+              t.equal(json.rows[0]['key'], 'b', 'data matches')
+              cb()
+            })
+          }
+        ], function(err) {
+          cleanup()
+        })
+        
+      }
     })
   })
 }
@@ -280,4 +379,5 @@ module.exports.all = function (test, common) {
   module.exports.logout(test, common)
   module.exports.csvExport(test, common)
   module.exports.jsonExport(test, common)
+  module.exports.pagination(test, common)
 }

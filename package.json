@@ -84,6 +84,7 @@
   },
   "devDependencies": {
     "memdown": "^0.7.1",
+    "run-parallel": "^1.0.0",
     "tap-spec": "^0.2.0",
     "tape": "^2.13.3"
   },
