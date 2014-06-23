@@ -26,6 +26,10 @@ var datOpts = { init: !!inputStream }
 if (datCommand.command === 'clone') {
   datOpts.storage = false
 }
+if (argv.transform) {
+  datOpts.transformations = {}
+  datOpts.transformations[first === 'import' ? 'put' : 'get'] = argv.transform
+}
 
 var datPath = process.cwd()
 
