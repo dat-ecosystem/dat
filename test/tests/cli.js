@@ -16,7 +16,9 @@ module.exports.init = function(test, common) {
         t.notOk(err, 'no err')
         var dat = child.exec(datCmd + ' init', {cwd: common.dat1tmp, timeout: 5000, env: process.env}, function (error, stdout, stderr) {
           if (process.env['DEBUG']) process.stdout.write(stderr)
-          t.ok(stdout.indexOf('Initialized dat store') > -1, 'output matches')
+          var success = (stdout.indexOf('Initialized dat store') > -1)
+          if (!success) console.error([stdout.toString(), stderr.toString()])
+          t.ok(success, 'output matches')
           common.destroyTmpDats(function() {
             t.end()
           })
