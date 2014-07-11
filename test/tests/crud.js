@@ -69,6 +69,18 @@ module.exports.putWeirdKeys = function(test, common) {
   })
 }
 
+module.exports.putInvalidVersion = function(test, common) {
+  test('put doc with bad version', function(t) {
+    common.getDat(t, function(dat, done) {
+      dat.put(".error.", {"foo": "bar", "version": "potato"}, function(err, doc) {
+        t.ok(err, 'errored')
+        t.ok(err.message.indexOf('must be a number') > -1, 'got invalid number error')
+        setImmediate(done)
+      })
+    })
+  })
+}
+
 module.exports.putJsonSetVersion = function(test, common) {
   test('.put json at specific version', function(t) {
     common.getDat(t, function(dat, done) {
@@ -297,6 +309,7 @@ module.exports.all = function (test, common) {
   module.exports.decodeKey(test, common)
   module.exports.putJson(test, common)
   module.exports.putWeirdKeys(test, common)
+  module.exports.putInvalidVersion(test, common)
   module.exports.putJsonSetVersion(test, common)
   module.exports.putJsonPrimary(test, common)
   module.exports.updateJson(test, common)

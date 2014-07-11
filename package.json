@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "5.0.2",
+  "version": "5.0.3",
   "description": "real-time replication and versioning for data sets (tabular and blobs)",
   "preferGlobal": true,
   "keywords": [
@@ -46,6 +46,7 @@
     "extend": "~1.2.1",
     "getport": "~0.1.0",
     "head-stream": "~0.0.4",
+    "isnumber": "^1.0.0",
     "ldjson-stream": "~1.0.0",
     "level-js": "^2.1.3",
     "level-live-stream": "~1.4.9",
