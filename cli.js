@@ -37,7 +37,12 @@ if (argv.transform) {
 var datPath = process.cwd()
 
 if (datCommand.command === 'clone') {
-  var remote = url.parse(Dat.prototype.normalizeURL(argv._[1]))
+  var remote = argv._[1]
+  if (!remote) {
+    console.error('Must specify remote to clone from')
+    process.exit(1)
+  }
+  var remote = url.parse(Dat.prototype.normalizeURL(remote))
   var customPath = argv._[2] || argv.dir
   if (customPath) datPath = customPath
   else datPath = path.join(datPath, remote.hostname)

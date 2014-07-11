@@ -77,8 +77,41 @@ module.exports.badCommand = function(test, common) {
   })
 }
 
+module.exports.clone = function(test, common) {
+  test('CLI dat clone no args', function(t) {
+    common.destroyTmpDats(function() {
+      mkdirp(common.dat1tmp, function(err) {
+        t.notOk(err, 'no err')
+        var dat = child.exec(datCmd + ' clone', {cwd: common.dat1tmp, timeout: 5000}, function (error, stdout, stderr) {
+          if (process.env['DEBUG']) process.stdout.write(stderr)
+          t.ok(stderr.toString().indexOf('Must specify remote') > -1, 'output matches')
+          common.destroyTmpDats(function() {
+            t.end()
+          })
+        })
+      })
+    })
+  })
+  
+  test('CLI dat clone remote that isnt running', function(t) {
+    common.destroyTmpDats(function() {
+      mkdirp(common.dat1tmp, function(err) {
+        t.notOk(err, 'no err')
+        var dat = child.exec(datCmd + ' clone localhost:9999', {cwd: common.dat1tmp, timeout: 5000}, function (error, stdout, stderr) {
+          if (process.env['DEBUG']) process.stdout.write(stderr)
+          t.ok(stderr.toString().indexOf('ECONNREFUSED') > -1, 'got ECONNREFUSED')
+          common.destroyTmpDats(function() {
+            t.end()
+          })
+        })
+      })
+    })
+  })
+}
+
 module.exports.all = function (test, common) {
   module.exports.init(test, common)
   module.exports.importCSV(test, common)
   module.exports.badCommand(test, common)
+  module.exports.clone(test, common)
 }
