@@ -14,6 +14,10 @@ var argv = minimist(process.argv.slice(2))
 var defaultMessage = "Usage: dat <command> [<args>]" + EOL + EOL + "Enter 'dat help' for help"
 var datCommand = cli.command(argv)
 
+stdout.on('error', function(err) {
+  if (err.code !== 'EPIPE') throw err
+})
+
 var first = argv._[0] || ''
 if (first === 'import' || !first) {
   var inputStream = cli.getInputStream(argv, datCommand)
