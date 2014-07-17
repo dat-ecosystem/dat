@@ -69,6 +69,7 @@ function Dat(dir, opts, onReady) {
   this.opts = opts
   this.beforePut = echo
   this.afterGet = echo
+  this.remotes = {}
 
   var paths = this.paths(dir)
   
@@ -76,7 +77,7 @@ function Dat(dir, opts, onReady) {
   
   readDatJSON(function(err, data) {
     if (err) throw err // TODO: emit when Dat is becomes an eventemitter
-    
+
     self.package = data
     normalizeTransformations(opts)
 
@@ -86,6 +87,7 @@ function Dat(dir, opts, onReady) {
     if (put) self.beforePut = writeread(transformations(put))
     if (get) self.afterGet = writeread(transformations(get))
     
+    if (data.remotes) self.remotes = data.remotes
 
     if (!opts.storage) {
       self.meta = meta(self, function(err) {
@@ -134,7 +136,7 @@ function Dat(dir, opts, onReady) {
   }
 
   function readDatJSON(cb) {
-    fs.readFile(path.join(dir, 'dat.json'), 'utf-8', function(err, data) {
+    fs.readFile(paths.package, 'utf-8', function(err, data) {
       if (err && err.code !== 'ENOENT') return cb(err)
 
       try {
