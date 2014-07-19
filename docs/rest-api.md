@@ -8,7 +8,7 @@ Serves the [dat-editor](http://github.com/maxogden/dat-editor) web app
 
 ## GET /api
 
-Returns JSON about this dat. example:
+Returns JSON about this dat. Example:
 
 ```
 {
@@ -40,6 +40,7 @@ Returns a stream of bytes for the file matching `filename` that is attached to `
 
 Returns JSON about the current session. Authentication in dat is currently implemented using HTTP Basic Auth and Cookie based sessions.
 
+If there is an admin username and password set on this dat then only the admin user will be able to edit any data in dat, but all data will still be readable.
 
 If you have a valid session you will receive your session token:
 
@@ -77,7 +78,7 @@ Destroys session on the server and clears session cookie in client.
 
 ## GET /api/changes
 
-Returns JSON of the [changes feed](js-api.md#createChangesStream).
+Returns JSON of the [changes feed](js-api.md#createchangesstream).
 
 ### Options
 
@@ -92,7 +93,6 @@ Options should be specified in the query string (e.g. `?foo=bar`)
 `newline`:
 
 ```
-
 {"key":"chxtd4x9k00007ma5eoaojisj","change":1,"version":1}
 {"key":"chxtd4x9m00017ma5yu98dw02","change":2,"version":1}
 ```
