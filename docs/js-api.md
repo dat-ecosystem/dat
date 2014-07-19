@@ -1,4 +1,4 @@
-# dat API
+# dat programmatic API
 
 `dat` is a node module that you can require with e.g. `var dat = require('dat')`
 

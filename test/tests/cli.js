@@ -6,8 +6,10 @@ var child = require('child_process')
 var mkdirp = require('mkdirp')
 var ldj = require('ldjson-stream')
 var stdout = require('stdout')
+var request = require('request')
 var os = require('os')
-var datCmd = '"' + process.execPath + '" "' + path.resolve(__dirname, '..', '..', 'cli.js') + '"'
+var datCliPath =  path.resolve(__dirname, '..', '..', 'cli.js')
+var datCmd = '"' + process.execPath + '" "' + datCliPath + '"'
 
 module.exports.init = function(test, common) {
   test('CLI dat init', function(t) {
@@ -22,6 +24,54 @@ module.exports.init = function(test, common) {
           common.destroyTmpDats(function() {
             t.end()
           })
+        })
+      })
+    })
+  })
+}
+
+module.exports.listen = function(test, common) {
+  test('CLI dat listen', function(t) {
+    common.destroyTmpDats(function() {
+      mkdirp(common.dat1tmp, function(err) {
+        t.notOk(err, 'no err')
+        child.exec(datCmd + ' init --no-prompt', {cwd: common.dat1tmp, timeout: 5000, env: process.env}, function (error, stdo, stderr) {
+          var dat = child.spawn(process.execPath, [datCliPath, 'listen'], {cwd: common.dat1tmp, env: process.env})
+          if (process.env.DEBUG) dat.stdout.pipe(stdout('stdout: '))
+          if (process.env.DEBUG) dat.stderr.pipe(stdout('stderr: '))
+          setTimeout(function() {
+            request({url: 'http://localhost:6461/api', json: true}, function(err, resp, json) {
+              t.ok(json && !!json.version, 'got json response')
+              dat.kill('SIGTERM')
+              common.destroyTmpDats(function() {
+                t.end()
+              })
+            })
+          }, 2000)
+        })
+      })
+    })
+  })
+}
+
+module.exports.listenPort = function(test, common) {
+  test('CLI dat listen custom port', function(t) {
+    common.destroyTmpDats(function() {
+      mkdirp(common.dat1tmp, function(err) {
+        t.notOk(err, 'no err')
+        child.exec(datCmd + ' init --no-prompt', {cwd: common.dat1tmp, timeout: 5000, env: process.env}, function (error, stdo, stderr) {
+          var dat = child.spawn(process.execPath, [datCliPath, 'listen', '9000'], {cwd: common.dat1tmp, env: process.env})
+          if (process.env.DEBUG) dat.stdout.pipe(stdout('stdout: '))
+          if (process.env.DEBUG) dat.stderr.pipe(stdout('stderr: '))
+          setTimeout(function() {
+            request({url: 'http://localhost:9000/api', json: true}, function(err, resp, json) {
+              t.ok(json && !!json.version, 'got json response')
+              dat.kill('SIGTERM')
+              common.destroyTmpDats(function() {
+                t.end()
+              })
+            })
+          }, 2000)
         })
       })
     })
@@ -111,6 +161,8 @@ module.exports.clone = function(test, common) {
 
 module.exports.all = function (test, common) {
   module.exports.init(test, common)
+  module.exports.listen(test, common)
+  module.exports.listenPort(test, common)
   module.exports.importCSV(test, common)
   module.exports.badCommand(test, common)
   module.exports.clone(test, common)
