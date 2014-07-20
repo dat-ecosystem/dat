@@ -19,7 +19,7 @@ module.exports.restHello = function(test, common) {
           t.ok(json.version, 'has .version')
           t.equal(json.changes, 1, 'has 1 change')
           t.equal(json.rows, 1, 'has 1 row')
-          t.ok(json.approximateSize.documents, 'has approximate doc size')
+          t.ok(json.approximateSize.rows, 'has approximate doc size')
         }
       })
     })
@@ -50,6 +50,7 @@ module.exports.restPut = function(test, common) {
       var body = {foo: 'bar'}
       request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api', json: body }, function(err, res, stored) {
         if (err) throw err
+        t.equal(res.statusCode, 201, 'got 201')
         dat.get(stored.key, function(err, json) {
           t.false(err, 'no error')
           t.deepEqual(stored, json)
@@ -126,6 +127,38 @@ module.exports.restBulkCsv = function(test, common) {
   })
 }
 
+module.exports.restBulkCsvInvalidContentType = function(test, common) {
+  test('rest bulk post csv w/ invalid content-type', function(t) {
+    if (common.rpc) return t.end()
+    common.getDat(t, function(dat, cleanup) {
+      var opts = {method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', body: 'a,b,c\n1,2,3\n4,5,6'}
+      request(opts, function(err, resp, json) {
+        t.equal(resp.statusCode, 400, 'got 400')
+        cleanup()
+      })
+    })
+  })
+}
+
+module.exports.restBulkCsvSchemaError = function(test, common) {
+  test('rest bulk post csv w/ invalid schema', function(t) {
+    if (common.rpc) return t.end()
+    common.getDat(t, function(dat, cleanup) {
+      var opts = {method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', body: 'a,b,c\n1,2,3\n4,5,6'}
+      opts.headers = {'content-type': 'text/csv'}
+      request(opts, function(err, resp, json) {
+        t.equal(resp.statusCode, 200, 'got 200')
+        opts.body = 'foo,bar,baz\n1,2,3\n4,5,6'
+        request(opts, function(err, resp, json) {
+          t.equal(resp.statusCode, 400, 'got 400')
+          t.ok(json.message.match('mismatch'), 'column mismatch')
+          cleanup()
+        })
+      })
+    })
+  })
+}
+
 module.exports.basicAuthEnvVariables = function(test, common) {
   test('basic auth through env variables', function(t) {
     if (common.rpc) return t.end()
@@ -138,7 +171,7 @@ module.exports.basicAuthEnvVariables = function(test, common) {
         t.equal(res.statusCode, 401, 'unauthorized')
         request({method: 'POST', uri: 'http://user:pass@localhost:' + dat.defaultPort + '/api', json: body }, function(err, res, stored) {
           if (err) throw err
-          t.equal(res.statusCode, 200, 'authorized')
+          t.equal(res.statusCode, 201, 'authorized')
           delete process.env['DAT_ADMIN_USER']
           delete process.env['DAT_ADMIN_PASS']
           cleanup()
@@ -159,7 +192,7 @@ module.exports.basicAuthOptions = function(test, common) {
         t.equal(res.statusCode, 401, 'unauthorized')
         request({method: 'POST', uri: 'http://foo:bar@localhost:' + dat.defaultPort + '/api', json: body }, function(err, res, stored) {
           if (err) throw err
-          t.equal(res.statusCode, 200, 'authorized')
+          t.equal(res.statusCode, 201, 'authorized')
           cleanup()
         })
       })
@@ -373,6 +406,8 @@ module.exports.all = function (test, common) {
   module.exports.restConflict(test, common)
   module.exports.restPutBlob(test, common)
   module.exports.restBulkCsv(test, common)
+  module.exports.restBulkCsvInvalidContentType(test, common)
+  module.exports.restBulkCsvSchemaError(test, common)
   module.exports.basicAuthEnvVariables(test, common)
   module.exports.basicAuthOptions(test, common)
   module.exports.createSession(test, common)
