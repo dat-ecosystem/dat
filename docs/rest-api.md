@@ -28,11 +28,11 @@ Returns JSON about this dat. Example:
 - `name` is taken from the dat.json name field if present
 - `rows` is the number of rows in the dat tabular store
 
-## GET /api/:key
+## GET /api/rows/:key
 
 Returns JSON representation of the row for `key`, or a 404 if not found.
 
-## POST /api
+## POST /api/rows
 
 Creates a new row. Data must be JSON. Internally does a [put](https://github.com/maxogden/dat/blob/master/docs/js-api.md#put) and therefore follows the same versioning semantics.
 
@@ -48,11 +48,11 @@ Or the newly stored row contents:
 {"key":"foo","version":1}
 ```
 
-## GET /api/:key/:filename
+## GET /api/rows/:key/:filename
 
 Returns a stream of bytes for the file matching `filename` that is attached to `key`, or a 404 if not found.
 
-## POST /api/:key/:filename
+## POST /api/rows/:key/:filename
 
 Uploads an attachment to a row by key.
 
@@ -62,10 +62,10 @@ Uploads an attachment to a row by key.
 e.g. if there is a key called `foo` that is currently at version 1, and you want to attach `photo.jpg` to it you would do:
 
 ```
-POST /api/foo/photo.jpg?version=1
+POST /api/rows/foo/photo.jpg?version=1
 ```
 
-Then the contents of your POST upload body will be stored in the dat blob store, and the metadata will be written to the `foo` key under the `attachments` field, which will cause `foo` to increase to version 2. You will receive a conflict or the updated row data as a response (the same as `POST /api`).
+Then the contents of your POST upload body will be stored in the dat blob store, and the metadata will be written to the `foo` key under the `attachments` field, which will cause `foo` to increase to version 2. You will receive a conflict or the updated row data as a response (the same as `POST /api/rows`).
 
 ## GET /api/session
 
