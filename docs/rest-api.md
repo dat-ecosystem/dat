@@ -2,6 +2,8 @@
 
 You can start the dat REST server from the CLI with `dat listen` or from JS with `dat.listen()`
 
+For concrete examples of using this API from Node check out the [REST API tests](https://github.com/maxogden/dat/blob/master/test/tests/rest.js).
+
 ## GET /
 
 Serves the [dat-editor](http://github.com/maxogden/dat-editor) web app
