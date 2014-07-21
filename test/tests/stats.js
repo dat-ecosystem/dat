@@ -23,7 +23,7 @@ module.exports.rest = function(test, common) {
           if (err) throw err
           setTimeout(function() {
             statsStream.destroy()
-          }, 1000)
+          }, 1500)
         })
       })
 
@@ -35,7 +35,8 @@ module.exports.level = function(test, common) {
   test('collects level stats', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
-      var statsStream = dat.createStatsStream().pipe(concat(function(stats) {
+      var statsStream = dat.createStatsStream()
+      statsStream.pipe(concat(function(stats) {
         var totals = sumStats(stats)
         t.equal(totals.level.read, 50)
         t.equal(totals.level.written, 50)
@@ -50,8 +51,8 @@ module.exports.level = function(test, common) {
     
         cat.pipe(concat(function(data) {
           setTimeout(function() {
-            statsStream.end()
-          }, 1000)
+            statsStream.destroy()
+          }, 1500)
         }))
       })
     
