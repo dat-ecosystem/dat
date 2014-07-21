@@ -6,10 +6,13 @@ module.exports.rest = function(test, common) {
   test('collects rest stats', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
-      var statsStream = dat.createStatsStream().pipe(concat(function(stats) {
+      var statsStream = dat.createStatsStream()
+      statsStream.pipe(concat(function(stats) {
         var totals = sumStats(stats)
-        t.equal(totals.http.read, 50)
-        t.equal(totals.http.written, 50)
+        t.ok(totals.http.read > 100)
+        t.ok(totals.http.read < 2000)
+        t.ok(totals.http.written > 100)
+        t.ok(totals.http.written < 2000)
         cleanup()
       }))
 
@@ -19,7 +22,7 @@ module.exports.rest = function(test, common) {
         request({uri: 'http://localhost:' + dat.defaultPort + '/api/json', json: true}, function(err, res, json) {
           if (err) throw err
           setTimeout(function() {
-            statsStream.end()
+            statsStream.destroy()
           }, 1000)
         })
       })
