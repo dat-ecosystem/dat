@@ -7,6 +7,7 @@ var debug = require('debug')('dat.init')
 
 var request = require('request').defaults({json: true})
 
+var stats = require('./lib/stats')
 var transformations = require('./lib/transformations.js')
 var meta = require('./lib/meta.js')
 var commands = require('./lib/commands.js')
@@ -35,6 +36,7 @@ function Dat(dir, opts, onReady) {
   if (!(this instanceof Dat)) return new Dat(dir, opts, onReady)
   
   this.version = datVersion
+  this.stats = stats()
   
   if (typeof dir === 'function') {
     onReady = dir
