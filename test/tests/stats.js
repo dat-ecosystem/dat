@@ -3,6 +3,7 @@ var path = require('path')
 var request = require('request').defaults({json: true})
 var parallel = require('run-parallel')
 var concat = require('concat-stream')
+var ldj = require('ldjson-stream')
 
 module.exports.rest = function(test, common) {
   test('collects rest stats', function(t) {
@@ -93,10 +94,32 @@ module.exports.blobs = function(test, common) {
   })
 }
 
+module.exports.restAPI = function(test, common) {
+  test('rest get /api/stats', function(t) {
+    if (common.rpc) return t.end()
+    common.getDat(t, function(dat, cleanup) {
+      var statsReq = request('http://localhost:' + dat.defaultPort + '/api/stats')
+      statsReq.pipe(ldj.parse()).pipe(concat(function(stats) {
+        var totals = sumStats(stats)
+        t.ok(totals.level.read > 100, 'read some')
+        t.ok(totals.level.read < 10000, 'not too much')
+        cleanup()
+      }))
+      dat.put({foo: 'bar'}, function(err, stored) {
+        setTimeout(function() {
+          dat.close()
+        }, 1500)
+      })
+    })
+  })
+}
+
+
 module.exports.all = function (test, common) {
   module.exports.rest(test, common)
   module.exports.level(test, common)
   module.exports.blobs(test, common)
+  module.exports.restAPI(test, common)
 }
 
 function sumStats(stats) {
