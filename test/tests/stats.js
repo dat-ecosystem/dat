@@ -12,13 +12,12 @@ module.exports.rest = function(test, common) {
         t.equal(totals.http.written, 50)
         cleanup()
       }))
-      
+
       var body = {foo: 'bar'}
       request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/rows', json: body }, function(err, res, stored) {
         if (err) throw err
         request({uri: 'http://localhost:' + dat.defaultPort + '/api/json', json: true}, function(err, res, json) {
           if (err) throw err
-          t.equal(json.rows.length, 3, '3 objects returned')
           setTimeout(function() {
             statsStream.end()
           }, 1000)
