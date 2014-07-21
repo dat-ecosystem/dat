@@ -58,9 +58,37 @@ module.exports.level = function(test, common) {
   })
 }
 
+module.exports.blobs = function(test, common) {
+  test('collects blob stats', function(t) {
+    if (common.rpc) return t.end()
+    common.getDat(t, function(dat, cleanup) {
+      var statsStream = dat.createStatsStream().pipe(concat(function(stats) {
+        var totals = sumStats(stats)
+        t.ok(totals.blobs.read > 0)
+        t.ok(totals.blobs.written > 0)
+        cleanup()
+      }))
+      
+      var ws = dat.createBlobWriteStream('stats.js', function(err, doc) {
+        var rs = dat.createBlobReadStream(doc.key, 'stats.js')
+        
+        rs.pipe(concat(function(file) {
+          setTimeout(function() {
+            statsStream.end()
+          }, 1500)
+        }))
+        
+      })
+      
+      fs.createReadStream(path.join(__dirname, 'stats.js')).pipe(ws)
+    })
+  })
+}
+
 module.exports.all = function (test, common) {
   module.exports.rest(test, common)
   module.exports.level(test, common)
+  module.exports.blobs(test, common)
 }
 
 function sumStats(stats) {
