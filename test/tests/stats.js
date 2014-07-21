@@ -28,8 +28,39 @@ module.exports.rest = function(test, common) {
   })
 }
 
+module.exports.level = function(test, common) {
+  test('collects level stats', function(t) {
+    if (common.rpc) return t.end()
+    common.getDat(t, function(dat, cleanup) {
+      var statsStream = dat.createStatsStream().pipe(concat(function(stats) {
+        var totals = sumStats(stats)
+        t.equal(totals.level.read, 50)
+        t.equal(totals.level.written, 50)
+        cleanup()
+      }))
+
+      var ws = dat.createWriteStream({ json: true, quiet: true })
+
+      ws.on('end', function() {
+    
+        var cat = dat.createReadStream()
+    
+        cat.pipe(concat(function(data) {
+          setTimeout(function() {
+            statsStream.end()
+          }, 1000)
+        }))
+      })
+    
+      ws.write(new Buffer(JSON.stringify({"batman": "bruce wayne"})))
+      ws.end()
+    })
+  })
+}
+
 module.exports.all = function (test, common) {
   module.exports.rest(test, common)
+  module.exports.level(test, common)
 }
 
 function sumStats(stats) {
