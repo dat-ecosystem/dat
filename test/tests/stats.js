@@ -1,3 +1,5 @@
+var fs = require('fs')
+var path = require('path')
 var request = require('request').defaults({json: true})
 var parallel = require('run-parallel')
 var concat = require('concat-stream')
@@ -9,10 +11,10 @@ module.exports.rest = function(test, common) {
       var statsStream = dat.createStatsStream()
       statsStream.pipe(concat(function(stats) {
         var totals = sumStats(stats)
-        t.ok(totals.http.read > 100)
-        t.ok(totals.http.read < 2000)
-        t.ok(totals.http.written > 100)
-        t.ok(totals.http.written < 2000)
+        t.ok(totals.http.read > 100, 'read some')
+        t.ok(totals.http.read < 2000, 'not too much')
+        t.ok(totals.http.written > 100, 'wrote some')
+        t.ok(totals.http.written < 2000, 'not too much')
         cleanup()
       }))
 
@@ -68,8 +70,10 @@ module.exports.blobs = function(test, common) {
     common.getDat(t, function(dat, cleanup) {
       var statsStream = dat.createStatsStream().pipe(concat(function(stats) {
         var totals = sumStats(stats)
-        t.ok(totals.blobs.read > 0)
-        t.ok(totals.blobs.written > 0)
+        t.ok(totals.blobs.read > 100, 'read some')
+        t.ok(totals.blobs.read < 10000, 'not too much')
+        t.ok(totals.blobs.written > 100, 'wrote some')
+        t.ok(totals.blobs.written < 10000, 'not too much')
         cleanup()
       }))
       
