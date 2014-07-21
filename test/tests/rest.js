@@ -3,7 +3,7 @@ var parallel = require('run-parallel')
 var concat = require('concat-stream')
 
 module.exports.restHello = function(test, common) {
-  test('rest get /api returns stats', function(t) {
+  test('rest get /api returns metadata', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       dat.put({foo: 'bar'}, function(err, stored) {
