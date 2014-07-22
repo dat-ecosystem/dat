@@ -41,8 +41,14 @@ module.exports.level = function(test, common) {
       var statsStream = dat.createStatsStream()
       statsStream.pipe(concat(function(stats) {
         var totals = sumStats(stats)
-        t.equal(totals.level.read, 50)
-        t.equal(totals.level.written, 50)
+        t.ok(totals.level.get > 0)
+        t.ok(totals.level.get < 10)
+        t.ok(totals.level.put > 0)
+        t.ok(totals.level.put < 10)
+        t.ok(totals.level.read > 10)
+        t.ok(totals.level.read < 1000)
+        t.ok(totals.level.written > 10)
+        t.ok(totals.level.written < 1000)
         cleanup()
       }))
 
