@@ -63,6 +63,7 @@
     "multilevel": "~5.5.0",
     "pretty-bytes": "^0.1.1",
     "protocol-buffers": "^0.4.1",
+    "pumpify": "^1.1.1",
     "read": "^1.0.5",
     "request": "~2.27.0",
     "resolve": "^0.7.1",
