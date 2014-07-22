@@ -57,31 +57,38 @@ var dat = Dat(datPath, datOpts, function ready(err) {
     console.error(err)
     dat.close()
     return
-  } 
-  
-  if (inputStream) {
-    return cli.writeInputStream(inputStream, dat, argv)
-  }
-
-  if (!datCommand || !datCommand.command) {
-    dat.close()
-    return process.stderr.write(defaultMessage + EOL)
   }
   
-  if (!cliCommands[datCommand.command]) {
-    dat.close()
-    return process.stderr.write(['Command not found: ' + datCommand.command, '', defaultMessage].join(EOL))
-  }
+  // always start the server in cli mode
+  var listenArgs = {}
+  if (datCommand.command === 'listen') listenArgs = datCommand.options
+  dat.listen(listenArgs, function(err) {
+    if (err) console.error('could not listen')
   
-  cliCommands[datCommand.command].call(dat, datCommand.options, function(err, message) {
-    if (err) {
-      dat.close()
-      return console.error(err.message)
+    if (inputStream) {
+      return cli.writeInputStream(inputStream, dat, argv)
     }
-    if (typeof message === 'object') message = JSON.stringify(message)
-    if (!argv.quiet && message) stdout.write(message.toString() + EOL)
-    var persist = ['serve', 'listen']
-    if (persist.indexOf(datCommand.command) === -1) close()
+
+    if (!datCommand || !datCommand.command) {
+      dat.close()
+      return process.stderr.write(defaultMessage + EOL)
+    }
+  
+    if (!cliCommands[datCommand.command]) {
+      dat.close()
+      return process.stderr.write(['Command not found: ' + datCommand.command, '', defaultMessage].join(EOL))
+    }
+  
+    cliCommands[datCommand.command].call(dat, datCommand.options, function(err, message) {
+      if (err) {
+        dat.close()
+        return console.error(err.message)
+      }
+      if (typeof message === 'object') message = JSON.stringify(message)
+      if (!argv.quiet && message) stdout.write(message.toString() + EOL)
+      var persist = ['serve', 'listen']
+      if (persist.indexOf(datCommand.command) === -1) close()
+    })
   })
 })
 
