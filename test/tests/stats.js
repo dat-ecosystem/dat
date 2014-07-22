@@ -107,8 +107,8 @@ module.exports.restAPI = function(test, common) {
       var statsReq = request('http://localhost:' + dat.defaultPort + '/api/stats')
       statsReq.pipe(ldj.parse()).pipe(concat(function(stats) {
         var totals = sumStats(stats)
-        t.ok(totals.level.read > 100, 'read some')
-        t.ok(totals.level.read < 10000, 'not too much')
+        t.ok(totals.level.written > 10, 'write some')
+        t.ok(totals.level.written < 10000, 'write too much')
         cleanup()
       }))
       dat.put({foo: 'bar'}, function(err, stored) {
