@@ -10,8 +10,13 @@ var os = require('os')
 var spawn = require('win-spawn')
 var kill = require('tree-kill')
 
+
 var nodeCmd = process.execPath
-if (os.platform().match(/^win/)) nodeCmd = 'node.exe'
+var timeout = 6000
+if (os.platform().match(/^win/)) {
+  nodeCmd = 'node.exe'
+  timeout = 10000
+}
 var datCliPath =  path.resolve(__dirname, '..', '..', 'cli.js')
 var datCmd = '"' + nodeCmd + '" "' + datCliPath + '"'
 
@@ -21,7 +26,7 @@ module.exports.init = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        child.exec(datCmd + ' init --no-prompt', {cwd: common.dat1tmp, timeout: 10000, env: process.env}, function (error, stdout, stderr) {
+        child.exec(datCmd + ' init --no-prompt', {cwd: common.dat1tmp, timeout: timeout, env: process.env}, function (error, stdout, stderr) {
           if (process.env['DEBUG']) process.stdout.write(stderr)
           var success = (stdout.indexOf('Initialized dat store') > -1)
           if (!success) console.error([stdout.toString(), stderr.toString()])
@@ -43,7 +48,7 @@ module.exports.listen = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        child.exec(datCmd + ' init --no-prompt', {cwd: common.dat1tmp, timeout: 10000, env: process.env}, function (error, stdo, stderr) {
+        child.exec(datCmd + ' init --no-prompt', {cwd: common.dat1tmp, timeout: timeout, env: process.env}, function (error, stdo, stderr) {
           var dat = spawn(nodeCmd, [datCliPath, 'listen'], {cwd: common.dat1tmp, env: process.env})
           if (process.env.DEBUG) dat.stdout.pipe(stdout('stdout: '))
           if (process.env.DEBUG) dat.stderr.pipe(stdout('stderr: '))
@@ -55,7 +60,7 @@ module.exports.listen = function(test, common) {
                 t.end()
               })
             })
-          }, 10000)
+          }, timeout)
         })
       })
     })
@@ -68,7 +73,7 @@ module.exports.listenPort = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        child.exec(datCmd + ' init --no-prompt', {cwd: common.dat1tmp, timeout: 10000, env: process.env}, function (error, stdo, stderr) {
+        child.exec(datCmd + ' init --no-prompt', {cwd: common.dat1tmp, timeout: timeout, env: process.env}, function (error, stdo, stderr) {
           var dat = spawn(nodeCmd, [datCliPath, 'listen', '9000'], {cwd: common.dat1tmp, env: process.env})
           if (process.env.DEBUG) dat.stdout.pipe(stdout('stdout: '))
           if (process.env.DEBUG) dat.stderr.pipe(stdout('stderr: '))
@@ -80,7 +85,7 @@ module.exports.listenPort = function(test, common) {
                 t.end()
               })
             })
-          }, 10000)
+          }, timeout)
         })
       })
     })
@@ -92,7 +97,7 @@ module.exports.importCSV = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        initDat({cwd: common.dat1tmp, timeout: 10000, rpc: common.rpc}, function(cleanup) {
+        initDat({cwd: common.dat1tmp, timeout: timeout, rpc: common.rpc}, function(cleanup) {
           var testCsv = path.join(os.tmpdir(), 'test.csv')
           fs.writeFileSync(testCsv, 'a,b,c\n1,2,3\n4,5,6\n7,8,9')
           var cmd = datCmd + ' import "' + testCsv + '" --csv --quiet --results'
@@ -129,8 +134,8 @@ module.exports.badCommand = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        initDat({cwd: common.dat1tmp, timeout: 10000, rpc: common.rpc}, function(cleanup) {
-          child.exec(datCmd + ' pizza', {cwd: common.dat1tmp, timeout: 10000}, function (error, stdout, stderr) {
+        initDat({cwd: common.dat1tmp, timeout: timeout, rpc: common.rpc}, function(cleanup) {
+          child.exec(datCmd + ' pizza', {cwd: common.dat1tmp, timeout: timeout}, function (error, stdout, stderr) {
             if (process.env['DEBUG']) process.stdout.write(stderr)
             t.ok(stderr.toString().indexOf('Command not found') > -1, 'output matches')
             common.destroyTmpDats(function() {
@@ -149,8 +154,8 @@ module.exports.clone = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        initDat({cwd: common.dat1tmp, timeout: 10000, rpc: common.rpc}, function(cleanup) {
-          child.exec(datCmd + ' clone', {cwd: common.dat1tmp, timeout: 10000}, function (error, stdout, stderr) {
+        initDat({cwd: common.dat1tmp, timeout: timeout, rpc: common.rpc}, function(cleanup) {
+          child.exec(datCmd + ' clone', {cwd: common.dat1tmp, timeout: timeout}, function (error, stdout, stderr) {
             if (process.env['DEBUG']) process.stdout.write(stderr)
             t.ok(stderr.toString().indexOf('Must specify remote') > -1, 'output matches')
             common.destroyTmpDats(function() {
@@ -167,8 +172,8 @@ module.exports.clone = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        initDat({cwd: common.dat1tmp, timeout: 10000, rpc: common.rpc}, function(cleanup) {
-          child.exec(datCmd + ' clone localhost:9999', {cwd: common.dat1tmp, timeout: 10000}, function (error, stdout, stderr) {
+        initDat({cwd: common.dat1tmp, timeout: timeout, rpc: common.rpc}, function(cleanup) {
+          child.exec(datCmd + ' clone localhost:9999', {cwd: common.dat1tmp, timeout: timeout}, function (error, stdout, stderr) {
             if (process.env['DEBUG']) process.stdout.write(stderr)
             t.ok(stderr.toString().indexOf('ECONNREFUSED') > -1, 'got ECONNREFUSED')
             common.destroyTmpDats(function() {
@@ -204,7 +209,7 @@ function initDat(opts, cb) {
     if (process.env.DEBUG) server.stdout.pipe(stdout('rpc server stdout: '))
     if (process.env.DEBUG) server.stderr.pipe(stdout('rpc server stderr: '))
     
-    setTimeout(done, 10000)
+    setTimeout(done, timeout)
     
     function done(){
       cb(cleanup)
