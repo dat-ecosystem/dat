@@ -91,6 +91,7 @@
     "run-parallel": "^1.0.0",
     "tap-spec": "^0.2.0",
     "tape": "^2.13.3",
+    "tree-kill": "0.0.6",
     "win-spawn": "^2.0.0"
   },
   "browser": {

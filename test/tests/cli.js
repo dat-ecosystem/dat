@@ -8,6 +8,7 @@ var stdout = require('stdout')
 var request = require('request')
 var os = require('os')
 var spawn = require('win-spawn')
+var kill = require('tree-kill')
 
 var nodeCmd = process.execPath
 if (os.platform().match(/^win/)) nodeCmd = 'node.exe'
@@ -49,7 +50,7 @@ module.exports.listen = function(test, common) {
           setTimeout(function() {
             request({url: 'http://localhost:6461/api', json: true}, function(err, resp, json) {
               t.ok(json && !!json.version, 'got json response')
-              dat.kill('SIGTERM')
+              kill(dat.pid)
               common.destroyTmpDats(function() {
                 t.end()
               })
@@ -74,7 +75,7 @@ module.exports.listenPort = function(test, common) {
           setTimeout(function() {
             request({url: 'http://localhost:9000/api', json: true}, function(err, resp, json) {
               t.ok(json && !!json.version, 'got json response')
-              dat.kill('SIGTERM')
+              kill(dat.pid)
               common.destroyTmpDats(function() {
                 t.end()
               })
@@ -210,7 +211,7 @@ function initDat(opts, cb) {
     }
     
     function cleanup() {
-      if (server) server.kill('SIGHUP')
+      if (server) kill(server.pid)
     }
   })
 }
