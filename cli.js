@@ -25,11 +25,8 @@ if (first === 'import' || !first) {
   var inputStream = false
 }
 
-var datOpts = { init: !!inputStream }
+var datOpts = { init: datCommand.command !== 'init' }
 
-if (datCommand.command === 'clone') {
-  datOpts.storage = false
-}
 if (datCommand.options.prompt === undefined) {
   datCommand.options.prompt = datCommand.tty
 }
@@ -59,12 +56,25 @@ var dat = Dat(datPath, datOpts, function ready(err) {
     return
   }
   
-  // always start the server in cli mode
-  var listenArgs = {}
-  if (datCommand.command === 'listen') listenArgs = datCommand.options
-  dat.listen(listenArgs, function(err) {
-    if (err) console.error('could not listen')
+  if (datCommand.command === 'clone' && dat.storage.change > 0) {
+    console.error(new Error('Cannot clone into existing dat repo'))
+    dat.close()
+    return
+  }
   
+  if (datCommand.command === 'init') {
+    execCommand()
+  } else {
+    // start the server
+    var listenArgs = {}
+    if (datCommand.command === 'listen') listenArgs = datCommand.options
+    dat.listen(listenArgs, function(err, port) {
+      if (err) console.error('could not listen')
+      execCommand()
+    })
+  }
+  
+  function execCommand() {
     if (inputStream) {
       return cli.writeInputStream(inputStream, dat, argv)
     }
@@ -78,7 +88,7 @@ var dat = Dat(datPath, datOpts, function ready(err) {
       dat.close()
       return process.stderr.write(['Command not found: ' + datCommand.command, '', defaultMessage].join(EOL))
     }
-  
+    
     cliCommands[datCommand.command].call(dat, datCommand.options, function(err, message) {
       if (err) {
         dat.close()
@@ -89,7 +99,7 @@ var dat = Dat(datPath, datOpts, function ready(err) {
       var persist = ['serve', 'listen']
       if (persist.indexOf(datCommand.command) === -1) close()
     })
-  })
+  }
 })
 
 // CLI commands whitelist
