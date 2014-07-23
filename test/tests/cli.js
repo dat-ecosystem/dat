@@ -15,7 +15,7 @@ var nodeCmd = process.execPath
 var timeout = 6000
 if (os.platform().match(/^win/)) {
   nodeCmd = 'node.exe'
-  timeout = 12000
+  timeout = 20000
 }
 var datCliPath =  path.resolve(__dirname, '..', '..', 'cli.js')
 var datCmd = '"' + nodeCmd + '" "' + datCliPath + '"'
