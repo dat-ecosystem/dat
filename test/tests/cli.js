@@ -7,6 +7,7 @@ var ldj = require('ldjson-stream')
 var stdout = require('stdout')
 var request = require('request')
 var os = require('os')
+var spawn = require('win-spawn')
 var datCliPath =  path.resolve(__dirname, '..', '..', 'cli.js')
 var datCmd = '"' + process.execPath + '" "' + datCliPath + '"'
 
@@ -39,7 +40,7 @@ module.exports.listen = function(test, common) {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
         child.exec(datCmd + ' init --no-prompt', {cwd: common.dat1tmp, timeout: 5000, env: process.env}, function (error, stdo, stderr) {
-          var dat = child.spawn(process.execPath, [datCliPath, 'listen'], {cwd: common.dat1tmp, env: process.env})
+          var dat = spawn(process.execPath, [datCliPath, 'listen'], {cwd: common.dat1tmp, env: process.env})
           if (process.env.DEBUG) dat.stdout.pipe(stdout('stdout: '))
           if (process.env.DEBUG) dat.stderr.pipe(stdout('stderr: '))
           setTimeout(function() {
@@ -64,7 +65,7 @@ module.exports.listenPort = function(test, common) {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
         child.exec(datCmd + ' init --no-prompt', {cwd: common.dat1tmp, timeout: 5000, env: process.env}, function (error, stdo, stderr) {
-          var dat = child.spawn(process.execPath, [datCliPath, 'listen', '9000'], {cwd: common.dat1tmp, env: process.env})
+          var dat = spawn(process.execPath, [datCliPath, 'listen', '9000'], {cwd: common.dat1tmp, env: process.env})
           if (process.env.DEBUG) dat.stdout.pipe(stdout('stdout: '))
           if (process.env.DEBUG) dat.stderr.pipe(stdout('stderr: '))
           setTimeout(function() {
@@ -195,7 +196,7 @@ function initDat(opts, cb) {
     // dont serve when in rpc mode
     if (!opts.rpc) return done()
     
-    var server = child.spawn(process.execPath, [datCliPath, 'listen'], opts)
+    var server = spawn(process.execPath, [datCliPath, 'listen'], opts)
     if (process.env.DEBUG) server.stdout.pipe(stdout('rpc server stdout: '))
     if (process.env.DEBUG) server.stderr.pipe(stdout('rpc server stderr: '))
     
