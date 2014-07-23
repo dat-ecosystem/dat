@@ -160,7 +160,11 @@ module.exports.clone = function(test, common) {
         t.notOk(err, 'no err')
         initDat({cwd: common.dat1tmp, timeout: timeout, rpc: common.rpc}, function(cleanup) {
           child.exec(datCmd + ' clone', {cwd: common.dat1tmp, timeout: timeout}, function (error, stdout, stderr) {
-            if (error) console.log(error)
+            if (error) {
+              console.log(error)
+              if (stdout) console.log(stdout.toString())
+              if (stderr) console.log(stderr.toString())
+            }
             if (process.env['DEBUG']) process.stdout.write(stderr)
             t.ok(stderr.toString().indexOf('Must specify remote') > -1, 'output matches')
             common.destroyTmpDats(function() {
