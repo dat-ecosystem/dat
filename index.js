@@ -152,6 +152,27 @@ function Dat(dir, opts, onReady) {
     })
 
   }
+  
+  function readPort(portPath, opts, cb) {
+    getPort.readPort(portPath, function(err, port) {
+      if (err) return cb(err)
+      var adminu = opts.adminUser || process.env["DAT_ADMIN_USER"]
+      var adminp = opts.adminPass || process.env["DAT_ADMIN_PASS"]
+      var creds = ''
+      if (adminu && adminp) creds = adminu + ':' + adminp + '@'
+      var datAddress = 'http://' + creds + '127.0.0.1:' + port
+      request(datAddress + '/api/manifest', function(err, resp, json) {
+        if (err || !json.methods) {
+          // assume PORT to be invalid
+          return fs.unlink(portPath, cb)
+        }
+        self.rpcClient = true
+        opts.remoteAddress = datAddress
+        opts.manifest = json
+        cb()
+      })
+    })
+  }
 }
 
 function normalizeTransformations(opts) {
@@ -159,26 +180,6 @@ function normalizeTransformations(opts) {
   if (Array.isArray(opts.transformations)) opts.transformations = {put:opts.transformations}
   if (opts.transformations.get) opts.transformations.get = [].concat(opts.transformations.get)
   if (opts.transformations.put) opts.transformations.put = [].concat(opts.transformations.put)
-}
-
-function readPort(portPath, opts, cb) {
-  getPort.readPort(portPath, function(err, port) {
-    if (err) return cb(err)
-    var adminu = opts.adminUser || process.env["DAT_ADMIN_USER"]
-    var adminp = opts.adminPass || process.env["DAT_ADMIN_PASS"]
-    var creds = ''
-    if (adminu && adminp) creds = adminu + ':' + adminp + '@'
-    var datAddress = 'http://' + creds + '127.0.0.1:' + port
-    request(datAddress + '/api/manifest', function(err, resp, json) {
-      if (err || !json.methods) {
-        // assume PORT to be invalid
-        return fs.unlink(portPath, cb)
-      } 
-      opts.remoteAddress = datAddress
-      opts.manifest = json
-      cb()
-    })
-  })
 }
 
 Dat.prototype = commands

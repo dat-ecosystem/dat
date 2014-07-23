@@ -62,7 +62,7 @@ var dat = Dat(datPath, datOpts, function ready(err) {
     return
   }
   
-  if (datCommand.command === 'init') {
+  if (datCommand.command === 'init' || dat.rpcClient) {
     execCommand()
   } else {
     // start the server
