@@ -14,7 +14,7 @@ Dat has a tabular store that's good for mutable data and a blob store that's bet
 
 ### Tabular store
 
-The tabular store in dat is [LevelDB](http://leveldb.org/), which is a low-level database building block that handles streaming many small keys and values to and from disk. LevelDB has an [pluggable backend API](https://github.com/rvagg/abstract-leveldown#abstract-leveldown-) that has been used to create [various backends](https://github.com/rvagg/node-levelup/wiki/Modules#storage), which means that dat can run on top of any LevelDOWN compatible backend. The default backend is the original LevelDB C++ library by Google (used from Node.js via the [LevelDOWN](https://github.com/rvagg/node-leveldown) bindings).
+The default tabular store in dat is [LevelDB](http://leveldb.org/), which is a low-level database building block that handles streaming many small keys and values to and from disk. 
 
 If your data is tabular in nature, e.g. it has rows made of up individual cells such as an Excel file, CSV, MySQL table or time-series data then you can store it in the tabular store. Dat can import CSV, JSON or [Protocol Buffers](https://code.google.com/p/protobuf/) data. 
 
@@ -87,6 +87,31 @@ During replication dat will transfer all data from both the tabular store as wel
 
 ### Replicators
 
-### Indexers
+Dat has a replication protocol that can be implemented to allow for some data store to be compatible with `dat clone`, `dat pull` or `dat push`. In the dat codebase we use the [dat-replication-protocol](https://github.com/mafintosh/dat-replication-protocol) module and the higher level [dat-replicator](https://github.com/mafintosh/dat-replicator) module to implement replication between two dat instances, but dat can also replicate with other sources that speak the same protocol.
 
-### Custom backends
+** TODO describe how the replication protocol works and how to implement a replicator module **
+
+### Blob stores
+
+Depending on the constraints of the host system and the size of the dataset it may not be possible to import blobs into dat (since blobs are copied during import).
+
+Instead you can use dat to index blobs, meaning only metadata will be stored in dat but the original blob data will not be copied into the dat blob store.
+
+The downside of this approach is that blobs cannot be versioned, as only the current version of the blob will be available since dat is not storing old versions of it.
+
+** TODO describe how to implement a dat blob store module **
+ 
+### LevelDOWN
+
+LevelDB has an [pluggable backend API](https://github.com/rvagg/abstract-leveldown#abstract-leveldown-) that has been used to create [various backends](https://github.com/rvagg/node-levelup/wiki/Modules#storage), which means that dat can run on top of any LevelDOWN compatible backend.
+
+The default backend is the original LevelDB C++ library by Google (used from Node.js via the [LevelDOWN](https://github.com/rvagg/node-leveldown) bindings). If you want to store data in a tabular database other than LevelDB you can do so by writing a LevelDOWN adapter for it! The main requirements for a LevelDOWN backend are:
+
+- Ability to sort data lexicographically by key
+- Ability to iterate through the sorted data by key in forwards and reverse sorted order
+
+### Dat API Consumers
+
+For everything else there is the [dat JS API](https://github.com/maxogden/dat/blob/master/docs/js-api.md) and the [dat REST API](https://github.com/maxogden/dat/blob/master/docs/rest-api.md)
+
+** TODO describe various approaches here, including using [gasket](https://github.com/datproject/gasket) **
