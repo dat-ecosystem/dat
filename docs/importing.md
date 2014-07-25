@@ -4,7 +4,7 @@ The main goal of dat is to enable an ecosystem of streaming read/write interface
 
 ![diagram](../img/component-diagram.png)
 
-The problem lies in that there are thousands and thousands of different file formats, databases and APIs so there cannot be one generalized approach to sync them all. For this reason dat is designed with a small core philosphy: to only provide enough of a generalized API to synchronize data and to leave the actual use-case specific parsing up to a third party ecosystem.
+The problem lies in that there are thousands and thousands of different file formats, databases and APIs so there cannot be one generalized approach to sync them all. For this reason dat is designed with a small core philosophy: to only provide enough of a generalized API to synchronize data and to leave the actual use-case specific parsing up to a third party ecosystem.
 
 There are a few different ways to store data in dat, the best one depends on your use case: the type of data, it's update frequency, format, structure, etc.
 
@@ -27,7 +27,7 @@ Maria,3
 David,8
 ```
 
-Then dat will add `key` and `version` columns as well and store something similar to this (simplified for this example):
+Then dat will add `key` and `version` columns as well and store something like this (simplified for this example):
 
 ```
 key,version,name,age
