@@ -68,7 +68,7 @@ function Dat(dir, opts, onReady) {
   this.lockRetries = 0
   this.retryLimit = 3
   this.dir = dir || opts.path || process.cwd()
-  this.opts = opts
+  this.options = opts
   this.beforePut = echo
   this.afterGet = echo
   this.remotes = {}
@@ -78,7 +78,7 @@ function Dat(dir, opts, onReady) {
   debug(JSON.stringify(opts))
   
   readDatJSON(function(err, data) {
-    if (err) throw err // TODO: emit when Dat is becomes an eventemitter
+    if (err) throw err // TODO: emit when Dat becomes an eventemitter
 
     self.package = data
     normalizeTransformations(opts)

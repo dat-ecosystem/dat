@@ -54,6 +54,25 @@ module.exports.blobReadStream = function(test, common) {
   })
 }
 
+
+module.exports.blobExists = function(test, common) {
+  test('check if a blob exists in the local blob store', function(t) {
+    common.getDat(t, function(dat, done) {
+      var ws = dat.createBlobWriteStream('write-streams.js', function(err, doc) {
+        t.notOk(err, 'no blob write err')
+        dat.blobs.backend.exists(doc.attachments['write-streams.js'].hash, function(err, exists) {
+          t.ok(exists, 'blob exists')
+          dat.blobs.backend.exists('not-a-valid-hash', function(err, exists) {
+            t.notOk(exists, 'invalid hash does not exist')
+            done()
+          })
+        })
+      })
+      fs.createReadStream(path.join(__dirname, 'write-streams.js')).pipe(ws)
+    })
+  })
+}
+
 module.exports.singleNdjsonObject = function(test, common) {
   test('piping a single ndjson object into a write stream', function(t) {
     common.getDat(t, function(dat, done) {
@@ -644,10 +663,10 @@ module.exports.keepTotalRowCount = function(test, common) {
   })
 }
 
-
 module.exports.all = function (test, common) {
   module.exports.blobWriteStream(test, common)
   module.exports.blobReadStream(test, common)
+  module.exports.blobExists(test, common)
   module.exports.singleNdjsonObject(test, common)
   module.exports.singleNdjsonString(test, common)
   module.exports.multipleNdjsonObjects(test, common)

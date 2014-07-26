@@ -1,7 +1,9 @@
+var os = require('os')
+var fs = require('fs')
+var path = require('path')
 var bops = require('bops')
 var concat = require('concat-stream')
 var Dat = require('../../')
-var os = require('os')
 
 module.exports.pullReplication = function(test, common) {
   test('pull replication', function(t) {
@@ -300,7 +302,7 @@ module.exports.remoteClone = function(test, common) {
         if (err) throw err
         var dat2 = new Dat(common.dat2tmp, { init: false }, function ready() {
           var remote = 'http://localhost:' + dat.defaultPort
-          dat2.clone({ remote: remote, path: common.dat2tmp, quiet: true }, function(err) {
+          dat2.clone({ remote: remote, quiet: true }, function(err) {
             t.notOk(err, 'no err on clone')
             verify(dat2)
           })
@@ -323,6 +325,54 @@ module.exports.remoteClone = function(test, common) {
   })
 }
 
+module.exports.skimClone = function(test, common) {
+  test('clone --skim from remote', function(t) {
+    common.getDat(t, function(dat, cleanup) {
+      
+      dat.put({key: 'foo'}, function(err, stored) {
+        if (err) throw err
+        
+        var ws = dat.createBlobWriteStream('write-streams.js', stored, function(err, doc) {
+          t.notOk(err, 'no blob write err')
+          var dat2 = new Dat(common.dat2tmp, { init: false }, function ready() {
+            var remote = 'http://localhost:' + dat.defaultPort
+            dat2.clone({ remote: remote, path: common.dat2tmp, quiet: true, skim: true }, function(err) {
+              t.notOk(err, 'no err on clone')
+              verify(dat2)
+            })
+          })
+          
+          function verify(dat2) {
+            dat2.get('foo', function(err, row) {
+              t.notOk(err, 'no get err')
+              t.equal(row.key, 'foo', 'got foo')
+              
+              dat2.blobs.backend.exists(row.attachments['write-streams.js'].hash, function(err, exists) {
+                t.notOk(exists, 'blob is not in local blob backend')
+                
+                var rs = dat2.createBlobReadStream('foo', 'write-streams.js')
+                rs.pipe(concat(function(contents) {
+                  t.equal(contents.length, row.attachments['write-streams.js'].size, 'blob size matches')
+                  
+                  dat2.destroy(function(err) {
+                    if (err) throw err
+                    cleanup()
+                  })
+                  
+                }))
+                
+              })
+            })
+          }
+          
+        })
+      
+        fs.createReadStream(path.join(__dirname, 'replication.js')).pipe(ws)
+      })
+    })
+  })
+}
+
 
 module.exports.all = function (test, common) {
   module.exports.pullReplication(test, common)
@@ -333,4 +383,5 @@ module.exports.all = function (test, common) {
   module.exports.pushReplication(test, common)
   module.exports.pushReplicationURLNormalize(test, common)
   module.exports.remoteClone(test, common)
+  module.exports.skimClone(test, common)
 }

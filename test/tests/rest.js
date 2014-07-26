@@ -42,7 +42,6 @@ module.exports.restGet = function(test, common) {
   })
 }
 
-
 module.exports.restPut = function(test, common) {
   test('rest put', function(t) {
     if (common.rpc) return t.end()
@@ -55,6 +54,43 @@ module.exports.restPut = function(test, common) {
           t.false(err, 'no error')
           t.deepEqual(stored, json)
           cleanup()
+        })
+      })
+    })
+  })
+}
+
+module.exports.restBlobExists = function(test, common) {
+  test('rest blob exists', function(t) {
+    if (common.rpc) return t.end()
+    common.getDat(t, function(dat, cleanup) {
+      var body = {foo: 'bar'}
+      request({method: 'HEAD', uri: 'http://localhost:' + dat.defaultPort + '/api/blobs/abc123'}, function(err, res, stored) {
+        if (err) throw err
+        t.equal(res.statusCode, 404, 'got 404')
+        cleanup()
+      })
+    })
+  })
+}
+
+module.exports.restGetBlobByHash = function(test, common) {
+  test('rest get blob by hash', function(t) {
+    if (common.rpc) return t.end()
+    common.getDat(t, function(dat, cleanup) {
+      var body = {key: 'foo'}
+      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/rows', json: body }, function(err, res, stored) {
+        t.notOk(err, 'no POST err')
+        var uploadUrl = 'http://localhost:' + dat.defaultPort + '/api/rows/foo/data.txt?version=' + stored.version
+        var post = request({method: 'POST', uri: uploadUrl, body: 'hello'}, function(err, res, updated) {
+          t.notOk(err, 'no upload err')
+          t.ok(updated.version, 2, 'version 2')
+          var blobMeta = updated.attachments['data.txt']
+          request({method: 'GET', uri: 'http://localhost:' + dat.defaultPort + '/api/blobs/' + blobMeta.hash}, function(err, res, blob) {
+            if (err) throw err
+            t.equal(blobMeta.size, blob.length, 'size matches')
+            cleanup()
+          })
         })
       })
     })
@@ -405,6 +441,8 @@ module.exports.all = function (test, common) {
   module.exports.restPut(test, common)
   module.exports.restConflict(test, common)
   module.exports.restPutBlob(test, common)
+  module.exports.restBlobExists(test, common)
+  module.exports.restGetBlobByHash(test, common)
   module.exports.restBulkCsv(test, common)
   module.exports.restBulkCsvInvalidContentType(test, common)
   module.exports.restBulkCsvSchemaError(test, common)
