@@ -1,3 +1,4 @@
+var os = require('os')
 var fs = require('fs')
 var path = require('path')
 var concat = require('concat-stream')
@@ -6,10 +7,9 @@ var mkdirp = require('mkdirp')
 var ldj = require('ldjson-stream')
 var stdout = require('stdout')
 var request = require('request')
-var os = require('os')
 var spawn = require('win-spawn')
+var through = require('through2')
 var kill = require('tree-kill')
-
 
 var nodeCmd = process.execPath
 var timeout = 6000
@@ -26,18 +26,20 @@ module.exports.init = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        child.exec(datCmd + ' init --no-prompt', {cwd: common.dat1tmp, timeout: timeout, env: process.env}, function (error, stdout, stderr) {
-          if (error) console.log(error)
-          if (process.env['DEBUG']) process.stdout.write(stderr)
-          var success = (stdout.indexOf('Initialized dat store') > -1)
-          if (!success) console.error([stdout.toString(), stderr.toString()])
+        var dat = spawn(nodeCmd, [datCliPath, 'init', '--no-prompt'], {cwd: common.dat1tmp, env: process.env})
+        getFirstOutput(dat.stdout, verify)
+        
+        function verify(output) {
+          var success = (output.indexOf('Initialized dat store') > -1)
+          if (!success) console.error(output)
           t.ok(success, 'output matches')
           var port = fs.existsSync(path.join(common.dat1tmp, '.dat', 'PORT'))
           t.false(port, 'should have no PORT file')
           common.destroyTmpDats(function() {
             t.end()
           })
-        })
+        }
+        
       })
     })
   })
@@ -49,21 +51,24 @@ module.exports.listen = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        child.exec(datCmd + ' init --no-prompt', {cwd: common.dat1tmp, timeout: timeout, env: process.env}, function (error, stdo, stderr) {
-          if (error) console.log(error)
-          var dat = spawn(nodeCmd, [datCliPath, 'listen'], {cwd: common.dat1tmp, env: process.env})
-          if (process.env.DEBUG) dat.stdout.pipe(stdout('stdout: '))
-          if (process.env.DEBUG) dat.stderr.pipe(stdout('stderr: '))
-          setTimeout(function() {
+        var dat = spawn(nodeCmd, [datCliPath, 'init', '--no-prompt'], {cwd: common.dat1tmp, env: process.env})
+        getFirstOutput(dat.stdout, verify)
+        
+        function verify(output) {
+          var dat2 = spawn(nodeCmd, [datCliPath, 'listen'], {cwd: common.dat1tmp, env: process.env})
+          getFirstOutput(dat2.stdout, verify2)
+          
+          function verify2(output2) {
             request({url: 'http://localhost:6461/api', json: true}, function(err, resp, json) {
               t.ok(json && !!json.version, 'got json response')
               kill(dat.pid)
+              kill(dat2.pid)
               common.destroyTmpDats(function() {
                 t.end()
               })
             })
-          }, timeout)
-        })
+          }
+        }
       })
     })
   })
@@ -75,21 +80,25 @@ module.exports.listenPort = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        child.exec(datCmd + ' init --no-prompt', {cwd: common.dat1tmp, timeout: timeout, env: process.env}, function (error, stdo, stderr) {
-          if (error) console.log(error)
-          var dat = spawn(nodeCmd, [datCliPath, 'listen', '9000'], {cwd: common.dat1tmp, env: process.env})
-          if (process.env.DEBUG) dat.stdout.pipe(stdout('stdout: '))
-          if (process.env.DEBUG) dat.stderr.pipe(stdout('stderr: '))
-          setTimeout(function() {
+        var dat = spawn(nodeCmd, [datCliPath, 'init', '--no-prompt'], {cwd: common.dat1tmp, env: process.env})
+        getFirstOutput(dat.stdout, verify)
+        
+        function verify(output) {
+          var dat2 = spawn(nodeCmd, [datCliPath, 'listen', '9000'], {cwd: common.dat1tmp, env: process.env})
+          getFirstOutput(dat2.stdout, verify2)
+          
+          function verify2(output2) {
             request({url: 'http://localhost:9000/api', json: true}, function(err, resp, json) {
               t.ok(json && !!json.version, 'got json response')
               kill(dat.pid)
+              kill(dat2.pid)
               common.destroyTmpDats(function() {
                 t.end()
               })
             })
-          }, timeout)
-        })
+          }
+          
+        }
       })
     })
   })
@@ -138,15 +147,18 @@ module.exports.badCommand = function(test, common) {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
         initDat({cwd: common.dat1tmp, timeout: timeout, rpc: common.rpc}, function(cleanup) {
-          child.exec(datCmd + ' pizza', {cwd: common.dat1tmp, timeout: timeout}, function (error, stdout, stderr) {
-            if (error) console.log(error)
-            if (process.env['DEBUG']) process.stdout.write(stderr)
-            t.ok(stderr.toString().indexOf('Command not found') > -1, 'output matches')
+          
+          var dat = spawn(nodeCmd, [datCliPath, 'pizza'], {cwd: common.dat1tmp, env: process.env})
+          getFirstOutput(dat.stderr, verify)
+          
+          function verify(output) {
+            t.ok(output.indexOf('Command not found') > -1, 'output matches')
+            kill(dat.pid)
             common.destroyTmpDats(function() {
               cleanup()
               t.end()
             })
-          })
+          }
         })
       })
     })
@@ -159,15 +171,19 @@ module.exports.clone = function(test, common) {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
         initDat({cwd: common.dat1tmp, timeout: timeout, rpc: common.rpc}, function(cleanup) {
-          child.exec(datCmd + ' clone localhost:9999', {cwd: common.dat1tmp, timeout: timeout}, function (error, stdout, stderr) {
-            if (error) console.log(error)
-            if (process.env['DEBUG']) process.stdout.write(stderr)
-            t.ok(stderr.toString().indexOf('ECONNREFUSED') > -1, 'got ECONNREFUSED')
+          
+          
+          var dat = spawn(nodeCmd, [datCliPath, 'clone', 'localhost:9999'], {cwd: common.dat1tmp, env: process.env})
+          getFirstOutput(dat.stderr, verify)
+          
+          function verify(output) {
+            t.ok(output.indexOf('ECONNREFUSED') > -1, 'got ECONNREFUSED')
+            kill(dat.pid)
             common.destroyTmpDats(function() {
               cleanup()
               t.end()
             })
-          })
+          }
         })
       })
     })
@@ -206,4 +222,21 @@ function initDat(opts, cb) {
       if (server) kill(server.pid)
     }
   })
+}
+
+function getFirstOutput(stream, cb) {
+  var done = false
+  stream.pipe(through(function(ch, enc, next) {
+    if (ch.length > 0 || !done) {
+      done = true
+      cb(ch.toString())
+    }
+    next()
+  }, function(next) {
+    if (!done) {
+      done = true
+      cb("")
+    }
+    if (next) next()
+  }))
 }
