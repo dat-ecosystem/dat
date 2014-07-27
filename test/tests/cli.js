@@ -12,19 +12,14 @@ var through = require('through2')
 var kill = require('tree-kill')
 var rimraf = require('rimraf')
 
-    var nodeCmd = process.execPath
-var timeout = 6000
-if (os.platform().match(/^win/)) {
-  nodeCmd = 'node.exe'
-  timeout = 20000
-}
+var nodeCmd = process.execPath
+var timeout = 20000
 var datCliPath =  path.resolve(__dirname, '..', '..', 'cli.js')
 var datCmd = '"' + nodeCmd + '" "' + datCliPath + '"'
 
 module.exports.spawn = function(test, common) {
   test('test that spawning processes works', function(t) {
     var proc = spawn(process.execPath, ['-v'])
-    console.log([process.execPath, '-v'])
     getFirstOutput(proc.stdout, function(out) {
       t.ok(out.indexOf(process.version) > -1, process.version)
       kill(proc.pid)
@@ -150,7 +145,7 @@ module.exports.importCSV = function(test, common) {
           var testCsv = path.join(os.tmpdir(), 'test.csv')
           fs.writeFileSync(testCsv, 'a,b,c\n1,2,3\n4,5,6\n7,8,9')
           var cmd = datCmd + ' import "' + testCsv + '" --csv --quiet --results'
-          child.exec(cmd, {timeout: 20000, cwd: common.dat1tmp}, done)
+          child.exec(cmd, {timeout: timeout, cwd: common.dat1tmp}, done)
           
           function done(err, stdo, stde) {
             if (process.env.DEBUG) {
