@@ -34,7 +34,7 @@ module.exports.init = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        var dat = spawn(nodeCmd, [datCliPath, 'init', '--no-prompt'], {cwd: common.dat1tmp, env: process.env})
+        var dat = spawn(datCliPath, ['init', '--no-prompt'], {cwd: common.dat1tmp, env: process.env})
         getFirstOutput(dat.stdout, verify)
         
         function verify(output) {
@@ -59,11 +59,11 @@ module.exports.listen = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        var dat = spawn(nodeCmd, [datCliPath, 'init', '--no-prompt'], {cwd: common.dat1tmp, env: process.env})
+        var dat = spawn(datCliPath, ['init', '--no-prompt'], {cwd: common.dat1tmp, env: process.env})
         getFirstOutput(dat.stdout, verify)
         
         function verify(output) {
-          var dat2 = spawn(nodeCmd, [datCliPath, 'listen'], {cwd: common.dat1tmp, env: process.env})
+          var dat2 = spawn(datCliPath, ['listen'], {cwd: common.dat1tmp, env: process.env})
           getFirstOutput(dat2.stdout, verify2)
           
           function verify2(output2) {
@@ -88,7 +88,7 @@ module.exports.listenEmptyDir = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        var dat = spawn(nodeCmd, [datCliPath, 'listen'], {cwd: common.dat1tmp})
+        var dat = spawn(datCliPath, ['listen'], {cwd: common.dat1tmp})
         
         getFirstOutput(dat.stdout, verify)
         
@@ -112,11 +112,11 @@ module.exports.listenPort = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        var dat = spawn(nodeCmd, [datCliPath, 'init', '--no-prompt'], {cwd: common.dat1tmp, env: process.env})
+        var dat = spawn(datCliPath, ['init', '--no-prompt'], {cwd: common.dat1tmp, env: process.env})
         getFirstOutput(dat.stdout, verify)
         
         function verify(output) {
-          var dat2 = spawn(nodeCmd, [datCliPath, 'listen', '9000'], {cwd: common.dat1tmp, env: process.env})
+          var dat2 = spawn(datCliPath, ['listen', '9000'], {cwd: common.dat1tmp, env: process.env})
           getFirstOutput(dat2.stdout, verify2)
           
           function verify2(output2) {
@@ -180,7 +180,7 @@ module.exports.badCommand = function(test, common) {
         t.notOk(err, 'no err')
         initDat({cwd: common.dat1tmp, timeout: timeout, rpc: common.rpc}, function(cleanup) {
           
-          var dat = spawn(nodeCmd, [datCliPath, 'pizza'], {cwd: common.dat1tmp, env: process.env})
+          var dat = spawn(datCliPath, ['pizza'], {cwd: common.dat1tmp, env: process.env})
           getFirstOutput(dat.stderr, verify)
           
           function verify(output) {
@@ -203,7 +203,7 @@ module.exports.clone = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        var dat = spawn(nodeCmd, [datCliPath, 'clone', 'localhost:9999'], {cwd: path.join(common.dat1tmp, '..'), env: process.env})
+        var dat = spawn(datCliPath, ['clone', 'localhost:9999'], {cwd: path.join(common.dat1tmp, '..'), env: process.env})
         getFirstOutput(dat.stderr, verify)
         
         function verify(output) {
@@ -229,7 +229,7 @@ module.exports.cloneDir = function(test, common) {
           request({url: 'http://localhost:6461/api/rows', json: {'key': 'foo'}, method: 'POST'}, function(err, resp, json) {
             t.equal(json.version, 1, 'created row')
             
-            var dat = spawn(nodeCmd, [datCliPath, 'clone', 'localhost:6461', 'pizza', '--quiet'], {cwd: path.join(common.dat1tmp, '..'), env: process.env})
+            var dat = spawn(datCliPath, ['clone', 'localhost:6461', 'pizza', '--quiet'], {cwd: path.join(common.dat1tmp, '..'), env: process.env})
             getFirstOutput(dat.stdout, verify)
         
             function verify(output) {
@@ -241,7 +241,7 @@ module.exports.cloneDir = function(test, common) {
                 var pizzaDir = path.join(common.dat1tmp, '..', 'pizza')
                 t.ok(fs.existsSync(pizzaDir), 'pizza exists')
                 
-                var cat = spawn(nodeCmd, [datCliPath, 'cat'], {cwd: pizzaDir, env: process.env})
+                var cat = spawn(datCliPath, ['cat'], {cwd: pizzaDir, env: process.env})
                 getFirstOutput(cat.stdout, verifyCat)
         
                 function verifyCat(output) {
@@ -281,7 +281,7 @@ function initDat(opts, cb) {
     // dont serve when in rpc mode
     if (opts.rpc) return done()
     
-    var server = spawn(nodeCmd, [datCliPath, 'listen'], opts)
+    var server = spawn(datCliPath, ['listen'], opts)
     
     getFirstOutput(server.stdout, function(output) {
       if (output.indexOf('Listening') > -1) return done()
