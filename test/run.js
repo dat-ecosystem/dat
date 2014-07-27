@@ -23,7 +23,8 @@ var tests = [
 
 var finish = require('./tests/finish.js')
 
-var specificTests = process.argv.slice(2, process.argv.length)
+var specificTestFile = process.argv[2]
+var specificTest = process.argv[3]
 
 // resets any existing DB
 test('setup', function(t) {
@@ -37,11 +38,10 @@ if (process.env['RPC']) {
   common.testPrefix = 'RPC: '
 }
 
-if (specificTests.length > 0) {
-  specificTests.map(function(specificTest) {
-    var testModule = require('./' + path.relative(__dirname, specificTest))
-    testModule.all(test, common)
-  })
+if (specificTestFile) {
+  var testModule = require('./' + path.relative(__dirname, specificTestFile))
+  if (specificTest) testModule[specificTest](test, common)
+  else testModule.all(test, common)
 } else {
   runAll()
   finish(test, function() {
