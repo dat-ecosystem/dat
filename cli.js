@@ -25,7 +25,7 @@ if (first === 'import' || !first) {
   var inputStream = false
 }
 
-var datOpts = { init: datCommand.command !== 'init' }
+var datOpts = {init: false}
 
 if (datCommand.options.prompt === undefined) {
   datCommand.options.prompt = datCommand.tty
@@ -47,6 +47,9 @@ if (datCommand.command === 'clone') {
   var customPath = argv._[2] || argv.dir
   if (customPath) datPath = customPath
   else datPath = path.join(datPath, remote.hostname)
+
+  // init for clone
+  datOpts.init = true
 }
 
 var dat = Dat(datPath, datOpts, function ready(err) {
@@ -55,8 +58,8 @@ var dat = Dat(datPath, datOpts, function ready(err) {
     dat.close()
     return
   }
-  
-  if (datCommand.command === 'clone' && dat.storage.change > 0) {
+
+  if (datCommand.command === 'clone' && dat.storage && dat.storage.change > 0) {
     console.error(new Error('Cannot clone into existing dat repo'))
     dat.close()
     return
