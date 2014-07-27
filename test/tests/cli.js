@@ -81,13 +81,13 @@ module.exports.listenEmptyDir = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        var dat = spawn(nodeCmd, [datCliPath, 'listen'], {cwd: common.dat1tmp, env: process.env})
+        console.log('spawn', nodeCmd, [datCliPath, 'listen'], {cwd: common.dat1tmp, env: {DEBUG: '*'}})
+        var dat = spawn(nodeCmd, [datCliPath, 'listen'], {cwd: common.dat1tmp, env: {DEBUG: '*'}})
         
         getFirstOutput(dat.stdout, verify)
         
         dat.stdout.pipe(stdout('stdout: '))
         dat.stderr.pipe(stdout('stderr: '))
-        
         
         function verify(output) {
           var gotError = output.indexOf('You are not in a dat folder') > -1
