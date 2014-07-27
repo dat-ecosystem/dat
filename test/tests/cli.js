@@ -190,6 +190,7 @@ module.exports.badCommand = function(test, common) {
 
 module.exports.clone = function(test, common) {  
   test('CLI dat clone remote that isnt running', function(t) {
+    if (common.rpc) return t.end()
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
@@ -211,6 +212,7 @@ module.exports.clone = function(test, common) {
 
 module.exports.cloneDir = function(test, common) {  
   test('CLI dat clone into specific dir', function(t) {
+    if (common.rpc) return t.end()
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
