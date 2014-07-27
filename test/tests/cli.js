@@ -209,12 +209,18 @@ function initDat(opts, cb) {
     if (!opts.rpc) return done()
     
     var server = spawn(nodeCmd, [datCliPath, 'listen'], opts)
+    
+    getFirstOutput(server.stdout, function(output) {
+      if (output.indexOf('Listening') > -1) return done()
+      
+      cleanup()
+      throw new Error(output)
+    })
+    
     if (process.env.DEBUG) server.stdout.pipe(stdout('rpc server stdout: '))
     if (process.env.DEBUG) server.stderr.pipe(stdout('rpc server stderr: '))
     
-    setTimeout(done, timeout)
-    
-    function done(){
+    function done() {
       cb(cleanup)
     }
     
