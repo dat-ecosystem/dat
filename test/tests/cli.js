@@ -10,6 +10,7 @@ var request = require('request')
 var winSpawn = require('win-spawn')
 var through = require('through2')
 var kill = require('tree-kill')
+var rimraf = require('rimraf')
 
 var nodeCmd = process.execPath
 var timeout = 6000
@@ -197,11 +198,52 @@ module.exports.clone = function(test, common) {
         
         function verify(output) {
           t.ok(output.indexOf('ECONNREFUSED') > -1, 'got ECONNREFUSED')
+          
           kill(dat.pid)
           common.destroyTmpDats(function() {
             t.end()
           })
         }
+      })
+    })
+  })
+}
+
+module.exports.cloneDir = function(test, common) {  
+  test('CLI dat clone into specific dir', function(t) {
+    common.destroyTmpDats(function() {
+      mkdirp(common.dat1tmp, function(err) {
+        t.notOk(err, 'no err')
+        initDat({cwd: common.dat1tmp, timeout: timeout, rpc: common.rpc}, function(cleanup) {
+          request({url: 'http://localhost:6461/api/rows', json: {'key': 'foo'}, method: 'POST'}, function(err, resp, json) {
+            t.equal(json.version, 1, 'created row')
+            
+            var dat = spawn(nodeCmd, [datCliPath, 'clone', 'localhost:6461', 'pizza', '--quiet'], {cwd: path.join(common.dat1tmp, '..'), env: process.env})
+            getFirstOutput(dat.stdout, verify)
+        
+            function verify(output) {
+              t.equal(output, '', 'no output')
+              
+              cleanup()
+              kill(dat.pid)
+              common.destroyTmpDats(function() {
+                var pizzaDir = path.join(common.dat1tmp, '..', 'pizza')
+                t.ok(fs.existsSync(pizzaDir), 'pizza exists')
+                
+                var cat = spawn(nodeCmd, [datCliPath, 'cat'], {cwd: pizzaDir, env: process.env})
+                getFirstOutput(cat.stdout, verifyCat)
+        
+                function verifyCat(output) {
+                  t.ok(output.indexOf('{"key":"foo","version":1}') > -1, 'has foo')
+                  kill(cat.pid)
+                  rimraf(pizzaDir, function() {
+                    t.end()
+                  })
+                }
+              })
+            }
+          })
+        })
       })
     })
   })
@@ -215,6 +257,7 @@ module.exports.all = function (test, common) {
   module.exports.importCSV(test, common)
   module.exports.badCommand(test, common)
   module.exports.clone(test, common)
+  module.exports.cloneDir(test, common)
 }
 
 function initDat(opts, cb) {
@@ -224,7 +267,7 @@ function initDat(opts, cb) {
     }
     
     // dont serve when in rpc mode
-    if (!opts.rpc) return done()
+    if (opts.rpc) return done()
     
     var server = spawn(nodeCmd, [datCliPath, 'listen'], opts)
     
