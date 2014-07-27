@@ -12,7 +12,7 @@ var through = require('through2')
 var kill = require('tree-kill')
 var rimraf = require('rimraf')
 
-var nodeCmd = process.execPath
+    var nodeCmd = process.execPath
 var timeout = 6000
 if (os.platform().match(/^win/)) {
   nodeCmd = 'node.exe'
@@ -20,6 +20,18 @@ if (os.platform().match(/^win/)) {
 }
 var datCliPath =  path.resolve(__dirname, '..', '..', 'cli.js')
 var datCmd = '"' + nodeCmd + '" "' + datCliPath + '"'
+
+module.exports.spawn = function(test, common) {
+  test('test that spawning processes works', function(t) {
+    var proc = spawn(process.execPath, ['-v'])
+    console.log([process.execPath, '-v'])
+    getFirstOutput(proc.stdout, function(out) {
+      t.ok(out.indexOf(process.version) > -1, process.version)
+      kill(proc.pid)
+      t.end()
+    })
+  })
+}
 
 module.exports.init = function(test, common) {
   test('CLI dat init', function(t) {
@@ -81,13 +93,9 @@ module.exports.listenEmptyDir = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        console.log('spawn', nodeCmd, [datCliPath, 'listen'], {cwd: common.dat1tmp, env: {DEBUG: '*'}})
-        var dat = spawn(nodeCmd, [datCliPath, 'listen'], {cwd: common.dat1tmp, env: {DEBUG: '*'}})
+        var dat = spawn(nodeCmd, [datCliPath, 'listen'], {cwd: common.dat1tmp})
         
         getFirstOutput(dat.stdout, verify)
-        
-        dat.stdout.pipe(stdout('stdout: '))
-        dat.stderr.pipe(stdout('stderr: '))
         
         function verify(output) {
           var gotError = output.indexOf('You are not in a dat folder') > -1
@@ -258,6 +266,7 @@ module.exports.cloneDir = function(test, common) {
 }
 
 module.exports.all = function (test, common) {
+  module.exports.spawn(test, common)
   module.exports.init(test, common)
   module.exports.listen(test, common)
   module.exports.listenEmptyDir(test, common)
