@@ -85,8 +85,14 @@ module.exports.listenEmptyDir = function(test, common) {
         
         getFirstOutput(dat.stdout, verify)
         
+        dat.stdout.pipe(stdout('stdout: '))
+        dat.stderr.pipe(stdout('stderr: '))
+        
+        
         function verify(output) {
-          t.ok(output.indexOf('You are not in a dat folder') > -1, 'got error')
+          var gotError = output.indexOf('You are not in a dat folder') > -1
+          t.ok(gotError, 'got error')
+          if (!gotError) console.log('Output:', output)
           kill(dat.pid)
           common.destroyTmpDats(function() {
             t.end()
