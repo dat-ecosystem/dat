@@ -28,6 +28,30 @@ module.exports.spawn = function(test, common) {
   })
 }
 
+module.exports.noArgs = function(test, common) {
+  test('CLI dat w/ no args', function(t) {
+    if (common.rpc) return t.end()
+    common.destroyTmpDats(function() {
+      mkdirp(common.dat1tmp, function(err) {
+        t.notOk(err, 'no err')
+        var dat = spawn(datCliPath, [], {cwd: common.dat1tmp, env: process.env})
+        getFirstOutput(dat.stderr, verify)
+        
+        function verify(output) {
+          var success = (output.indexOf('Usage') > -1)
+          if (!success) console.log(['output:', output])
+          t.ok(success, 'output matches')
+          kill(dat.pid)
+          common.destroyTmpDats(function() {
+            t.end()
+          })
+        }
+        
+      })
+    })
+  })
+}
+
 module.exports.init = function(test, common) {
   test('CLI dat init', function(t) {
     if (common.rpc) return t.end()
@@ -43,6 +67,7 @@ module.exports.init = function(test, common) {
           t.ok(success, 'output matches')
           var port = fs.existsSync(path.join(common.dat1tmp, '.dat', 'PORT'))
           t.false(port, 'should have no PORT file')
+          kill(dat.pid)
           common.destroyTmpDats(function() {
             t.end()
           })
@@ -262,6 +287,7 @@ module.exports.cloneDir = function(test, common) {
 
 module.exports.all = function (test, common) {
   module.exports.spawn(test, common)
+  module.exports.noArgs(test, common)
   module.exports.init(test, common)
   module.exports.listen(test, common)
   module.exports.listenEmptyDir(test, common)
