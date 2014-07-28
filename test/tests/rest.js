@@ -313,7 +313,7 @@ module.exports.csvExport = function(test, common) {
 }
 
 module.exports.jsonExport = function(test, common) {
-  test('GET /api/json returns json array', function(t) {
+  test('GET /api/rows returns json array', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
@@ -325,7 +325,7 @@ module.exports.jsonExport = function(test, common) {
       
       post.on('response', function(resp) {
         resp.on('end', function() {
-          request({uri: 'http://localhost:' + dat.defaultPort + '/api/json', json: true}, function(err, res, json) {
+          request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows', json: true}, function(err, res, json) {
             if (err) throw err
             t.equal(json.rows.length, 2, '2 objects returned')
             t.equal(json.rows[0]['a'], '1', 'data matches')
@@ -356,14 +356,14 @@ module.exports.pagination = function(test, common) {
       function run() {
         parallel([
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 3, '3 objects returned')
               cb()
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?start=b', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?start=b', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 2, '2 objects returned')
               t.equal(json.rows[0]['key'], 'b', 'data matches')
@@ -371,7 +371,7 @@ module.exports.pagination = function(test, common) {
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?end=b', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?end=b', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 2, '2 objects returned')
               t.equal(json.rows[0]['key'], 'a', 'data matches')
@@ -379,7 +379,7 @@ module.exports.pagination = function(test, common) {
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?gt=b', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?gt=b', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 1, '1 objects returned')
               t.equal(json.rows[0]['key'], 'c', 'data matches')
@@ -387,7 +387,7 @@ module.exports.pagination = function(test, common) {
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?gte=b', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?gte=b', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 2, '2 objects returned')
               t.equal(json.rows[0]['key'], 'b', 'data matches')
@@ -395,7 +395,7 @@ module.exports.pagination = function(test, common) {
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?lt=c', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?lt=c', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 2, '2 objects returned')
               t.equal(json.rows[0]['key'], 'a', 'data matches')
@@ -403,7 +403,7 @@ module.exports.pagination = function(test, common) {
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?lte=c', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?lte=c', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 3, '3 objects returned')
               t.equal(json.rows[0]['key'], 'a', 'data matches')
@@ -411,7 +411,7 @@ module.exports.pagination = function(test, common) {
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?reverse=true', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?reverse=true', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 3, '3 objects returned')
               t.equal(json.rows[0]['key'], 'c', 'data matches')
@@ -419,7 +419,7 @@ module.exports.pagination = function(test, common) {
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/json?reverse=true&lt=c', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?reverse=true&lt=c', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 2, '2 objects returned')
               t.equal(json.rows[0]['key'], 'b', 'data matches')
