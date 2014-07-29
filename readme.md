@@ -14,8 +14,10 @@ If you are interested in testing out the pre-alpha version of `dat` you can inst
 
 `dat` is primarily intended as a command line tool. There is also a programmatic API that you can use in node.js programs for more advanced use cases, as well as a way to have `dat` call programs written in other programming languages to transform data.
 
-* Read [what is `dat`?](docs/what-is-dat.md).
+* For high-level description read [what is `dat`?](docs/what-is-dat.md).
+* Read the [data importing guide](docs/importing.md)
 * Check out the [JS API docs](docs/js-api.md) or the [CLI usage docs](docs/usage.md).
+* Curious about how we built dat? Read about the node [modules we used](docs/modules.md)
 
 ## Install
 
