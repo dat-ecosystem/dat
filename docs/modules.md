@@ -1,15 +1,6 @@
 # Modules We Use
 
-Here is a rundown of some of the dependencies that we use in dat. Some of them were written for dat and some were pre-existing. List is in roughly alphabetical order.
-
-## [JSONStream](http://npmjs.org/JSONStream)
-
-This streaming JSON parser/stringifier is really nice for working with JSON data that is arbitrarily large and may not fit in memory (e.g. where `JSON.parse` is either too slow or crashes). We use the stringifier functionality in dat to produce JSON output in the dat REST API, e.g.:
-
-```js
-dat.createValueStream().pipe(jsonStream.stringify('{"rows": [\n', '\n,\n', '\n]}\n')).pipe(res)
-```
-
+Here is a rundown of some of the dependencies that we use in dat as well as a few complementary modules that we use/developed. Some of them were written for dat and some were pre-existing. List is in roughly alphabetical order. Not listed here are some popular dependencies that you probably already know.
 
 ## [ansimd](http://npmjs.org/ansimd)
 
@@ -71,48 +62,114 @@ This module encapsulates our push and pull replication logic and creates replica
 
 This is a streaming parser/encoder that converts data from the dat JS API into network serializable formats.
 
+## [duplexify](http://npmjs.org/duplexify)
+
+We use this to build APIs that immediately return stream instances but actually asynchronously wrap underlying readable/writable streams. Duplexify also does proper cleanup on the substreams when the parent stream closes/ends/gets destroyed.
+
+## [debug-stream](http://npmjs.org/debug-stream)
+
+This lets us extend the idea of the popular [debug](http://npmjs.org/debug) to help us debug streams.
+
+## [gasket](http://npmjs.org/gasket)
+
+We wrote `gasket` to make building and sharing streaming data processing pipelines easier. We also wrote a NodeSchool workshop that teaches streaing data processing and gasket called [data-plumber](https://www.npmjs.org/package/data-plumber)
+
+## [getport](http://npmjs.org/getport)
+
+Gets an open port for binding the dat http server during `dat listen`
+
+## [isnumber](http://npmjs.org/isnumber)
+
+Returns true if a value is a non-infinite number, otherwise false
+
+## [JSONStream](http://npmjs.org/JSONStream)
+
+This streaming JSON parser/stringifier is really nice for working with JSON data that is arbitrarily large and may not fit in memory (e.g. where `JSON.parse` is either too slow or crashes). We use the stringifier functionality in dat to produce JSON output in the dat REST API, e.g.:
+
+```js
+dat.createValueStream().pipe(jsonStream.stringify('{"rows": [\n', '\n,\n', '\n]}\n')).pipe(res)
 ```
-TODO
-    "dat-replicator": "^0.7.2",
-    "debug": "~0.7.4",
-    "debug-stream": "^2.0.0",
-    "duplexer2": "0.0.2",
-    "duplexify": "^3.0.1",
-    "execspawn": "^0.2.0",
-    "extend": "~1.2.1",
-    "getport": "~0.1.0",
-    "head-stream": "~0.0.4",
-    "isnumber": "^1.0.0",
-    "ldjson-stream": "~1.0.0",
-    "level-events": "^1.0.2",
-    "level-js": "^2.1.3",
-    "level-live-stream": "~1.4.9",
-    "level-manifest": "~1.2.0",
-    "level-mutex": "~0.7.0",
-    "leveldown-prebuilt": "~0.10.2",
-    "levelup": "~0.18.2",
-    "lexicographic-integer": "~1.1.0",
-    "minimist": "~0.2.0",
-    "mkdirp": "~0.3.5",
-    "multibuffer": "~2.2.0",
-    "multibuffer-stream": "~2.1.0",
-    "multilevel": "~5.5.0",
-    "peek-stream": "^1.1.1",
-    "pretty-bytes": "^0.1.1",
-    "protocol-buffers": "^0.4.1",
-    "pumpify": "^1.2.1",
-    "read": "^1.0.5",
-    "request": "~2.27.0",
-    "resolve": "^0.7.1",
-    "rimraf": "~2.2.2",
-    "routes-router": "~1.5.3",
-    "single-line-log": "^0.3.1",
-    "sleep-ref": "^1.1.0",
-    "speedometer": "^0.1.2",
-    "stdout": "0.0.3",
-    "stdout-stream": "~1.2.0",
-    "stream-combiner": "~0.0.2",
-    "stream-splicer": "^1.1.0",
-    "through2": "~0.4.1",
-    "write-transform-read": "^1.0.0"
-```
+
+## [ldjson-stream](http://npmjs.org/ldjson-stream)
+
+We wrote this to make working with streams of Line Delimited JSON easy.
+
+## [level-events](http://npmjs.org/level-events)
+
+We use this to instrument our LevelUP instance to produce performance statistics
+
+## [level-js](http://npmjs.org/level-js)
+
+We wrote this to make our LevelUP code (and ultimately all of dat) work in the browser. level-js works today but dat in the browser is a work in progress
+
+## [level-live-stream](http://npmjs.org/level-live-stream)
+
+This is used to produce the live changes feed feature in the dat REST API, and subsequently used for live pull/push replication.
+
+## [level-mutex](http://npmjs.org/level-mutex)
+
+Used to ensure that all operations to LevelDB are written in the correct + consistent order (AKA mutex locked).
+
+## [leveldown-prebuilt](http://npmjs.org/leveldown-prebuilt)
+
+We wrote this to replace the stock `leveldown` module with one that would use pre-built binaries of LevelDB so that 1) installs would be overall quicker and 2) users without native buildchains could still use dat. Uses the excellent [node-pre-gyp](https://www.npmjs.org/package/node-pre-gyp) and hosts the binaries on GitHub Releases.
+
+## [lexicographic-integer](http://npmjs.org/lexicographic-integer)
+
+Used to encode/decode integers into a lexicographically sortable representation, useful for auto-incrementing numbers in LevelDB indexes.
+
+## [multibuffer](http://npmjs.org/multibuffer)
+
+We wrote this because we needed fast, efficient and simple buffer serialization solution
+
+## [multibuffer-stream](http://npmjs.org/multibuffer-stream)
+
+Uses `multibuffer` to produce encode/decode streams of buffers.
+
+## [multilevel](http://npmjs.org/multilevel)
+
+Used to implement the dat RPC API, which is used to allow multiple processes to access a single dat DB (ensures consistency and gets around the LevelDB single process lock)
+
+## [peek-stream](http://npmjs.org/peek-stream)
+
+We wrote this to help us inspect streams and decide asynchonrously what to do with them, e.g. figuring out what type of data a `dat import` is.
+
+## [pretty-bytes](http://npmjs.org/pretty-bytes)
+
+Takes an integer and formats it as a nice size representation, e.g. `45MB`
+
+## [protocol-buffers](http://npmjs.org/protocol-buffers)
+
+We wrote this because we needed a fast + idiomatic library for parsing and encoding [Protocl Buffers](https://developers.google.com/protocol-buffers/)
+
+## [pumpify](http://npmjs.org/pumpify)
+
+Used to construct a single stream that internally wraps an array of streams
+
+## [routes-router](http://npmjs.org/routes-router)
+
+The URL router we use in the dat REST API. Part of the excellent [http-framework](https://www.npmjs.org/package/http-framework).
+
+## [single-line-log](http://npmjs.org/single-line-log)
+
+Used to easily write data to terminal in a way that overwrites the existing line rather than fill up the entire screen with data
+
+## [speedometer](http://npmjs.org/speedometer)
+
+Used to easily calculate bytes-per-second on various I/O streams.
+
+## [stdout](http://npmjs.org/stdout)
+
+Used to pipe non-ASCII streams to stdout/stderr. Really usedul for debugging too!
+
+## [stdout-stream](http://npmjs.org/stdout-stream)
+
+We wrote this to replace piping to the synchronous `process.stdout` with one that is asynchonrous.
+
+## [through2](http://npmjs.org/through2)
+
+We use this all over the place to easily construct custom streams
+
+## [win-spawn](http://npmjs.org/win-spawn)
+
+Used to write portable code for spawning processes with expected stdout/stderr behavior
