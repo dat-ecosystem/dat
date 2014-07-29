@@ -2,6 +2,8 @@
 
 Here is a rundown of some of the dependencies that we use in dat as well as a few complementary modules that we use/developed. Some of them were written for dat and some were pre-existing. List is in roughly alphabetical order. Not listed here are some popular dependencies that you probably already know.
 
+As of the time of this writing we use a total of 524 modules in the entire dat dependency graph (`npm ls --parseable | wc -l`). This file documents the top level dependencies (of which there are 55).
+
 ## [ansimd](http://npmjs.org/ansimd)
 
 This module converts markdown to ANSI formatted output. When you type `dat help` on the CLI you get nicely formatted output thanks to this module.
