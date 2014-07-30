@@ -10,6 +10,10 @@ Windows        | Mac/Linux
 
 `dat` is currently **pre-alpha**. You can test it out or hack on it now, but all things are subject to change.
 
+**You should only use dat now if you are okay with the dat API breaking in the future!**
+
+We are working towards a stable release. [Follow progress here](https://github.com/maxogden/dat/issues/29).
+
 If you are interested in testing out the pre-alpha version of `dat` you can install it using `npm` (which usually gets installed when you [install `node`](http://nodejs.org/))
 
 `dat` is primarily intended as a command line tool. There is also a programmatic API that you can use in node.js programs for more advanced use cases, as well as a way to have `dat` call programs written in other programming languages to transform data.
