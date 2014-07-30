@@ -31,9 +31,6 @@ function Dat(dir, opts, onReady) {
   // if 'new' was not used
   if (!(this instanceof Dat)) return new Dat(dir, opts, onReady)
   
-  this.version = datVersion
-  this.stats = stats()
-  
   if (typeof dir === 'function') {
     onReady = dir
     opts = {}
@@ -61,6 +58,8 @@ function Dat(dir, opts, onReady) {
   // read dat dir but don't read database
   if (typeof opts.storage === 'undefined') opts.storage = true
   
+  this.version = datVersion
+  this.stats = stats()
   this.lockRetries = 0
   this.retryLimit = 3
   this.dir = dir || opts.path || process.cwd()
