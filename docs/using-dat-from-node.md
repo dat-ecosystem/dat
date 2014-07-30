@@ -91,3 +91,44 @@ Stored Bob { key: 'Bob', age: 3, type: 'Tortoiseshell', version: 1 }
 
 As you can see a `version` number was automatically added to the row data we got back, and it starts at version 1.
 
+If Bob has a birthday and turns 4 we need to update the data:
+
+
+**03-update-cat.js**
+
+```js
+var createDat = require('dat')
+var dat = createDat('./dat-cats', ready)
+
+function ready(err) {
+  if (err) return console.error(err)
+  
+  // first lets get the latest version of bob from dat
+  dat.get('Bob', gotBob)
+  
+  function gotBob(err, bob) {
+    if (err) return console.error('Could not get Bob!', err)
+    
+    // update bobs age and put him back in the database
+    bob.age = 4
+    dat.put(bob, done)
+  }
+  
+  function done(err, updated) {
+    if (err) return console.error('Could not update Bob!', err)
+    
+    // now bob is at version 2
+    console.log('Updated Bob:', updated)
+  }
+}
+```
+
+A successful fun of the above code will produce:
+
+```
+$ node 03-update-cat.js
+Updated Bob: { key: 'Bob', version: 2, age: 4, type: 'Tortoiseshell' }
+```
+
+Note that the `version` is required to update an existing key. If you try and write data for a key that already exists, and you don't include a version or you include an out of date version the `put` will fail and return a conflict error.
+
