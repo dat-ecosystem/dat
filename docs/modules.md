@@ -74,7 +74,7 @@ This lets us extend the idea of the popular [debug](http://npmjs.org/debug) to h
 
 ## [gasket](http://npmjs.org/gasket)
 
-We wrote `gasket` to make building and sharing streaming data processing pipelines easier. We also wrote a NodeSchool workshop that teaches streaing data processing and gasket called [data-plumber](https://www.npmjs.org/package/data-plumber)
+We wrote `gasket` to make building and sharing streaming data processing pipelines easier. We also wrote a NodeSchool workshop that teaches streaming data processing and gasket called [data-plumber](https://www.npmjs.org/package/data-plumber)
 
 ## [getport](http://npmjs.org/getport)
 
@@ -134,7 +134,7 @@ Used to implement the dat RPC API, which is used to allow multiple processes to 
 
 ## [peek-stream](http://npmjs.org/peek-stream)
 
-We wrote this to help us inspect streams and decide asynchonrously what to do with them, e.g. figuring out what type of data a `dat import` is.
+We wrote this to help us inspect streams and decide asynchronously what to do with them, e.g. figuring out what type of data a `dat import` is.
 
 ## [pretty-bytes](http://npmjs.org/pretty-bytes)
 
@@ -162,11 +162,11 @@ Used to easily calculate bytes-per-second on various I/O streams.
 
 ## [stdout](http://npmjs.org/stdout)
 
-Used to pipe non-ASCII streams to stdout/stderr. Really usedul for debugging too!
+Used to pipe non-ASCII streams to stdout/stderr. Really useful for debugging too!
 
 ## [stdout-stream](http://npmjs.org/stdout-stream)
 
-We wrote this to replace piping to the synchronous `process.stdout` with one that is asynchonrous.
+We wrote this to replace piping to the synchronous `process.stdout` with one that is asynchronous.
 
 ## [through2](http://npmjs.org/through2)
 
