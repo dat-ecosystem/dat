@@ -62,8 +62,8 @@ then you can poke around at the REST API:
 ```
 /api/changes
 /api/changes?data=true
-/api/package
-/api/:docid
+/api/metadata
+/api/rows/:docid
 POST /api/bulk content-type: application/json (newline separated json)
 ```
 
@@ -77,20 +77,6 @@ dat pull http://localhost:6461
 
 ```
 dat push http://localhost:6461
-```
-
-## grab all the NPM registry metadata
-
-With
-
-```
-dat clone <repository> [<directory>]
-```
-
-For example:
-
-```
-dat clone http://dat-npm.mathiasbuus.eu
 ```
 
 ## delete the dat folder (removes all data + history)

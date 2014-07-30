@@ -3,8 +3,8 @@ var tty = require('tty')
 var path = require('path')
 var os = require('os')
 var writeread = require('write-transform-read')
-var debug = require('debug')('dat.init')
 
+var debug = require('debug')('dat.init')
 var request = require('request').defaults({json: true})
 
 var stats = require('./lib/stats')
@@ -24,10 +24,6 @@ module.exports = Dat
 // new Dat('./foo', cb)
 // new Dat('./foo', {foo: bar})
 // new Dat('./foo', {foo: bar}, cb)
-
-function echo(val, cb) {
-  cb(null, val)
-}
 
 function Dat(dir, opts, onReady) {
   var self = this
@@ -180,6 +176,10 @@ function normalizeTransformations(opts) {
   if (Array.isArray(opts.transformations)) opts.transformations = {put:opts.transformations}
   if (opts.transformations.get) opts.transformations.get = [].concat(opts.transformations.get)
   if (opts.transformations.put) opts.transformations.put = [].concat(opts.transformations.put)
+}
+
+function echo(val, cb) {
+  cb(null, val)
 }
 
 Dat.prototype = commands
