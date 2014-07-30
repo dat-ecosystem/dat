@@ -2,14 +2,15 @@
 
 `dat` is a project that seeks providing better tools for data collaboration:
 
-- make data **syncable**. automatic sync and updates of entire data sets (or subsets)
-- data sets can be very large (billions of items) or updated frequently (real time data)
-- sync and transformation plugin API to connect `dat` to any existing database/format/language
-- built with automated + decentralized workflows in mind
+- make data **syncable**. automatic sync and updates of data sets
+- data sets can be very large (billions of rows or terabytes in size) and/or updated frequently (real time data)
+- data can be either tabular (rows & cells) or blobs (large files and/or unstructured)
+- plugin APIs to connect `dat` to any existing database/format/language/storage backends
+- built with automated workflows in mind
 
 To illustrate the goals of `dat` consider the GitHub project, which is a great model of this idea working in a different space. GitHub is built on top of an open source tool called `git` and provides a user-friendly web application that lets software developers find code written by others, use it in their own programs and improve upon it. In a similar fashion `dat` will be developed as a set of tools to store, synchronize, manipulate and collaborate in a decentralized fashion on sets of data, hopefully enabling platforms analogous to GitHub to be built on top of it.
 
-The initial prototype of `dat` will be developed thanks to support from the Knight Foundation  as a collection of open source projects. Full time work began in August 2013 by [Max Ogden](http://maxogden.com/gut-hosted-open-data-filets.html) and other open source contributors. The initial grant supports 6 months of full time work.
+The initial prototype of `dat` was developed thanks to support from the Knight Foundation as a collection of open source projects. Full time work began in August 2013 by [Max Ogden](http://maxogden.com/gut-hosted-open-data-filets.html) and other open source contributors. The initial grant supported 6 months of full time work. Further funding was provided by the Alfred P Sloan foundation in early 2014 to continue work on the prototype with a small development team.
 
 #### Project components
 
@@ -23,17 +24,17 @@ See ['how `dat` works'](#how-dat-works) below for technical descriptions. The tr
 
 ### Get involved with `dat`
 
-- Watch `dat` repo on Github
-- Install and test the alpha version of `dat`. Leave feedback in the Github Issues of this repository!
-- Are you a coder? Pick your favorite database/API/file format and try to implement [SLEEP](http://dataprotocols.org/sleep/) on it. `dat` will be able to consume SLEEP (though both may evolve).
-- Suggest an organization that should be using `dat` to distribute their data. Let me know [on Twitter](http://twitter.com/maxogden).
+- Watch the `dat` repo on Github or follow [@dat_project](https://twitter.com/dat_project) on twitter.
+- Install and play around with the alpha version of `dat`. Leave feedback in the Github Issues of this repository!
+- Are you a coder? Pick your favorite database/API/file format and try to implement a dat replicator module for it.
+- Suggest an organization that should be using `dat` to distribute their data. Let us know [on Twitter](http://twitter.com/dat_project).
 - Have any other questions/concerns? [Open an issue](https://github.com/maxogden/dat/issues).
 - Interested in the underlying technology? Check out [node](https://github.com/maxogden/art-of-node#the-art-of-node) and [leveldb](https://github.com/rvagg/node-levelup/wiki/Modules)
 - Hang out in `#dat` on freenode
 
 ### Why do `dat`?
 
-Open data is a relatively new concept that is being actively supported by both United States President Barack Obama and World Wide Web creator Tim Berners-Lee. The goal is to get those who possess data that could be useful to others to make that data publicly available. The way this is done today by making data available as read-only: you can download bulk copies of data or query a REST API but there is no standard way to share any changes you make to the data. `dat` seeks to take this idea further and enable a decentralized workflow where anyone can track the changes they make to data after they consume it.
+Open data is a relatively new concept that is being actively supported by both United States President Barack Obama and World Wide Web creator Tim Berners-Lee. The goal is to get those who possess data that could be useful to others to make that data publicly available. The way this is done today by making data available as read-only: you can download bulk copies of data or query a REST API but there is no standard way to share any changes you make to the data. `dat` seeks to take this idea further and enable a workflow where anyone can track the changes they make to data after they consume it.
 
 #### Example current situation
 
@@ -67,7 +68,7 @@ One of the only data stores that does this well is CouchDB. Here is a simplified
 
 Every database is made up of two tables. One holds the data, the other contains the chronological history of all operations. Whenever a row is written, edited or deleted from a table a row is added to the history table that describes the change.
 
-If you created a row with data `{"id": "1", "hello": "world"}`, Couch would store a record in the history table that looked like `{"sequence": "1", "id": "1", "action": "created"}`. If you then delete document 1, Couch would store a new entry in the history table: `{"sequence": "2", "id": "1", "action": "deleted"}`. `sequence` refers to the chronological order e.g. the operation number for this particular change in the entire sequence of operations.
+If you created a row with data `{"key": "1", "hello": "world"}`, Couch would store a record in the history table that looked like `{"change": "1", "key": "1", "action": "created"}`. If you then delete document 1, Couch would store a new entry in the history table: `{"change": "2", "key": "1", "action": "deleted"}`. `change` refers to the chronological order e.g. the operation number for this particular change in the entire sequence of operations.
 
 Some databases only have one table per database. If you create a row and then later delete it, the database has no way of remembering what documents used to be there. For certain use cases this is okay, but for synchronization this is unacceptable.
 
@@ -128,7 +129,7 @@ With a transformation like this you can consume the daily XML data from the US H
 
 ### Goals of dat
 
-The two communities that dat is primarily focused on are publishers and consumers of **open civic data** and **open scientific data**.
+The two communities that dat is primarily focused on are publishers and consumers of **open scientific data** and **open civic data**.
 
 In order to support the needs of both communities there are a couple of technology requirements for `dat`: work with datasets in the range of **billions of rows** long and support **real-time data** use cases like GPS feeds from vehicle fleets and other 'firehose' data.
 
@@ -138,69 +139,8 @@ It's important to point out that complex querying isn't in the scope of the `dat
 
 Another goal of `dat` is to act as a data 'sink' that can handle the synchronization for you between a remote data source and your local environment, but then can also do things like take subsets of the data coming in and insert them into PostgreSQL tables (or many other data stores). If you were to take billions of rows and casually insert them into most databases then you'd freeze or crash your computer. `dat` wants to enable large dataset syncing and then act as a proxy between the dataset and your database or file format of choice.
 
-### Why not just use `git`?
 
-There are both technical and cultural reasons as to why I am not satisfied with `git` as the end-all-be-all open data tool. The cultural reasons are far more important, but I include the technical reasons here also.
-
-#### Technical limitations
-
-- Large numbers of commits add significant overhead. A repository with millions of commits might take minutes or hours to complete a `git status` check.
-- To quote Linus Torvalds, ["Git fundamentally never really looks at less than the whole repo"](http://osdir.com/ml/git/2009-05/msg00051.html), e.g. if you have a repository of a million documents you can't simply clone and track a subset.
-- `git` stores the full history of a repository. What if you only want to store the latest version of each row in a database and not a copy of every version? This needs to be optional (for disk space reasons).
-
-Git is designed this way for a good reason: to make working with large repositories of source code easy. For small datasets it is a great choice for sharing + tracking changes. When you start trying to work with larger datasets it becomes clear that `git` is the wrong tool for the job.
-
-Here is what happens when you try to view a 25MB text file in a browser through GitHub.com:
-
-![25mbfile](../img/25mb-txt.png)
-
-Note: I can only speculate as to why these limitations exist on GitHub, `git` is capable of cloning a 25MB file. Watch [Git: the stupid NOSQL database](http://www.confreaks.com/videos/443-rubyconf2010-git-the-stupid-nosql-database) by GitHub's Rick Olson to learn more.
-
-To summarize, `git` is inadequate for:
-
-- real time data (e.g. lots of commits)
-- data filtering/subsets
-- compact history (disk efficient - only store enough to sync)
-- transforming data, as it doesn't have a concept of data transformations and isn't a scripting language
-
-`git` is great for sharing line-based ASCII formatted files like CSV that are small in size (thousands of rows). See [git (and GitHub) for Data](http://blog.okfn.org/2013/07/02/git-and-github-for-data/) for more discussion on this use case.
-
-As an avid endorser of [small data](https://github.com/maxogden/smalldata) I fully support the idea of publishing simple data formats to GitHub. On the other hand `dat` is about enabling data sync regardless of format, frequency or size.
-
-#### More information
-
-To read some early feedback on the `dat` concept:
-
-- http://jlord.us/dat/
-- http://ben.balter.com/2013/07/01/technologys-the-easy-part/
-- http://thescoop.org/archives/2013/07/02/what-good-is-dat/
-
-The motivation behind `dat` comes from my trying to build a collaborative data platform during my Code for America fellowship and lacking the tools necessary to achieve my goals. Having worked both inside and outside government in my career I recognize the potential that both governmental organizations and open source communities can have in this space.
-
-See my short presentation from 2011, ["DataCouch, a platform for collaborative data"](http://vimeo.com/31450380)
-
-The goals of DataCouch were:
-
-- 1: Let anyone clean up data/improve and make their contributions public
-- 2: Provide powerful tools for cleaning up data (heavily inspired by [Refine](http://openrefine.org/))
-- 3: Working with nearly any data should be fast + responsive
-
-GitHub works for number 1, but 2 and 3 are still missing on their platform.
-
-In the two years since DataCouch I've invested nearly all of my time towards learning the techniques and tools that will let me build something like DataCouch without working against the grain.
-
-`dat` is the first step towards these goals. Building on my experience with open source communities, most recently a project I started in January 2013 called [voxel.js](http://voxeljs.com/). I intend to bring together a network of open source developers committed to making data collaboration work across programming language and file format barriers.
-
-Some of my previous approaches to data interoperability include:
-
-- [SLEEP](http://dataprotocols.org/sleep/) - simple specification for syncing tabular data
-- [gut](https://github.com/maxogden/gut) - way to use web services to convert data between different formats
-
-The [dataprotocols.org](http://dataprotocols.org/) project by the OKFN houses lots of well designed specifications for open data, including SLEEP.
-
-Whereas the individual protocols only address certain parts of the problem, `dat` is a higher level tool that will connect existing data protocols together.
-
-##### What will `dat` be built on?
+### What will `dat` be built on?
 
 The `dat` command-line interface and data storage layer will be built with Node.js, NPM and [LevelDB](https://github.com/rvagg/node-levelup#introduction) (which also has a [healthy community](http://r.va.gg/presentations/sf.nodebase.meetup/)). Both are well established, used by millions of people and are focused on specific problems.
 
