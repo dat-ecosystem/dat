@@ -123,7 +123,7 @@ function ready(err) {
 }
 ```
 
-A successful fun of the above code will produce:
+A successful run of the above code will produce:
 
 ```
 $ node 03-update-cat.js
