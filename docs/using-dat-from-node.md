@@ -22,7 +22,7 @@ To work with dat you need a working directory where data will be stored. If a da
 
 By default when you create a new dat instance from Node.js the `.dat` folder and `dat.json` file will be created for you if they don't exist already.
 
-**01-new-dat.js**
+[**01-new-dat.js**](dat-js-examples/01-new-dat.js)
 
 ```js
 var createDat = require('dat')
@@ -56,7 +56,7 @@ The `version` field is simply an auto-incrementing number that starts at 1 and i
 
 Imagine you work at a cat adoption shelter and you want to use dat to track big small cat data (lots of data about domestic sized cats). Let's use the cat name as the key, and put the first cat into dat:
 
-**02-put-cat.js**
+[**02-put-cat.js**](dat-js-examples/02-put-cat.js)
 
 ```js
 var createDat = require('dat')
@@ -97,7 +97,7 @@ As you can see a `version` number was automatically added to the row data we got
 If Bob has a birthday and turns 4 we need to update the data:
 
 
-**03-update-cat.js**
+[**03-update-cat.js**](dat-js-examples/03-update-cat.js)
 
 ```js
 var createDat = require('dat')
@@ -141,7 +141,7 @@ If you have some data that is not tabular, such as a MP3 file, you can use the d
 
 In order to store a blob you must 'attach' it to a row in the tabular store. You can either make a new row or attach to an existing row. The blobs metadata will be stored in row object under the `blobs` field.
 
-**04-blob-write.js**
+[**04-blob-write.js**](dat-js-examples/04-blob-write.js)
 
 ```js
 var fs = require('fs')
@@ -198,7 +198,7 @@ To get the blob data back out again you can use `dat.createBlobReadStream`.
 
 Dat stores all previous versions of both rows and blobs. To get a row at a specific version, you can pass in the version argument to `dat.get`:
 
-**05-get-old-version.js**
+[**05-get-old-version.js**](dat-js-examples/05-get-old-version.js)
 
 ```js
 var fs = require('fs')
@@ -225,7 +225,7 @@ $ node 05-get-old-version.js
 
 If you want to get all of the available versions for a key you can use `dat.versions`, which is a convenient wrapper around the lower level `dat.createVersionStream`:
 
-**06-get-all-versions.js**
+[**06-get-all-versions.js**](dat-js-examples/06-get-all-versions.js)
 
 ```js
 var fs = require('fs')
