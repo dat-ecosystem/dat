@@ -191,3 +191,70 @@ Stored the Bob photo { key: 'Bob',
 ```
 
 Now the row is at version 3, and the metadata for the blob that we just streamed into dat is stored under the `blobs` key.
+
+To get the blob data back out again you can use `dat.createBlobReadStream`.
+
+### Getting older versions
+
+Dat stores all previous versions of both rows and blobs. To get a row at a specific version, you can pass in the version argument to `dat.get`:
+
+**05-get-old-version.js**
+
+```js
+var fs = require('fs')
+var createDat = require('dat')
+var dat = createDat('./dat-cats', ready)
+
+function ready(err) {
+  if (err) return console.error(err)
+  
+  dat.get('Bob', {version: 1}, function(err, bob) {
+    if (err) return console.error('Bob at version 1 could not be got!', err)
+    
+    console.log(bob)
+  })
+}
+```
+
+Running this should output:
+
+```
+$ node 05-get-old-version.js 
+{ key: 'Bob', version: 1, age: 3, type: 'White fur' }
+```
+
+If you want to get all of the available versions for a key you can use `dat.versions`, which is a convenient wrapper around the lower level `dat.createVersionStream`:
+
+**06-get-all-versions.js**
+
+```js
+var fs = require('fs')
+var createDat = require('dat')
+var dat = createDat('./dat-cats', ready)
+
+function ready(err) {
+  if (err) return console.error(err)
+  
+  dat.versions('Bob', function(err, versions) {
+    if (err) return console.error('An error occured while getting versions:', err)
+    
+    if (!versions) return console.log('No versions found for Bob')
+    console.log(versions)
+  })
+}
+```
+
+Running the above should result in:
+
+```
+$ node 06-get-all-versions.js 
+[ { key: 'Bob', version: 1, age: 3, type: 'White fur' },
+  { key: 'Bob', version: 2, age: 4, type: 'White fur' },
+  { key: 'Bob',
+    version: 3,
+    age: 4,
+    type: 'White fur',
+    blobs: { 'bob.png': [Object] } } ]
+```
+
+The call to `dat.versions` returned an array containing every version of the `Bob` key, in order from 1 up.

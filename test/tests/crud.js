@@ -235,6 +235,33 @@ module.exports.getAtVersion = function(test, common) {
   })
 }
 
+module.exports.versions = function(test, common) {
+  test('dat.versions to get all versions of a key', function(t) {
+    common.getDat(t, function(dat, done) {
+      dat.put({"foo": "bar"}, function(err, doc) {
+        if (err) throw err
+        var ver1 = doc.version
+        doc.pizza = 'taco'
+        dat.put(doc, function(err, doc) {
+          t.false(err)
+          if (!doc) doc = {}
+          dat.versions(doc.key, function(err, versions) {
+            t.false(err, 'no err')
+            t.equal(versions.length, 2)
+            t.equal(versions[0].version, 1)
+            t.equal(versions[1].version, 2)
+            dat.versions("i-dont-exist", function(err, versions) {
+              t.notOk(err, 'no err')
+              t.equal(versions, null, 'got null versions')
+              setImmediate(done)
+            })
+          })
+        })
+      })
+    })
+  })
+}
+
 module.exports.keepTotalRowCount = function(test, common) {
   test('dat has a getRowCount cmd', function(t) {
     common.getDat(t, function(dat, done) {
@@ -318,5 +345,6 @@ module.exports.all = function (test, common) {
   module.exports.putBuff(test, common)
   module.exports.deleteRow(test, common)
   module.exports.getAtVersion(test, common)
+  module.exports.versions(test, common)
   module.exports.keepTotalRowCount(test, common)
 }
