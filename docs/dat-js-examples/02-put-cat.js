@@ -7,7 +7,7 @@ function ready(err) {
   var cat = {
     key: 'Bob',
     age: 3,
-    type: 'Tortoiseshell'
+    type: 'White fur'
   }
   
   // dat will store our cat data and call `done` when it finishes

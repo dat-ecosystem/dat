@@ -85,7 +85,7 @@ module.exports.restGetBlobByHash = function(test, common) {
         var post = request({method: 'POST', uri: uploadUrl, body: 'hello'}, function(err, res, updated) {
           t.notOk(err, 'no upload err')
           t.ok(updated.version, 2, 'version 2')
-          var blobMeta = updated.attachments['data.txt']
+          var blobMeta = updated.blobs['data.txt']
           request({method: 'GET', uri: 'http://localhost:' + dat.defaultPort + '/api/blobs/' + blobMeta.hash}, function(err, res, blob) {
             if (err) throw err
             t.equal(blobMeta.size, blob.length, 'size matches')
@@ -126,9 +126,9 @@ module.exports.restPutBlob = function(test, common) {
         var post = request({method: 'POST', uri: uploadUrl, body: 'hello'}, function(err, res, updated) {
           t.notOk(err, 'no upload err')
           t.ok(updated.version, 2, 'version 2')
-          request('http://localhost:' + dat.defaultPort + '/api/rows/foo/data.txt', function(err, resp, attachment) {
+          request('http://localhost:' + dat.defaultPort + '/api/rows/foo/data.txt', function(err, resp, blob) {
             t.notOk(err, 'no get err')
-            t.equals(attachment.toString(), 'hello', 'got data.txt')
+            t.equals(blob.toString(), 'hello', 'got data.txt')
             cleanup()
           })
         })

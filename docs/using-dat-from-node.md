@@ -68,7 +68,7 @@ function ready(err) {
   var cat = {
     key: 'Bob',
     age: 3,
-    type: 'Tortoiseshell'
+    type: 'White fur'
   }
   
   // dat will store our cat data and call `done` when it finishes
@@ -86,10 +86,13 @@ When run successfully the above code should output:
 
 ```
 $ node 02-put-cat.js
-Stored Bob { key: 'Bob', age: 3, type: 'Tortoiseshell', version: 1 }
+Stored Bob { key: 'Bob', age: 3, type: 'White fur', version: 1 }
 ```
 
 As you can see a `version` number was automatically added to the row data we got back, and it starts at version 1.
+
+### Updating an existing row
+
 
 If Bob has a birthday and turns 4 we need to update the data:
 
@@ -127,8 +130,64 @@ A successful run of the above code will produce:
 
 ```
 $ node 03-update-cat.js
-Updated Bob: { key: 'Bob', version: 2, age: 4, type: 'Tortoiseshell' }
+Updated Bob: { key: 'Bob', version: 2, age: 4, type: 'White fur' }
 ```
 
 Note that the `version` is required to update an existing key. If you try and write data for a key that already exists, and you don't include a version or you include an out of date version the `put` will fail and return a conflict error.
 
+### Attaching a blob to a row
+
+If you have some data that is not tabular, such as a MP3 file, you can use the dat blob API. The two main methods are `dat.createBlobWriteStream` and `dat.createBlobReadStream`.
+
+In order to store a blob you must 'attach' it to a row in the tabular store. You can either make a new row or attach to an existing row. The blobs metadata will be stored in row object under the `blobs` field.
+
+**04-blob-write.js**
+
+```js
+var fs = require('fs')
+var createDat = require('dat')
+var dat = createDat('./dat-cats', ready)
+
+function ready(err) {
+  if (err) return console.error(err)
+  
+  // first lets get the latest version of bob from dat
+  dat.get('Bob', function(err, bob) {
+    if (err) return console.error('Bob is not in this dat!', err)
+    
+    // stream a photo from the hard drive
+    var bobPicture = fs.createReadStream('./bob.png')
+    
+    // the first argument is the filename it should get labeled with in dat
+    // the second argument is the row to attach the blob to
+    var blobWriteStream = dat.createBlobWriteStream('bob.png', bob, done)
+    
+    bobPicture.pipe(blobWriteStream)
+  })
+  
+  function done(err, row) {
+    if (err) return console.error('Could not store the Bob photo!', err)
+    
+    console.log('Stored the Bob photo', row)
+  }
+}
+```
+
+Running the above code should produce:
+
+```
+$ node 04-blob-write.js 
+Stored the Bob photo { key: 'Bob',
+  version: 3,
+  age: 4,
+  type: 'White fur',
+  blobs: { 
+    'bob.png': { 
+      hash: 'acb21f0603649973c264019c1699dbe93af9c7f102134aabb8155d04870a95b4',
+      size: 170741
+    }
+  }
+}
+```
+
+Now the row is at version 3, and the metadata for the blob that we just streamed into dat is stored under the `blobs` key.

@@ -15,10 +15,10 @@ module.exports.blobWriteStream = function(test, common) {
       
       var ws = dat.createBlobWriteStream('write-streams.js', function(err, doc) {
         t.notOk(err, 'no blob write err')
-        var attachment = doc.attachments['write-streams.js']
-        t.ok(attachment, 'doc has attachment')
-        t.ok(attachment.size, 'attachment has size')
-        t.ok(attachment.hash, 'attachment has hash')
+        var blob = doc.blobs['write-streams.js']
+        t.ok(blob, 'doc has blob')
+        t.ok(blob.size, 'blob has size')
+        t.ok(blob.hash, 'blob has hash')
         done()
       })
       
@@ -33,8 +33,8 @@ module.exports.blobReadStream = function(test, common) {
       
       var ws = dat.createBlobWriteStream('write-streams.js', function(err, doc) {
         t.notOk(err, 'no blob write err')
-        var attachment = doc.attachments['write-streams.js']
-        t.ok(attachment, 'doc has attachment')
+        var blob = doc.blobs['write-streams.js']
+        t.ok(blob, 'doc has blob')
 
         var rs = dat.createBlobReadStream(doc.key, 'write-streams.js')
 
@@ -44,7 +44,7 @@ module.exports.blobReadStream = function(test, common) {
         })
 
         rs.pipe(concat(function(file) {
-          t.equal(file.length, attachment.size, 'attachment size is correct')
+          t.equal(file.length, blob.size, 'blob size is correct')
           done()
         }))
       })
@@ -60,7 +60,7 @@ module.exports.blobExists = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createBlobWriteStream('write-streams.js', function(err, doc) {
         t.notOk(err, 'no blob write err')
-        dat.blobs.backend.exists(doc.attachments['write-streams.js'].hash, function(err, exists) {
+        dat.blobs.backend.exists(doc.blobs['write-streams.js'].hash, function(err, exists) {
           t.ok(exists, 'blob exists')
           dat.blobs.backend.exists('not-a-valid-hash', function(err, exists) {
             t.notOk(exists, 'invalid hash does not exist')

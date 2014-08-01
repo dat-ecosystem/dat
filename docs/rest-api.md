@@ -56,7 +56,7 @@ Returns a stream of bytes for the file matching `filename` that is attached to `
 
 ## POST /api/rows/:key/:filename
 
-Uploads an attachment to a row by key.
+Uploads a blob to a row by key.
 
 - The row must exist already.
 - You must also specify the current version of the existing row in the querystring as `version`
@@ -67,7 +67,7 @@ e.g. if there is a key called `foo` that is currently at version 1, and you want
 POST /api/rows/foo/photo.jpg?version=1
 ```
 
-Then the contents of your POST upload body will be stored in the dat blob store, and the metadata will be written to the `foo` key under the `attachments` field, which will cause `foo` to increase to version 2. You will receive a conflict or the updated row data as a response (the same as `POST /api/rows`).
+Then the contents of your POST upload body will be stored in the dat blob store, and the metadata will be written to the `foo` key under the `blobs` field, which will cause `foo` to increase to version 2. You will receive a conflict or the updated row data as a response (the same as `POST /api/rows`).
 
 ## GET /api/session
 

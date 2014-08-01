@@ -48,7 +48,7 @@ module.exports.pullReplicationBlob = function(test, common) {
 
         var ws = dat.createBlobWriteStream('foo.txt', function(err, doc) {
           t.notOk(err, 'no blob write err')
-          t.ok(doc.attachments['foo.txt'], 'doc has attachment')
+          t.ok(doc.blobs['foo.txt'], 'doc has blob')
           pull(doc)
         })
 
@@ -58,7 +58,7 @@ module.exports.pullReplicationBlob = function(test, common) {
         function pull(doc) {
           dat2.pull({ quiet: true }, function(err) {
             if (err) throw err
-            var blobRead = dat2.blobs.createReadStream(doc.attachments['foo.txt'].hash)
+            var blobRead = dat2.blobs.createReadStream(doc.blobs['foo.txt'].hash)
             blobRead.on('error', function(e) {
               t.notOk(e, 'should not error')
               done()
@@ -347,12 +347,12 @@ module.exports.skimClone = function(test, common) {
               t.notOk(err, 'no get err')
               t.equal(row.key, 'foo', 'got foo')
               
-              dat2.blobs.backend.exists(row.attachments['write-streams.js'].hash, function(err, exists) {
+              dat2.blobs.backend.exists(row.blobs['write-streams.js'].hash, function(err, exists) {
                 t.notOk(exists, 'blob is not in local blob backend')
                 
                 var rs = dat2.createBlobReadStream('foo', 'write-streams.js')
                 rs.pipe(concat(function(contents) {
-                  t.equal(contents.length, row.attachments['write-streams.js'].size, 'blob size matches')
+                  t.equal(contents.length, row.blobs['write-streams.js'].size, 'blob size matches')
                   
                   dat2.destroy(function(err) {
                     if (err) throw err

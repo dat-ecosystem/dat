@@ -190,7 +190,7 @@ Returns a read stream that emits all versions of a given key
 var blobWriter = db.createBlobWriteStream(filename, [row], [cb])
 ```
 
-Returns a writable stream that you can stream a binary blob attachment into. Calls `cb` with `(err, updated)` where `updated` is the new version of the row that the blob was attached to.
+Returns a writable stream that you can stream a binary blob into. Calls `cb` with `(err, updated)` where `updated` is the new version of the row that the blob was attached to.
 
 `filename` may be either simply a string for the filename you want to save the blob as, or an options object e.g. `{filename: 'foo.txt'}`. `filename` will get passed to the underlying blob store backend as the `options` argument.
 
