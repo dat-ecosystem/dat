@@ -47,7 +47,7 @@ David,1,David,8
 
 Choosing a `key` is important, as you can only look things up by key! In a future version of dat we will provide a way to index other columns, but for now `key` is the only column you can query against.
 
-When a row is updated it gets a new version number. For example if we changed Maria's age to 4 then the interal dat store would now have something like this:
+When a row is updated it gets a new version number. For example if we changed Maria's age to 4 then the internal dat store would now have something like this:
 
 ```
 key,version,name,age

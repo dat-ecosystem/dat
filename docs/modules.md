@@ -142,7 +142,7 @@ Takes an integer and formats it as a nice size representation, e.g. `45MB`
 
 ## [protocol-buffers](http://npmjs.org/protocol-buffers)
 
-We wrote this because we needed a fast + idiomatic library for parsing and encoding [Protocl Buffers](https://developers.google.com/protocol-buffers/)
+We wrote this because we needed a fast + idiomatic library for parsing and encoding [Protocol Buffers](https://developers.google.com/protocol-buffers/)
 
 ## [pumpify](http://npmjs.org/pumpify)
 
