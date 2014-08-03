@@ -13,11 +13,11 @@ version: "{build}"
 # what combinations to test
 environment:
   matrix:
-    - nodejs_version: 0.10.29
+    - nodejs_version: 0.10
 
 # Get the stable version of node
 install:
-  - ps: Update-NodeJsInstallation $env:nodejs_version
+  - ps: Install-Product node $env:nodejs_version
   - npm install
 
 build: off
