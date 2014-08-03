@@ -11,7 +11,7 @@ dat init
 ## put a JSON object into dat
 
 ```
-echo '{"hello": "world"}' | dat --json
+echo '{"hello": "world"}' | dat import --json
 ```
 
 ## stream a CSV into dat
