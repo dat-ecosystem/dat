@@ -35,7 +35,7 @@ module.exports.blobReadStream = function(test, common) {
         t.notOk(err, 'no blob write err')
         var blob = doc.blobs['write-streams.js']
         t.ok(blob, 'doc has blob')
-
+        
         var rs = dat.createBlobReadStream(doc.key, 'write-streams.js')
 
         rs.on('error', function(e) {
@@ -60,9 +60,9 @@ module.exports.blobExists = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createBlobWriteStream('write-streams.js', function(err, doc) {
         t.notOk(err, 'no blob write err')
-        dat.blobs.backend.exists(doc.blobs['write-streams.js'].hash, function(err, exists) {
+        dat.blobs.backend.exists(doc.blobs['write-streams.js'], function(err, exists) {
           t.ok(exists, 'blob exists')
-          dat.blobs.backend.exists('not-a-valid-hash', function(err, exists) {
+          dat.blobs.backend.exists({hash: 'not-a-valid-hash'}, function(err, exists) {
             t.notOk(exists, 'invalid hash does not exist')
             done()
           })
