@@ -99,6 +99,8 @@ Instead you can use dat to index blobs, meaning only metadata will be stored in 
 
 The downside of this approach is that blobs cannot be versioned, as only the current version of the blob will be available since dat is not storing old versions of it.
 
+We have developed the [abstract-blob-store](https://github.com/maxogden/abstract-blob-store) API to help standardize how storage backends are exposed to dat.
+
 ** TODO describe how to implement a dat blob store module **
  
 ### LevelDOWN
