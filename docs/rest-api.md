@@ -30,6 +30,35 @@ Returns JSON about this dat. Example:
 - `name` is taken from the dat.json name field if present
 - `rows` is the number of rows in the dat tabular store
 
+## GET /api/rows
+
+This is an API on top of [createReadStream](js-api.md#createreadstream). 
+
+### Options
+
+Options should be specified in the query string (e.g. `?foo=bar`)
+
+All options from [createReadStream](js-api.md#createchangesstream) are supported.
+
+With this API the default `limit` is 50 and data will be returned as follows:
+
+```
+{
+  "rows": [
+    {
+      "key": "chxtd4x9k00007ma5eoaojisj",
+      "version": 1,
+      "routeTag": "72R"
+    },
+    {
+      "key": "chxtd4x9m00017ma5yu98dw02",
+      "version": 1,
+      "routeTag": "77R"
+    }
+  ]
+}
+```
+
 ## GET /api/rows/:key
 
 Returns JSON representation of the row for `key`, or a 404 if not found.
@@ -154,35 +183,6 @@ data: {"key":"chxtd4x9m00017ma5yu98dw02","change":2,"version":1}
 ## GET /api/csv
 
 Streams out CSV data of the latest version of all rows in the tabular store.
-
-## GET /api/json
-
-This is an API on top of [createReadStream](js-api.md#createreadstream). 
-
-### Options
-
-Options should be specified in the query string (e.g. `?foo=bar`)
-
-All options from [createReadStream](js-api.md#createchangesstream) are supported.
-
-With this API the default `limit`is 50 and data will be returned as follows:
-
-```
-{
-  "rows": [
-    {
-      "key": "chxtd4x9k00007ma5eoaojisj",
-      "version": 1,
-      "routeTag": "72R"
-    },
-    {
-      "key": "chxtd4x9m00017ma5yu98dw02",
-      "version": 1,
-      "routeTag": "77R"
-    }
-  ]
-}
-```
 
 ## POST /api/bulk
 
