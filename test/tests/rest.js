@@ -1,6 +1,7 @@
 var request = require('request').defaults({json: true})
 var parallel = require('run-parallel')
 var concat = require('concat-stream')
+var ldj = require('ldjson-stream')
 
 module.exports.restHello = function(test, common) {
   test('rest get /api returns metadata', function(t) {
@@ -337,6 +338,70 @@ module.exports.jsonExport = function(test, common) {
   })
 }
 
+module.exports.changes = function(test, common) {
+  test('GET /api/changes returns ldjson change data', function(t) {
+    if (common.rpc) return t.end()
+    common.getDat(t, function(dat, cleanup) {
+      var headers = {'content-type': 'text/csv'}
+      var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
+      post.write('a,b,c\n')
+      post.write('1,2,3\n')
+      post.write('4,5,6')
+      post.end()
+      
+      post.on('response', function(resp) {
+        resp.on('end', function() {
+          var changeReq = request({uri: 'http://localhost:' + dat.defaultPort + '/api/changes', json: true})
+          changeReq.pipe(ldj.parse()).pipe(concat(collect))
+          function collect(rows) {
+            t.equal(rows.length, 2, '2 objects returned')
+            t.ok(rows[0].key, 'row 1 has a key')
+            t.ok(rows[1].key, 'row 2 has a key')
+            cleanup()
+          }
+        })
+      })
+    })
+  })
+}
+
+module.exports.changesLiveTail = function(test, common) {
+  test('GET /api/changes?tail=true&live=true&data=true returns only new data', function(t) {
+    if (common.rpc) return t.end()
+    common.getDat(t, function(dat, cleanup) {
+      
+      function insert(data, cb) {
+        var headers = {'content-type': 'text/csv'}
+        var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
+        post.write(data)
+        post.end()
+        post.on('response', function(resp) {
+          resp.on('end', cb)
+        })
+      }
+      
+      insert('key,name\n1,bob\n2,sue', function() {
+        var changeReq = request({uri: 'http://localhost:' + dat.defaultPort + '/api/changes?live=true&tail=true&data=true', json: true})
+        changeReq.pipe(ldj.parse()).pipe(concat(collect))
+        insert('key,name\n3,bill\n4,sally', function() {
+          setTimeout(function() {
+            changeReq.abort()
+          }, 3000)
+        })
+      })
+      
+      function collect(rows) {
+        t.equal(rows.length, 2, '2 objects returned')
+        t.ok(rows[0].key, 'row 1 has a key')
+        t.equal(rows[0].value.name, 'bill', 'row 1 is bill')
+        t.equal(rows[1].value.name, 'sally', 'row 2 is sally')
+        cleanup()
+      }
+      
+    })
+  })
+}
+
 module.exports.pagination = function(test, common) {
   test('GET various pagination APIs', function(t) {
     if (common.rpc) return t.end()
@@ -452,5 +517,7 @@ module.exports.all = function (test, common) {
   module.exports.logout(test, common)
   module.exports.csvExport(test, common)
   module.exports.jsonExport(test, common)
+  module.exports.changes(test, common)
+  module.exports.changesLiveTail(test, common)
   module.exports.pagination(test, common)
 }
