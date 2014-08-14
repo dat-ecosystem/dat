@@ -5,15 +5,20 @@ var bops = require('bops')
 var concat = require('concat-stream')
 var os = require('os')
 var protobuf = require('protocol-buffers')
+var json = require('json-protobuf-encoding')
 
-module.exports.valueStreamBuff = function(test, common) {
-  test('valueStream returns all buff rows', function(t) {
+var proto = function(sch) {
+  return protobuf(sch, {encodings:{json:json()}}).Row
+}
+
+module.exports.readStreamBuff = function(test, common) {
+  test('readStream returns all buff rows', function(t) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ columns: ['num'], protobuf: true, quiet: true })
       var nums = []
     
       ws.on('end', function() {
-        dat.createValueStream().pipe(concat(function(data) {
+        dat.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r.num })
           t.equals(JSON.stringify(nums.sort()), JSON.stringify(results.sort()), 'matches')
           done()
@@ -22,7 +27,7 @@ module.exports.valueStreamBuff = function(test, common) {
 
       var packStream = mbstream.packStream()
       packStream.pipe(ws)
-      var schema = protobuf([{name:'num', type:'json'}]);
+      var schema = proto('message Row { optional json num = 1; }')
 
       // create a bunch of single cell buff rows with incrementing integers in them
       for (var i = 0; i < 1000; i++) {
@@ -34,14 +39,14 @@ module.exports.valueStreamBuff = function(test, common) {
   })
 }
 
-module.exports.valueStreamBuffPrimaryKey = function(test, common) {
-  test('valueStream returns all buff rows w/ custom primary key', function(t) {
+module.exports.readStreamBuffPrimaryKey = function(test, common) {
+  test('readStream returns all buff rows w/ custom primary key', function(t) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ columns: ['num'], primary: 'num', protobuf: true, quiet: true })
       var nums = []
     
       ws.on('end', function() {
-        dat.createValueStream().pipe(concat(function(data) {
+        dat.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r.num })
           t.equals(JSON.stringify(nums.sort()), JSON.stringify(results.sort()), 'matches')
           done()
@@ -51,7 +56,7 @@ module.exports.valueStreamBuffPrimaryKey = function(test, common) {
       var packStream = mbstream.packStream()
       packStream.pipe(ws)
     
-      var schema = protobuf([{name:'num', type:'json'}]);
+      var schema = proto('message Row { optional json num = 1; }')
 
       // create a bunch of single cell buff rows with incrementing integers in them
       for (var i = 0; i < 1000; i++) {
@@ -64,15 +69,15 @@ module.exports.valueStreamBuffPrimaryKey = function(test, common) {
   })
 }
 
-module.exports.valueStreamCsvPrimaryKey = function(test, common) {
-  test('valueStream returns all csv rows w/ custom primary key', function(t) {
+module.exports.readStreamCsvPrimaryKey = function(test, common) {
+  test('readStream returns all csv rows w/ custom primary key', function(t) {
     var expected = ['1', '10', '100']
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true, primary: 'a', quiet: true })
       var nums = []
     
       ws.on('end', function() {
-        dat.createValueStream().pipe(concat(function(data) {
+        dat.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r.key })
           t.equals(JSON.stringify(results.sort()), JSON.stringify(expected.sort()), 'matches')
           done()
@@ -85,15 +90,15 @@ module.exports.valueStreamCsvPrimaryKey = function(test, common) {
   })
 }
 
-module.exports.valueStreamNdjPrimaryKey = function(test, common) {
-  test('valueStream returns all ndjson rows w/ custom primary key', function(t) {
+module.exports.readStreamNdjPrimaryKey = function(test, common) {
+  test('readStream returns all ndjson rows w/ custom primary key', function(t) {
     var expected = ['1', '10', '100']
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ json: true, primary: 'a', quiet: true })
       var nums = []
     
       ws.on('end', function() {
-        dat.createValueStream().pipe(concat(function(data) {
+        dat.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r.key })
           t.equals(JSON.stringify(results.sort()), JSON.stringify(expected.sort()), 'order matches')
           done()
@@ -114,9 +119,9 @@ module.exports.getChanges = function(test, common) {
       var ws = dat.createWriteStream({ csv: true, quiet: true })
     
       ws.on('end', function() {
-        dat.createChangesStream({data: true}).pipe(concat(function(data) {
+        dat.createChangesReadStream({data: true}).pipe(concat(function(data) {
           var changes = data.map(function(r) { return r.change })
-          t.equal(JSON.stringify(changes), JSON.stringify([1,2,3,4,5]) , 'ordered changes 1 - 5 exist')
+          t.equal(JSON.stringify(changes), JSON.stringify([1,2,3,4,5,6]) , 'ordered changes 1 - 6 exist') // 5 rows + 1 schema
           t.equal(!!data[0].value, true)
           done()
         }))
@@ -131,7 +136,7 @@ module.exports.getChanges = function(test, common) {
 module.exports.changesStream = function(test, common) {
   test('simple put should trigger a change', function(t) {
     common.getDat(t, function(dat, done) {
-      var changes = dat.createChangesStream({ live: true, data: true })
+      var changes = dat.createChangesReadStream({ live: true, data: true, decode: true })
       var gotChange = false
       setTimeout(function() {
         if (gotChange) return
@@ -140,6 +145,7 @@ module.exports.changesStream = function(test, common) {
       }, 1000)
       
       changes.pipe(through2({objectMode: true}, function(obj, enc, next) {
+        if (obj.subset) return next()
         changes.end()
         t.equal(obj.value.foo, "bar")
         gotChange = true
@@ -160,7 +166,7 @@ module.exports.changesStreamTail = function(test, common) {
       dat.put({"foo": "old"}, function(err) {
         t.notOk(err, 'should not err')
         
-        var changes = dat.createChangesStream({ live: true, tail: true, data: true })
+        var changes = dat.createChangesReadStream({ live: true, tail: true, data: true, decode: true })
         var gotChange = false
         setTimeout(function() {
           if (gotChange) return
@@ -169,6 +175,7 @@ module.exports.changesStreamTail = function(test, common) {
         }, 1000)
       
         changes.pipe(through2({objectMode: true}, function(obj, enc, next) {
+          if (obj.subset) return next()
           changes.end()
           t.equal(obj.value.foo, "new", 'should only get new row, not old row')
           gotChange = true
@@ -196,7 +203,7 @@ module.exports.changesStreamTailNum = function(test, common) {
       })
       
       ws.on('end', function() {
-        var changes = dat.createChangesStream({ live: true, tail: 1, data: true })
+        var changes = dat.createChangesReadStream({ live: true, tail: 1, data: true, decode: true })
 
         var gotChange = false
         setTimeout(function() {
@@ -206,6 +213,7 @@ module.exports.changesStreamTailNum = function(test, common) {
         }, 1000)
       
         changes.pipe(through2({objectMode: true}, function(obj, enc, next) {
+          if (obj.subset) return next()
           changes.end()
           t.equal(obj.value.foo, "taco", 'should only get 1 newest row, not older rows')
           gotChange = true
@@ -242,25 +250,6 @@ module.exports.createReadStream = function(test, common) {
   })
 }
 
-module.exports.createValueStream = function(test, common) {
-  test('createValueStream', function(t) {
-    common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ csv: true, quiet: true })
-    
-      ws.on('end', function() {
-        var readStream = dat.createValueStream()
-        readStream.pipe(concat(function(rows) {
-          t.equal(rows.length, 5, '5 rows')
-          done()
-        }))
-      })
-    
-      ws.write(bops.from('a,b,c\n10,1,1\n100,1,1\n1,1,1\n1,1,1\n1,1,1'))
-      ws.end()
-    })
-  })
-}
-
 module.exports.createReadStreamStartEndKeys = function(test, common) {
   test('createReadStream w/ start + end keys', function(t) {
     common.getDat(t, function(dat, done) {
@@ -270,9 +259,9 @@ module.exports.createReadStreamStartEndKeys = function(test, common) {
         var readStream = dat.createReadStream({ start: '2', end: '4'})
         readStream.pipe(concat(function(rows) {
           t.equal(rows.length, 3, '3 rows')
-          t.equal(rows[0].value.a, '2')
-          t.equal(rows[1].value.a, '3')
-          t.equal(rows[2].value.a, '4')
+          t.equal(rows[0].a, '2')
+          t.equal(rows[1].a, '3')
+          t.equal(rows[2].a, '4')
           done()
         }))
       })
@@ -283,13 +272,13 @@ module.exports.createReadStreamStartEndKeys = function(test, common) {
   })
 }
 
-module.exports.createValueStreamCSV = function(test, common) {
-  test('createValueStream csv', function(t) {
+module.exports.createReadStreamCSV = function(test, common) {
+  test('createReadStream csv', function(t) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true, primary: 'a', quiet: true })
     
       ws.on('end', function() {
-        var readStream = dat.createValueStream({ csv: true })
+        var readStream = dat.createReadStream({ csv: true })
         readStream.pipe(concat(function(data) {
           var rows = data.split('\n')
           t.equal(rows[0].split(',').length, 3)
@@ -332,7 +321,7 @@ module.exports.createVersionStream = function(test, common) {
           var v2 = versions[1] || {version: ""}
           t.equal(v1.version, 1)
           t.equal(v2.version, 2)
-          t.equal(v1.pizza, undefined, 'version 1')
+          t.equal(v1.pizza, null, 'version 1')
           t.equal(v2.pizza, 'taco', 'version 2')
           setImmediate(done)
         }))
@@ -343,17 +332,16 @@ module.exports.createVersionStream = function(test, common) {
 
 
 module.exports.all = function (test, common) {
-  module.exports.valueStreamBuff(test, common)
-  module.exports.valueStreamBuffPrimaryKey(test, common)
-  module.exports.valueStreamCsvPrimaryKey(test, common)
-  module.exports.valueStreamNdjPrimaryKey(test, common)
+  module.exports.readStreamBuff(test, common)
+  module.exports.readStreamBuffPrimaryKey(test, common)
+  module.exports.readStreamCsvPrimaryKey(test, common)
+  module.exports.readStreamNdjPrimaryKey(test, common)
   module.exports.getChanges(test, common)
   module.exports.changesStream(test, common)
   module.exports.changesStreamTail(test, common)
   module.exports.changesStreamTailNum(test, common)
   module.exports.createReadStream(test, common)
-  module.exports.createValueStream(test, common)
   module.exports.createReadStreamStartEndKeys(test, common)
-  module.exports.createValueStreamCSV(test, common)
+  module.exports.createReadStreamCSV(test, common)
   module.exports.createVersionStream(test, common)
 }

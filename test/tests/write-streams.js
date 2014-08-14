@@ -7,7 +7,12 @@ var buff = require('multibuffer')
 var bops = require('bops')
 var protobuf = require('protocol-buffers')
 var concat = require('concat-stream')
+var json = require('json-protobuf-encoding')
 var debug = require('debug')('test.write-streams')
+
+var proto = function(sch) {
+  return protobuf(sch, {encodings:{json:json()}}).Row
+}
 
 module.exports.blobWriteStream = function(test, common) {
   test('piping a blob into a blob write stream', function(t) {
@@ -85,7 +90,7 @@ module.exports.singleNdjsonObject = function(test, common) {
     
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
-          t.equal(data[0].value.batman, "bruce wayne")
+          t.equal(data[0].batman, "bruce wayne")
           done()
         }))
       })
@@ -108,7 +113,7 @@ module.exports.singleNdjsonString = function(test, common) {
       
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
-          t.equal(data[0].value.batman, "bruce wayne")
+          t.equal(data[0].batman, "bruce wayne")
           done()
         }))
       
@@ -133,8 +138,8 @@ module.exports.multipleNdjsonObjects = function(test, common) {
         cat.pipe(concat(function(data) {
           debug('data', data)
           t.equal(data.length, 2)
-          t.equal(data[0].value.foo, "bar")
-          t.equal(data[1].value.foo, "baz")
+          t.equal(data[0].foo, "bar")
+          t.equal(data[1].foo, "baz")
           done()
         }))
       
@@ -174,7 +179,7 @@ module.exports.singleNdjsonObjectKeyOnly = function(test, common) {
 module.exports.singleBuff = function(test, common) {
   test('piping a single row of buff data with write stream', function(t) {
   
-    var schema = protobuf([{name:'foo', type:'json'}])
+    var schema = proto('message Row { optional json foo = 1; }')
     var row = schema.encode({foo:'bar'})
   
     common.getDat(t, function(dat, done) {
@@ -184,7 +189,7 @@ module.exports.singleBuff = function(test, common) {
       ws.on('end', function() {
         dat.createReadStream().pipe(concat(function(data) {
           t.equal(data.length, 1)
-          t.equal(data[0].value.foo, 'bar')
+          t.equal(data[0].foo, 'bar')
           done()
         }))
       })
@@ -201,7 +206,7 @@ module.exports.singleBuff = function(test, common) {
 module.exports.multipleBuffs = function(test, common) {
   test('piping multiple rows of buff data with write stream', function(t) {
 
-    var schema = protobuf([{name:'a', type:'json'}, {name:'b', type:'json'}])
+    var schema = proto('message Row { optional json a = 1; optional json b = 2; }')
     var row1 = schema.encode({a:'1',b:'2'})
     var row2 = schema.encode({a:'3',b:'4'})
 
@@ -211,10 +216,10 @@ module.exports.multipleBuffs = function(test, common) {
       ws.on('end', function() {
         dat.createReadStream().pipe(concat(function(data) {
           t.equal(data.length, 2)
-          t.equal(data[0].value.a, '1')
-          t.equal(data[0].value.b, '2')
-          t.equal(data[1].value.a, '3')
-          t.equal(data[1].value.b, '4')
+          t.equal(data[0].a, '1')
+          t.equal(data[0].b, '2')
+          t.equal(data[1].a, '3')
+          t.equal(data[1].b, '4')
           done()
         }))
       })
@@ -239,9 +244,9 @@ module.exports.csvOneRow = function(test, common) {
         var cat = dat.createReadStream()
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
-          t.equal(data[0].value.a, '1')
-          t.equal(data[0].value.b, '2')
-          t.equal(data[0].value.c, '3')
+          t.equal(data[0].a, '1')
+          t.equal(data[0].b, '2')
+          t.equal(data[0].c, '3')
           done()
         }))
       })
@@ -263,12 +268,12 @@ module.exports.csvMultipleRows = function(test, common) {
         var cat = dat.createReadStream()
         cat.pipe(concat(function(data) {
           t.equal(data.length, 2)
-          t.equal(data[0].value.a, '1')
-          t.equal(data[0].value.b, '2')
-          t.equal(data[0].value.c, '3')
-          t.equal(data[1].value.a, '4')
-          t.equal(data[1].value.b, '5')
-          t.equal(data[1].value.c, '6')
+          t.equal(data[0].a, '1')
+          t.equal(data[0].b, '2')
+          t.equal(data[0].c, '3')
+          t.equal(data[1].a, '4')
+          t.equal(data[1].b, '5')
+          t.equal(data[1].c, '6')
           done()
         }))
       })
@@ -290,12 +295,12 @@ module.exports.csvCustomDelimiter = function(test, common) {
         var cat = dat.createReadStream()
         cat.pipe(concat(function(data) {
           t.equal(data.length, 2)
-          t.equal(data[0].value.a, '1')
-          t.equal(data[0].value.b, '2')
-          t.equal(data[0].value.c, '3')
-          t.equal(data[1].value.a, '4')
-          t.equal(data[1].value.b, '5')
-          t.equal(data[1].value.c, '6')
+          t.equal(data[0].a, '1')
+          t.equal(data[0].b, '2')
+          t.equal(data[0].c, '3')
+          t.equal(data[1].a, '4')
+          t.equal(data[1].b, '5')
+          t.equal(data[1].c, '6')
           done()
         }))
       })
@@ -325,8 +330,8 @@ module.exports.multipleWriteStreams = function(test, common) {
               done()
             }))
           })
-          jws.write(bops.from(JSON.stringify(data[0].value) + os.EOL))
-          jws.write(bops.from(JSON.stringify(data[1].value)))
+          jws.write(bops.from(JSON.stringify(data[0]) + os.EOL))
+          jws.write(bops.from(JSON.stringify(data[1])))
           jws.end()
         }))
       })
@@ -352,7 +357,7 @@ module.exports.multipleWriteStreamsUpdatingChanged = function(test, common) {
   
           cat.pipe(concat(function(data) {
             t.equal(data.length, 1)
-            t.equal(data[0].value.foo, "bar")
+            t.equal(data[0].foo, "bar")
             done()
           }))
         })
@@ -498,7 +503,7 @@ module.exports.writeStreamConflicts = function(test, common) {
         
         ws.on('end', function() {
           if (conflicted) return
-          var cat = dat.createValueStream()
+          var cat = dat.createReadStream()
           cat.pipe(concat(function(data) {
             cb(null, data)
           }))
@@ -550,7 +555,7 @@ module.exports.writeStreamCsvNoHeaderRow = function(test, common) {
         var cat = dat.createReadStream()
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
-          t.equal(data[0].value.foo, 'bar')
+          t.equal(data[0].foo, 'bar')
           done()
         }))
       })
@@ -575,8 +580,8 @@ module.exports.writeStreamMultipleWithRandomKeys = function(test, common) {
     
           cat.pipe(concat(function(data) {
             t.equal(data.length, 2)
-            t.equal(data[0].value.foo, "bar")
-            t.equal(data[1].value.foo, "bar")
+            t.equal(data[0].foo, "bar")
+            t.equal(data[1].foo, "bar")
             done()
           }))
         })
@@ -624,8 +629,10 @@ module.exports.keepTotalRowCount = function(test, common) {
       ws.on('end', function() {
         var cat = dat.createReadStream()
         cat.pipe(concat(function(data) {
-          t.equal(dat.getRowCount(), 2)
-          done()
+          dat.getRowCount(function(err, rows) {
+            t.equal(rows, 2)
+            done()
+          })
         }))
       })
 
@@ -647,8 +654,10 @@ module.exports.keepTotalRowCount = function(test, common) {
 
           cat.pipe(concat(function(data) {
             t.equal(data.length, 1)
-            t.equal(dat.getRowCount(), 1)
-            done()
+            dat.getRowCount(function(err, rows) {
+              t.equal(rows, 1)
+              done()
+            })
           }))
         })
 
