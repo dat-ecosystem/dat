@@ -18,7 +18,7 @@ module.exports.restHello = function(test, common) {
         function verify(json) {
           t.ok(json.dat, 'has .dat')
           t.ok(json.version, 'has .version')
-          t.equal(json.changes, 1, 'has 1 change')
+          t.equal(json.changes, 2, 'has 2 changes')
           t.equal(json.rows, 1, 'has 1 row')
           t.ok(json.approximateSize.rows, 'has approximate doc size')
         }
@@ -354,9 +354,10 @@ module.exports.changes = function(test, common) {
           var changeReq = request({uri: 'http://localhost:' + dat.defaultPort + '/api/changes', json: true})
           changeReq.pipe(ldj.parse()).pipe(concat(collect))
           function collect(rows) {
-            t.equal(rows.length, 2, '2 objects returned')
+            t.equal(rows.length, 3, '3 objects returned') // 2 docs + 1 schmea
             t.ok(rows[0].key, 'row 1 has a key')
             t.ok(rows[1].key, 'row 2 has a key')
+            t.ok(rows[2].key, 'row 3 has a key')
             cleanup()
           }
         })
