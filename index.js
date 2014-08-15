@@ -102,7 +102,8 @@ function Dat(dir, opts, onReady) {
   })
   
   function loadMeta() {
-    init(function() {
+    commands._ensureExists({ path: dir }, function(err) {
+      if (err) return init()
       self._storage(opts, function(err) {
         if (err && self.lockRetries < self.retryLimit) {
           readPort(paths.port, opts, function(err) {
