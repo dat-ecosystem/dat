@@ -9,7 +9,6 @@ var request = require('request').defaults({json: true})
 
 var stats = require('./lib/stats')
 var transformations = require('./lib/transformations.js')
-var meta = require('./lib/meta.js')
 var commands = require('./lib/commands.js')
 var getPort = require('./lib/get-port.js')
 var datVersion = require('./package.json').version
@@ -87,9 +86,7 @@ function Dat(dir, opts, onReady) {
     if (data.remotes) self.remotes = data.remotes
 
     if (!opts.storage) {
-      self.meta = meta(self, function(err) {
-        onReady()
-      })
+      onReady()
     } else {
       function read() {
         readPort(paths.port, opts, function(err) {
@@ -105,8 +102,7 @@ function Dat(dir, opts, onReady) {
   })
   
   function loadMeta() {
-    self.meta = meta(self, function(err) {
-      if (err) return init()
+    init(function() {
       self._storage(opts, function(err) {
         if (err && self.lockRetries < self.retryLimit) {
           readPort(paths.port, opts, function(err) {
