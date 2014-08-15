@@ -84,7 +84,7 @@ module.exports.singleNdjsonObject = function(test, common) {
 
       var ws = dat.createWriteStream({ json: true, quiet: true })
 
-      ws.on('end', function() {
+      ws.on('finish', function() {
     
         var cat = dat.createReadStream()
     
@@ -107,7 +107,7 @@ module.exports.singleNdjsonString = function(test, common) {
     
       var ws = dat.createWriteStream({ json: true, quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
     
         var cat = dat.createReadStream()
       
@@ -131,7 +131,7 @@ module.exports.multipleNdjsonObjects = function(test, common) {
     
       var ws = dat.createWriteStream({ json: true, quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
       
         var cat = dat.createReadStream()
       
@@ -160,7 +160,7 @@ module.exports.singleNdjsonObjectKeyOnly = function(test, common) {
     
       var ws = dat.createWriteStream({ json: true, quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         var cat = dat.createReadStream()
         cat.pipe(concat(function(data) {
           debug('data', data)
@@ -186,7 +186,7 @@ module.exports.singleBuff = function(test, common) {
     
       var ws = dat.createWriteStream({ columns: ['foo'], protobuf: true, quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         dat.createReadStream().pipe(concat(function(data) {
           t.equal(data.length, 1)
           t.equal(data[0].foo, 'bar')
@@ -213,7 +213,7 @@ module.exports.multipleBuffs = function(test, common) {
     common.getDat(t, function(dat, done) {
     
       var ws = dat.createWriteStream({ columns: ['a', 'b'], protobuf: true, quiet: true })
-      ws.on('end', function() {
+      ws.on('finish', function() {
         dat.createReadStream().pipe(concat(function(data) {
           t.equal(data.length, 2)
           t.equal(data[0].a, '1')
@@ -240,7 +240,7 @@ module.exports.csvOneRow = function(test, common) {
     
       var ws = dat.createWriteStream({ csv: true, quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         var cat = dat.createReadStream()
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
@@ -264,7 +264,7 @@ module.exports.csvMultipleRows = function(test, common) {
     
       var ws = dat.createWriteStream({ csv: true, quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         var cat = dat.createReadStream()
         cat.pipe(concat(function(data) {
           t.equal(data.length, 2)
@@ -291,7 +291,7 @@ module.exports.csvCustomDelimiter = function(test, common) {
     
       var ws = dat.createWriteStream({ csv: true, separator: '\t', quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         var cat = dat.createReadStream()
         cat.pipe(concat(function(data) {
           t.equal(data.length, 2)
@@ -318,11 +318,11 @@ module.exports.multipleWriteStreams = function(test, common) {
     
       var ws = dat.createWriteStream({ csv: true, quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         var cat = dat.createReadStream()
         cat.pipe(concat(function(data) {
           var jws = dat.createWriteStream({ json: true, quiet: true })
-          jws.on('end', function() {
+          jws.on('finish', function() {
             var cat = dat.createReadStream()
             cat.pipe(concat(function(data2) {
 
@@ -348,7 +348,7 @@ module.exports.multipleWriteStreamsUpdatingChanged = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws1 = dat.createWriteStream({ json: true, primary: 'foo', quiet: true })
   
-      ws1.on('end', function() {
+      ws1.on('finish', function() {
         var ws2 = dat.createWriteStream({ json: true, primary: 'foo', quiet: true })
         
         ws2.on('conflict', function(e) {
@@ -378,7 +378,7 @@ module.exports.compositePrimaryKey = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ primary: ['a', 'b'], quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         dat.get('foobar', function(err, data) {
           t.false(err, 'no error')
           t.equal(data.c, "hello")
@@ -397,7 +397,7 @@ module.exports.compositePrimaryKeyCustomSeparator = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ primary: ['a', 'b'], separator: '@', quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         dat.get('foo@bar', function(err, data) {
           t.false(err, 'no error')
           t.equal(data.c, "hello")
@@ -417,7 +417,7 @@ module.exports.compositePrimaryKeyHashing = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ primary: ['a', 'b'], hash: true, quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         var key = crypto.createHash('md5').update('foobar').digest("hex")
 
         dat.get(key, function(err, data) {
@@ -438,7 +438,7 @@ module.exports.compositePrimaryKeySeparator = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ primary: ['a', 'b'], separator: '-', quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
 
         dat.get('foo-bar', function(err, data) {
           t.false(err, 'no error')
@@ -458,7 +458,7 @@ module.exports.primaryKeyFunction = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({primaryFormat: function () { return 'P-Funk' }, quiet: true})
 
-      ws.on('end', function() {
+      ws.on('finish', function() {
         dat.get('P-Funk', function(err, data) {
           t.notOk(err, 'no error')
           t.equal(data.a, 'foo')
@@ -477,7 +477,7 @@ module.exports.primaryKeyFunctionUsingPrimaryVal = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({primary: 'a', primaryFormat: function (val) { return 'P-' + val }, quiet: true})
 
-      ws.on('end', function() {
+      ws.on('finish', function() {
         dat.get('P-Funk', function(err, data) {
           t.notOk(err, 'no error')
           t.equal(data.a, 'Funk')
@@ -501,7 +501,7 @@ module.exports.writeStreamConflicts = function(test, common) {
 
         var conflicted
         
-        ws.on('end', function() {
+        ws.on('finish', function() {
           if (conflicted) return
           var cat = dat.createReadStream()
           cat.pipe(concat(function(data) {
@@ -551,7 +551,7 @@ module.exports.writeStreamCsvNoHeaderRow = function(test, common) {
     
       var ws = dat.createWriteStream({ csv: true, columns: ['foo'], headerRow: false, quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         var cat = dat.createReadStream()
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
@@ -572,10 +572,10 @@ module.exports.writeStreamMultipleWithRandomKeys = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws1 = dat.createWriteStream({ json: true, quiet: true })
     
-      ws1.on('end', function() {
+      ws1.on('finish', function() {
         var ws2 = dat.createWriteStream({ json: true, quiet: true })
       
-        ws2.on('end', function() {
+        ws2.on('finish', function() {
           var cat = dat.createReadStream()
     
           cat.pipe(concat(function(data) {
@@ -602,7 +602,7 @@ module.exports.multipleCSVWriteStreamsChangingSchemas = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws1 = dat.createWriteStream({ csv: true, quiet: true })
   
-      ws1.on('end', function() {
+      ws1.on('finish', function() {
         var ws2 = dat.createWriteStream({ csv: true, quiet: true })
 
         ws2.on('error', function(e) {
@@ -626,7 +626,7 @@ module.exports.keepTotalRowCount = function(test, common) {
 
       var ws = dat.createWriteStream({ csv: true, quiet: true })
 
-      ws.on('end', function() {
+      ws.on('finish', function() {
         var cat = dat.createReadStream()
         cat.pipe(concat(function(data) {
           dat.getRowCount(function(err, rows) {
@@ -646,7 +646,7 @@ module.exports.keepTotalRowCount = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws1 = dat.createWriteStream({ json: true, quiet: true })
 
-      ws1.on('end', function() {
+      ws1.on('finish', function() {
         var ws2 = dat.createWriteStream({ json: true, quiet: true })
 
         ws2.on('conflict', function(e) {

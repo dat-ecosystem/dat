@@ -17,7 +17,7 @@ module.exports.readStreamBuff = function(test, common) {
       var ws = dat.createWriteStream({ columns: ['num'], protobuf: true, quiet: true })
       var nums = []
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         dat.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r.num })
           t.equals(JSON.stringify(nums.sort()), JSON.stringify(results.sort()), 'matches')
@@ -45,7 +45,7 @@ module.exports.readStreamBuffPrimaryKey = function(test, common) {
       var ws = dat.createWriteStream({ columns: ['num'], primary: 'num', protobuf: true, quiet: true })
       var nums = []
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         dat.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r.num })
           t.equals(JSON.stringify(nums.sort()), JSON.stringify(results.sort()), 'matches')
@@ -76,7 +76,7 @@ module.exports.readStreamCsvPrimaryKey = function(test, common) {
       var ws = dat.createWriteStream({ csv: true, primary: 'a', quiet: true })
       var nums = []
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         dat.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r.key })
           t.equals(JSON.stringify(results.sort()), JSON.stringify(expected.sort()), 'matches')
@@ -97,7 +97,7 @@ module.exports.readStreamNdjPrimaryKey = function(test, common) {
       var ws = dat.createWriteStream({ json: true, primary: 'a', quiet: true })
       var nums = []
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         dat.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r.key })
           t.equals(JSON.stringify(results.sort()), JSON.stringify(expected.sort()), 'order matches')
@@ -118,7 +118,7 @@ module.exports.getChanges = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true, quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         dat.createChangesReadStream({data: true}).pipe(concat(function(data) {
           var changes = data.map(function(r) { return r.change })
           t.equal(JSON.stringify(changes), JSON.stringify([1,2,3,4,5,6]) , 'ordered changes 1 - 6 exist') // 5 rows + 1 schema
@@ -202,7 +202,7 @@ module.exports.changesStreamTailNum = function(test, common) {
         setImmediate(done)
       })
       
-      ws.on('end', function() {
+      ws.on('finish', function() {
         var changes = dat.createChangesReadStream({ live: true, tail: 1, data: true, decode: true })
 
         var gotChange = false
@@ -236,7 +236,7 @@ module.exports.createReadStream = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true, quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         var readStream = dat.createReadStream()
         readStream.pipe(concat(function(rows) {
           t.equal(rows.length, 5, '5 rows')
@@ -255,7 +255,7 @@ module.exports.createReadStreamStartEndKeys = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true, primary: 'a', quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         var readStream = dat.createReadStream({ start: '2', end: '4'})
         readStream.pipe(concat(function(rows) {
           t.equal(rows.length, 3, '3 rows')
@@ -277,7 +277,7 @@ module.exports.createReadStreamCSV = function(test, common) {
     common.getDat(t, function(dat, done) {
       var ws = dat.createWriteStream({ csv: true, primary: 'a', quiet: true })
     
-      ws.on('end', function() {
+      ws.on('finish', function() {
         var readStream = dat.createReadStream({ csv: true })
         readStream.pipe(concat(function(data) {
           var rows = data.split('\n')
