@@ -146,7 +146,7 @@ module.exports.changesStream = function(test, common) {
       
       changes.pipe(through2({objectMode: true}, function(obj, enc, next) {
         if (obj.subset) return next()
-        changes.end()
+        changes.destroy()
         t.equal(obj.value.foo, "bar")
         gotChange = true
         setImmediate(done)
@@ -176,7 +176,7 @@ module.exports.changesStreamTail = function(test, common) {
       
         changes.pipe(through2({objectMode: true}, function(obj, enc, next) {
           if (obj.subset) return next()
-          changes.end()
+          changes.destroy()
           t.equal(obj.value.foo, "new", 'should only get new row, not old row')
           gotChange = true
           setImmediate(done)
@@ -214,7 +214,7 @@ module.exports.changesStreamTailNum = function(test, common) {
       
         changes.pipe(through2({objectMode: true}, function(obj, enc, next) {
           if (obj.subset) return next()
-          changes.end()
+          changes.destroy()
           t.equal(obj.value.foo, "taco", 'should only get 1 newest row, not older rows')
           gotChange = true
           setImmediate(done)
@@ -332,16 +332,16 @@ module.exports.createVersionStream = function(test, common) {
 
 
 module.exports.all = function (test, common) {
-  // module.exports.readStreamBuff(test, common)
-  // module.exports.readStreamBuffPrimaryKey(test, common)
-  // module.exports.readStreamCsvPrimaryKey(test, common)
-  // module.exports.readStreamNdjPrimaryKey(test, common)
-  // module.exports.getChanges(test, common)
+  module.exports.readStreamBuff(test, common)
+  module.exports.readStreamBuffPrimaryKey(test, common)
+  module.exports.readStreamCsvPrimaryKey(test, common)
+  module.exports.readStreamNdjPrimaryKey(test, common)
+  module.exports.getChanges(test, common)
   module.exports.changesStream(test, common)
-  // module.exports.changesStreamTail(test, common)
-  // module.exports.changesStreamTailNum(test, common)
-  // module.exports.createReadStream(test, common)
-  // module.exports.createReadStreamStartEndKeys(test, common)
-  // module.exports.createReadStreamCSV(test, common)
-  // module.exports.createVersionStream(test, common)
+  module.exports.changesStreamTail(test, common)
+  module.exports.changesStreamTailNum(test, common)
+  module.exports.createReadStream(test, common)
+  module.exports.createReadStreamStartEndKeys(test, common)
+  module.exports.createReadStreamCSV(test, common)
+  module.exports.createVersionStream(test, common)
 }
