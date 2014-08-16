@@ -387,7 +387,7 @@ module.exports.changesLiveTail = function(test, common) {
         insert('key,name\n3,bill\n4,sally', function() {
           setTimeout(function() {
             changeReq.abort()
-          }, 3000)
+          }, 5000)
         })
       })
       

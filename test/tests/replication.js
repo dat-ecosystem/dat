@@ -13,7 +13,7 @@ module.exports.pullReplication = function(test, common) {
         var ws = dat.createWriteStream({ csv: true, quiet: true })
         var nums = []
         
-        ws.on('end', function() {
+        ws.on('finish', function() {
           dat2.pull({ quiet: true }, function(err) {
             if (err) throw err
             common.compareData(t, dat, dat2, function() {
@@ -28,7 +28,7 @@ module.exports.pullReplication = function(test, common) {
         function done() {
           var rs = dat2.createReadStream()
           rs.pipe(concat(function(data) {
-            var results = data.map(function(r) { return r.value.a })
+            var results = data.map(function(r) { return r.a })
             t.equals(JSON.stringify(results), JSON.stringify(expected), 'createReadStream() matches')
             dat2.destroy(function(err) {
               t.false(err, 'no err')
@@ -87,7 +87,7 @@ module.exports.pullReplicationSparse = function(test, common) {
       common.getDat(t, function(dat, cleanup) {
         var ws = dat.createWriteStream({ quiet: true })
         
-        ws.on('end', function() {
+        ws.on('finish', function() {
           dat2.pull({ quiet: true },function(err) {
             if (err) throw err
             dat.createReadStream().pipe(concat(function(db1) {
@@ -147,7 +147,7 @@ module.exports.pullReplicationMultiple = function(test, common) {
         
         function done() {
           dat2.createReadStream().pipe(concat(function(data) {
-            var results = data.map(function(r) { return r.value.a })
+            var results = data.map(function(r) { return r.a })
             t.equals(JSON.stringify(results), JSON.stringify(expected), 'createReadStream() matches')
             dat2.destroy(function(err) {
               t.false(err, 'no err')
@@ -169,7 +169,8 @@ module.exports.pullReplicationLive = function(test, common) {
           if (err) throw err
           var ok = false
           
-          dat2.createChangesStream({ live: true, data: true }).on('data', function(change) {
+          dat2.createChangesReadStream({ live: true, data: true, decode: true }).on('data', function(change) {
+            if (change.subset) return
             var data = change.value
             ok = true
             t.equal(data.foo, 'bar', 'change matches')
@@ -231,7 +232,7 @@ module.exports.pushReplication = function(test, common) {
     
       function done() {
         dat2.createReadStream().pipe(concat(function(data) {
-          var results = data.map(function(r) { return r.value.a })
+          var results = data.map(function(r) { return r.a })
           t.equals(JSON.stringify(results), JSON.stringify(expected), 'createReadStream() matches')
           dat2.destroy(function(err) {
             t.false(err, 'no err')
@@ -281,7 +282,7 @@ module.exports.pushReplicationURLNormalize = function(test, common) {
     
       function done() {
         dat2.createReadStream().pipe(concat(function(data) {
-          var results = data.map(function(r) { return r.value.a })
+          var results = data.map(function(r) { return r.a })
           t.equals(JSON.stringify(results), JSON.stringify(expected), 'createReadStream() matches')
           dat2.destroy(function(err) {
             t.false(err, 'no err')
@@ -313,7 +314,7 @@ module.exports.remoteClone = function(test, common) {
         dat2.createReadStream().pipe(concat(function(data) {
           t.equal(data.length, 1)
           var first = data[0] || {}
-          t.equal(first.value.foo, 'bar')
+          t.equal(first.foo, 'bar')
           dat2.destroy(function(err) {
             if (err) throw err
             cleanup()

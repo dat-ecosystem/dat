@@ -41,7 +41,7 @@ module.exports.putJson = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
-        var cat = dat.createValueStream()
+        var cat = dat.createReadStream()
     
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
@@ -58,7 +58,7 @@ module.exports.putWeirdKeys = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put(".error.", {"foo": "bar"}, function(err, doc) {
         if (err) throw err
-        var cat = dat.createValueStream()
+        var cat = dat.createReadStream()
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
           t.equal(data[0]['foo'], "bar")
@@ -86,7 +86,7 @@ module.exports.putJsonSetVersion = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put({"foo": "bar", version: 5}, function(err, doc) {
         if (err) throw err
-        var cat = dat.createValueStream()
+        var cat = dat.createReadStream()
     
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
@@ -155,7 +155,7 @@ module.exports.multiplePutJson = function(test, common) {
         if (err) throw err
         dat.put({"foo": "bar"}, function(err) {
           if (err) throw err
-          var cat = dat.createValueStream()
+          var cat = dat.createReadStream()
     
           cat.pipe(concat(function(data) {
             t.equal(data.length, 2)
@@ -173,12 +173,12 @@ module.exports.multiplePutJson = function(test, common) {
 module.exports.putBuff = function(test, common) {
   test('.put buff', function(t) {
     common.getDat(t, function(dat, done) {
-      var schema = protobuf([{name:'foo', type:'string'}]);
+      var schema = protobuf('message Row { optional string foo = 1; }').Row;
       var row = schema.encode({foo:'bar'});
     
-      dat.put(row, {columns: schema.toJSON()}, function(err) {
+      dat.put(row, {columns: [{name:'foo', type:'string'}]}, function(err) {
         if (err) throw err
-        var cat = dat.createValueStream()
+        var cat = dat.createReadStream()
     
         cat.pipe(concat(function(data) {
           t.equal(data.length, 1)
@@ -200,7 +200,7 @@ module.exports.deleteRow = function(test, common) {
           dat.get(doc.key, function(err, doc) {
             t.true(err, 'doc should now be not found')
             t.false(doc, 'doc should be null')
-            var cat = dat.createValueStream()
+            var cat = dat.createReadStream()
             
             cat.pipe(concat(function(data) {
               t.equal(data.length, 0, 'should return no data')
@@ -226,7 +226,7 @@ module.exports.getAtVersion = function(test, common) {
           dat.get(doc.key, { version: ver1 }, function(err, docAtVer) {
             t.false(err, 'no err')
             if (!docAtVer) docAtVer = {}
-            t.equal(docAtVer.pizza, undefined, 'doc is version 1')
+            t.equal(docAtVer.pizza, null, 'doc is version 1')
             setImmediate(done)
           })
         })
@@ -272,8 +272,10 @@ module.exports.keepTotalRowCount = function(test, common) {
 
   test('dat initializes with 0 rows', function(t) {
     common.getDat(t, function(dat, done) {
-      t.equal(dat.getRowCount(), 0)
-      setImmediate(done)
+      dat.getRowCount(function(err, rows) {
+        t.equal(rows, 0)
+        setImmediate(done)
+      })
     })
   })
 
@@ -281,8 +283,10 @@ module.exports.keepTotalRowCount = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
-        t.equal(dat.getRowCount(), 1)
-        setImmediate(done)
+        dat.getRowCount(function(err, rows) {
+          t.equal(rows, 1)
+          setImmediate(done)
+        })
       })
     })
   })
@@ -291,11 +295,15 @@ module.exports.keepTotalRowCount = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put({"foo": "bar"}, function(err, doc) {
         if (err) throw err
-        t.equal(dat.getRowCount(), 1)
-        dat.delete(doc.key, function(err) {
-          if (err) throw err
-          t.equal(dat.getRowCount(), 0)
-          setImmediate(done)
+        dat.getRowCount(function(err, rows) {
+          t.equal(rows, 1)
+          dat.delete(doc.key, function(err) {
+            if (err) throw err
+            dat.getRowCount(function(err, rows) {
+              t.equal(rows, 0)
+              setImmediate(done)
+            })
+          })
         })
       })
     })
@@ -305,11 +313,15 @@ module.exports.keepTotalRowCount = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put("foo", {bar: 'baz'}, function(err, doc) {
         if (err) throw err
-        t.equal(dat.getRowCount(), 1)
-        dat.put(doc, function(err, doc2) {
-          t.notOk(err, 'should not err')
-          t.equal(dat.getRowCount(), 1)
-          setImmediate(done)
+        dat.getRowCount(function(err, cnt) {
+          t.equal(cnt, 1)
+          dat.put(doc, function(err, doc2) {
+            t.notOk(err, 'should not err')
+            dat.getRowCount(function(err, cnt) {
+              t.equal(cnt, 1)
+              setImmediate(done)
+            })
+          })
         })
       })
     })
@@ -319,11 +331,13 @@ module.exports.keepTotalRowCount = function(test, common) {
     common.getDat(t, function(dat, done) {
       dat.put({"foo": "bar"}, function(err, doc) {
         dat.put({"bar": "foo"}, function(err, doc) {
-          dat.storage.getRowCount(function(err, val) {
+          dat.storage.stat(function(err, stat) {
             if (err) throw err
-            t.equal(val, 2)
-            t.equal(dat.getRowCount(), val)
-            setImmediate(done)
+            t.equal(stat.rows, 2)
+            dat.getRowCount(function(err, cnt) {
+              t.equal(cnt, stat.rows)
+              setImmediate(done)
+            })
           });
         })
       })

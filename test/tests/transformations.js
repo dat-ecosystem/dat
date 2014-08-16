@@ -39,7 +39,7 @@ module.exports.readStreamTransform = function(test, common) {
     common.getDat(t, {transformations:{get:uppercase}}, function(dat, done) {
       dat.put({key:'key1', value:'a'}, function() {
         dat.put({key:'key2', value:'b'}, function() {
-          dat.createValueStream().pipe(concat(function(list) {
+          dat.createReadStream().pipe(concat(function(list) {
             t.equal(list[0].value, 'A')
             t.equal(list[1].value, 'B')
             done()
@@ -55,8 +55,8 @@ module.exports.writeStreamTransform = function(test, common) {
     common.getDat(t, {transformations:{put:uppercase}}, function(dat, done) {
       var ws = dat.createWriteStream()
 
-      ws.on('end', function() {
-        dat.createValueStream().pipe(concat(function(list) {
+      ws.on('finish', function() {
+        dat.createReadStream().pipe(concat(function(list) {
           t.equal(list[0].value, 'A')
           t.equal(list[1].value, 'B')
           done()

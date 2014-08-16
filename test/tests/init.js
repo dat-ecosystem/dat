@@ -60,7 +60,7 @@ module.exports.existingRepo = function(test, common) {
 module.exports.existingRepoClone = function(test, common) {
   test('.clone in existing repo should return error', function(t) {
     var dat = new Dat(common.dat1tmp, function ready() {
-      dat.clone("http://localhost", function(err) {
+      dat.clone({remote:"http://localhost", quiet:true}, function(err) {
         t.true(err, err)
         dat.destroy(function(err) {
           t.false(err, 'no err')

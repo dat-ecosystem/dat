@@ -54,7 +54,7 @@ module.exports.level = function(test, common) {
 
       var ws = dat.createWriteStream({ json: true, quiet: true })
 
-      ws.on('end', function() {
+      ws.on('finish', function() {
     
         var cat = dat.createReadStream()
     

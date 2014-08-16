@@ -332,16 +332,16 @@ module.exports.createVersionStream = function(test, common) {
 
 
 module.exports.all = function (test, common) {
-  module.exports.readStreamBuff(test, common)
-  module.exports.readStreamBuffPrimaryKey(test, common)
-  module.exports.readStreamCsvPrimaryKey(test, common)
-  module.exports.readStreamNdjPrimaryKey(test, common)
-  module.exports.getChanges(test, common)
+  // module.exports.readStreamBuff(test, common)
+  // module.exports.readStreamBuffPrimaryKey(test, common)
+  // module.exports.readStreamCsvPrimaryKey(test, common)
+  // module.exports.readStreamNdjPrimaryKey(test, common)
+  // module.exports.getChanges(test, common)
   module.exports.changesStream(test, common)
-  module.exports.changesStreamTail(test, common)
-  module.exports.changesStreamTailNum(test, common)
-  module.exports.createReadStream(test, common)
-  module.exports.createReadStreamStartEndKeys(test, common)
-  module.exports.createReadStreamCSV(test, common)
-  module.exports.createVersionStream(test, common)
+  // module.exports.changesStreamTail(test, common)
+  // module.exports.changesStreamTailNum(test, common)
+  // module.exports.createReadStream(test, common)
+  // module.exports.createReadStreamStartEndKeys(test, common)
+  // module.exports.createReadStreamCSV(test, common)
+  // module.exports.createVersionStream(test, common)
 }
