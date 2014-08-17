@@ -53,9 +53,7 @@
     "level-dat": "^4.3.0",
     "level-events": "^1.0.2",
     "level-js": "^2.1.3",
-    "level-live-stream": "~1.4.9",
     "level-manifest": "~1.2.0",
-    "level-mutex": "~0.7.0",
     "leveldown-prebuilt": "~0.10.2",
     "levelup": "~0.18.2",
     "lexicographic-integer": "~1.1.0",
@@ -80,7 +78,6 @@
     "speedometer": "^0.1.2",
     "stdout": "0.0.3",
     "stdout-stream": "~1.2.0",
-    "stream-combiner": "~0.0.2",
     "stream-splicer": "^1.1.0",
     "through2": "^0.6.1",
     "write-transform-read": "^1.0.0"
