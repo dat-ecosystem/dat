@@ -67,6 +67,7 @@ function Dat(dir, opts, onReady) {
 
   this.beforePut = echo
   this.afterGet = echo
+  this.listenHook = echoHook
 
   var paths = this.paths(dir)
   
@@ -74,6 +75,16 @@ function Dat(dir, opts, onReady) {
 
   var req = function(name) {
     return require(resolve.sync(name, {basedir: paths.dir}))
+  }
+
+  var toHook = function(hook) {
+    if (hook && hook.module) return req(hook.module)
+    else if (typeof hook === 'function') return hook
+    return echoHook
+  }
+
+  var toTransform = function(trans) {
+    return trans ? writeread(transformations(trans)) : echo
   }
 
   readDefaults(paths.package, opts, function(err, data) {
@@ -92,8 +103,9 @@ function Dat(dir, opts, onReady) {
     if (data.backend && data.backend.module) data.backend = req(data.backend.module)
     else if (!data.backend) data.backend = require('leveldown-prebuilt')
 
-    if (data.transformations.put) self.beforePut = writeread(transformations(data.transformations.put))
-    if (data.transformations.get) self.afterGet = writeread(transformations(data.transformations.get))
+    self.beforePut = toTransform(data.transformations.put)
+    self.afterGet = toTransform(data.transformations.get)
+    self.listenHook = toHook(data.hooks.listen)
 
     if (!opts.storage) {
       onReady()
@@ -161,6 +173,10 @@ function Dat(dir, opts, onReady) {
   }
 }
 
+function echoHook(dat, cb) {
+  cb()
+}
+
 function echo(val, cb) {
   cb(null, val)
 }
@@ -186,16 +202,19 @@ function readDefaults(path, opts, cb) {
     data.blobs = normalizeModule(opts.blobs || data.blobs)
     data.replicator = normalizeModule(opts.replicator || data.replicator)
     data.backend = normalizeModule(opts.backend || data.backend)
+    data.transformations = opts.transformations || data.transformations || {}
+    data.hooks = opts.hooks || data.hooks || {}
+    data.remotes = opts.remotes || data.remotes || {}
 
-    if (!data.transformations) data.transformations = {}
-    if (!data.hooks) data.hooks = {}
-    if (!data.remotes) data.remotes = {}
     if (typeof data.remotes === 'string') data.remotes = {origin:data.remotes}
+    if (typeof opts.remote === 'string') data.remotes.origin = opts.remote
 
     var transformations = normalizeTransformations(opts)
 
     data.transformations.get = transformations.get || data.transformations.get
     data.transformations.put = transformations.put || data.transformations.put
+
+    data.hooks.listen = normalizeModule(data.hooks.listen)
 
     if (typeof opts.remote === 'string') data.remotes.origin = opts.remote
     if (opts.remotes) data.remotes.origin = opts.remotes.origin
