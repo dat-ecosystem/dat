@@ -302,7 +302,7 @@ module.exports.remoteClone = function(test, common) {
       dat.put({foo: 'bar'}, function(err) {
         if (err) throw err
         var dat2 = new Dat(common.dat2tmp, { init: false }, function ready() {
-          var remote = 'http://localhost:' + dat.defaultPort
+          var remote = 'http://localhost:' + dat.options.port
           dat2.clone({ remote: remote, quiet: true }, function(err) {
             t.notOk(err, 'no err on clone')
             verify(dat2)
@@ -336,7 +336,7 @@ module.exports.skimClone = function(test, common) {
         var ws = dat.createBlobWriteStream('write-streams.js', stored, function(err, doc) {
           t.notOk(err, 'no blob write err')
           var dat2 = new Dat(common.dat2tmp, { init: false }, function ready() {
-            var remote = 'http://localhost:' + dat.defaultPort
+            var remote = 'http://localhost:' + dat.options.port
             dat2.clone({ remote: remote, path: common.dat2tmp, quiet: true, skim: true }, function(err) {
               t.notOk(err, 'no err on clone')
               verify(dat2)

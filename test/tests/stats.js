@@ -20,9 +20,9 @@ module.exports.rest = function(test, common) {
       }))
 
       var body = {foo: 'bar'}
-      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/rows', json: body }, function(err, res, stored) {
+      request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/rows', json: body }, function(err, res, stored) {
         if (err) throw err
-        request({uri: 'http://localhost:' + dat.defaultPort + '/api/json', json: true}, function(err, res, json) {
+        request({uri: 'http://localhost:' + dat.options.port + '/api/json', json: true}, function(err, res, json) {
           if (err) throw err
           setTimeout(function() {
             statsStream.destroy()
@@ -104,7 +104,7 @@ module.exports.restAPI = function(test, common) {
   test('rest get /api/stats', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
-      var statsReq = request('http://localhost:' + dat.defaultPort + '/api/stats')
+      var statsReq = request('http://localhost:' + dat.options.port + '/api/stats')
       statsReq.pipe(ldj.parse()).pipe(concat(function(stats) {
         var totals = sumStats(stats)
         t.ok(totals.level.written > 10, 'write some')

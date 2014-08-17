@@ -9,7 +9,7 @@ module.exports.restHello = function(test, common) {
     common.getDat(t, function(dat, cleanup) {
       dat.put({foo: 'bar'}, function(err, stored) {
         if (err) throw err
-        request('http://localhost:' + dat.defaultPort + '/api', function(err, res, json) {
+        request('http://localhost:' + dat.options.port + '/api', function(err, res, json) {
           t.false(err, 'no error')
           verify(json)
           cleanup()
@@ -33,7 +33,7 @@ module.exports.restGet = function(test, common) {
     common.getDat(t, function(dat, cleanup) {
       dat.put({foo: 'bar'}, function(err, stored) {
         if (err) throw err
-        request('http://localhost:' + dat.defaultPort + '/api/rows/' + stored.key, function(err, res, json) {
+        request('http://localhost:' + dat.options.port + '/api/rows/' + stored.key, function(err, res, json) {
           t.false(err, 'no error')
           t.deepEqual(stored, json)
           cleanup()
@@ -48,7 +48,7 @@ module.exports.restPut = function(test, common) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var body = {foo: 'bar'}
-      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/rows', json: body }, function(err, res, stored) {
+      request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/rows', json: body }, function(err, res, stored) {
         if (err) throw err
         t.equal(res.statusCode, 201, 'got 201')
         dat.get(stored.key, function(err, json) {
@@ -66,7 +66,7 @@ module.exports.restBlobExists = function(test, common) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var body = {foo: 'bar'}
-      request({method: 'HEAD', uri: 'http://localhost:' + dat.defaultPort + '/api/blobs/abc123'}, function(err, res, stored) {
+      request({method: 'HEAD', uri: 'http://localhost:' + dat.options.port + '/api/blobs/abc123'}, function(err, res, stored) {
         if (err) throw err
         t.equal(res.statusCode, 404, 'got 404')
         cleanup()
@@ -80,14 +80,14 @@ module.exports.restGetBlobByHash = function(test, common) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var body = {key: 'foo'}
-      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/rows', json: body }, function(err, res, stored) {
+      request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/rows', json: body }, function(err, res, stored) {
         t.notOk(err, 'no POST err')
-        var uploadUrl = 'http://localhost:' + dat.defaultPort + '/api/rows/foo/data.txt?version=' + stored.version
+        var uploadUrl = 'http://localhost:' + dat.options.port + '/api/rows/foo/data.txt?version=' + stored.version
         var post = request({method: 'POST', uri: uploadUrl, body: 'hello'}, function(err, res, updated) {
           t.notOk(err, 'no upload err')
           t.ok(updated.version, 2, 'version 2')
           var blobMeta = updated.blobs['data.txt']
-          request({method: 'GET', uri: 'http://localhost:' + dat.defaultPort + '/api/blobs/' + blobMeta.hash}, function(err, res, blob) {
+          request({method: 'GET', uri: 'http://localhost:' + dat.options.port + '/api/blobs/' + blobMeta.hash}, function(err, res, blob) {
             if (err) throw err
             t.equal(blobMeta.size, blob.length, 'size matches')
             cleanup()
@@ -103,9 +103,9 @@ module.exports.restConflict = function(test, common) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var body = {key: 'foo'}
-      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/rows', json: body }, function(err, res, stored) {
+      request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/rows', json: body }, function(err, res, stored) {
         if (err) throw err
-        request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/rows', json: body }, function(err, res, json) {
+        request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/rows', json: body }, function(err, res, json) {
           t.equal(res.statusCode, 409, '409')
           t.false(err, 'no req error')
           t.ok(json.conflict, 'body.conflict')
@@ -121,13 +121,13 @@ module.exports.restPutBlob = function(test, common) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var body = {key: 'foo'}
-      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/rows', json: body }, function(err, res, stored) {
+      request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/rows', json: body }, function(err, res, stored) {
         t.notOk(err, 'no POST err')
-        var uploadUrl = 'http://localhost:' + dat.defaultPort + '/api/rows/foo/data.txt?version=' + stored.version
+        var uploadUrl = 'http://localhost:' + dat.options.port + '/api/rows/foo/data.txt?version=' + stored.version
         var post = request({method: 'POST', uri: uploadUrl, body: 'hello'}, function(err, res, updated) {
           t.notOk(err, 'no upload err')
           t.ok(updated.version, 2, 'version 2')
-          request('http://localhost:' + dat.defaultPort + '/api/rows/foo/data.txt', function(err, resp, blob) {
+          request('http://localhost:' + dat.options.port + '/api/rows/foo/data.txt', function(err, resp, blob) {
             t.notOk(err, 'no get err')
             t.equals(blob.toString(), 'hello', 'got data.txt')
             cleanup()
@@ -143,7 +143,7 @@ module.exports.restBulkCsv = function(test, common) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
-      var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
+      var post = request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/bulk', headers: headers})
       post.write('a,b,c\n')
       post.write('1,2,3')
       post.end()
@@ -168,7 +168,7 @@ module.exports.restBulkCsvInvalidContentType = function(test, common) {
   test('rest bulk post csv w/ invalid content-type', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
-      var opts = {method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', body: 'a,b,c\n1,2,3\n4,5,6'}
+      var opts = {method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/bulk', body: 'a,b,c\n1,2,3\n4,5,6'}
       request(opts, function(err, resp, json) {
         t.equal(resp.statusCode, 400, 'got 400')
         cleanup()
@@ -181,7 +181,7 @@ module.exports.restBulkCsvSchemaError = function(test, common) {
   test('rest bulk post csv w/ invalid schema', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
-      var opts = {method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', body: 'a,b,c\n1,2,3\n4,5,6'}
+      var opts = {method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/bulk', body: 'a,b,c\n1,2,3\n4,5,6'}
       opts.headers = {'content-type': 'text/csv'}
       request(opts, function(err, resp, json) {
         t.equal(resp.statusCode, 200, 'got 200')
@@ -203,10 +203,10 @@ module.exports.basicAuthEnvVariables = function(test, common) {
     process.env['DAT_ADMIN_PASS'] = 'pass'
     common.getDat(t, function(dat, cleanup) {
       var body = {foo: 'bar'}
-      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/rows', json: body }, function(err, res, stored) {
+      request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/rows', json: body }, function(err, res, stored) {
         if (err) throw err
         t.equal(res.statusCode, 401, 'unauthorized')
-        request({method: 'POST', uri: 'http://user:pass@localhost:' + dat.defaultPort + '/api/rows', json: body }, function(err, res, stored) {
+        request({method: 'POST', uri: 'http://user:pass@localhost:' + dat.options.port + '/api/rows', json: body }, function(err, res, stored) {
           if (err) throw err
           t.equal(res.statusCode, 201, 'authorized')
           delete process.env['DAT_ADMIN_USER']
@@ -224,10 +224,10 @@ module.exports.basicAuthOptions = function(test, common) {
     var opts = { adminUser: 'foo', adminPass: 'bar' }
     common.getDat(t, opts, function(dat, cleanup) {
       var body = {foo: 'bar'}
-      request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/rows', json: body }, function(err, res, stored) {
+      request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/rows', json: body }, function(err, res, stored) {
         if (err) throw err
         t.equal(res.statusCode, 401, 'unauthorized')
-        request({method: 'POST', uri: 'http://foo:bar@localhost:' + dat.defaultPort + '/api/rows', json: body }, function(err, res, stored) {
+        request({method: 'POST', uri: 'http://foo:bar@localhost:' + dat.options.port + '/api/rows', json: body }, function(err, res, stored) {
           if (err) throw err
           t.equal(res.statusCode, 201, 'authorized')
           cleanup()
@@ -245,7 +245,7 @@ module.exports.createSession = function(test, common) {
       var headers = {
         authorization: 'Basic ' + new Buffer('foo:bar').toString('base64')
       }
-      request({uri: 'http://localhost:' + dat.defaultPort + '/api/session', headers: headers, json: true }, function(err, res, json) {
+      request({uri: 'http://localhost:' + dat.options.port + '/api/session', headers: headers, json: true }, function(err, res, json) {
         if (err) throw err
         t.equal(res.statusCode, 200, '200 OK')
         t.ok(res.headers['set-cookie'], 'got set-cookie header')
@@ -264,17 +264,17 @@ module.exports.logout = function(test, common) {
       var headers = {
         authorization: 'Basic ' + new Buffer('foo:bar').toString('base64')
       }
-      request({uri: 'http://localhost:' + dat.defaultPort + '/api/session', headers: headers, json: true }, function(err, res, json) {
+      request({uri: 'http://localhost:' + dat.options.port + '/api/session', headers: headers, json: true }, function(err, res, json) {
         if (err) throw err
         t.equal(res.statusCode, 200, '200 OK')
         var sessionHeaders = {
           cookie: res.headers['set-cookie']
         }
-        request({uri: 'http://localhost:' + dat.defaultPort + '/api/logout', headers: sessionHeaders, json: true}, function(err, res, json) {
+        request({uri: 'http://localhost:' + dat.options.port + '/api/logout', headers: sessionHeaders, json: true}, function(err, res, json) {
           t.equal(res.statusCode, 401, '401 Unauthorized')
           t.ok(res.headers['set-cookie'], 'got set-cookie header')
           t.ok(json.loggedOut, 'got loggedOut in response')
-          request({uri: 'http://localhost:' + dat.defaultPort + '/api/session', headers: sessionHeaders, json: true}, function(err, res, json) {
+          request({uri: 'http://localhost:' + dat.options.port + '/api/session', headers: sessionHeaders, json: true}, function(err, res, json) {
             t.equal(res.statusCode, 401, '401 Unauthorized')
             t.ok(res.headers['set-cookie'], 'got set-cookie header')
             t.ok(json.loggedOut, 'got loggedOut in response')
@@ -291,7 +291,7 @@ module.exports.csvExport = function(test, common) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
-      var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
+      var post = request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/bulk', headers: headers})
       post.write('a,b,c\n')
       post.write('1,2,3\n')
       post.write('4,5,6')
@@ -299,7 +299,7 @@ module.exports.csvExport = function(test, common) {
       
       post.on('response', function(resp) {
         resp.on('end', function() {
-          request({uri: 'http://localhost:' + dat.defaultPort + '/api/csv'}, function(err, res, csv) {
+          request({uri: 'http://localhost:' + dat.options.port + '/api/csv'}, function(err, res, csv) {
             if (err) throw err
             var lines = csv.split('\n')
             t.equal(lines[0].split(',').length, 5, '5 columns (key, version, a, b, c)')
@@ -318,7 +318,7 @@ module.exports.jsonExport = function(test, common) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
-      var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
+      var post = request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/bulk', headers: headers})
       post.write('a,b,c\n')
       post.write('1,2,3\n')
       post.write('4,5,6')
@@ -326,7 +326,7 @@ module.exports.jsonExport = function(test, common) {
       
       post.on('response', function(resp) {
         resp.on('end', function() {
-          request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows', json: true}, function(err, res, json) {
+          request({uri: 'http://localhost:' + dat.options.port + '/api/rows', json: true}, function(err, res, json) {
             if (err) throw err
             t.equal(json.rows.length, 2, '2 objects returned')
             t.equal(json.rows[0]['a'], '1', 'data matches')
@@ -343,7 +343,7 @@ module.exports.changes = function(test, common) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
-      var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
+      var post = request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/bulk', headers: headers})
       post.write('a,b,c\n')
       post.write('1,2,3\n')
       post.write('4,5,6')
@@ -351,7 +351,7 @@ module.exports.changes = function(test, common) {
       
       post.on('response', function(resp) {
         resp.on('end', function() {
-          var changeReq = request({uri: 'http://localhost:' + dat.defaultPort + '/api/changes', json: true})
+          var changeReq = request({uri: 'http://localhost:' + dat.options.port + '/api/changes', json: true})
           changeReq.pipe(ldj.parse()).pipe(concat(collect))
           function collect(rows) {
             t.equal(rows.length, 3, '3 objects returned') // 2 docs + 1 schmea
@@ -373,7 +373,7 @@ module.exports.changesLiveTail = function(test, common) {
       
       function insert(data, cb) {
         var headers = {'content-type': 'text/csv'}
-        var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
+        var post = request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/bulk', headers: headers})
         post.write(data)
         post.end()
         post.on('response', function(resp) {
@@ -382,7 +382,7 @@ module.exports.changesLiveTail = function(test, common) {
       }
       
       insert('key,name\n1,bob\n2,sue', function() {
-        var changeReq = request({uri: 'http://localhost:' + dat.defaultPort + '/api/changes?live=true&tail=true&data=true', json: true})
+        var changeReq = request({uri: 'http://localhost:' + dat.options.port + '/api/changes?live=true&tail=true&data=true', json: true})
         changeReq.pipe(ldj.parse()).pipe(concat(collect))
         insert('key,name\n3,bill\n4,sally', function() {
           setTimeout(function() {
@@ -408,7 +408,7 @@ module.exports.pagination = function(test, common) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
-      var post = request({method: 'POST', uri: 'http://localhost:' + dat.defaultPort + '/api/bulk', headers: headers})
+      var post = request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/bulk', headers: headers})
       post.write('key,a,b\n')
       post.write('a,1,4\n')
       post.write('b,2,5\n')
@@ -422,14 +422,14 @@ module.exports.pagination = function(test, common) {
       function run() {
         parallel([
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.options.port + '/api/rows', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 3, '3 objects returned')
               cb()
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?start=b', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.options.port + '/api/rows?start=b', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 2, '2 objects returned')
               t.equal(json.rows[0]['key'], 'b', 'data matches')
@@ -437,7 +437,7 @@ module.exports.pagination = function(test, common) {
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?end=b', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.options.port + '/api/rows?end=b', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 2, '2 objects returned')
               t.equal(json.rows[0]['key'], 'a', 'data matches')
@@ -445,7 +445,7 @@ module.exports.pagination = function(test, common) {
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?gt=b', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.options.port + '/api/rows?gt=b', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 1, '1 objects returned')
               t.equal(json.rows[0]['key'], 'c', 'data matches')
@@ -453,7 +453,7 @@ module.exports.pagination = function(test, common) {
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?gte=b', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.options.port + '/api/rows?gte=b', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 2, '2 objects returned')
               t.equal(json.rows[0]['key'], 'b', 'data matches')
@@ -461,7 +461,7 @@ module.exports.pagination = function(test, common) {
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?lt=c', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.options.port + '/api/rows?lt=c', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 2, '2 objects returned')
               t.equal(json.rows[0]['key'], 'a', 'data matches')
@@ -469,7 +469,7 @@ module.exports.pagination = function(test, common) {
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?lte=c', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.options.port + '/api/rows?lte=c', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 3, '3 objects returned')
               t.equal(json.rows[0]['key'], 'a', 'data matches')
@@ -477,7 +477,7 @@ module.exports.pagination = function(test, common) {
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?reverse=true', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.options.port + '/api/rows?reverse=true', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 3, '3 objects returned')
               t.equal(json.rows[0]['key'], 'c', 'data matches')
@@ -485,7 +485,7 @@ module.exports.pagination = function(test, common) {
             })
           },
           function(cb) {
-            request({uri: 'http://localhost:' + dat.defaultPort + '/api/rows?reverse=true&lt=c', json: true}, function(err, res, json) {
+            request({uri: 'http://localhost:' + dat.options.port + '/api/rows?reverse=true&lt=c', json: true}, function(err, res, json) {
               if (err) throw err
               t.equal(json.rows.length, 2, '2 objects returned')
               t.equal(json.rows[0]['key'], 'b', 'data matches')

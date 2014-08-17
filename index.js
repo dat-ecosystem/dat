@@ -3,6 +3,8 @@ var tty = require('tty')
 var path = require('path')
 var os = require('os')
 var writeread = require('write-transform-read')
+var resolve = require('resolve')
+var extend = require('extend')
 
 var debug = require('debug')('dat.init')
 var request = require('request').defaults({json: true})
@@ -62,34 +64,42 @@ function Dat(dir, opts, onReady) {
   this.lockRetries = 0
   this.retryLimit = 3
   this.dir = dir || opts.path || process.cwd()
-  this.options = opts
+
   this.beforePut = echo
   this.afterGet = echo
-  this.remotes = {}
 
   var paths = this.paths(dir)
   
   debug(JSON.stringify(opts))
-  
-  readDatJSON(function(err, data) {
-    if (err) throw err // TODO: emit when Dat becomes an eventemitter
 
-    self.package = data
-    normalizeTransformations(opts)
+  var req = function(name) {
+    return require(resolve.sync(name, {basedir: paths.dir}))
+  }
 
-    var put = opts.transformations.put || data.transformations.put
-    var get = opts.transformations.get || data.transformations.get
+  readDefaults(paths.package, opts, function(err, data) {
+    if (err) throw err
 
-    if (put) self.beforePut = writeread(transformations(put))
-    if (get) self.afterGet = writeread(transformations(get))
-    
-    if (data.remotes) self.remotes = data.remotes
+    self.options = data
+    data.init = opts.init
+
+    if (data.blobs && data.blobs.module) data.blobs = req(data.blobs.module)(extend({path:paths.blobs}, data.blobs))
+    else if (!data.blobs) data.blobs = require('local-blob-store')({path:paths.blobs})
+    else if (typeof data.blobs === 'function') data.blobs = data.blobs({path:paths.blobs})
+
+    if (data.replicator && data.replicator.module) data.replicator = req(data.replicator.module)
+    else if (!data.replicator) data.replicator = require('dat-replicator')
+
+    if (data.backend && data.backend.module) data.backend = req(data.backend.module)
+    else if (!data.backend) data.backend = require('leveldown-prebuilt')
+
+    if (data.transformations.put) self.beforePut = writeread(transformations(data.transformations.put))
+    if (data.transformations.get) self.afterGet = writeread(transformations(data.transformations.get))
 
     if (!opts.storage) {
       onReady()
     } else {
       function read() {
-        readPort(paths.port, opts, function(err) {
+        readPort(paths.port, function(err) {
           // ignore err
           loadMeta()
         })
@@ -100,13 +110,13 @@ function Dat(dir, opts, onReady) {
       else read()
     }
   })
-  
+
   function loadMeta() {
     commands._ensureExists({ path: dir }, function(err) {
       if (err) return init()
-      self._storage(opts, function(err) {
+      self._storage(self.options, function(err) {
         if (err && self.lockRetries < self.retryLimit) {
-          readPort(paths.port, opts, function(err) {
+          readPort(paths.port, function(err) {
             // ignore err
             loadMeta()
           })
@@ -121,35 +131,19 @@ function Dat(dir, opts, onReady) {
   function init() {
     commands._ensureExists({ path: dir }, function (err) {
       if (err) {
-        if (!opts.init) return onReady()
-        return self.init(opts, onReady)
+        if (!self.options.init) return onReady()
+        return self.init(self.options, onReady)
       } else {
         onReady()
       }
     })
   }
 
-  function readDatJSON(cb) {
-    fs.readFile(paths.package, 'utf-8', function(err, data) {
-      if (err && err.code !== 'ENOENT') return cb(err)
-
-      try {
-        data = JSON.parse(data || '{}')
-      } catch (err) {
-        return cb(new Error('Invalid dat.json file'))
-      }
-
-      normalizeTransformations(data)
-      cb(null, data)
-    })
-
-  }
-  
-  function readPort(portPath, opts, cb) {
+  function readPort(portPath, cb) {
     getPort.readPort(portPath, function(err, port) {
       if (err) return cb(err)
-      var adminu = opts.adminUser || process.env["DAT_ADMIN_USER"]
-      var adminp = opts.adminPass || process.env["DAT_ADMIN_PASS"]
+      var adminu = self.options.adminUser || process.env["DAT_ADMIN_USER"]
+      var adminp = self.options.adminPass || process.env["DAT_ADMIN_PASS"]
       var creds = ''
       if (adminu && adminp) creds = adminu + ':' + adminp + '@'
       var datAddress = 'http://' + creds + '127.0.0.1:' + port
@@ -159,23 +153,88 @@ function Dat(dir, opts, onReady) {
           return fs.unlink(portPath, cb)
         }
         self.rpcClient = true
-        opts.remoteAddress = datAddress
-        opts.manifest = json
+        self.options.remoteAddress = datAddress
+        self.options.manifest = json
         cb()
       })
     })
   }
 }
 
-function normalizeTransformations(opts) {
-  if (!opts.transformations) opts.transformations = {}
-  if (Array.isArray(opts.transformations)) opts.transformations = {put:opts.transformations}
-  if (opts.transformations.get) opts.transformations.get = [].concat(opts.transformations.get)
-  if (opts.transformations.put) opts.transformations.put = [].concat(opts.transformations.put)
-}
-
 function echo(val, cb) {
   cb(null, val)
 }
+
+function readDefaults(path, opts, cb) {
+  if (typeof opts === 'function') {
+    cb = opts
+    opts = null
+  }
+
+  if (!opts) opts = {}
+
+  var req = function(name) {
+    return require(resolve.sync(name, {basedir:paths.dir}))
+  }
+
+  readDatJSON(path, function(err, data) {
+    if (err) return cb(err)
+
+    data.adminUser = opts.adminUser || data.adminUser
+    data.adminPass = opts.adminPass || data.adminPass
+
+    data.blobs = normalizeModule(opts.blobs || data.blobs)
+    data.replicator = normalizeModule(opts.replicator || data.replicator)
+    data.backend = normalizeModule(opts.backend || data.backend)
+
+    if (!data.transformations) data.transformations = {}
+    if (!data.hooks) data.hooks = {}
+    if (!data.remotes) data.remotes = {}
+    if (typeof data.remotes === 'string') data.remotes = {origin:data.remotes}
+
+    var transformations = normalizeTransformations(opts)
+
+    data.transformations.get = transformations.get || data.transformations.get
+    data.transformations.put = transformations.put || data.transformations.put
+
+    if (typeof opts.remote === 'string') data.remotes.origin = opts.remote
+    if (opts.remotes) data.remotes.origin = opts.remotes.origin
+
+    data.port = opts.port || data.port || 6461
+    data.skim = opts.skim || data.skim
+
+    cb(null, data)
+  })
+}
+
+function normalizeModule(mod) {
+  if (typeof mod === 'string') return {module:mod}
+  return mod
+}
+
+function normalizeTransformations(opts) {
+  var transformations = opts.transformations || {}
+
+  if (Array.isArray(transformations)) transformations = {put:transformations}
+  if (transformations.get) transformations.get = [].concat(transformations.get)
+  if (transformations.put) transformations.put = [].concat(opts.transformations.put)
+
+  return transformations
+}
+
+function readDatJSON(path, cb) {
+  fs.readFile(path, 'utf-8', function(err, data) {
+    if (err && err.code !== 'ENOENT') return cb(err)
+
+    try {
+      data = JSON.parse(data || '{}')
+    } catch (err) {
+      return cb(new Error('Invalid dat.json file'))
+    }
+
+    cb(null, data)
+  })
+}
+
 
 Dat.prototype = commands
