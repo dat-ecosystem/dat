@@ -10,7 +10,7 @@ var stdout = require('stdout-stream')
 var fs = require('fs')
 var debug = require('debug')('dat.cli')
 
-var argv = minimist(process.argv.slice(2))
+var argv = minimist(process.argv.slice(2), {boolean: true})
 var defaultMessage = "Usage: dat <command> [<args>]" + EOL + EOL + "Enter 'dat help' for help"
 var datCommand = cli.command(argv)
 
