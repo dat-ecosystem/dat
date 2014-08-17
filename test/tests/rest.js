@@ -338,6 +338,31 @@ module.exports.jsonExport = function(test, common) {
   })
 }
 
+module.exports.jsonExportLimit = function(test, common) {
+  test('GET /api/rows?limit=1 returns 1 row', function(t) {
+    if (common.rpc) return t.end()
+    common.getDat(t, function(dat, cleanup) {
+      var headers = {'content-type': 'text/csv'}
+      var post = request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/bulk', headers: headers})
+      post.write('a,b,c\n')
+      post.write('1,2,3\n')
+      post.write('4,5,6')
+      post.end()
+      
+      post.on('response', function(resp) {
+        resp.on('end', function() {
+          request({uri: 'http://localhost:' + dat.options.port + '/api/rows?limit=1', json: true}, function(err, res, json) {
+            if (err) throw err
+            t.equal(json.rows.length, 1, '1 object returned')
+            t.equal(json.rows[0]['a'], '1', 'data matches')
+            cleanup()
+          })
+        })
+      })
+    })
+  })
+}
+
 module.exports.changes = function(test, common) {
   test('GET /api/changes returns ldjson change data', function(t) {
     if (common.rpc) return t.end()
@@ -518,6 +543,7 @@ module.exports.all = function (test, common) {
   module.exports.logout(test, common)
   module.exports.csvExport(test, common)
   module.exports.jsonExport(test, common)
+  module.exports.jsonExportLimit(test, common)
   module.exports.changes(test, common)
   // module.exports.changesLiveTail(test, common) keeps acting weird: TODO investigate
   module.exports.pagination(test, common)
