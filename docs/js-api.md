@@ -49,6 +49,7 @@ Pass them in like this in the dat options:
 The value of a transform can be:
 
 **string**, executable command to run as this transform
+
 **object**, with these optional fields:
 
 ```js
