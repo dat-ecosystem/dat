@@ -1,10 +1,18 @@
-# Announcing the dat stable alpha 
+# Announcing the dat stable alpha
 
-The first code went into dat a year ago, [on August 17th 2013](https://github.com/maxogden/dat/commit/e5eda57b53f60b05c0c3d97da90c10cd17dcbe19). The first six months were spent making a prototype (thanks to the [Knight foundation Prototype Fund](http://www.knightfoundation.org/grants/201346305/)) and the last six months have been spent on taking dat beyond the prototype phase and into something more concrete. Today, after a year of work, we really excited to release the first major version of dat.
+*To keep up to date with the dat project you can follow [@dat_project](https://twitter.com/dat_project) on twitter or [watch the repo](https://github.com/maxogden/dat) on github.*
+
+The first code went into dat one year ago, [on August 17th 2013](https://github.com/maxogden/dat/commit/e5eda57b53f60b05c0c3d97da90c10cd17dcbe19). Today, after a year of work, we are really excited to release the first major version of dat along with a [new website](http://dat-data.com).
+
+<a href="http://dat-data.com">
+  <img title="dat editor" alt="dat editor" src="https://raw.githubusercontent.com/maxogden/dat/master/img/dat-website.png"/>
+</a>
 
 Our overall goal with dat is to make a set of tools for creating and sharing streaming data pipelines, a sort of [ETL](http://en.wikipedia.org/wiki/Extract,_transform,_load) style system but designed from the ground up to be developer friendly, open source and streaming. We are aligned with the goals of the [frictionless data](http://blog.okfn.org/2013/04/24/frictionless-data-making-it-radically-easier-to-get-stuff-done-with-data/) initiative.
 
-In April of this year we were able to expand the team working on dat from 1 person to 3 persons, thanks to [support from the Sloan foundation](http://usodi.org/2014/04/02/dat). Sloan's proposition was that they like the initial dat prototype but wanted to see scientific data use cases be treated as top priority. As a result we expanded the scope of the project from its tabular-data-specific beginnings and have focused on adding features that will help us work with larger scientific datasets.
+The first six months of dat development were spent making a prototype (thanks to the [Knight foundation Prototype Fund](http://www.knightfoundation.org/grants/201346305/)). In April of this year we were able to expand the team working on dat from 1 person to 3 persons, thanks to [support from the Sloan foundation](http://usodi.org/2014/04/02/dat). At that time dat also became an official [US Open Data Institute](http://usodi.org/) project, to ensure that open data remains a top priority going forward.
+
+Sloan's proposition was that they like the initial dat prototype but wanted to see scientific data use cases be treated as top priority. As a result we expanded the scope of the project from its tabular-data-specific beginnings and have focused on adding features that will help us work with larger scientific datasets.
 
 Up until this point, the dat API has been in flux, as we were constantly iterating on it. From this point forward we will be taking backwards compatibility much more seriously, so that third party developers can feel confident building on top of dat.
 
@@ -13,6 +21,10 @@ Up until this point, the dat API has been in flux, as we were constantly iterati
 ### Try it out
 
 You can [install dat today](https://github.com/maxogden/dat#install) and play around with it by importing or cloning a dataset.
+
+You can also click this button to deploy a dat to Heroku for testing purposes for free (but be aware of the [Heroku ephemeral filesystem limitations](https://github.com/maxogden/dat/blob/master/readme.md#deploy-to-heroku)):
+
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/bmpvieira/heroku-dat-template.git)
 
 The dat REST API comes bundled with the [dat-editor](https://github.com/maxogden/dat-editor#readme) web application.
 
@@ -70,4 +82,4 @@ We also want to hook dat up to P2P networks, so that we can make downloads faste
 
 Certain datasets are simply too large to share, so we also expect to work on a distributed computation layer on top of dat in the future (similar to the [ESGF](http://esgf.org/) project).
 
-You can help us discuss these high level ideas on [this issue](https://github.com/datproject/discussions/issues/1).
+You can help us discuss these high level future ideas on [this issue](https://github.com/datproject/discussions/issues/1).
