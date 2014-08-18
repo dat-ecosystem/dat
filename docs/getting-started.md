@@ -11,6 +11,7 @@ The `dat` module is designed with a small-core philosophy. It defines an API for
 * We also have a [module wishlist](https://github.com/datproject/discussions/issues/5) in case you are looking for a module to hack on
 * Check out the [JS API docs](https://github.com/maxogden/dat/blob/master/docs/js-api.md) or the [CLI usage docs](https://github.com/maxogden/dat/blob/master/docs/cli-usage.md)
 * Curious about how we built dat? Read about the node [modules we used](https://github.com/maxogden/dat/blob/master/docs/modules.md)
+* Interested in contributing to dat core? Start by checking out our [help wanted issue](https://github.com/maxogden/dat/labels/help%20wanted)
 * Want to ask questions in IRC? Join `#dat` on freenode. Chat logs are [available here](https://botbot.me/freenode/dat/)
 * Watch the `dat` repo on Github or follow [@dat_project](https://twitter.com/dat_project) on twitter
 * Suggest an organization that should be using `dat` to distribute their data. Let us know [on Twitter](http://twitter.com/dat_project)
