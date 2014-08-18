@@ -83,13 +83,22 @@ The data of `image.png` is not stored inside the tabular store -- only the metad
 
 During replication dat will transfer all data from both the tabular store as well as all blobs.
 
-## Module types
+## Import methods
 
-### Replicators
+### Importing datasets using the dat APIs
 
-Dat has a replication protocol that can be implemented to allow for some data store to be compatible with `dat clone`, `dat pull` or `dat push`. In the dat codebase we use the [dat-replication-protocol](https://github.com/mafintosh/dat-replication-protocol) module and the higher level [dat-replicator](https://github.com/mafintosh/dat-replicator) module to implement replication between two dat instances, but dat can also replicate with other sources that speak the same protocol.
+To import a dataset into dat you can use the [dat CLI API](https://github.com/maxogden/dat/blob/master/docs/cli-usage.md), [dat JS API](https://github.com/maxogden/dat/blob/master/docs/js-api.md) or the [dat REST API](https://github.com/maxogden/dat/blob/master/docs/rest-api.md)
 
-** TODO describe how the replication protocol works and how to implement a replicator module **
+You can use the `dat.json` config file to transform data or register autometic data import scripts. See the [dat.json config docs](https://github.com/maxogden/dat/blob/master/docs/dat-json-config.md) for more details.
+
+### LevelDOWN
+
+LevelDB has an [pluggable backend API](https://github.com/rvagg/abstract-leveldown#abstract-leveldown-) that has been used to create [various backends](https://github.com/rvagg/node-levelup/wiki/Modules#storage), which means that dat can run on top of any LevelDOWN compatible backend.
+
+The default backend is the original LevelDB C++ library by Google (used from Node.js via the [LevelDOWN](https://github.com/rvagg/node-leveldown) bindings). If you want to store data in a tabular database other than LevelDB you can do so by writing a LevelDOWN adapter for it! The main requirements for a LevelDOWN backend are:
+
+- Ability to sort data lexicographically by key
+- Ability to iterate through the sorted data by key in forwards and reverse sorted order
 
 ### Blob stores
 
@@ -101,19 +110,10 @@ The downside of this approach is that blobs cannot be versioned, as only the cur
 
 We have developed the [abstract-blob-store](https://github.com/maxogden/abstract-blob-store) API to help standardize how storage backends are exposed to dat.
 
-** TODO describe how to implement a dat blob store module **
- 
-### LevelDOWN
+Check out the `abstract-blob-store` readme for examples of existing blob store backends.
 
-LevelDB has an [pluggable backend API](https://github.com/rvagg/abstract-leveldown#abstract-leveldown-) that has been used to create [various backends](https://github.com/rvagg/node-levelup/wiki/Modules#storage), which means that dat can run on top of any LevelDOWN compatible backend.
+### Replicators
 
-The default backend is the original LevelDB C++ library by Google (used from Node.js via the [LevelDOWN](https://github.com/rvagg/node-leveldown) bindings). If you want to store data in a tabular database other than LevelDB you can do so by writing a LevelDOWN adapter for it! The main requirements for a LevelDOWN backend are:
+Dat has a replication protocol that can be implemented to allow for some data store to be compatible with `dat clone`, `dat pull` or `dat push`. In the dat codebase we use the [dat-replication-protocol](https://github.com/mafintosh/dat-replication-protocol) module and the higher level [dat-replicator](https://github.com/mafintosh/dat-replicator) module to implement replication between two dat instances, but dat can also replicate with other sources that speak the same protocol.
 
-- Ability to sort data lexicographically by key
-- Ability to iterate through the sorted data by key in forwards and reverse sorted order
-
-### Dat API Consumers
-
-For everything else there is the [dat JS API](https://github.com/maxogden/dat/blob/master/docs/js-api.md) and the [dat REST API](https://github.com/maxogden/dat/blob/master/docs/rest-api.md)
-
-** TODO describe various approaches here, including using [gasket](https://github.com/datproject/gasket) **
+We have some documentation on [how dat replication works](https://github.com/maxogden/dat/blob/master/docs/replication.md).

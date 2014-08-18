@@ -155,7 +155,7 @@ module.exports.sameDir = function(test, common) {
 module.exports.customBackend = function(test, common) {
   test('instantiate + pass in custom leveldown instance', function(t) {
     var memdown = require('memdown')
-    var dat = new Dat(common.dat1tmp, { backend: memdown }, function ready() {
+    var dat = new Dat(common.dat1tmp, { leveldown: memdown }, function ready() {
       dat.put({'foo': 'bar'}, function(err) {
         t.notOk(err, 'no put err')
         var onDiskDat = fs.existsSync(path.join(common.dat1tmp, '.dat', 'store.dat'))

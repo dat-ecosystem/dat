@@ -20,11 +20,12 @@ Returns a new dat instance and either opens the existing underlying database or 
 * `storage` (default `true`) - if `false` dat will not try to read the underlying database when it starts up
 * `path` (default `process.cwd()`) - if not specified as the first argument to the constructor it will check `options.path` instead
 * `adminUser` and `adminPass` (default `undefined`) - if both are set any write operations will require HTTP basic auth w/ these credentials
-* `backend` (default `require('leveldown-prebuilt')`) - pass in a custom leveldown backend
+* `leveldown` (default `require('leveldown-prebuilt')`) - pass in a custom leveldown backend
 * `blobs` (default `require('lib/blobs.js')`) - pass in a custom blob store
 * `replicator` (default `require('lib/replicator.js')`) - pass in a custom replicator
 * `remoteAddress` (default `undefined`) - if specified then dat will run in RPC client mode
 * `manifest` (default `undefined`) - if `remoteAddress` is also true this RPC manifest object will be used by `multilevel.client`
+* `skim` (default `false`) - if `true` dat will operate in 'skim blobs' mode, meaning blobs will be lazily fetched from a remote source
 
 note: the `options` object also gets passed to the `levelup` constructor
 

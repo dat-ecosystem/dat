@@ -201,7 +201,7 @@ function readDefaults(path, opts, cb) {
 
     data.blobs = normalizeModule(opts.blobs || data.blobs)
     data.replicator = normalizeModule(opts.replicator || data.replicator)
-    data.backend = normalizeModule(opts.backend || data.backend)
+    data.leveldown = normalizeModule(opts.leveldown || data.leveldown)
     data.transformations = opts.transformations || data.transformations || {}
     data.hooks = opts.hooks || data.hooks || {}
     data.remotes = opts.remotes || data.remotes || {}
