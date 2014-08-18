@@ -1,14 +1,12 @@
-#**(DRAFT - NOT DONE)**
-
 # Announcing the dat stable alpha 
 
-The first code went into dat a year ago, [on August 17th 2013](https://github.com/maxogden/dat/commit/e5eda57b53f60b05c0c3d97da90c10cd17dcbe19). The first six months were spent making a prototype (thanks to the [Knight foundation Prototype Fund](http://www.knightfoundation.org/grants/201346305/)) and the last six months have been spent on taking dat beyond the prototype phase and into something more concrete, which is what we are shipping today!
+The first code went into dat a year ago, [on August 17th 2013](https://github.com/maxogden/dat/commit/e5eda57b53f60b05c0c3d97da90c10cd17dcbe19). The first six months were spent making a prototype (thanks to the [Knight foundation Prototype Fund](http://www.knightfoundation.org/grants/201346305/)) and the last six months have been spent on taking dat beyond the prototype phase and into something more concrete. Today, after a year of work, we really excited to release the first major version of dat.
+
+Our overall goal with dat is to make a set of tools for creating and sharing streaming data pipelines, a sort of [ETL](http://en.wikipedia.org/wiki/Extract,_transform,_load) style system but designed from the ground up to be developer friendly, open source and streaming. We are aligned with the goals of the [frictionless data](http://blog.okfn.org/2013/04/24/frictionless-data-making-it-radically-easier-to-get-stuff-done-with-data/) initiative.
 
 In April of this year we were able to expand the team working on dat from 1 person to 3 persons, thanks to [support from the Sloan foundation](http://usodi.org/2014/04/02/dat). Sloan's proposition was that they like the initial dat prototype but wanted to see scientific data use cases be treated as top priority. As a result we expanded the scope of the project from it's tabular data specific beginnings and have focused on adding features that will help us work with larger scientific datasets.
 
 Up until this point the dat API has been in flux as we were constantly iterating on it. From this point forward we will be taking backwards compatibility much more seriously so tha third party developers can feel confident in building on top of dat.
-
-Our overall goal of dat is to make a set of tools for creating and sharing streaming data pipelines, a sort of [ETL](http://en.wikipedia.org/wiki/Extract,_transform,_load) style system but designed from the ground up to be developer friendly, open source and streaming. We are aligned with the goals of the [frictionless data](http://blog.okfn.org/2013/04/24/frictionless-data-making-it-radically-easier-to-get-stuff-done-with-data/) initiative.
 
 ## How to get involved
 
