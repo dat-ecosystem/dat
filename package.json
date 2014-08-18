@@ -51,7 +51,7 @@
     "isnumber": "^1.0.0",
     "json-protobuf-encoding": "^1.0.1",
     "ldjson-stream": "~1.0.0",
-    "level-dat": "^4.3.0",
+    "level-dat": "^4.3.1",
     "level-events": "^1.0.2",
     "level-js": "^2.1.3",
     "level-manifest": "~1.2.0",
