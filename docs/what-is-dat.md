@@ -8,9 +8,9 @@
 - plugin APIs to connect `dat` to any existing database/format/language/storage backends
 - built with automated workflows in mind
 
-To illustrate the goals of `dat` consider the GitHub project, which is a great model of this idea working in a different space. GitHub is built on top of an open source tool called `git` and provides a user-friendly web application that lets software developers find code written by others, use it in their own programs and improve upon it. In a similar fashion `dat` will be developed as a set of tools to store, synchronize, manipulate and collaborate in a decentralized fashion on sets of data, hopefully enabling platforms analogous to GitHub to be built on top of it.
+To illustrate the goals of `dat` consider the GitHub project, which is a great model of this idea working in a different space. GitHub is built on top of an open source tool called `git` and provides a user-friendly web application that lets software developers find code written by others, use it in their own programs and improve upon it. In a similar fashion `dat` will be developed as a set of tools to store, synchronize, manipulate and collaborate on sets of data.
 
-The initial prototype of `dat` was developed thanks to support from the Knight Foundation as a collection of open source projects. Full time work began in August 2013 by [Max Ogden](http://maxogden.com/gut-hosted-open-data-filets.html) and other open source contributors. The initial grant supported 6 months of full time work. Further funding was provided by the Alfred P Sloan foundation in early 2014 to continue work on the prototype with a small development team.
+The initial prototype of `dat` was developed thanks to support from the Knight Foundation as a collection of open source projects. Full time work began in August 2013 by [Max Ogden](http://maxogden.com/gut-hosted-open-data-filets.html) and other open source contributors. The initial grant supported 6 months of full time work. Further funding was provided by the Alfred P Sloan foundation in early 2014 to continue work on the prototype with a small development team, this time focused on making dat useful for sharing scientific datasets.
 
 #### Project components
 
@@ -21,16 +21,6 @@ The initial prototype of `dat` was developed thanks to support from the Knight F
 See ['how `dat` works'](#how-dat-works) below for technical descriptions. The transformation and sync modules are where `dat` really shines in that they define a way for data tools and scripts to talk to each other so that these components can be made generic and shared.
 
 [![](../img/dat-diagram.png)](https://jlord.s3.amazonaws.com/dat-diagram.png)
-
-### Get involved with `dat`
-
-- Watch the `dat` repo on Github or follow [@dat_project](https://twitter.com/dat_project) on twitter.
-- Install and play around with the alpha version of `dat`. Leave feedback in the Github Issues of this repository!
-- Are you a coder? Pick your favorite database/API/file format and try to implement a dat replicator module for it.
-- Suggest an organization that should be using `dat` to distribute their data. Let us know [on Twitter](http://twitter.com/dat_project).
-- Have any other questions/concerns? [Open an issue](https://github.com/maxogden/dat/issues).
-- Interested in the underlying technology? Check out [node](https://github.com/maxogden/art-of-node#the-art-of-node) and [leveldb](https://github.com/rvagg/node-levelup/wiki/Modules)
-- Hang out in `#dat` on freenode
 
 ### Why do `dat`?
 

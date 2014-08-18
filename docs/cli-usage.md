@@ -14,10 +14,22 @@ dat init
 echo '{"hello": "world"}' | dat import --json
 ```
 
+## stream the most recent of all rows
+
+```
+dat cat
+```
+
 ## stream a CSV into dat
 
 ```
 cat some_csv.csv | dat import --csv
+```
+
+or
+
+```
+dat import --csv some_csv.csv
 ```
 
 use a custom newline delimiter:
@@ -37,18 +49,6 @@ cat some_tsv.tsv | dat import --csv --separator $'\t'
 ```
 echo $'a,b,c\n1,2,3' | dat import --csv --primary=a
 echo $'{"foo":"bar"}' | dat import --json --primary=foo
-```
-
-## stream the most recent of all rows
-
-```
-dat cat
-```
-
-## view raw data in the store
-
-```
-dat dump
 ```
 
 ## start a dat server
@@ -91,4 +91,11 @@ you can pipe line separated JSON data into dat on stdin and it will be stored
 
 ```
 cat foo.line-separated-json-objects | dat import --json
+```
+
+## view raw data in the store
+
+```
+npm install superlevel -g
+superlevel .dat/store.dat createReadStream
 ```

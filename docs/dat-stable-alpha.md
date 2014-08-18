@@ -10,33 +10,46 @@ Up until this point the dat API has been in flux as we were constantly iterating
 
 Our overall goal of dat is to make a set of tools for creating and sharing streaming data pipelines, a sort of [ETL](http://en.wikipedia.org/wiki/Extract,_transform,_load) style system but designed from the ground up to be developer friendly, open source and streaming.
 
-## What's in `dat` today
-
-The `dat` module is designed with a small-core philosophy. It defines an API for reading, writing and syncing datasets. It's written using Node and [a variety of modules](https://github.com/maxogden/dat/blob/master/docs/modules.md).
-
-There are three main interfaces to dat:
-
-- [command line](https://github.com/maxogden/dat/blob/master/docs/usage.md)
-- [REST API](https://github.com/maxogden/dat/blob/master/docs/rest-api.md)
-- [JavaScript API](https://github.com/maxogden/dat/blob/master/docs/js-api.md)
-
-In addition to the JS API documentation linked above we also [wrote a guide that shows examples](https://github.com/maxogden/dat/blob/master/docs/using-dat-from-node.md) of how to use the dat JS API.
-
-Internally dat has two kinds of data storage: tabular and blob. The default tabular data store is [LevelDB](http://leveldb.org) and the default blob store stores files on the [local filesystem](https://github.com/mafintosh/fs-blob-store).
-
-Everything in dat gets tracked with a version number, and old versions are persisted and replicated. Dat exposes push and pull replication to synchronize state to and from your local table and blob stores. At the moment our replication is quite naive and is only useful in master-replica use cases. For the dat beta release we are working on an improved replication system that enables more decentralized workflows.
-
-To learn about how replication works in detail check out [our replication guide](https://github.com/maxogden/dat/blob/master/docs/replication.md).
-
 ## How to get involved
+
+### Try it out
+
+You can [install dat today](https://github.com/maxogden/dat#install) and play around with it by importing or cloning a dataset.
+
+To start learning about how to use dat please read our [getting started guide](https://github.com/maxogden/dat/blob/master/docs/getting-started.md).
+
+To help you choose an approach to loading data into dat we have created a [data importing guide](https://github.com/maxogden/dat/blob/master/docs/importing.md).
 
 ### Write a module or 5
 
 There are a lot of modules that we think would be really awesome to have, and [we started a wishlist here](https://github.com/datproject/discussions/issues/5). If you see something you are interested in building, please leave a comment on that thread stating your intent. Similarly, if there is a format or storage backend that you would like to see dat support, leave it in the comments.
 
-### Kick the tires
+## Pilot users
 
-To help you choose an approach to loading data into dat we have created a [data importing guide](https://github.com/maxogden/dat/blob/master/docs/importing.md).
+This release of dat represents our efforts to get it to a point where we can start working with scientists on modeling their data workflows with dat. We will now be starting concrete work on these pilot use cases.
 
-## Pilot datasets
+If you have a use case in mind and you want to bounce it off of us please open at issue on the maxogden/dat repository with a detailed description.
 
+While we don't have many details to share today about these pilots, we hope to change that over the new few months. 
+
+### Bionode (Bioinformatics -- DNA)
+
+Dat core team member [@bmpvieira](https://github.com/bmpvieira/), a Bioinformatics PhD student at Queen Mary University in London, is working on applying dat to the domain of working with various DNA analysis related datasets.
+
+Bruno runs the [Bionode](https://github.com/bionode) project. We will be working on integrating Bionode with dat workflows to solve common problems in DNA bioinformatics research.
+
+### RNA-Seq (Bioinformatics -- RNA)
+
+Two researchers from UC-San Diego reached out to us recently and have started explaining their use case [here](https://github.com/maxogden/dat/issues/129) and [here](https://github.com/maxogden/dat/issues/135). We hope to use dat to make their data management problems go away.
+
+### Sloan Digital Sky Survey (Astronomy)
+
+We will be working with the [SDSS](http://www.sdss.org/) project to share large their scans of the visible universe, and eventually connect their data with other sky survey data from other organizations.
+
+## The future of dat
+
+This release is the first step towards our goal of creating a streaming interface between every database or file storage backend in the world. 
+
+In the future we would also like to work on a way to easily host and share datasets online. We envision a sort of data package registry, similar to [npmjs.org](http://npmjs.org), but designed with datasets in mind. This kind of project could also eventually turn into a sort of "GitHub for data".
+
+We also want to hook dat up to P2P networks, so that we can make downloads faster but also so that datasets become more permanent. Dat advisor Juan Benet is now working on [IPFS](http://ipfs.io/), which we are excited to hook up to dat when it is ready.
