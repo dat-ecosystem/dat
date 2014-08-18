@@ -89,7 +89,18 @@ During replication dat will transfer all data from both the tabular store as wel
 
 To import a dataset into dat you can use the [dat CLI API](https://github.com/maxogden/dat/blob/master/docs/cli-usage.md), [dat JS API](https://github.com/maxogden/dat/blob/master/docs/js-api.md) or the [dat REST API](https://github.com/maxogden/dat/blob/master/docs/rest-api.md)
 
-You can use the `dat.json` config file to transform data or register autometic data import scripts. See the [dat.json config docs](https://github.com/maxogden/dat/blob/master/docs/dat-json-config.md) for more details.
+On the command line you can easily import newline-delimited JSON (one JSON object per line) or CSV into dat.
+
+#### Data Importer Modules
+
+These are special types of modules that can can automatically use to run data import jobs.
+
+You can use the `dat.json` config file to [transform data](https://github.com/maxogden/dat/blob/master/docs/dat-json-config.md#transformations) or register automatic data import scripts using [hooks](https://github.com/maxogden/dat/blob/master/docs/dat-json-config.md#hooks). 
+
+Some example importer modules that can be used with dat hooks:
+
+- https://github.com/mafintosh/dat-npm
+- https://github.com/maxogden/dat-geomagnetic
 
 ### LevelDOWN
 

@@ -30,9 +30,14 @@ var datOpts = {init: false}
 if (datCommand.options.prompt === undefined) {
   datCommand.options.prompt = datCommand.tty
 }
+
 if (argv.transform) {
   datOpts.transformations = {}
   datOpts.transformations[first === 'import' ? 'put' : 'get'] = argv.transform
+}
+
+if (argv.leveldownPath) {
+  datOpts.leveldownPath = argv.leveldownPath
 }
 
 var datPath = process.cwd()

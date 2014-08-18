@@ -26,8 +26,68 @@ Returns a new dat instance and either opens the existing underlying database or 
 * `remoteAddress` (default `undefined`) - if specified then dat will run in RPC client mode
 * `manifest` (default `undefined`) - if `remoteAddress` is also true this RPC manifest object will be used by `multilevel.client`
 * `skim` (default `false`) - if `true` dat will operate in 'skim blobs' mode, meaning blobs will be lazily fetched from a remote source
+* `transformations` (default none) - specify transformations to load -- see below for details
+* `hooks` (default none) - specify hooks to load -- see below for details
 
 note: the `options` object also gets passed to the `levelup` constructor
+
+#### transformations
+
+You can hook transformation modules up to happen before `put`s  or after `get`s.
+
+Pass them in like this in the dat options:
+
+```
+{
+  "transformations": {
+    "get": "transform-uppercase",
+    "put": {"module": "./lowercase-stream.js"}
+  }
+}
+```
+
+The value of a transform can be:
+
+**string**, executable command to run as this transform
+**object**, with these optional fields:
+
+```js
+{
+  "command": "./foo.sh" // executable command to run as this transform,
+  "module": "./transform.js" // node.js transform module to use instead
+}
+```
+
+or **array**, an array of the above transform strings or objects. these will get piped together as a single pipeline.
+
+If you use the e.g. `transform-uppercase` module or other modules from npm as a transform make sure to also make a package.json file in the same directory as your dat to properly manage and install your modules with npm!
+
+If you are using command strings or the **command** option, your executable transform program should accept line delimited JSON data to STDIN and write modified versions of each incoming row as line delimited JSON data to STDOUT.
+
+If you are using the **module** option, the module you pass in can either be a relative path to a module or a module name in the current module scope. dat will `require()` your module. Your module must export a passthrough Streams2 stream with `objectMode: true`, e.g.:
+
+```js
+module.exports = ObjectModePassthroughStream
+```
+
+#### hooks
+
+Right now the only hook is `listen`, which is executed whenever the dat server binds to a port. A dat listen hook is useful for making sure some operation is running whenever dat is running.
+
+A dat listen hook currently must be a Node module in the following form:
+
+```js
+module.exports = function hook(dat, done) {
+  // do stuff with dat
+  
+  // must call done when the hook is done initializing, even if you call it immediately
+  done()
+}
+```
+
+Your hook function will get called with `dat, done`, where `dat` is a fully initialized dat instance. You *must* call `done` when your hook is done initializing.
+
+The [dat-npm](https://github.com/mafintosh/dat-npm#readme) importer is a good example of a dat listen hook.
 
 ## help
 

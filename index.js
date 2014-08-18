@@ -102,7 +102,7 @@ function Dat(dir, opts, onReady) {
 
     if (data.leveldown && data.leveldown.module) data.leveldown = req(data.leveldown.module)
     else if (!data.leveldown) data.leveldown = require('leveldown-prebuilt')
-
+    
     self.beforePut = toTransform(data.transformations.put)
     self.afterGet = toTransform(data.transformations.get)
     self.listenHook = toHook(data.hooks.listen)
@@ -208,6 +208,8 @@ function readDefaults(path, opts, cb) {
 
     if (typeof data.remotes === 'string') data.remotes = {origin:data.remotes}
     if (typeof opts.remote === 'string') data.remotes.origin = opts.remote
+    
+    if (typeof opts.leveldownPath === 'string') data.leveldownPath = opts.leveldownPath
 
     var transformations = normalizeTransformations(opts)
 
