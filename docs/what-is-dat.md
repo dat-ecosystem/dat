@@ -10,13 +10,11 @@
 
 To illustrate the goals of `dat` consider the GitHub project, which is a great model of this idea working in a different space. GitHub is built on top of an open source tool called `git` and provides a user-friendly web application that lets software developers find code written by others, use it in their own programs and improve upon it. In a similar fashion `dat` will be developed as a set of tools to store, synchronize, manipulate and collaborate on sets of data.
 
-The initial prototype of `dat` was developed thanks to support from the Knight Foundation as a collection of open source projects. Full time work began in August 2013 by [Max Ogden](http://maxogden.com/gut-hosted-open-data-filets.html) and other open source contributors. The initial grant supported 6 months of full time work. Further funding was provided by the Alfred P Sloan foundation in early 2014 to continue work on the prototype with a small development team, this time focused on making dat useful for sharing scientific datasets.
-
 #### Project components
 
 1. **command line tool**: capable of data storage, sync and running transformations
-2. **transformation modules**: simple scripts written in any language that can clean up/enhance/convert data, e.g. geocoding, converting from one date format to another
-3. **sync modules**: plugins (e.g. `dat-postgres`, `dat-excel`, `dat-xml`) that hook `dat` data streams up to different databases and formats and vice versa
+2. **sync modules**: plugins that hook `dat` data streams up to different databases and formats and vice versa
+3. **transformation modules**: simple scripts written in any language that can clean up/enhance/convert data, e.g. geocoding, converting from one date format to another
 
 See ['how `dat` works'](#how-dat-works) below for technical descriptions. The transformation and sync modules are where `dat` really shines in that they define a way for data tools and scripts to talk to each other so that these components can be made generic and shared.
 
@@ -54,17 +52,15 @@ Sadly, this workflow is the state of the art. Open data tools are at a level com
 
 In order to enable collaboration on datasets, the first step is to define a synchronization protocol for tabular data (tabular data meaning data in a table, like a CSV or an Excel file).
 
-One of the only data stores that does this well is CouchDB. Here is a simplified breakdown of how Couch does sync:
+Every dat database is made up of two tables. One holds the data, the other contains the chronological history of all operations. Whenever a row is written, edited or deleted from a table a row is added to the history table that describes the change.
 
-Every database is made up of two tables. One holds the data, the other contains the chronological history of all operations. Whenever a row is written, edited or deleted from a table a row is added to the history table that describes the change.
-
-If you created a row with data `{"key": "1", "hello": "world"}`, Couch would store a record in the history table that looked like `{"change": "1", "key": "1", "action": "created"}`. If you then delete document 1, Couch would store a new entry in the history table: `{"change": "2", "key": "1", "action": "deleted"}`. `change` refers to the chronological order e.g. the operation number for this particular change in the entire sequence of operations.
+If you created a row with data `{"key": "1", "hello": "world"}`, dat would store a record in the history table that looked like `{"change": "1", "key": "1", "action": "created"}`. If you then delete document 1, dat would store a new entry in the history table: `{"change": "2", "key": "1", "action": "deleted"}`. `change` refers to the chronological order e.g. the operation number for this particular change in the entire sequence of operations.
 
 Some databases only have one table per database. If you create a row and then later delete it, the database has no way of remembering what documents used to be there. For certain use cases this is okay, but for synchronization this is unacceptable.
 
 The point of the history table is to be able to efficiently answer the query `Yesterday at 12:30PM I pulled all of the data from you, what are all of the changes since then?`. Without the history table every row in the entire database would have to be checked against every row in the requesters database -- a heinously slow operation known as a full table scan.
 
-`dat` will provide a pluggable API for synchronization so that plugins can be written to export and import remote data efficiently from existing databases.
+To summarize, `dat` speaks a replication protocol. All dat databases speak it, and anything that implements it will be able to efficiently synchronize with dat.
 
 ### Transformations
 
@@ -115,27 +111,18 @@ To make this data easier to consume in a web application it would be nice to hav
 
 With a transformation like this you can consume the daily XML data from the US House servers and automatically transform it into JSON so you can consume it easily.
 
-`dat` will have a plugin format that provides a way to write these repeatable transformations in a way that they can be shared and reused.
+We use the word 'pipeline' to describe the entire series of transformations that happen to data as it arrives or leaves a dat database. We see dat as a building block for building data pipelines that can be shared.
 
 ### Goals of dat
 
 The two communities that dat is primarily focused on are publishers and consumers of **open scientific data** and **open civic data**.
 
-In order to support the needs of both communities there are a couple of technology requirements for `dat`: work with datasets in the range of **billions of rows** long and support **real-time data** use cases like GPS feeds from vehicle fleets and other 'firehose' data.
-
-The reasoning behind these two requirements is due to real world use cases. A lot of scientific data is really, really big and a lot of the most exciting open civic data can be classified as real-time.
-
 It's important to point out that complex querying isn't in the scope of the `dat` project. The goal is to enable the sharing of large datasets between nodes and not necessarily to perform complex analysis of that data.
 
 Another goal of `dat` is to act as a data 'sink' that can handle the synchronization for you between a remote data source and your local environment, but then can also do things like take subsets of the data coming in and insert them into PostgreSQL tables (or many other data stores). If you were to take billions of rows and casually insert them into most databases then you'd freeze or crash your computer. `dat` wants to enable large dataset syncing and then act as a proxy between the dataset and your database or file format of choice.
 
-
 ### What will `dat` be built on?
 
-The `dat` command-line interface and data storage layer will be built with Node.js, NPM and [LevelDB](https://github.com/rvagg/node-levelup#introduction) (which also has a [healthy community](http://r.va.gg/presentations/sf.nodebase.meetup/)). Both are well established, used by millions of people and are focused on specific problems.
+The `dat` command-line interface and data storage layer will be built with Node.js, NPM and [LevelDB](http://leveldb.org).
 
-Node.js, a project commonly associated with building web apps, is actually just a tool for managing cross-platform streaming I/O. NPM, a repository of modules published with Node, is [ripe](https://npmjs.org/search?q=stream) with [modular approaches](https://blog.nodejitsu.com/npm-innovation-through-modularity) to streaming I/O for tons of databases, file formats and APIs.
-
-100% of my work on `dat` and related projects will be open source and optimized for contribution. I know I can't write plugins for every database under the sun alone, but I *can* enable hundreds of developers around the world to work together towards a common goal.
-
-And don't worry, you won't need to know or like JavaScript to contribute to the `dat` effort.
+100% of the work on `dat` and related projects will be open source and optimized for contribution. We know we can't write plugins for every database under the sun alone, but we *can* enable hundreds of developers around the world to work together towards a common goal of interoperable data pipelines.
