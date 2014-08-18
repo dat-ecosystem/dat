@@ -37,3 +37,29 @@ You can use the `dat.json` file to configure various things about how dat will r
 }
 ```
 
+## metadata properties
+
+you can use any non-reserved keys in dat.json to store whatever kinds of metadata you want. [This issue](https://github.com/dataprotocols/dataprotocols/issues/110) is a discussion about adopting a metadata standard in case you are interested.
+
+## hooks
+
+Right now the only hook is `listen`, which is executed whenever the dat server binds to a port. A dat listen hook is useful for making sure some operation is running whenever dat is running.
+
+A dat listen hook currently must be a Node module in the following form:
+
+```js
+module.exports = function hook(dat, done) {
+  // do stuff with dat
+  
+  // must call done when the hook is done initializing, even if you call it immediately
+  done()
+}
+```
+
+Your hook function will get called with `dat, done`, where `dat` is a fully initialized dat instance. You *must* call `done` when your hook is done initializing.
+
+The [dat-npm](https://github.com/mafintosh/dat-npm#readme) importer is a good example of a dat listen hook.
+
+## blobs, replicator, leveldown
+
+These properties are for overriding the default backends that dat uses for I/O. The value must be a relative path to a module or a module name in the current node module scope.

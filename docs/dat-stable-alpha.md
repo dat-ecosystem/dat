@@ -53,3 +53,6 @@ This release is the first step towards our goal of creating a streaming interfac
 In the future we would also like to work on a way to easily host and share datasets online. We envision a sort of data package registry, similar to [npmjs.org](http://npmjs.org), but designed with datasets in mind. This kind of project could also eventually turn into a sort of "GitHub for data".
 
 We also want to hook dat up to P2P networks, so that we can make downloads faster but also so that datasets become more permanent. Dat advisor Juan Benet is now working on [IPFS](http://ipfs.io/), which we are excited to hook up to dat when it is ready.
+
+You can help us discuss these high level ideas on [this issue](https://github.com/datproject/discussions/issues/1).
+

@@ -100,8 +100,8 @@ function Dat(dir, opts, onReady) {
     if (data.replicator && data.replicator.module) data.replicator = req(data.replicator.module)
     else if (!data.replicator) data.replicator = require('dat-replicator')
 
-    if (data.backend && data.backend.module) data.backend = req(data.backend.module)
-    else if (!data.backend) data.backend = require('leveldown-prebuilt')
+    if (data.leveldown && data.leveldown.module) data.leveldown = req(data.leveldown.module)
+    else if (!data.leveldown) data.leveldown = require('leveldown-prebuilt')
 
     self.beforePut = toTransform(data.transformations.put)
     self.afterGet = toTransform(data.transformations.get)
