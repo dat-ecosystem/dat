@@ -12,6 +12,12 @@ Windows        | Mac/Linux
 
 We recommend reading the [getting started guide](docs/getting-started.md).
 
+## Deploy to heroku
+
+Using the [heroku-dat-template](https://github.com/bmpvieira/heroku-dat-template), click the purple button below to deploy your very own empty dat to Heroku for free. **Heroku's ephemeral filesystem** means that all data in your dat will get erased at some point. We are working on a dat-postgres module to make data permanent on Heroku, but in the meantime only use this for fun! See the heroku-dat-template readme for more info.
+
+[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/bmpvieira/heroku-dat-template.git)
+
 ## Install
 
 You need to node.js version 0.10 or above. We recommend that you install node from the [node website](http://nodejs.org/).
