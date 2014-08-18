@@ -206,8 +206,9 @@ function readDefaults(path, opts, cb) {
     data.hooks = opts.hooks || data.hooks || {}
     data.remotes = opts.remotes || data.remotes || {}
 
-    if (typeof data.remotes === 'string') data.remotes = {origin:data.remotes}
-    if (typeof opts.remote === 'string') data.remotes.origin = opts.remote
+    if (typeof data.remotes === 'string') data.remotes = {origin:{url:data.remotes}}
+    if (typeof opts.remote === 'string') data.remotes.origin = {url:opts.remote}
+    if (typeof (opts.remote && opts.remote.origin) === 'string') data.remotes.origin = {url:data.remotes.origin}
     
     if (typeof opts.leveldownPath === 'string') data.leveldownPath = opts.leveldownPath
 
