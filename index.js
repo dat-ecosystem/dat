@@ -73,10 +73,6 @@ function Dat(dir, opts, onReady) {
   
   debug(JSON.stringify(opts))
 
-  var req = function(name) {
-    return require(resolve.sync(name, {basedir: paths.dir}))
-  }
-
   var toHook = function(hook) {
     if (hook && hook.module) return req(hook.module)
     else if (typeof hook === 'function') return hook
@@ -87,21 +83,17 @@ function Dat(dir, opts, onReady) {
     return trans ? writeread(transformations(trans)) : echo
   }
 
-  readDefaults(paths.package, opts, function(err, data) {
+  readDefaults(paths, opts, function(err, data) {
     if (err) throw err
 
     self.options = data
     data.init = opts.init
 
-    if (data.blobs && data.blobs.module) data.blobs = req(data.blobs.module)(extend({path:paths.blobs}, data.blobs))
-    else if (!data.blobs) data.blobs = require('fs-blob-store')({path:paths.blobs})
-    else if (typeof data.blobs === 'function') data.blobs = data.blobs({path:paths.blobs})
-
-    if (data.replicator && data.replicator.module) data.replicator = req(data.replicator.module)
-    else if (!data.replicator) data.replicator = require('dat-replicator')
-
-    if (data.leveldown && data.leveldown.module) data.leveldown = req(data.leveldown.module)
-    else if (!data.leveldown) data.leveldown = require('leveldown-prebuilt')
+    // instantiate blobs maybe
+    if (typeof data.blobs.module === 'function') {
+      var p = data.blobs.env ? process.env[data.blobs.env] : data.blobs.path || paths.blobs
+      data.blobs = data.blobs.module(extend({path: p}, data.blobs))
+    }
     
     self.beforePut = toTransform(data.transformations.put)
     self.afterGet = toTransform(data.transformations.get)
@@ -181,7 +173,7 @@ function echo(val, cb) {
   cb(null, val)
 }
 
-function readDefaults(path, opts, cb) {
+function readDefaults(paths, opts, cb) {
   if (typeof opts === 'function') {
     cb = opts
     opts = null
@@ -189,19 +181,15 @@ function readDefaults(path, opts, cb) {
 
   if (!opts) opts = {}
 
-  var req = function(name) {
-    return require(resolve.sync(name, {basedir:paths.dir}))
-  }
-
-  readDatJSON(path, function(err, data) {
+  readDatJSON(paths.package, function(err, data) {
     if (err) return cb(err)
 
     data.adminUser = opts.adminUser || data.adminUser
     data.adminPass = opts.adminPass || data.adminPass
 
-    data.blobs = normalizeModule(opts.blobs || data.blobs)
-    data.replicator = normalizeModule(opts.replicator || data.replicator)
-    data.leveldown = normalizeModule(opts.leveldown || data.leveldown)
+    data.blobs = normalizeModule(opts.blobs || data.blobs, 'fs-blob-store')
+    data.replicator = normalizeModule(opts.replicator || data.replicator, 'dat-replicator')
+    data.leveldown = normalizeModule(opts.leveldown || data.leveldown, 'leveldown-prebuilt')
     data.transformations = opts.transformations || data.transformations || {}
     data.hooks = opts.hooks || data.hooks || {}
     data.remotes = opts.remotes || data.remotes || {}
@@ -210,14 +198,12 @@ function readDefaults(path, opts, cb) {
     if (typeof opts.remote === 'string') data.remotes.origin = {url:opts.remote}
     if (typeof (opts.remote && opts.remote.origin) === 'string') data.remotes.origin = {url:data.remotes.origin}
     
-    if (typeof opts.leveldownPath === 'string') data.leveldownPath = opts.leveldownPath
-
     var transformations = normalizeTransformations(opts)
 
     data.transformations.get = transformations.get || data.transformations.get
     data.transformations.put = transformations.put || data.transformations.put
 
-    data.hooks.listen = normalizeModule(data.hooks.listen)
+    data.hooks.listen = normalizeModule(data.hooks.listen).module
 
     if (typeof opts.remote === 'string') data.remotes.origin = opts.remote
     if (opts.remotes) data.remotes.origin = opts.remotes.origin
@@ -227,12 +213,21 @@ function readDefaults(path, opts, cb) {
 
     cb(null, data)
   })
+
+  function req(name) {
+    return require(resolve.sync(name, {basedir:paths.dir}))
+  }
+
+  function normalizeModule(mod, def) {
+    if (!mod) mod = {}
+    if (typeof mod === 'string') return {module:mod}
+    if (typeof mod === 'function') mod = {module:mod}
+    if (typeof mod.module === 'string') mod.module = req(mod.module)
+    if (!mod.module && def) mod.module = require(def)
+    return mod
+  }
 }
 
-function normalizeModule(mod) {
-  if (typeof mod === 'string') return {module:mod}
-  return mod
-}
 
 function normalizeTransformations(opts) {
   var transformations = opts.transformations || {}
