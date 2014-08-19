@@ -6,7 +6,7 @@ var writeread = require('write-transform-read')
 var resolve = require('resolve')
 var extend = require('extend')
 
-var debug = require('debug')('dat.init')
+var debug = require('debug')('dat.constructor')
 var request = require('request').defaults({json: true})
 
 var stats = require('./lib/stats')
@@ -71,7 +71,7 @@ function Dat(dir, opts, onReady) {
 
   var paths = this.paths(dir)
   
-  debug(JSON.stringify(opts))
+  debug('options', JSON.stringify(opts))
 
   var toHook = function(hook) {
     return hook.module || echoHook
