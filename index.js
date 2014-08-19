@@ -74,9 +74,7 @@ function Dat(dir, opts, onReady) {
   debug(JSON.stringify(opts))
 
   var toHook = function(hook) {
-    if (hook && hook.module) return req(hook.module)
-    else if (typeof hook === 'function') return hook
-    return echoHook
+    return hook.module || echoHook
   }
 
   var toTransform = function(trans) {
@@ -203,7 +201,7 @@ function readDefaults(paths, opts, cb) {
     data.transformations.get = transformations.get || data.transformations.get
     data.transformations.put = transformations.put || data.transformations.put
 
-    data.hooks.listen = normalizeModule(data.hooks.listen).module
+    data.hooks.listen = normalizeModule(data.hooks.listen)
 
     if (typeof opts.remote === 'string') data.remotes.origin = opts.remote
     if (opts.remotes) data.remotes.origin = opts.remotes.origin
@@ -220,10 +218,17 @@ function readDefaults(paths, opts, cb) {
 
   function normalizeModule(mod, def) {
     if (!mod) mod = {}
-    if (typeof mod === 'string') return {module:mod}
+    if (typeof mod === 'string') mod = {module:mod}
     if (typeof mod === 'function') mod = {module:mod}
     if (typeof mod.module === 'string') mod.module = req(mod.module)
     if (!mod.module && def) mod.module = require(def)
+
+    if (typeof mod.module === 'function') {
+      Object.keys(mod).forEach(function(key) {
+        if (mod[key] && mod[key].env) mod[key] = process.env[mod[key].env]
+      })
+    }
+
     return mod
   }
 }
