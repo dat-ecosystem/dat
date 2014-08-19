@@ -224,15 +224,76 @@ module.exports.basicAuthOptions = function(test, common) {
     var opts = { adminUser: 'foo', adminPass: 'bar' }
     common.getDat(t, opts, function(dat, cleanup) {
       var body = {foo: 'bar'}
-      request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/rows', json: body }, function(err, res, stored) {
-        if (err) throw err
-        t.equal(res.statusCode, 401, 'unauthorized')
-        request({method: 'POST', uri: 'http://foo:bar@localhost:' + dat.options.port + '/api/rows', json: body }, function(err, res, stored) {
-          if (err) throw err
-          t.equal(res.statusCode, 201, 'authorized')
-          cleanup()
-        })
+      var headers = {"content-type": "application/json"}
+      
+      parallel([
+        function(cb) {
+          request({method: 'POST', uri: 'http://foo:bar@localhost:' + dat.options.port + '/api/rows', json: body, headers: headers }, function(err, res, stored) {
+            if (err) throw err
+            t.equal(res.statusCode, 201, 'authorized')
+            cb()
+          })
+        },
+        function(cb) {
+          request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/rows', json: body, headers: headers }, function(err, res, stored) {
+            if (err) throw err
+            t.equal(res.statusCode, 401, 'unauthorized')
+            cb()
+          })
+        },
+        function(cb) {
+          request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/session', json: body, headers: headers }, function(err, res, stored) {
+            if (err) throw err
+            t.equal(res.statusCode, 401, 'unauthorized')
+            cb()
+          })
+        },
+        function(cb) {
+          request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/login', json: body, headers: headers }, function(err, res, stored) {
+            if (err) throw err
+            t.equal(res.statusCode, 401, 'unauthorized')
+            cb()
+          })
+        },
+        function(cb) {
+          request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/rows/foo/bar.jpg', json: body, headers: headers }, function(err, res, stored) {
+            if (err) throw err
+            t.equal(res.statusCode, 401, 'unauthorized')
+            cb()
+          })
+        },
+        function(cb) {
+          request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/rpc', json: body, headers: headers }, function(err, res, stored) {
+            if (err) throw err
+            t.equal(res.statusCode, 401, 'unauthorized')
+            cb()
+          })
+        },
+        function(cb) {
+          request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/bulk', json: body, headers: headers }, function(err, res, stored) {
+            if (err) throw err
+            t.equal(res.statusCode, 401, 'unauthorized')
+            cb()
+          })
+        },
+        function(cb) {
+          request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/bulk', json: body, headers: headers }, function(err, res, stored) {
+            if (err) throw err
+            t.equal(res.statusCode, 401, 'unauthorized')
+            cb()
+          })
+        },
+        function(cb) {
+          request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/push', json: body, headers: headers }, function(err, res, stored) {
+            if (err) throw err
+            t.equal(res.statusCode, 401, 'unauthorized')
+            cb()
+          })
+        }
+      ], function(err) {
+        cleanup()
       })
+    
     })
   })
 }
