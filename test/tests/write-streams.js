@@ -23,7 +23,7 @@ module.exports.blobWriteStream = function(test, common) {
         var blob = doc.blobs['write-streams.js']
         t.ok(blob, 'doc has blob')
         t.ok(blob.size, 'blob has size')
-        t.ok(blob.hash, 'blob has hash')
+        t.ok(blob.key, 'blob has key')
         done()
       })
       
@@ -67,7 +67,7 @@ module.exports.blobExists = function(test, common) {
         t.notOk(err, 'no blob write err')
         dat.blobs.backend.exists(doc.blobs['write-streams.js'], function(err, exists) {
           t.ok(exists, 'blob exists')
-          dat.blobs.backend.exists({hash: 'not-a-valid-hash'}, function(err, exists) {
+          dat.blobs.backend.exists({key: 'not-a-valid-hash'}, function(err, exists) {
             t.notOk(exists, 'invalid hash does not exist')
             done()
           })

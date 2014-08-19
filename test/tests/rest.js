@@ -87,7 +87,7 @@ module.exports.restGetBlobByHash = function(test, common) {
           t.notOk(err, 'no upload err')
           t.ok(updated.version, 2, 'version 2')
           var blobMeta = updated.blobs['data.txt']
-          request({method: 'GET', uri: 'http://localhost:' + dat.options.port + '/api/blobs/' + blobMeta.hash}, function(err, res, blob) {
+          request({method: 'GET', uri: 'http://localhost:' + dat.options.port + '/api/blobs/' + blobMeta.key}, function(err, res, blob) {
             if (err) throw err
             t.equal(blobMeta.size, blob.length, 'size matches')
             cleanup()

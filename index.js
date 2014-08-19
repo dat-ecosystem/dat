@@ -94,7 +94,7 @@ function Dat(dir, opts, onReady) {
     data.init = opts.init
 
     if (data.blobs && data.blobs.module) data.blobs = req(data.blobs.module)(extend({path:paths.blobs}, data.blobs))
-    else if (!data.blobs) data.blobs = require('local-blob-store')({path:paths.blobs})
+    else if (!data.blobs) data.blobs = require('fs-blob-store')({path:paths.blobs})
     else if (typeof data.blobs === 'function') data.blobs = data.blobs({path:paths.blobs})
 
     if (data.replicator && data.replicator.module) data.replicator = req(data.replicator.module)
