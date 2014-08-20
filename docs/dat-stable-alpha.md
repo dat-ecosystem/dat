@@ -22,9 +22,7 @@ Up until this point, the dat API has been in flux, as we were constantly iterati
 
 You can [install dat today](https://github.com/maxogden/dat#install) and play around with it by importing or cloning a dataset.
 
-You can also click this button to deploy a dat to Heroku for testing purposes for free (but be aware of the [Heroku ephemeral filesystem limitations](https://github.com/maxogden/dat/blob/master/readme.md#deploy-to-heroku)):
-
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/bmpvieira/heroku-dat-template.git)
+The easiest way to try dat is to deploy a dat to Heroku for free directly from your browser using our [Dat Heroku Buttons](https://github.com/bmpvieira/heroku-dat-template#heroku-dat-template). No command line required!
 
 The dat REST API comes bundled with the [dat-editor](https://github.com/maxogden/dat-editor#readme) web application.
 
