@@ -26,6 +26,8 @@ module.exports = Dat
 // new Dat('./foo', {foo: bar})
 // new Dat('./foo', {foo: bar}, cb)
 
+function noop() {}
+
 function Dat(dir, opts, onReady) {
   var self = this
   
@@ -68,6 +70,7 @@ function Dat(dir, opts, onReady) {
   this.beforePut = echo
   this.afterGet = echo
   this.listenHook = echoHook
+  this.startImport = noop
 
   var paths = this.paths(dir)
   
@@ -96,6 +99,14 @@ function Dat(dir, opts, onReady) {
     self.beforePut = toTransform(data.transformations.put)
     self.afterGet = toTransform(data.transformations.get)
     self.listenHook = toHook(data.hooks.listen)
+
+    if (data.import.module) {
+      self.startImport = function() {
+        var run = data.import.module.bind(null, self, data.import)
+        if (data.import.interval) setInterval(run, 1000 * data.import.interval)
+        run()
+      }
+    }
 
     if (!opts.storage) {
       onReady()
@@ -202,6 +213,7 @@ function readDefaults(paths, opts, cb) {
     data.transformations.put = transformations.put || data.transformations.put
 
     data.hooks.listen = normalizeModule(data.hooks.listen)
+    data.import = normalizeModule(data.import)
 
     if (typeof opts.remote === 'string') data.remotes.origin = opts.remote
     if (opts.remotes) data.remotes.origin = opts.remotes.origin
