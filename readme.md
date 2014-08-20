@@ -14,9 +14,7 @@ We recommend reading the [getting started guide](docs/getting-started.md).
 
 ## Deploy to heroku
 
-Using the [heroku-dat-template](https://github.com/bmpvieira/heroku-dat-template), click the purple button below to deploy your very own empty dat to Heroku for free. **Heroku's ephemeral filesystem** means that all data in your dat will get erased at some point. We are working on a dat-postgres module to make data permanent on Heroku, but in the meantime only use this for fun! See the heroku-dat-template readme for more info.
-
-[![Deploy](https://www.herokucdn.com/deploy/button.png)](https://heroku.com/deploy?template=https://github.com/bmpvieira/heroku-dat-template.git)
+The easiest way to try dat is using our [heroku-dat-template](https://github.com/bmpvieira/heroku-dat-template#heroku-dat-template) which lets you deploy a dat directly to heroku all from your browser, no command-line required.
 
 ## Install
 
