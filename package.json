@@ -65,6 +65,7 @@
     "multibuffer": "~2.2.0",
     "multibuffer-stream": "~2.1.0",
     "multilevel": "~6.0.0",
+    "multistream": "^1.4.1",
     "peek-stream": "^1.1.1",
     "pretty-bytes": "^0.1.1",
     "protocol-buffers": "^2.3.3",
