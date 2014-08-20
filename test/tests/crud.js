@@ -113,6 +113,22 @@ module.exports.putJsonPrimary = function(test, common) {
   })
 }
 
+module.exports.putJsonWithSpaces = function(test, common) {
+  test('.put json w/ spaces in names', function(t) {
+    common.getDat(t, function(dat, done) {
+      dat.put({'hello world': 'welt', key:'test'}, function(err, doc) {
+        t.notOk(err, 'no err')
+        t.same(doc['hello world'], 'welt', 'spaces in keys on put')
+        dat.get('test', function(err, doc) {
+          t.notOk(err, 'no err')
+          t.same(doc['hello world'], 'welt', 'spaces in keys on get')
+          setImmediate(done)
+        })
+      })
+    })
+  })
+}
+
 module.exports.updateJson = function(test, common) {
   test('.put and then update json', function(t) {
     common.getDat(t, function(dat, done) {
@@ -350,6 +366,7 @@ module.exports.all = function (test, common) {
   module.exports.decodeKey(test, common)
   module.exports.putJson(test, common)
   module.exports.putWeirdKeys(test, common)
+  module.exports.putJsonWithSpaces(test, common)
   module.exports.putInvalidVersion(test, common)
   module.exports.putJsonSetVersion(test, common)
   module.exports.putJsonPrimary(test, common)
