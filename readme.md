@@ -18,7 +18,7 @@ The easiest way to try dat is using our [heroku-dat-template](https://github.com
 
 ## Install
 
-You need to node.js version 0.10 or above. We recommend that you install node from the [node website](http://nodejs.org/).
+You need to install node.js version 0.10 or above. We recommend that you install node from the [node website](http://nodejs.org/).
 
 You can check your node version by running `node -v` on the command line.
 
