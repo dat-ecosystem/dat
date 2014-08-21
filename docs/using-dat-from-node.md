@@ -73,12 +73,12 @@ function ready(err) {
   
   // dat will store our cat data and call `done` when it finishes
   dat.put(cat, done)
+}
+
+function done(err, row) {
+  if (err) return console.error('Could not store Bob!', err)
   
-  function done(err, row) {
-    if (err) return console.error('Could not store Bob!', err)
-    
-    console.log('Stored Bob', row)
-  }
+  console.log('Stored Bob', row)
 }
 ```
 
@@ -108,21 +108,21 @@ function ready(err) {
   
   // first lets get the latest version of bob from dat
   dat.get('Bob', gotBob)
+}
+
+function gotBob(err, bob) {
+  if (err) return console.error('Could not get Bob!', err)
   
-  function gotBob(err, bob) {
-    if (err) return console.error('Could not get Bob!', err)
-    
-    // update bobs age and put him back in the database
-    bob.age = 4
-    dat.put(bob, done)
-  }
+  // update bobs age and put him back in the database
+  bob.age = 4
+  dat.put(bob, done)
+}
+
+function done(err, updated) {
+  if (err) return console.error('Could not update Bob!', err)
   
-  function done(err, updated) {
-    if (err) return console.error('Could not update Bob!', err)
-    
-    // now bob is at version 2
-    console.log('Updated Bob:', updated)
-  }
+  // now bob is at version 2
+  console.log('Updated Bob:', updated)
 }
 ```
 
@@ -164,25 +164,25 @@ function ready(err) {
     
     bobPicture.pipe(blobWriteStream)
   })
+}
+
+function done(err, row) {
+  if (err) return console.error('Could not store the Bob photo!', err)
   
-  function done(err, row) {
-    if (err) return console.error('Could not store the Bob photo!', err)
-    
-    console.log('Stored the Bob photo', row)
-  }
+  console.log('Stored the Bob photo', row)
 }
 ```
 
 Running the above code should produce:
 
 ```
-$ node 04-blob-write.js 
+$ node 04-blob-write.js
 Stored the Bob photo { key: 'Bob',
   version: 3,
   age: 4,
   type: 'White fur',
-  blobs: { 
-    'bob.png': { 
+  blobs: {
+    'bob.png': {
       hash: 'acb21f0603649973c264019c1699dbe93af9c7f102134aabb8155d04870a95b4',
       size: 170741
     }
@@ -219,7 +219,7 @@ function ready(err) {
 Running this should output:
 
 ```
-$ node 05-get-old-version.js 
+$ node 05-get-old-version.js
 { key: 'Bob', version: 1, age: 3, type: 'White fur' }
 ```
 
@@ -247,7 +247,7 @@ function ready(err) {
 Running the above should result in:
 
 ```
-$ node 06-get-all-versions.js 
+$ node 06-get-all-versions.js
 [ { key: 'Bob', version: 1, age: 3, type: 'White fur' },
   { key: 'Bob', version: 2, age: 4, type: 'White fur' },
   { key: 'Bob',
