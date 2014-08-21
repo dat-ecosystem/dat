@@ -18,10 +18,9 @@ function ready(err) {
     
     bobPicture.pipe(blobWriteStream)
   })
+}
+function done(err, row) {
+  if (err) return console.error('Could not store the Bob photo!', err)
   
-  function done(err, row) {
-    if (err) return console.error('Could not store the Bob photo!', err)
-    
-    console.log('Stored the Bob photo', row)
-  }
+  console.log('Stored the Bob photo', row)
 }

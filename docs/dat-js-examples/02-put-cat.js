@@ -12,10 +12,9 @@ function ready(err) {
   
   // dat will store our cat data and call `done` when it finishes
   dat.put(cat, done)
+}
+function done(err, row) {
+  if (err) return console.error('Could not store Bob!', err)
   
-  function done(err, row) {
-    if (err) return console.error('Could not store Bob!', err)
-    
-    console.log('Stored Bob', row)
-  }
+  console.log('Stored Bob', row)
 }
