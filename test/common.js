@@ -2,6 +2,7 @@ var os = require('os')
 var path = require('path')
 var rimraf = require('rimraf')
 var concat = require('concat-stream')
+var debug = require('debug')('dat.test-common')
 
 var datPath = path.join(__dirname, '..')
 var Dat = require(datPath)
@@ -26,6 +27,16 @@ module.exports = function() {
     }
   
     var dat2
+    
+    var leveldown = process.env['DAT_LEVELDOWN']
+    var leveldownPath = process.env['DAT_LEVELDOWN_PATH']
+    if (leveldown) {
+      opts.leveldown = {
+        module: leveldown,
+        path: leveldownPath
+      }
+      debug('using DAT_TEST_LEVELDOWN', opts.leveldown)
+    }
   
     var datPath = opts.datPath || dat1tmp
     var dat = new Dat(datPath, opts, function ready(err) {
