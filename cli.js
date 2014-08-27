@@ -2,7 +2,6 @@
 
 var path = require('path')
 var Dat = require('./')
-var cli = require('./lib/parse-cli.js')
 var minimist = require('minimist')
 var EOL = require('os').EOL
 var url = require('url')
