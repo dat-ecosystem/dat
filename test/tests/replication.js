@@ -221,7 +221,7 @@ module.exports.pushReplication = function(test, common) {
       function putPushCompare(doc, cb) {
         dat.put(doc, function(err, doc) {
           if (err) throw err
-          dat.push({remote: 'http://localhost:' + dat2port, quiet: true}, function(err) {
+          dat.push('http://localhost:' + dat2port, { quiet: true}, function(err) {
             if (err) throw err
             common.compareData(t, dat, dat2, function() {
               cb()
@@ -271,7 +271,7 @@ module.exports.pushReplicationURLNormalize = function(test, common) {
       function putPushCompare(doc, cb) {
         dat.put(doc, function(err, doc) {
           if (err) throw err
-          dat.push({remote: 'localhost:' + dat2port, quiet: true}, function(err) {
+          dat.push('localhost:' + dat2port, { quiet: true}, function(err) {
             if (err) throw err
             common.compareData(t, dat, dat2, function() {
               cb()
@@ -303,7 +303,7 @@ module.exports.remoteClone = function(test, common) {
         if (err) throw err
         var dat2 = new Dat(common.dat2tmp, { init: false }, function ready() {
           var remote = 'http://localhost:' + dat.options.port
-          dat2.clone({ remote: remote, quiet: true }, function(err) {
+          dat2.clone(remote, { quiet: true }, function(err) {
             t.notOk(err, 'no err on clone')
             verify(dat2)
           })
@@ -337,7 +337,7 @@ module.exports.skimClone = function(test, common) {
           t.notOk(err, 'no blob write err')
           var dat2 = new Dat(common.dat2tmp, { init: false }, function ready() {
             var remote = 'http://localhost:' + dat.options.port
-            dat2.clone({ remote: remote, path: common.dat2tmp, quiet: true, skim: true }, function(err) {
+            dat2.clone(remote, { path: common.dat2tmp, quiet: true, skim: true }, function(err) {
               t.notOk(err, 'no err on clone')
               verify(dat2)
             })
