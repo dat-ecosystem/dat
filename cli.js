@@ -10,15 +10,17 @@ var fs = require('fs')
 var path = require('path')
 var debug = require('debug')('dat.cli')
 
-var defaultMessage = "Usage: dat <command> [<args>]" + EOL + EOL + "Enter 'dat help' for help"
 var argv = minimist(process.argv.slice(2), {boolean: true})
+var first = argv._[0] || ''
+
+var defaultMessage = "Usage: dat <command> [<args>]" + EOL + EOL + "Enter 'dat help' for help"
+var badMessage = ['Command not found: ' + first, '', defaultMessage].join(EOL)
 
 var onerror = function(err) {
   console.error('Error: '+err.message)
   process.exit(2)
 }
 
-var first = argv._[0] || ''
 
 var bin = {
   cat: './bin/cat',
@@ -34,13 +36,43 @@ var bin = {
 }
 
 if (!bin.hasOwnProperty(first)) {
-  console.error(defaultMessage)
+  console.error(badMessage)
   process.exit(1)
 }
 
-var dat = Dat(argv.path || '.', {init:false}, function(err) {
+var dir = (first === 'clone' && argv._[2]) || argv.path || '.' // leaky
+
+var dat = Dat(dir, {init:false}, function(err) {
   if (err) return onerror(err)
-  require(bin[first])(dat, argv, function(err) {
+
+  var execCommand = function(err) {
     if (err) return onerror(err)
-  })
+    require(bin[first])(dat, argv, function(err) {
+      if (err) return onerror(err)
+      close()
+    })
+  }
+
+  if (first !== 'listen' && !dat.rpcClient) return dat.listen(argv.port, argv, execCommand)
+  execCommand()
 })
+
+function close() {
+  // if _server exists it means dat is the rpc server
+  if (dat._server) {
+    // since the server process can't exit yet we must manually close stdout
+    stdout.end()
+
+    // if there aren't any active connections then we can close the server
+    if (dat.connections.sockets.length === 0) dat.close()
+
+    // otherwise wait for the current connections to close
+    dat.connections.on('idle', function() {
+      debug('dat close due to idle')
+      dat.close()
+    })
+
+  } else {
+    dat.close()
+  }
+}
