@@ -81,7 +81,7 @@
     "sleep-ref": "^1.1.0",
     "speedometer": "^0.1.2",
     "stdout": "0.0.3",
-    "stdout-stream": "~1.2.0",
+    "stdout-stream": "^1.3.0",
     "stream-splicer": "^1.1.0",
     "through2": "^0.6.1",
     "write-transform-read": "^1.0.0"
