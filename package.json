@@ -46,7 +46,7 @@
     "end-of-stream": "^1.0.0",
     "execspawn": "^0.2.0",
     "extend": "~1.2.1",
-    "fs-blob-store": "^4.0.2",
+    "content-addressable-blob-store": "^4.0.2",
     "getport": "~0.1.0",
     "hacker-deps": "^0.1.1",
     "head-stream": "~0.0.4",

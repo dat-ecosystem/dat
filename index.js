@@ -196,7 +196,7 @@ function readDefaults(paths, opts, cb) {
     data.adminUser = opts.adminUser || data.adminUser
     data.adminPass = opts.adminPass || data.adminPass
 
-    data.blobs = normalizeModule(opts.blobs || data.blobs, 'fs-blob-store')
+    data.blobs = normalizeModule(opts.blobs || data.blobs, 'content-addressable-blob-store')
     data.replicator = normalizeModule(opts.replicator || data.replicator, 'dat-replicator')
     data.leveldown = normalizeModule(opts.leveldown || data.leveldown, 'leveldown-prebuilt')
     data.transformations = opts.transformations || data.transformations || {}
