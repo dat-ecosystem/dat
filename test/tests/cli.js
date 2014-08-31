@@ -115,10 +115,10 @@ module.exports.listenEmptyDir = function(test, common) {
         t.notOk(err, 'no err')
         var dat = spawn(datCliPath, ['listen'], {cwd: common.dat1tmp})
         
-        getFirstOutput(dat.stdout, verify)
+        getFirstOutput(dat.stderr, verify)
         
         function verify(output) {
-          var gotError = output.indexOf('You are not in a dat folder') > -1
+          var gotError = output.indexOf('There is no dat here') > -1
           t.ok(gotError, 'got error')
           if (!gotError) console.log('Output:', output)
           kill(dat.pid)

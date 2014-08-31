@@ -5,7 +5,6 @@ var eos = require('end-of-stream')
 module.exports = function(dat, opts, cb) {
   if (!opts) opts = {}
   if (!opts.f && !opts.json) opts.json = true
-  if (!dat.db) return cb(new Error('There is no dat here'))
 
   var readStream = dat.createReadStream(opts)
 

@@ -41,6 +41,7 @@ if (!bin.hasOwnProperty(first)) {
 }
 
 var dir = (first === 'clone' && argv._[2]) || argv.path || '.' // leaky
+var initing = (first === 'init' || first === 'clone')
 
 var dat = Dat(dir, {init:false}, function(err) {
   if (err) return onerror(err)
@@ -53,6 +54,7 @@ var dat = Dat(dir, {init:false}, function(err) {
     })
   }
 
+  if (!dat.db && !initing) return onerror(new Error('There is no dat here'))
   if (first !== 'listen' && !dat.rpcClient) return dat.listen(argv.port, argv, execCommand)
   execCommand()
 })
