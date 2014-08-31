@@ -50,7 +50,7 @@ var dat = Dat(dir, {init:false}, function(err) {
     if (err) return onerror(err)
     require(bin[first])(dat, argv, function(err) {
       if (err) return onerror(err)
-      close()
+      setImmediate(close)
     })
   }
 
