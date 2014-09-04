@@ -36,3 +36,9 @@ To learn about how replication works in detail check out [our replication guide]
 To help build data pipelines with dat we have a complementary tool called [gasket](https://github.com/datproject/gasket).
 
 The best way to learn about gasket is to do the [data-plumber](https://www.npmjs.org/package/data-plumber) workshop.
+
+## Beginner tutorials about technologies used by dat
+
+ - [Node](https://github.com/maxogden/art-of-node#the-art-of-node)
+ - [RESTful Interface](http://stackoverflow.com/questions/671118/what-exactly-is-restful-programming)
+ - [Command Line](http://learncodethehardway.org/cli/book/cli-crash-course.html)
