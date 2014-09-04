@@ -11,6 +11,7 @@ var winSpawn = require('win-spawn')
 var through = require('through2')
 var kill = require('tree-kill')
 var rimraf = require('rimraf')
+var runSerially = require('run-series')
 
 var nodeCmd = process.execPath
 var timeout = 20000
@@ -198,6 +199,94 @@ module.exports.importCSV = function(test, common) {
   })
 }
 
+module.exports.blobs = function(test, common) {
+  test('CLI dat blobs get && dat blobs put', function(t) {
+    if (common.rpc) return t.end()
+    common.destroyTmpDats(function() {
+      mkdirp(common.dat1tmp, function(err) {
+        t.notOk(err, 'no err')
+        
+        runSerially([
+          function(cb) {
+            var dat = spawn(datCliPath, ['init', '--no-prompt'], {cwd: common.dat1tmp, env: process.env})
+            getFirstOutput(dat.stdout, function(output) {
+              var success = (output.indexOf('Initialized dat store') > -1)
+              if (!success) console.log(['output:', output])
+              t.ok(success, 'output matches')
+              cb()
+            })
+          },
+          function(cb) {
+            var dat = spawn(datCliPath, ['blobs'], {cwd: common.dat1tmp, env: process.env})
+            getFirstOutput(dat.stderr, verify)
+        
+            function verify(output) {
+              var success = (output.indexOf('Command not found: blobs') > -1)
+              if (!success) console.log(['output:', output])
+              t.ok(success, 'output matches')
+              kill(dat.pid)
+              cb()
+            }
+          },
+          function(cb) {
+            var dat = spawn(datCliPath, ['blobs', 'get', 'foo', 'dat.json'], {cwd: common.dat1tmp, env: process.env})
+            getFirstOutput(dat.stderr, verify)
+        
+            function verify(output) {
+              var success = (output.indexOf('Key not found') > -1)
+              if (!success) console.log(['output:', output])
+              t.ok(success, 'output matches')
+              kill(dat.pid)
+              cb()
+            }
+          },
+          function(cb) {
+            var dat = spawn(datCliPath, ['blobs', 'put', 'foo', '--name=pizza.jpg'], {cwd: common.dat1tmp, env: process.env})
+            getFirstOutput(dat.stdout, verify)
+        
+            function verify(output) {
+              var success = (output.indexOf('using STDIN as input') > -1)
+              if (!success) console.log(['output:', output])
+              t.ok(success, 'output matches')
+              kill(dat.pid)
+              cb()
+            }
+          },
+          function(cb) {
+            var dat = spawn(datCliPath, ['blobs', 'put', 'foo', 'dat.json'], {cwd: common.dat1tmp, env: process.env})
+            getFirstOutput(dat.stdout, verify)
+        
+            function verify(output) {
+              var success = (output.indexOf('Attached blob successfully to foo') > -1)
+              if (!success) console.log(['output:', output])
+              t.ok(success, 'output matches')
+              kill(dat.pid)
+              cb()
+            }
+          },
+          function(cb) {
+            var dat = spawn(datCliPath, ['blobs', 'get', 'foo', 'dat.json'], {cwd: common.dat1tmp, env: process.env})
+            getFirstOutput(dat.stdout, verify)
+        
+            function verify(output) {
+              var success = (output[0] === '{')
+              if (!success) console.log(['output:', output])
+              t.ok(success, 'output matches')
+              kill(dat.pid)
+              cb()
+            }
+          }
+        ], function(err) {
+          common.destroyTmpDats(function() {
+            t.end()
+          })
+        })
+                
+      })
+    })
+  })
+}
+
 module.exports.badCommand = function(test, common) {
   test('CLI dat command that doesnt exist', function(t) {
     common.destroyTmpDats(function() {
@@ -293,6 +382,7 @@ module.exports.all = function (test, common) {
   module.exports.listenEmptyDir(test, common)
   module.exports.listenPort(test, common)
   module.exports.importCSV(test, common)
+  module.exports.blobs(test, common)
   module.exports.badCommand(test, common)
   module.exports.clone(test, common)
   module.exports.cloneDir(test, common)

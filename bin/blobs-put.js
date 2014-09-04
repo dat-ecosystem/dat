@@ -22,11 +22,13 @@ module.exports = function(dat, opts, cb) {
       cb()
     })
     
-    if (blob === '-' || !isTTY) {
-      console.log('No blob file specified, using STDIN as input\n')
+    if (blob && blob !== '-') {
+      fs.createReadStream(blob).pipe(ws)
+    } else if (blob === '-' || !isTTY) {
+      console.log('No blob file specified, using STDIN as input')
       process.stdin.pipe(ws)
     } else {
-      fs.createReadStream(blob).pipe(ws)
+      ws.destroy(new Error('No blob data was supplied'))
     }
   })
 }
