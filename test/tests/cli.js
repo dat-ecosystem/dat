@@ -141,7 +141,7 @@ module.exports.listenPort = function(test, common) {
         getFirstOutput(dat.stdout, verify)
         
         function verify(output) {
-          var dat2 = spawn(datCliPath, ['listen', '9000'], {cwd: common.dat1tmp, env: process.env})
+          var dat2 = spawn(datCliPath, ['listen', '--port=9000'], {cwd: common.dat1tmp, env: process.env})
           getFirstOutput(dat2.stdout, verify2)
           
           function verify2(output2) {
