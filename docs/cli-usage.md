@@ -51,6 +51,18 @@ echo $'a,b,c\n1,2,3' | dat import --csv --primary=a
 echo $'{"foo":"bar"}' | dat import --json --primary=foo
 ```
 
+## attach a blob to a row
+
+```
+dat blobs put jingles jingles-cat-photo-01.png
+```
+
+## stream a blob from a row
+
+```
+dat blobs get jingles jingles-cat-photo-01.png
+```
+
 ## start a dat server
 
 ```

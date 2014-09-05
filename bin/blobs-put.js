@@ -6,19 +6,23 @@ var isTTY = tty.isatty(0)
 
 module.exports = function(dat, opts, cb) {
   var args = opts._.slice(2)
-  var usage = 'Usage: dat blobs put <row> [file-path-to-read] [--name=blob-name-to-use-as-key]'
+  var usage = 'Usage: dat blobs put <row> [file-path-to-read] [--name=blob-name-to-use-as-key] [--version=row-version-to-update]'
   if (args.length === 0) return cb(new Error(usage))
   var key = args[0]
   var blob = args[1]
   if (!opts.name && !blob) return cb(new Error('Must either specify a blob name (--name) to use or a filename. ' + usage))
   var row = { key: key }
+  var version = opts.version || opts.v
   
-  dat.get(key, { version: opts.version || opts.v }, function(err, existing) {
-    if (existing) row = existing
+  dat.get(key, { version: version }, function(err, existing) {
+    if (existing) {
+      if (!version) return cb(new Error('Conflict: Row already exists but no version was specified.'))
+      row = existing
+    }
     var blobKey = opts.name || path.basename(blob)
     var ws = dat.createBlobWriteStream(blobKey, row, function(err, updated) {
       if (err) return cb(err)
-      console.log('Attached blob successfully to', updated.key)
+      console.log('Attached ' + blobKey + ' successfully to', updated.key)
       cb()
     })
     

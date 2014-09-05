@@ -257,7 +257,7 @@ module.exports.blobs = function(test, common) {
             getFirstOutput(dat.stdout, verify)
         
             function verify(output) {
-              var success = (output.indexOf('Attached blob successfully to foo') > -1)
+              var success = (output.indexOf('Attached dat.json successfully to foo') > -1)
               if (!success) console.log(['output:', output])
               t.ok(success, 'output matches')
               kill(dat.pid)
@@ -270,6 +270,30 @@ module.exports.blobs = function(test, common) {
         
             function verify(output) {
               var success = (output[0] === '{')
+              if (!success) console.log(['output:', output])
+              t.ok(success, 'output matches')
+              kill(dat.pid)
+              cb()
+            }
+          },
+          function(cb) {
+            var dat = spawn(datCliPath, ['blobs', 'put', 'foo', 'dat.json', '--name=dat2.json'], {cwd: common.dat1tmp, env: process.env})
+            getFirstOutput(dat.stderr, verify)
+        
+            function verify(output) {
+              var success = (output.indexOf('Conflict') > -1)
+              if (!success) console.log(['output:', output])
+              t.ok(success, 'output matches')
+              kill(dat.pid)
+              cb()
+            }
+          },
+          function(cb) {
+            var dat = spawn(datCliPath, ['blobs', 'put', 'foo', 'dat.json', '--name=dat2.json', '--version=1'], {cwd: common.dat1tmp, env: process.env})
+            getFirstOutput(dat.stdout, verify)
+        
+            function verify(output) {
+              var success = (output.indexOf('Attached dat2.json successfully to foo') > -1)
               if (!success) console.log(['output:', output])
               t.ok(success, 'output matches')
               kill(dat.pid)
