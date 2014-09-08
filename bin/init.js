@@ -8,7 +8,8 @@ module.exports = function(dat, opts, cb) {
       if (err) return cb(err)
       dat.init(opts, function(err, path) {
         if (err) return cb(err)
-        console.log('Initialized dat store at '+path)
+        console.log('Initialized dat store at ' + path)
+        cb()
       })
     })
   })
