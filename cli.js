@@ -49,8 +49,8 @@ if (!bin.hasOwnProperty(first) && !bin.hasOwnProperty(cmd)) {
   process.exit(1)
 }
 
-var dir = (cmd === 'clone' && argv._[2]) || argv.path || '.' // leaky
-var initing = (cmd === 'init' || cmd === 'clone')
+var dir = (first === 'clone' && (argv._[2] || toFolder(argv._[1]))) || argv.path || '.' // leaky
+var initing = (first === 'init' || first === 'clone')
 
 var dat = Dat(dir, {init: false}, function(err) {
   if (err) return onerror(err)
@@ -67,6 +67,11 @@ var dat = Dat(dir, {init: false}, function(err) {
   if (first !== 'listen' && !dat.rpcClient) return dat.listen(argv.port, argv, execCommand)
   execCommand()
 })
+
+function toFolder(dir) {
+  if (!dir) return dir
+  return dir.replace(/^.*\/\//, '').replace(/[\/:].*$/, '')
+}
 
 function close() {
   // if _server exists it means dat is the rpc server
