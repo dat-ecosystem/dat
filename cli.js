@@ -31,7 +31,8 @@ var bin = {
   "clone": './bin/clone',
   "listen": './bin/listen',
   "blobs get": "./bin/blobs-get",
-  "blobs put": "./bin/blobs-put"
+  "blobs put": "./bin/blobs-put",
+  "rows get": "./bin/rows-get"
 }
 
 var argv = minimist(process.argv.slice(2), {boolean: true})
