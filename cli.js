@@ -10,52 +10,68 @@ var fs = require('fs')
 var path = require('path')
 var debug = require('debug')('dat.cli')
 
-var argv = minimist(process.argv.slice(2), {boolean: true})
-var first = argv._[0] || ''
-
-var defaultMessage = "Usage: dat <command> [<args>]" + EOL + EOL + "Enter 'dat help' for help"
-var badMessage = ['Command not found: ' + first, '', defaultMessage].join(EOL)
-
 var onerror = function(err) {
-  console.error('Error: '+err.message)
+  console.error('Error: ' + err.message)
   process.exit(2)
 }
 
+// rules:
+// a 1 part command and a 2 part command can't share the same first part
+// e.g. if 'dat cat' exists you can't add 'dat cat dog'
 
 var bin = {
-  cat: './bin/cat',
-  export: './bin/cat',
-  import: './bin/import',
-  init: './bin/init',
-  help: './bin/help',
-  version: './bin/version',
-  pull: './bin/pull',
-  push: './bin/push',
-  clone: './bin/clone',
-  listen: './bin/listen'
+  "cat": './bin/cat',
+  "export": './bin/cat',
+  "import": './bin/import',
+  "init": './bin/init',
+  "help": './bin/help',
+  "version": './bin/version',
+  "pull": './bin/pull',
+  "push": './bin/push',
+  "clone": './bin/clone',
+  "listen": './bin/listen',
+  "blobs get": "./bin/blobs-get",
+  "blobs put": "./bin/blobs-put"
 }
 
-if (!bin.hasOwnProperty(first)) {
+var argv = minimist(process.argv.slice(2), {boolean: true})
+var first = argv._[0] || ''
+var second = argv._[1] || ''
+
+var cmd = first
+if (!bin.hasOwnProperty(first)) cmd = first + ' ' + second
+
+var defaultMessage = "Usage: dat <command> [<args>]" + EOL + EOL + "Enter 'dat help' for help"
+var badMessage = ['Command not found: ' + cmd, '', defaultMessage].join(EOL)
+
+if (!bin.hasOwnProperty(first) && !bin.hasOwnProperty(cmd)) {
   console.error(badMessage)
   process.exit(1)
 }
 
-var dir = (first === 'clone' && argv._[2]) || argv.path || '.' // leaky
+var dir = (first === 'clone' && (argv._[2] || toFolder(argv._[1]))) || argv.path || '.' // leaky
+var initing = (first === 'init' || first === 'clone')
 
-var dat = Dat(dir, {init:false}, function(err) {
+var dat = Dat(dir, {init: false}, function(err) {
   if (err) return onerror(err)
 
   var execCommand = function(err) {
     if (err) return onerror(err)
-    require(bin[first])(dat, argv, function(err) {
+    require(bin[cmd])(dat, argv, function(err) {
       if (err) return onerror(err)
-      close()
+      setImmediate(close)
     })
   }
 
+  if (!dat.db && !initing) return onerror(new Error('There is no dat here'))
   if (first !== 'listen' && !dat.rpcClient) return dat.listen(argv.port, argv, execCommand)
   execCommand()
 })
+
+function toFolder(dir) {
+  if (!dir) return dir
+  return dir.replace(/^.*\/\//, '').replace(/[\/:].*$/, '')
+}
 
 function close() {
   // if _server exists it means dat is the rpc server
