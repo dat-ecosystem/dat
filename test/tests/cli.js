@@ -312,7 +312,7 @@ module.exports.blobs = function(test, common) {
 }
 
 module.exports.rows = function(test, common) {
-  test('CLI dat rows get', function(t) {
+  test('CLI dat rows get && dat rows delete', function(t) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
@@ -392,6 +392,66 @@ module.exports.rows = function(test, common) {
               var success = (output.indexOf('Key not found') > -1)
               if (!success) console.log(['output:', output])
               t.ok(success, 'version does not exist')
+              kill(dat.pid)
+              cb()
+            }
+          },
+          function(cb) {
+            var dat = spawn(datCliPath, ['rows', 'delete'], {cwd: common.dat1tmp, env: process.env})
+            getFirstOutput(dat.stderr, verify)
+        
+            function verify(output) {
+              var success = (output.indexOf('Usage') > -1)
+              if (!success) console.log(['output:', output])
+              t.ok(success, 'rows delete usage')
+              kill(dat.pid)
+              cb()
+            }
+          },
+          function(cb) {
+            var dat = spawn(datCliPath, ['rows', 'delete', 'notexisting'], {cwd: common.dat1tmp, env: process.env})
+            getFirstOutput(dat.stderr, verify)
+        
+            function verify(output) {
+              var success = (output.indexOf('Key not found') > -1)
+              if (!success) console.log(['output:', output])
+              t.ok(success, 'rows delete with nonexisting key')
+              kill(dat.pid)
+              cb()
+            }
+          },
+          function(cb) {
+            var dat = spawn(datCliPath, ['rows', 'delete', 'food'], {cwd: common.dat1tmp, env: process.env})
+            getFirstOutput(dat.stdout, verify)
+        
+            function verify(output) {
+              var success = (output.indexOf('marked as deleted') > -1)
+              if (!success) console.log(['output:', output])
+              t.ok(success, 'rows delete')
+              kill(dat.pid)
+              cb()
+            }
+          },
+          function(cb) {
+            var dat = spawn(datCliPath, ['rows', 'get', 'food'], {cwd: common.dat1tmp, env: process.env})
+            getFirstOutput(dat.stderr, verify)
+        
+            function verify(output) {
+              var success = (output.indexOf('Key was deleted') > -1)
+              if (!success) console.log(['output:', output])
+              t.ok(success, 'key does not exist after deleting')
+              kill(dat.pid)
+              cb()
+            }
+          },
+          function(cb) {
+            var dat = spawn(datCliPath, ['rows', 'get', 'food', 1], {cwd: common.dat1tmp, env: process.env})
+            getFirstOutput(dat.stdout, verify)
+        
+            function verify(output) {
+              var success = (output.indexOf('bacon') > -1)
+              if (!success) console.log(['output:', output])
+              t.ok(success, 'old versions are not deleted')
               kill(dat.pid)
               cb()
             }
