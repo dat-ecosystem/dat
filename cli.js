@@ -29,6 +29,7 @@ var bin = {
   "pull": './bin/pull',
   "push": './bin/push',
   "clone": './bin/clone',
+  "serve": './bin/listen',
   "listen": './bin/listen',
   "blobs get": "./bin/blobs-get",
   "blobs put": "./bin/blobs-put"
