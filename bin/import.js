@@ -13,7 +13,7 @@ module.exports = function(dat, opts, cb) {
   var input = null
 
   if (filename === '-' || (!filename && !isTTY)) { // TODO: reevaluate the !isTTY thing
-    console.log('No import file specified, using STDIN as input\n')
+    if (!opts.quiet) console.log('No import file specified, using STDIN as input\n')
     input = process.stdin
   } else if (filename) {
     input = fs.createReadStream(filename)

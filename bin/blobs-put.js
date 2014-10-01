@@ -29,7 +29,7 @@ module.exports = function(dat, opts, cb) {
     if (blob && blob !== '-') {
       fs.createReadStream(blob).pipe(ws)
     } else if (blob === '-' || !isTTY) {
-      console.log('No blob file specified, using STDIN as input')
+      if (!opts.quiet) console.log('No blob file specified, using STDIN as input')
       process.stdin.pipe(ws)
     } else {
       ws.destroy(new Error('No blob data was supplied'))
