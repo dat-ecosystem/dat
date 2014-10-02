@@ -20,7 +20,7 @@ module.exports = function (dat, opts, cb) {
     try {
       var data = JSON.parse(content)
     } catch(e) {
-      cb(new Error('Could not parse JSON: ' + e.message))
+      return cb(new Error('Could not parse JSON: ' + e.message))
     }
     if(key) data.key = key
     dat.put(data, function (err, row) {
