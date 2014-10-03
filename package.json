@@ -48,7 +48,6 @@
     "extend": "~1.2.1",
     "content-addressable-blob-store": "^4.0.2",
     "getport": "~0.1.0",
-    "hacker-deps": "^0.1.1",
     "head-stream": "~0.0.4",
     "isnumber": "^1.0.0",
     "json-protobuf-encoding": "^1.0.1",
