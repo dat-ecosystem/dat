@@ -12,7 +12,7 @@ module.exports = function(dat, opts, cb) {
   var filename = opts._[1]
   var input = null
 
-  if (filename === '-' || (!filename && !isTTY)) { // TODO: reevaluate the !isTTY thing
+  if (filename === '-' || (!filename && !isTTY) || opts.stdin) { // TODO: reevaluate the !isTTY thing
     if (!opts.quiet) console.log('No import file specified, using STDIN as input\n')
     input = process.stdin
   } else if (filename) {
