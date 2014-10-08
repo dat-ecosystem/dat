@@ -8,6 +8,7 @@ var url = require('url')
 var stdout = require('stdout-stream')
 var fs = require('fs')
 var path = require('path')
+var rimraf = require('rimraf')
 var debug = require('debug')('dat.cli')
 
 var onerror = function(err) {
@@ -28,6 +29,7 @@ var bin = {
   "version": './bin/version',
   "pull": './bin/pull',
   "push": './bin/push',
+  "clean": './bin/clean',
   "clone": './bin/clone',
   "serve": './bin/listen',
   "listen": './bin/listen',
