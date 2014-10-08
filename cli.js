@@ -50,12 +50,12 @@ var defaultMessage = "Usage: dat <command> [<args>]" + EOL + EOL + "Enter 'dat h
 var badMessage = ['Command not found: ' + cmd, '', defaultMessage].join(EOL)
 
 if (!bin.hasOwnProperty(first) && !bin.hasOwnProperty(cmd)) {
-  console.error(badMessage)
+  console.error(first ? badMessage : defaultMessage)
   process.exit(1)
 }
 
 var dir = (first === 'clone' && (argv._[2] || toFolder(argv._[1]))) || argv.path || '.' // leaky
-var initing = (first === 'init' || first === 'clone')
+var noDat = (first === 'init' || first === 'clone' || first === 'version' || first === 'help')
 
 var dat = Dat(dir, {init: false}, function(err) {
   if (err) return onerror(err)
@@ -68,7 +68,7 @@ var dat = Dat(dir, {init: false}, function(err) {
     })
   }
 
-  if (!dat.db && !initing) return onerror(new Error('There is no dat here'))
+  if (!dat.db && !noDat) return onerror(new Error('There is no dat here'))
   if (first !== 'listen' && !dat.rpcClient) return dat.listen(argv.port, argv, execCommand)
   execCommand()
 })
