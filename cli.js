@@ -33,7 +33,6 @@ var bin = {
   "clone": './bin/clone',
   "serve": './bin/listen',
   "listen": './bin/listen',
-  "serve": "./bin/listen",
   "blobs get": "./bin/blobs-get",
   "blobs put": "./bin/blobs-put",
   "rows get": "./bin/rows-get",
