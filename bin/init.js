@@ -3,7 +3,7 @@ var read = require('read')
 
 module.exports = function(dat, opts, cb) {
   dat.exists(opts, function(exists) {
-    if (exists) return cb(new Error('A dat store already exists here'))
+    if (exists) return cb(new Error('Skipping dat init because there is already a dat here'))
     prompt(function(err) {
       if (err) return cb(err)
       dat.init(opts, function(err, path) {

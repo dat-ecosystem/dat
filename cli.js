@@ -64,7 +64,11 @@ var dat = Dat(dir, {init: false}, function(err) {
   var execCommand = function(err) {
     if (err) return onerror(err)
     require(bin[cmd])(dat, argv, function(err) {
-      if (err) return onerror(err)
+      if (err) {
+        if (cmd === 'init') {
+          process.exit(0)
+        }
+      } return onerror(err)
       setImmediate(close)
     })
   }
