@@ -7,12 +7,13 @@ module.exports = function (dat, opts, cb) {
   var key = opts.key || opts.k
   var file = args[0]
   
-  if(file) {
+  if(file && file !== '-') {
     fs.readFile(file, function (err, content) {
       if(err) return cb(err)
       putRow(content)
     })
   } else {
+    if (!opts.quiet) console.log('No JSON file specified, using STDIN as input')
     process.stdin.pipe(concat(putRow))
   }
   
