@@ -44,6 +44,14 @@ use a custom value separator:
 cat some_tsv.tsv | dat import --csv --separator $'\t'
 ```
 
+## stream NDJSON into dat
+
+You can pipeline Newline Delimited JSON ([NDJSON](http://ndjson.org/)) into dat on stdin and it will be stored
+
+```
+cat foo.ndjson | dat import --json
+```
+
 ## specify a primary key to use
 
 ```
@@ -61,6 +69,18 @@ dat blobs put jingles jingles-cat-photo-01.png
 
 ```
 dat blobs get jingles jingles-cat-photo-01.png
+```
+
+## add a row from a JSON file
+
+```
+dat rows put burrito-recipe.json
+```
+
+## get a single row by key
+
+```
+dat rows get burrito
 ```
 
 ## start a dat server
@@ -94,15 +114,7 @@ dat push http://localhost:6461
 ## delete the dat folder (removes all data + history)
 
 ```
-rm -rf .dat
-```
-
-## dat import
-
-you can pipe line separated JSON data into dat on stdin and it will be stored
-
-```
-cat foo.line-separated-json-objects | dat import --json
+dat clean
 ```
 
 ## view raw data in the store
