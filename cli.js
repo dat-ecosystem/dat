@@ -68,7 +68,8 @@ var dat = Dat(dir, {init: false}, function(err) {
         if (cmd === 'init') {
           process.exit(0)
         }
-      } return onerror(err)
+      return onerror(err)
+      }
       setImmediate(close)
     })
   }
