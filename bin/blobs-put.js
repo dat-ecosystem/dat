@@ -20,9 +20,11 @@ module.exports = function(dat, opts, cb) {
       row = existing
     }
     var blobKey = opts.name || path.basename(blob)
-    var ws = dat.createBlobWriteStream(blobKey, row, function(err, updated) {
+    var options = { filename:blobKey, version:version }
+
+    var ws = dat.createBlobWriteStream(options, row, function(err, updated) {
       if (err) return cb(err)
-      console.log('Attached ' + blobKey + ' successfully to', updated.key)
+      console.log('Attached ' + options.filename + ' successfully to', updated.key)
       cb()
     })
     
