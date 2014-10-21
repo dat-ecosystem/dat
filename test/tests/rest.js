@@ -440,11 +440,19 @@ module.exports.changes = function(test, common) {
           var changeReq = request({uri: 'http://localhost:' + dat.options.port + '/api/changes', json: true})
           changeReq.pipe(ldj.parse()).pipe(concat(collect))
           function collect(rows) {
-            t.equal(rows.length, 3, '3 objects returned') // 2 docs + 1 schmea
+            t.equal(rows.length, 3, '3 objects returned') // 2 docs + 1 schema
             t.ok(rows[0].key, 'row 1 has a key')
             t.ok(rows[1].key, 'row 2 has a key')
             t.ok(rows[2].key, 'row 3 has a key')
-            cleanup()
+            
+            // tail=2 to get last 2 changes
+            var changeReq2 = request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true', json: true})
+            changeReq2.pipe(ldj.parse()).pipe(concat(collect2))
+            function collect2(rows) {
+              t.equal(rows.length, 1, '1 object returned') // latest doc
+              t.equal(rows[0].value.a, '4', 'row 1 is correct')
+              cleanup()
+            }
           }
         })
       })
