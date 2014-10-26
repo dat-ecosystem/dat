@@ -66,6 +66,7 @@ var dat = Dat(dir, {init: false}, function(err) {
     require(bin[cmd])(dat, argv, function(err) {
       if (err) {
         if (cmd === 'init') {
+          console.error(err.message)
           process.exit(0)
         }
         return onerror(err)

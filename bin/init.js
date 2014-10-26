@@ -18,7 +18,7 @@ module.exports = function(dat, opts, cb) {
     if (opts.prompt === false) return cb()
 
     ask([
-      {name: 'name', default: path.basename(process.cwd())},
+      {name: 'name', default: dat.options.name || path.basename(process.cwd())},
       {name: 'description', default: dat.options.description},
       {name: 'publisher', default: dat.options.publisher}
     ], cb)
