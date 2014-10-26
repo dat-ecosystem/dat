@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "6.8.2",
+  "version": "6.8.3",
   "description": "real-time replication and versioning for data sets (tabular and blobs)",
   "preferGlobal": true,
   "keywords": [
