@@ -10,7 +10,9 @@ Windows        | Mac/Linux
 
 **The Dat Alpha release is out now**. [Read the announcement post here](docs/dat-stable-alpha.md).
 
-We recommend reading the [getting started guide](docs/getting-started.md).
+We have prepared an in-browser workshop for learning dat. You can try it out here: [http://maxogden.github.io/get-dat](http://maxogden.github.io/get-dat)
+
+We also recommend reading the [getting started guide](docs/getting-started.md).
 
 ## Deploy to heroku
 
