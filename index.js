@@ -31,37 +31,37 @@ function noop() {}
 
 function Dat(dir, opts, onReady) {
   var self = this
-  
+
   // if 'new' was not used
   if (!(this instanceof Dat)) return new Dat(dir, opts, onReady)
-  
+
   if (typeof dir === 'function') {
     onReady = dir
     opts = {}
     dir = process.cwd()
   }
-  
+
   if (typeof dir === 'object') {
     onReady = opts
     opts = dir
     dir = process.cwd()
   }
-  
+
   if (typeof opts === 'function') {
     onReady = opts
     opts = {}
   }
-  
+
   if (typeof opts === 'undefined') opts = {}
-  
+
   if (!onReady) onReady = function(){}
-  
+
   // TODO figure out more descriptive names/API for these
   // read dat dir but don't init empty database
   if (typeof opts.init === 'undefined') opts.init = true
   // read dat dir but don't read database
   if (typeof opts.storage === 'undefined') opts.storage = true
-  
+
   this.version = datVersion
   this.stats = stats()
   this.lockRetries = 0
@@ -74,7 +74,7 @@ function Dat(dir, opts, onReady) {
   this.startImport = noop
 
   var paths = this.paths(dir)
-  
+
   debug('options', JSON.stringify(opts))
 
   var toHook = function(hook) {
@@ -96,7 +96,7 @@ function Dat(dir, opts, onReady) {
       var p = data.blobs.env ? process.env[data.blobs.env] : data.blobs.path || paths.blobs
       data.blobs = data.blobs.module(extend({path: p}, data.blobs))
     }
-    
+
     self.beforePut = toTransform(data.transformations.put)
     self.afterGet = toTransform(data.transformations.get)
     self.listenHook = toHook(data.hooks.listen)
@@ -141,7 +141,7 @@ function Dat(dir, opts, onReady) {
       })
     })
   }
-  
+
   function init() {
     commands._ensureExists({ path: dir }, function (err) {
       if (err) {
@@ -156,8 +156,8 @@ function Dat(dir, opts, onReady) {
   function readPort(portPath, cb) {
     getPort.readPort(portPath, function(err, port) {
       if (err) return cb(err)
-      var adminu = self.options.adminUser || process.env["DAT_ADMIN_USER"]
-      var adminp = self.options.adminPass || process.env["DAT_ADMIN_PASS"]
+      var adminu = self.options.adminUser
+      var adminp = self.options.adminPass
       var creds = ''
       if (adminu && adminp) creds = adminu + ':' + adminp + '@'
       var datAddress = 'http://' + creds + '127.0.0.1:' + port
@@ -194,8 +194,8 @@ function readDefaults(paths, opts, cb) {
   readDatJSON(paths.package, function(err, data) {
     if (err) return cb(err)
 
-    data.adminUser = opts.adminUser || data.adminUser
-    data.adminPass = opts.adminPass || data.adminPass
+    data.adminUser = opts.adminUser || data.adminUser || process.env["DAT_ADMIN_USER"]
+    data.adminPass = opts.adminPass || data.adminPass || process.env["DAT_ADMIN_PASS"]
 
     data.blobs = normalizeModule(opts.blobs || data.blobs, 'content-addressable-blob-store')
     data.replicator = normalizeModule(opts.replicator || data.replicator, 'dat-replicator')
@@ -207,7 +207,7 @@ function readDefaults(paths, opts, cb) {
     if (typeof data.remotes === 'string') data.remotes = {origin:{url:data.remotes}}
     if (typeof opts.remote === 'string') data.remotes.origin = {url:opts.remote}
     if (typeof (opts.remote && opts.remote.origin) === 'string') data.remotes.origin = {url:data.remotes.origin}
-    
+
     var transformations = normalizeTransformations(opts)
 
     data.transformations.get = transformations.get || data.transformations.get

@@ -32,6 +32,7 @@
     "concat-stream": "~1.4.3",
     "connections": "~1.0.0",
     "content-addressable-blob-store": "^4.0.2",
+    "cookie-auth": "0.0.2",
     "cookie-cutter": "^0.1.1",
     "corsify": "~1.0.2",
     "csv-parser": "^1.2.1",
