@@ -24,10 +24,6 @@ This is a small utility stream for buffering all the output from a stream into o
 
 We wrote this to keep track of active HTTP connections to the dat HTTP server.
 
-## [content-addressable-store](http://npmjs.org/content-addressable-store)
-
-This module implements a similar on-disk content addressable object store to git. We use it as the default backend for the dat blob store.
-
 ## [cookie-cutter](http://npmjs.org/cookie-cutter)
 
 A really nice small module for reading cookies from HTTP requests
@@ -119,6 +115,10 @@ We wrote this to replace the stock `leveldown` module with one that would use pr
 ## [lexicographic-integer](http://npmjs.org/lexicographic-integer)
 
 Used to encode/decode integers into a lexicographically sortable representation, useful for auto-incrementing numbers in LevelDB indexes.
+
+## [local-blob-store](http://npmjs.org/local-blob-store)
+
+This module implements a similar on-disk content addressable object store to git. We use it as the default backend for the dat blob store, but you can use anything that supports the [abstract-blob-store](http://npmjs.org/abstract-blob-store) API.
 
 ## [multibuffer](http://npmjs.org/multibuffer)
 
