@@ -50,7 +50,7 @@
     "end-of-stream": "^1.0.0",
     "execspawn": "^0.2.0",
     "extend": "~1.2.1",
-    "format-data": "^1.0.0",
+    "format-data": "^1.0.1",
     "getport": "~0.1.0",
     "head-stream": "~0.0.4",
     "isnumber": "^1.0.0",
