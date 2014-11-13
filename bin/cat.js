@@ -7,7 +7,7 @@ var pump = require('pump')
 
 module.exports = function(dat, opts, cb) {
   if (!opts) opts = {}
-  if (!opts.f && !opts.json) opts.json = true
+  if(!opts.format) opts.format = 'ndjson'
 
   var readStream = dat.createReadStream(opts)
 
