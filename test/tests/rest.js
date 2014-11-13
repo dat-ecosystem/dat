@@ -2,26 +2,41 @@ var request = require('request').defaults({json: true})
 var parallel = require('run-parallel')
 var concat = require('concat-stream')
 var ldj = require('ldjson-stream')
+var fs = require('fs')
+var path = require('path')
 
 module.exports.restHello = function(test, common) {
   test('rest get /api returns metadata', function(t) {
     if (common.rpc) return t.end()
-    common.getDat(t, function(dat, cleanup) {
-      dat.put({foo: 'bar'}, function(err, stored) {
-        if (err) throw err
-        request('http://localhost:' + dat.options.port + '/api', function(err, res, json) {
-          t.false(err, 'no error')
-          verify(json)
-          cleanup()
+    var opts = {
+      name: 'imatestdat',
+      description: 'This is a description',
+      publisher: 'cat@imadat.com'
+    }
+    var datPath = path.join(common.dat1tmp, 'dat.json')
+    fs.mkdir(common.dat1tmp)
+    fs.writeFile(datPath, JSON.stringify(opts), function (err) {
+      if (err) throw err
+      common.getDat(t, function(dat, cleanup) {
+        dat.put({foo: 'bar'}, function(err, stored) {
+          if (err) throw err
+          request('http://localhost:' + dat.options.port + '/api', function(err, res, json) {
+            t.false(err, 'no error')
+            verify(json)
+            cleanup()
+          })
+
+          function verify(json) {
+            t.ok(json.dat, 'has .dat')
+            t.ok(json.version, 'has .version')
+            t.equal(json.changes, 2, 'has 2 changes')
+            t.equal(json.rows, 1, 'has 1 row')
+            t.equal(json.name, opts.name, 'has a name')
+            t.equal(json.publisher, opts.publisher, 'has a publisher')
+            t.equal(json.description, opts.description, 'has a description')
+            t.ok(json.approximateSize.rows, 'has approximate doc size')
+          }
         })
-        
-        function verify(json) {
-          t.ok(json.dat, 'has .dat')
-          t.ok(json.version, 'has .version')
-          t.equal(json.changes, 2, 'has 2 changes')
-          t.equal(json.rows, 1, 'has 1 row')
-          t.ok(json.approximateSize.rows, 'has approximate doc size')
-        }
       })
     })
   })

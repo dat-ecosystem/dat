@@ -18,6 +18,8 @@ Returns JSON about this dat. Example:
   version: "5.0.5",
   changes: 1031142,
   name: "nextbus",
+  description: "Nextbus dataset",
+  publisher: "maxogden",
   rows: 1031142,
   approximateSize: {
     rows: "174.94 MB"
@@ -27,7 +29,7 @@ Returns JSON about this dat. Example:
 
 - `version` is the dat version from dat's package.json
 - `changes` is the latest change sequence number (used for replication)
-- `name` is taken from the dat.json name field if present
+- `name`, `description`, and `publisher` are taken from the dat.json name field if present
 - `rows` is the number of rows in the dat tabular store
 
 ## GET /api/rows
