@@ -2,6 +2,7 @@ var request = require('request').defaults({json: true})
 var parallel = require('run-parallel')
 var concat = require('concat-stream')
 var ldj = require('ndjson')
+var csv = require('csv-parser')
 var fs = require('fs')
 var path = require('path')
 
@@ -440,7 +441,7 @@ module.exports.jsonExportLimit = function(test, common) {
 }
 
 module.exports.changes = function(test, common) {
-  test('GET /api/changes returns ndjson change data', function(t) {
+  test('GET /api/changes various requests', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
@@ -452,31 +453,90 @@ module.exports.changes = function(test, common) {
       
       post.on('response', function(resp) {
         resp.on('end', function() {
-          var changeReq = request({uri: 'http://localhost:' + dat.options.port + '/api/changes?format=ndjson'})
-          changeReq.pipe(ldj.parse()).pipe(concat(collect))
-          function collect(rows) {
-            t.equal(rows.length, 3, '3 objects returned') // 2 docs + 1 schema
-            t.ok(rows[0].key, 'row 1 has a key')
-            t.ok(rows[1].key, 'row 2 has a key')
-            t.ok(rows[2].key, 'row 3 has a key')
-            
-            // tail=2 to get last 2 changes
-            var changeReq2 = request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true&format=ndjson'})
-            changeReq2.pipe(ldj.parse()).pipe(concat(collect2))
-            function collect2(rows) {
-              t.equal(rows.length, 1, '1 object returned') // latest doc
-              t.equal(rows[0].value.a, '4', 'row 1 is correct')
-              cleanup()
+          
+          parallel([
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes', json: true}, function (err, res, json) {
+                if(err) throw err
+                var rows = json.rows
+                t.equal(rows.length, 3, '3 objects returned') // 2 docs + 1 schema
+                t.ok(rows[0].key, 'row 1 has a key')
+                t.ok(rows[1].key, 'row 2 has a key')
+                t.ok(rows[2].key, 'row 3 has a key')
+                cb()
+              })
+
+            },
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true', json: true}, function (err, res, json) {
+                if(err) throw err
+                formatTest(cb, 'style=object (default)', json.rows)
+              })
+            },
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true&style=array', json: true}, function (err, res, rows) {
+                if(err) throw err
+                formatTest(cb, 'style=array', rows)
+              })
+            },
+            function(cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes?format=csv'})
+                .pipe(csv())
+                .pipe(concat(function (rows) {
+                    // not testing values because csv-write-stream doesn't support
+                    // objects as keys yet
+                    t.equal(rows.length, 3, 'format=csv, 3 objects returned') // 2 docs + 1 schema
+                    t.ok(rows[0].key, 'format=csv, row 1 has a key')
+                  cb()
+                }))
+            },
+            function(cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true&format=ndjson'})
+                .pipe(ldj.parse())
+                .pipe(concat(formatTest.bind(null, cb, 'format=ndjson')))
+            },
+            function(cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true&style=newline'})
+                .pipe(ldj.parse())
+                .pipe(concat(formatTest.bind(null, cb, 'style=newline (legacy)')))
+            },
+            function(cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true&format=sse'})
+                .pipe(concat(sseTest.bind(null, cb, 'format=sse')))
+            },
+            function(cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true&style=sse'})
+                .pipe(concat(sseTest.bind(null, cb, 'style=sse (legacy)')))
             }
+            ], function (err) {
+              cleanup()
+            })
+            
+          
+          function formatTest(cb, type, rows) {
+            t.equal(rows.length, 1, type + ', 1 object returned') // latest doc
+            t.equal(rows[0].value.a, '4', type + ', row 1 is correct')
+            cb()
           }
+
+          function sseTest(cb, type, sse) {
+            var lines = sse.toString().split('\n')
+            t.equal(lines[0], 'event: data', type + ', correct event')
+            var row = JSON.parse(lines[1].slice('data: '.length))
+            t.equal(row.value.a, '4', type + ', row 1 is correct')
+            cb()
+          }
+
         })
       })
     })
   })
+  
+  
 }
 
 module.exports.changesLiveTail = function(test, common) {
-  test('GET /api/changes?tail=true&live=true&data=true returns only new data', function(t) {
+  test('GET /api/changes?tail=true&live=true&data=true returns only new data and switches to ndjson', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       
@@ -491,7 +551,7 @@ module.exports.changesLiveTail = function(test, common) {
       }
       
       insert('key,name\n1,bob\n2,sue', function() {
-        var changeReq = request({uri: 'http://localhost:' + dat.options.port + '/api/changes?live=true&tail=true&data=true', json: true})
+        var changeReq = request({uri: 'http://localhost:' + dat.options.port + '/api/changes?live=true&tail=true&data=true'})
         changeReq.pipe(ldj.parse()).pipe(concat(collect))
         insert('key,name\n3,bill\n4,sally', function() {
           setTimeout(function() {
