@@ -440,7 +440,7 @@ module.exports.jsonExportLimit = function(test, common) {
 }
 
 module.exports.changes = function(test, common) {
-  test('GET /api/changes returns ldjson change data', function(t) {
+  test('GET /api/changes returns ndjson change data', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
@@ -452,7 +452,7 @@ module.exports.changes = function(test, common) {
       
       post.on('response', function(resp) {
         resp.on('end', function() {
-          var changeReq = request({uri: 'http://localhost:' + dat.options.port + '/api/changes', json: true})
+          var changeReq = request({uri: 'http://localhost:' + dat.options.port + '/api/changes?format=ndjson'})
           changeReq.pipe(ldj.parse()).pipe(concat(collect))
           function collect(rows) {
             t.equal(rows.length, 3, '3 objects returned') // 2 docs + 1 schema
@@ -461,7 +461,7 @@ module.exports.changes = function(test, common) {
             t.ok(rows[2].key, 'row 3 has a key')
             
             // tail=2 to get last 2 changes
-            var changeReq2 = request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true', json: true})
+            var changeReq2 = request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true&format=ndjson'})
             changeReq2.pipe(ldj.parse()).pipe(concat(collect2))
             function collect2(rows) {
               t.equal(rows.length, 1, '1 object returned') // latest doc
