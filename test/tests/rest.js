@@ -431,6 +431,18 @@ module.exports.jsonExportFormats = function (test, common) {
         cb()
       }
       
+      function sseTest(cb, msg, err, res, body) {
+        if(err) throw err
+        var chunks = body.split('\n\n').slice(0, 2)
+        t.ok(chunks.every(function (chunk) {
+          return chunk.slice(0, 'event: data'.length) === 'event: data'
+        }), 'format=sse, correct sse message headers')
+        var rows = chunks.map(function (chunk) {
+          return JSON.parse(chunk.slice('event: data\ndata: '.length))
+        })
+        commonFormatTest(cb, msg, rows)
+      }
+      
       post.on('response', function (resp) {
         resp.on('end', function () {
           parallel([
@@ -438,6 +450,12 @@ module.exports.jsonExportFormats = function (test, common) {
               request({uri: 'http://localhost:' + dat.options.port + '/api/rows?format=json', json: true}, function(err, res, json) {
                 if (err) throw err
                 commonFormatTest(cb, 'format=json', json.rows)
+              })
+            },
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/rows', headers: {'Accept': 'application/json'} ,json: true}, function(err, res, json) {
+                if (err) throw err
+                commonFormatTest(cb, 'accept:application/json', json.rows)
               })
             },
             function (cb) {
@@ -452,22 +470,21 @@ module.exports.jsonExportFormats = function (test, common) {
                 .pipe(concat(commonFormatTest.bind(null, cb, 'format=csv')))
             },
             function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/rows', headers: {'Accept': 'text/csv'}})
+                .pipe(csv())
+                .pipe(concat(commonFormatTest.bind(null, cb, 'accept:text/csv')))
+            },
+            function (cb) {
               request({uri: 'http://localhost:' + dat.options.port + '/api/rows?format=ndjson'})
                 .pipe(ldj.parse())
                 .pipe(concat(commonFormatTest.bind(null, cb, 'format=ndjson')))
             },
             function (cb) {
-              request({uri: 'http://localhost:' + dat.options.port + '/api/rows?format=sse'}, function (err, res, body) {
-                if(err) throw err
-                var chunks = body.split('\n\n').slice(0, 2)
-                t.ok(chunks.every(function (chunk) {
-                  return chunk.slice(0, 'event: data'.length) === 'event: data'
-                }), 'format=sse, correct sse message headers')
-                var rows = chunks.map(function (chunk) {
-                  return JSON.parse(chunk.slice('event: data\ndata: '.length))
-                })
-                commonFormatTest(cb, 'format=sse', rows)
-              })
+              request({uri: 'http://localhost:' + dat.options.port + '/api/rows?format=sse'}, sseTest.bind(null, cb, 'format=sse'))
+            },
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/rows', headers: {'Accept': 'text/event-stream'}}, 
+                sseTest.bind(null, cb, 'accept:text/event-stream'))
             }
             ], function (err) {
               cleanup()
