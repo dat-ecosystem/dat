@@ -18,6 +18,8 @@ Returns JSON about this dat. Example:
   version: "5.0.5",
   changes: 1031142,
   name: "nextbus",
+  description: "Nextbus dataset",
+  publisher: "maxogden",
   rows: 1031142,
   approximateSize: {
     rows: "174.94 MB"
