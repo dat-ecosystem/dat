@@ -28,6 +28,8 @@ Returns JSON about this dat. Example:
 - `version` is the dat version from dat's package.json
 - `changes` is the latest change sequence number (used for replication)
 - `name` is taken from the dat.json name field if present
+- `description` is taken from the dat.json description field if present
+- `publisher` is taken from the dat.json publisher field if present
 - `rows` is the number of rows in the dat tabular store
 
 ## GET /api/rows
