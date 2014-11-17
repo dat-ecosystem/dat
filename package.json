@@ -78,6 +78,7 @@
     "read": "^1.0.5",
     "request": "~2.27.0",
     "resolve": "^0.7.1",
+    "rest-format-opts": "^1.0.0",
     "rimraf": "^2.2.8",
     "routes-router": "~1.5.3",
     "single-line-log": "^0.3.1",
