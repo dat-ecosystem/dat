@@ -5,6 +5,7 @@ var eos = require('end-of-stream')
 var through = require('through2')
 var pump = require('pump')
 var EOL = require('os').EOL
+var path = require('path')
 
 var isTTY = tty.isatty(0)
 
@@ -16,6 +17,11 @@ module.exports = function(dat, opts, cb) {
     if (!opts.quiet) console.log('No import file specified, using STDIN as input\n')
     input = process.stdin
   } else if (filename) {
+    if(!(opts.json || opts.csv)) {
+      var ending = path.extname(filename)
+      if(ending === '.json') opts.json = true
+      else if(ending === '.csv') opts.csv = true
+    }
     input = fs.createReadStream(filename)
   }
 
