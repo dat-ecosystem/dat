@@ -2,7 +2,7 @@ var stdout = require('stdout-stream')
 var multistream = require('multistream')
 var eos = require('end-of-stream')
 var through = require('through2')
-var ldj = require('ldjson-stream')
+var ldj = require('ndjson')
 var pump = require('pump')
 
 module.exports = function(dat, opts, cb) {
