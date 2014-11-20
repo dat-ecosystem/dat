@@ -42,6 +42,7 @@
     "dat-replicator": "^3.2.1",
     "debug": "~0.7.4",
     "debug-stream": "^2.0.0",
+    "detect-csv": "^1.0.0",
     "detect-json-style": "^1.0.1",
     "duplexer2": "0.0.2",
     "duplexify": "^3.1.2",
