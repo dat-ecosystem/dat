@@ -14,7 +14,7 @@ module.exports = function(dat, opts, cb) {
   var input = null
 
   if (filename === '-' || (!filename && !isTTY) || opts.stdin) { // TODO: reevaluate the !isTTY thing
-    if (!opts.quiet) console.log('No import file specified, using STDIN as input\n')
+    if (!opts.quiet) console.error('No import file specified, using STDIN as input\n')
     input = process.stdin
   } else if (filename) {
     if(!(opts.json || opts.csv)) {
@@ -31,6 +31,15 @@ module.exports = function(dat, opts, cb) {
   if (format) opts[format] = true
 
   var writer = dat.createWriteStream(opts)
+  
+  writer.on('detect', function (detected) {
+    var detectInfo = 'Parsing detected format ' + detected.format
+    if(detected.format === 'csv')
+      detectInfo += ' with separator "' + detected.separator + '"'
+    else if(detected.format === 'json')
+      detectInfo += ' in ' + detected.style + ' style'
+    if (!opts.quiet) console.error(detectInfo)
+  })
 
   if (opts.results) writer.pipe(resultPrinter())
   else if (!opts.quiet) log(writer, 'Parsed', 'Done')
