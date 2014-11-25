@@ -93,7 +93,7 @@ On the command line you can easily import newline-delimited JSON (one JSON objec
 
 #### Data Importer Modules
 
-These are special types of modules that can can automatically use to run data import jobs.
+These are special types of modules that one can automatically use to run data import jobs.
 
 You can use the `dat.json` config file to [transform data](https://github.com/maxogden/dat/blob/master/docs/dat-json-config.md#transformations) or register automatic data import scripts using [hooks](https://github.com/maxogden/dat/blob/master/docs/dat-json-config.md#hooks). 
 
