@@ -672,6 +672,147 @@ module.exports.keepTotalRowCount = function(test, common) {
   })
 }
 
+module.exports.detectInputType = function (test, common) {
+  test('detect csv input', function (t) {
+    common.getDat(t, function (dat, done) {
+      var ws = dat.createWriteStream({quiet: true})
+      var formatData = {}
+      ws.once('detect', function (data) {
+        formatData = data
+      })
+
+      ws.on('finish', function() {
+        var cat = dat.createReadStream()
+        cat.pipe(concat(function(data) {
+          t.equals(formatData.format, 'csv', 'csv format')
+          t.equals(formatData.separator, ',', 'comma separator')
+          t.equals(data[0].a, '1', 'first row')
+          t.equals(data[1].b, '5', 'second row')
+          done()
+        }))
+      })
+
+      ws.write(bops.from('a,b,c\n1,2,3\n4,5,6'))
+      ws.end()
+    })
+  })
+  
+  test('detect json input (array style)', function (t) {
+    common.getDat(t, function (dat, done) {
+      var ws = dat.createWriteStream({quet: true})
+      var formatData = {}
+      ws.on('detect', function (data) {
+        formatData = data
+      })
+      
+      ws.on('finish', function () {
+        var cat = dat.createReadStream()
+        cat.pipe(concat(function (data) {
+          t.equals(formatData.format, 'json', 'json format')
+          t.equals(formatData.style, 'array', 'array style')
+          t.equals(data[0].a, 1, 'first row')
+          t.equals(data[1].a, 2, 'second row')
+          done()
+        }))
+      })
+      
+      ws.write(bops.from(JSON.stringify([{a: 1}, {a: 2}])))
+      ws.end()
+    })
+  })
+
+  test('detect json input (object style)', function (t) {
+    common.getDat(t, function (dat, done) {
+      var ws = dat.createWriteStream({quet: true})
+      var formatData = {}
+      ws.on('detect', function (data) {
+        formatData = data
+      })
+      
+      ws.on('finish', function () {
+        var cat = dat.createReadStream()
+        cat.pipe(concat(function (data) {
+          t.equals(formatData.format, 'json', 'json format')
+          t.equals(formatData.style, 'object', 'object style')
+          t.equals(formatData.selector, 'rows.*', 'correct selector')
+          t.equals(data[0].a, 1, 'first row')
+          t.equals(data[1].a, 2, 'second row')
+          done()
+        }))
+      })
+      
+      ws.write(bops.from(JSON.stringify({rows: [{a: 1}, {a: 2}]})))
+      ws.end()
+    })
+  })
+
+  test('detect json input (multiline style)', function (t) {
+    common.getDat(t, function (dat, done) {
+      var ws = dat.createWriteStream({quet: true})
+      var formatData = {}
+      ws.on('detect', function (data) {
+        formatData = data
+      })
+      
+      ws.on('finish', function () {
+        var cat = dat.createReadStream()
+        cat.pipe(concat(function (data) {
+          t.equals(formatData.format, 'json', 'json format')
+          t.equals(formatData.style, 'multiline', 'multiline style')
+          t.equals(data[0].a, 1, 'first row')
+          t.equals(data[1].a, 2, 'second row')
+          done()
+        }))
+      })
+      
+      ws.write(bops.from(JSON.stringify({a: 1})))
+      ws.write(bops.from(JSON.stringify({a: 2})))
+      ws.end()
+    })
+  })
+
+  test('detect json input (object style cutoff)', function (t) {
+    common.getDat(t, function (dat, done) {
+      var ws = dat.createWriteStream({quet: true, detectMax: 20})
+      var formatData = {}
+      ws.on('detect', function (data) {
+        formatData = data
+      })
+      
+      ws.on('finish', function () {
+        var cat = dat.createReadStream()
+        cat.pipe(concat(function (data) {
+          t.equals(formatData.format, 'json', 'json format')
+          t.equals(formatData.style, 'object', 'object style')
+          t.equals(formatData.selector, 'rows.*', 'correct selector')
+          t.equals(data[0].a, 1, 'first row')
+          t.equals(data[1].a, 2, 'second row')
+          done()
+        }))
+      })
+      var testBuffer = bops.from(JSON.stringify({rows: [{a: 1}, {a: 2}]}))
+      ws.write(testBuffer.slice(0,20))
+      ws.write(testBuffer.slice(20))
+      ws.end()
+    })
+  })
+
+  test('err message when unable to detect input', function (t) {
+    common.getDat(t, function (dat, done) {
+      var ws = dat.createWriteStream({quet: true})
+      var formatData = {}
+      ws.on('error', function (err) {
+        t.ok(err.message.indexOf('ould not auto detect') > 0,
+        'could not auto detect err message')
+        done()
+      })
+
+      ws.write(bops.from('undetectable'))
+      ws.end()
+    })
+  })
+}
+
 module.exports.all = function (test, common) {
   module.exports.blobWriteStream(test, common)
   module.exports.blobReadStream(test, common)
@@ -698,4 +839,5 @@ module.exports.all = function (test, common) {
   module.exports.writeStreamMultipleWithRandomKeys(test, common)
   module.exports.multipleCSVWriteStreamsChangingSchemas(test, common)
   module.exports.keepTotalRowCount(test, common)
+  module.exports.detectInputType(test, common)
 }
