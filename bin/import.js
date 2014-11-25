@@ -31,7 +31,10 @@ module.exports = function(dat, opts, cb) {
   if (format) opts[format] = true
 
   var writer = dat.createWriteStream(opts)
-  var logs = []
+
+  if (opts.results) writer.pipe(resultPrinter())
+  else if (!opts.quiet && !isTTY) var logger = log(writer, 'Parsed', 'Done')
+
   writer.on('detect', function (detected) {
     var detectInfo = 'Parsing detected format ' + detected.format
     if(detected.format === 'csv')
@@ -39,11 +42,8 @@ module.exports = function(dat, opts, cb) {
     else if(detected.format === 'json')
       detectInfo += ' in ' + detected.style + ' style'
     if(opts.results) console.error(detectInfo)
-    else if (!opts.quiet) logs.push(detectInfo)
+    else if (!opts.quiet) logger.log(detectInfo)
   })
-
-  if (opts.results) writer.pipe(resultPrinter())
-  else if (!opts.quiet) log(writer, 'Parsed', 'Done', logs)
 
   pump(input, writer, cb)
 }
