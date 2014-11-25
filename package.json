@@ -25,6 +25,7 @@
   "license": "BSD",
   "dependencies": {
     "JSONStream": "^0.8.2",
+    "animate-tty": "git://github.com/finnp/animate-tty",
     "ansimd": "0.0.1",
     "basic": "~0.0.1",
     "bops": "~0.1.0",
