@@ -42,7 +42,7 @@ module.exports = function(dat, opts, cb) {
     else if(detected.format === 'json')
       detectInfo += ' in ' + detected.style + ' style'
     if(opts.results) console.error(detectInfo)
-    else if (!opts.quiet) logger.log(detectInfo)
+    else if (logger) logger.log(detectInfo)
   })
 
   pump(input, writer, cb)
