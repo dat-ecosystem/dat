@@ -1,7 +1,7 @@
 var request = require('request').defaults({json: true})
 var parallel = require('run-parallel')
 var concat = require('concat-stream')
-var ldj = require('ldjson-stream')
+var ldj = require('ndjson')
 var fs = require('fs')
 var path = require('path')
 

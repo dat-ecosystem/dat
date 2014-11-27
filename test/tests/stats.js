@@ -3,7 +3,7 @@ var path = require('path')
 var request = require('request').defaults({json: true})
 var parallel = require('run-parallel')
 var concat = require('concat-stream')
-var ldj = require('ldjson-stream')
+var ldj = require('ndjson')
 
 module.exports.rest = function(test, common) {
   test('collects rest stats', function(t) {

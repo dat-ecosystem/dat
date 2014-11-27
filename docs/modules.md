@@ -88,7 +88,7 @@ This streaming JSON parser/stringifier is really nice for working with JSON data
 dat.createValueStream().pipe(jsonStream.stringify('{"rows": [\n', '\n,\n', '\n]}\n')).pipe(res)
 ```
 
-## [ldjson-stream](http://npmjs.org/ldjson-stream)
+## [ndjson](http://npmjs.org/ndjson)
 
 We wrote this to make working with streams of Line Delimited JSON easy.
 
