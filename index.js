@@ -220,6 +220,7 @@ function readDefaults(paths, opts, cb) {
     if (opts.remotes) data.remotes.origin = opts.remotes.origin
 
     data.port = opts.port || data.port || 6461
+    data.hostname = opts.hostname || data.hostname
     data.skim = opts.skim || data.skim
 
     cb(null, data)
