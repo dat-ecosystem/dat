@@ -403,8 +403,12 @@ module.exports.jsonExport = function(test, common) {
       
       post.on('response', function(resp) {
         resp.on('end', function() {
-          request({uri: 'http://localhost:' + dat.options.port + '/api/rows', json: true}, function(err, res, json) {
+          // json: false, because request will set accept headers otherwise and we want to check defaults
+          request({uri: 'http://localhost:' + dat.options.port + '/api/rows', json: false}, function(err, res, data) {
             if (err) throw err
+            var json
+            try { json = JSON.parse(data) } 
+            catch(e) { t.fail('json parsing error') }
             t.equal(json.rows.length, 2, '2 objects returned')
             t.equal(json.rows[0]['a'], '1', 'data matches')
             cleanup()
@@ -536,8 +540,11 @@ module.exports.changes = function(test, common) {
           
           parallel([
             function (cb) {
-              request({uri: 'http://localhost:' + dat.options.port + '/api/changes', json: true}, function (err, res, json) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes', json: false}, function (err, res, data) {
                 if(err) throw err
+                var json
+                try { json = JSON.parse(data) } 
+                catch(e) { t.fail('json parsing error') }
                 var rows = json.rows
                 t.equal(rows.length, 3, '3 objects returned') // 2 docs + 1 schema
                 t.ok(rows[0].key, 'row 1 has a key')
