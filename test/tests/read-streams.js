@@ -6,6 +6,7 @@ var concat = require('concat-stream')
 var os = require('os')
 var protobuf = require('protocol-buffers')
 var json = require('json-protobuf-encoding')
+var ndjson = require('ndjson')
 
 var proto = function(sch) {
   return protobuf(sch, {encodings:{json:json()}}).Row
@@ -272,24 +273,82 @@ module.exports.createReadStreamStartEndKeys = function(test, common) {
   })
 }
 
-module.exports.createReadStreamCSV = function(test, common) {
-  test('createReadStream csv', function(t) {
-    common.getDat(t, function(dat, done) {
-      var ws = dat.createWriteStream({ csv: true, primary: 'a', quiet: true })
-    
-      ws.on('finish', function() {
-        var readStream = dat.createReadStream({ csv: true })
-        readStream.pipe(concat(function(data) {
+module.exports.createReadStreamFormats = function (test, common) {
+  test('createReadStream json', function (t) {
+    common.getDat(t, function (dat, done) {
+      var ws = dat.createWriteStream({primary: 'a', quiet: true})
+      ws.on('finish', csvFormat)
+      ws.write({a: 1})
+      ws.write({a: 2})
+      ws.write({a: 3})
+      ws.end()
+      
+      function csvFormat() {
+        var rs = dat.createReadStream({ csv: true })
+        rs.pipe(concat(function(data) {
           var rows = data.split('\n')
-          t.equal(rows[0].split(',').length, 3)
-          t.equal(rows[1].split(',').length, 3)
-          t.equal(rows.length, 7)
+          t.equal(rows[0].split(',').length, 3, 'csv header')
+          t.equal(rows[1].split(',').length, 3, 'csv first row')
+          t.equal(rows.length, 5, 'csv length')
+          jsonStyleObject()
+        }))
+      }
+      
+      function jsonStyleObject() {
+        var rs = dat.createReadStream({format: 'json'})
+        rs.pipe(concat(function (data) {
+          var json = JSON.parse(data)
+          t.equals(json.rows.length, 3, 'json object style length')
+          t.equals(json.rows[0].a, 1, 'json object style data')
+          t.equals(Object.keys(json.rows[0]).length, 3, 'json object style keys')
+          jsonStyleArray()
+        }))
+      }
+      
+      function jsonStyleArray() {
+        var rs = dat.createReadStream({format: 'json', style: 'array'})
+        rs.pipe(concat(function (data) {
+          var json = JSON.parse(data)
+          t.equals(json.length, 3, 'json array style length')
+          t.equals(json[0].a, 1, 'json array style data')
+          t.equals(Object.keys(json[0]).length, 3, 'json object style keys')
+          ndjsonFormat()
+        }))
+      }
+      
+      function ndjsonFormat() {
+        var rs = dat.createReadStream({format: 'ndjson'})
+        rs.pipe(ndjson.parse()).pipe(concat(function (json) {
+          t.equals(json.length, 3, 'ndjson length')
+          t.equals(json[0].a, 1, 'ndjson first row data')
+          t.equals(Object.keys(json[0]).length, 3, 'ndjson first row keys')
+          sseFormat()
+        }))
+      }
+      
+      function sseFormat() {
+        var rs = dat.createReadStream({format: 'sse'})
+        rs.pipe(concat(function (data) {
+          var rows = data.split('\n\n')
+          t.equals(rows.length, 4, 'sse length')
+          var row = rows[0].split('event: data\ndata: ')
+          t.equals(row.length, 2, 'sse header')
+          var json = {}
+          try { json = JSON.parse(row[1]) } catch(e) { t.fail(e.message)}
+          t.equals(json.a, 1, 'sse first row data')
+          t.equals(Object.keys(json).length, 3, 'sse first row keys')
           done()
         }))
-      })
-    
-      ws.write(bops.from('a\n1\n2\n3\n4\n5'))
-      ws.end()
+      }
+      
+    })
+  })
+}
+
+module.exports.createReadStreamNDJSON = function (test, common) {
+  test('createReadStream ndjson', function (t) {
+    common.getDat(t, function (dat, done) {
+      
     })
   })
 }
@@ -342,6 +401,6 @@ module.exports.all = function (test, common) {
   module.exports.changesStreamTailNum(test, common)
   module.exports.createReadStream(test, common)
   module.exports.createReadStreamStartEndKeys(test, common)
-  module.exports.createReadStreamCSV(test, common)
+  module.exports.createReadStreamFormats(test, common)
   module.exports.createVersionStream(test, common)
 }
