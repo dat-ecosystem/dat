@@ -38,7 +38,7 @@ if (process.env['RPC']) {
 }
 
 if (specificTestFile) {
-  var testModule = require('./' + path.relative(__dirname, specificTestFile))
+  var testModule = require(path.resolve(__dirname, 'tests', specificTestFile))
   if (specificTest) testModule[specificTest](test, common)
   else testModule.all(test, common)
 } else {
