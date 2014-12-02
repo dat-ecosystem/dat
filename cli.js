@@ -10,10 +10,11 @@ var fs = require('fs')
 var path = require('path')
 var rimraf = require('rimraf')
 var debug = require('debug')('dat.cli')
+var exit = require('exit')
 
 var onerror = function(err) {
   console.error('Error: ' + err.message)
-  process.exit(2)
+  exit(2)
 }
 
 // rules:
@@ -52,7 +53,7 @@ var badMessage = ['Command not found: ' + cmd, '', defaultMessage].join(EOL)
 
 if (!bin.hasOwnProperty(first) && !bin.hasOwnProperty(cmd)) {
   console.error(first ? badMessage : defaultMessage)
-  process.exit(1)
+  exit(1)
 }
 
 var dir = (first === 'clone' && (argv._[2] || toFolder(argv._[1]))) || argv.path || '.' // leaky
@@ -67,7 +68,7 @@ var dat = Dat(dir, {init: false}, function(err) {
       if (err) {
         if (cmd === 'init') {
           console.error(err.message)
-          process.exit(0)
+          exit(0)
         }
         return onerror(err)
       }
