@@ -17,10 +17,16 @@ module.exports = function(dat, opts, cb) {
     if (!opts.quiet) console.error('No import file specified, using STDIN as input')
     input = process.stdin
   } else if (filename) {
-    if(!(opts.json || opts.csv)) {
+    if (!(opts.json || opts.csv)) {
       var ending = path.extname(filename)
-      if(ending === '.json') opts.json = true
-      else if(ending === '.csv') opts.csv = true
+      if (ending === '.json') {
+          opts.json = true;
+      } else if (ending === '.tsv') {
+          opts.csv = true;
+          opts.separator = '	';  // use tab separator
+      } else if (ending === '.csv') {
+          opts.csv = true;
+      }
     }
     input = fs.createReadStream(filename)
   }
@@ -37,7 +43,7 @@ module.exports = function(dat, opts, cb) {
 
   writer.on('detect', function (detected) {
     var detectInfo = 'Parsing detected format ' + detected.format
-    if(detected.format === 'csv')
+    if (detected.format === 'csv')
       detectInfo += ' with separator "' + detected.separator + '"'
     else if(detected.format === 'json')
       detectInfo += ' in ' + detected.style + ' style'

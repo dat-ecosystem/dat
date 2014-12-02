@@ -200,6 +200,43 @@ module.exports.importCSV = function(test, common) {
   })
 }
 
+module.exports.importTSV = function(test, common) {
+  test('CLI dat import tsv', function(t) {
+    common.destroyTmpDats(function() {
+      mkdirp(common.dat1tmp, function(err) {
+        t.notOk(err, 'no err')
+        initDat({cwd: common.dat1tmp, timeout: timeout, rpc: common.rpc}, function(cleanup) {
+          var testTsv = path.join(os.tmpdir(), 'test.tsv')
+          fs.writeFileSync(testTsv, 'a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9')
+          var cmd = datCmd + ' import "' + testTsv + '" --quiet --results'
+          child.exec(cmd, {timeout: timeout, cwd: common.dat1tmp}, done)
+          
+          function done(err, stdo, stde) {
+            if (process.env.DEBUG) {
+              process.stdout.write(stdo.toString())
+              process.stdout.write(stde.toString())
+            }
+            
+            t.notOk(err, 'no err')
+            t.equals(stde.toString(), '', 'empty stderr')
+            var lines = stdo.toString().split('\n')
+            var rows = []
+            lines.map(function(l) {
+              if (l !== '') rows.push(JSON.parse(l))
+            })
+            t.equal(rows.length, 3)
+            rows.map(function(r) { t.ok(r.key, 'row has key') })
+            common.destroyTmpDats(function() {
+              cleanup()
+              t.end()
+            })
+          }
+        })
+      })
+    })
+  })
+}
+
 module.exports.blobs = function(test, common) {
   test('CLI dat blobs get && dat blobs put', function(t) {
     if (common.rpc) return t.end()
@@ -602,6 +639,7 @@ module.exports.all = function (test, common) {
   module.exports.listenEmptyDir(test, common)
   module.exports.listenPort(test, common)
   module.exports.importCSV(test, common)
+  module.exports.importTSV(test, common)
   module.exports.blobs(test, common)
   module.exports.rows(test, common)
   module.exports.badCommand(test, common)
