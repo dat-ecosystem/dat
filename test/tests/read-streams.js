@@ -345,14 +345,6 @@ module.exports.createReadStreamFormats = function (test, common) {
   })
 }
 
-module.exports.createReadStreamNDJSON = function (test, common) {
-  test('createReadStream ndjson', function (t) {
-    common.getDat(t, function (dat, done) {
-      
-    })
-  })
-}
-
 module.exports.createVersionStream = function(test, common) {
   test('createVersionStream', function(t) {
     common.getDat(t, function(dat, done) {
