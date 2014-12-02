@@ -221,7 +221,7 @@ module.exports.blobs = function(test, common) {
             getFirstOutput(dat.stderr, verify)
         
             function verify(output) {
-              var success = (output.indexOf('Command not found: blobs') > -1)
+              var success = (output.indexOf('Usage: dat blobs') > -1)
               if (!success) console.log(['output:', output])
               t.ok(success, 'output matches')
               kill(dat.pid)
@@ -332,7 +332,7 @@ module.exports.rows = function(test, common) {
             getFirstOutput(dat.stderr, verify)
         
             function verify(output) {
-              var success = (output.indexOf('Command not found: rows') > -1)
+              var success = (output.indexOf('Usage: dat rows') > -1)
               if (!success) console.log(['output:', output])
               t.ok(success, 'output matches')
               kill(dat.pid)

@@ -4,8 +4,16 @@ var eos = require('end-of-stream')
 var through = require('through2')
 var ldj = require('ndjson')
 var pump = require('pump')
+var EOL = require('os').EOL
 
-module.exports = function(dat, opts, cb) {
+module.exports = cat
+
+cat.usage = [
+ 'dat cat',
+ 'stream the most recent of all rows'
+ ].join(EOL)
+
+function cat(dat, opts, cb) {
   if (!opts) opts = {}
   if (!opts.f && !opts.json) opts.json = true
 
