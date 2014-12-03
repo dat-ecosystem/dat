@@ -199,6 +199,43 @@ module.exports.importCSV = function(test, common) {
   })
 }
 
+module.exports.importCSVstdin = function(test, common) {
+  test('CLI dat import csv from stdin', function(t) {
+    common.destroyTmpDats(function() {
+      mkdirp(common.dat1tmp, function(err) {
+        t.notOk(err, 'no err')
+        initDat({cwd: common.dat1tmp, timeout: timeout, rpc: common.rpc}, function(cleanup) {
+          var cmd = datCmd + ' import --csv --quiet --results'
+          var dat = child.exec(cmd, {timeout: timeout, cwd: common.dat1tmp}, done)
+          dat.stdin.write('a,b,c\n1,2,3\n4,5,6\n7,8,9')
+          dat.stdin.end()
+
+          function done(err, stdo, stde) {
+            if (process.env.DEBUG) {
+              process.stdout.write(stdo.toString())
+              process.stdout.write(stde.toString())
+            }
+
+            t.notOk(err, 'no err')
+            t.equals(stde.toString(), '', 'empty stderr')
+            var lines = stdo.toString().split('\n')
+            var rows = []
+            lines.map(function(l) {
+              if (l !== '') rows.push(JSON.parse(l))
+            })
+            t.equal(rows.length, 3)
+            rows.map(function(r) { t.ok(r.key, 'row has key') })
+            common.destroyTmpDats(function() {
+              cleanup()
+              t.end()
+            })
+          }
+        })
+      })
+    })
+  })
+}
+
 module.exports.importTSV = function(test, common) {
   test('CLI dat import tsv', function(t) {
     common.destroyTmpDats(function() {
@@ -209,13 +246,50 @@ module.exports.importTSV = function(test, common) {
           fs.writeFileSync(testTsv, 'a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9')
           var cmd = datCmd + ' import "' + testTsv + '" --quiet --results'
           child.exec(cmd, {timeout: timeout, cwd: common.dat1tmp}, done)
-          
+
           function done(err, stdo, stde) {
             if (process.env.DEBUG) {
               process.stdout.write(stdo.toString())
               process.stdout.write(stde.toString())
             }
-            
+
+            t.notOk(err, 'no err')
+            t.equals(stde.toString(), '', 'empty stderr')
+            var lines = stdo.toString().split('\n')
+            var rows = []
+            lines.map(function(l) {
+              if (l !== '') rows.push(JSON.parse(l))
+            })
+            t.equal(rows.length, 3)
+            rows.map(function(r) { t.ok(r.key, 'row has key') })
+            common.destroyTmpDats(function() {
+              cleanup()
+              t.end()
+            })
+          }
+        })
+      })
+    })
+  })
+}
+
+module.exports.importTSVstdin = function(test, common) {
+  test('CLI dat import tsv from stdin', function(t) {
+    common.destroyTmpDats(function() {
+      mkdirp(common.dat1tmp, function(err) {
+        t.notOk(err, 'no err')
+        initDat({cwd: common.dat1tmp, timeout: timeout, rpc: common.rpc}, function(cleanup) {
+          var cmd = datCmd + ' import --tsv --quiet --results'
+          var dat = child.exec(cmd, {timeout: timeout, cwd: common.dat1tmp}, done)
+          dat.stdin.write('a\tb\tc\n1\t2\t3\n4\t5\t6\n7\t8\t9')
+          dat.stdin.end()
+
+          function done(err, stdo, stde) {
+            if (process.env.DEBUG) {
+              process.stdout.write(stdo.toString())
+              process.stdout.write(stde.toString())
+            }
+
             t.notOk(err, 'no err')
             t.equals(stde.toString(), '', 'empty stderr')
             var lines = stdo.toString().split('\n')
@@ -600,7 +674,9 @@ module.exports.all = function (test, common) {
   module.exports.listenEmptyDir(test, common)
   module.exports.listenPort(test, common)
   module.exports.importCSV(test, common)
+  module.exports.importCSVstdin(test, common)
   module.exports.importTSV(test, common)
+  module.exports.importTSVstdin(test, common)
   module.exports.blobs(test, common)
   module.exports.rows(test, common)
   module.exports.badCommand(test, common)
