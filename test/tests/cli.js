@@ -12,6 +12,7 @@ var through = require('through2')
 var kill = require('tree-kill')
 var rimraf = require('rimraf')
 var runSerially = require('run-series')
+var split = require('split')
 
 var nodeCmd = process.execPath
 var timeout = 20000
@@ -555,6 +556,44 @@ module.exports.cloneDir = function(test, common) {
   })
 }
 
+module.exports.cat = function (test, common) {
+  test('CLI dat cat --live', function (t) {
+    common.destroyTmpDats(function () {
+      mkdirp(common.dat1tmp, function (err) {
+        t.notOk(err)
+        initDat({cwd: common.dat1tmp, timeout: timeout, rpc: common.rpc}, function(cleanup) {
+          var datImport = spawn(datCliPath, ['import', '-', '--results', '--json', '--quiet'], {cwd: common.dat1tmp, env: process.env})
+          datImport.stdin.write('{"a": 1}\n')
+          
+          datImport.stdout.once('data', function () {
+            var cat = spawn(datCliPath, ['cat', '--live'], {cwd: common.dat1tmp, env: process.env})
+            var lineSplit = cat.stdout.pipe(split())
+            lineSplit.once('data', function (chunk) {
+              var row1 = JSON.parse(chunk)
+              t.equals(row1.a, 1)
+              t.equals(Object.keys(row1).length, 3)
+              lineSplit.once('data', function (chunk) {
+                var row2 = JSON.parse(chunk)
+                t.equals(row2.a, 2)
+                t.equals(Object.keys(row2).length, 3)
+                kill(cat.pid)
+                kill(datImport.pid)
+                cleanup()
+                common.destroyTmpDats(function () {
+                  t.end()  
+                })
+              })
+              datImport.stdin.write('{"a": 2}\n')
+              datImport.stdin.end()
+            })
+            
+          })
+        })
+      })
+    })
+  })
+}
+
 module.exports.all = function (test, common) {
   module.exports.spawn(test, common)
   module.exports.noArgs(test, common)
@@ -568,6 +607,7 @@ module.exports.all = function (test, common) {
   module.exports.badCommand(test, common)
   module.exports.clone(test, common)
   module.exports.cloneDir(test, common)
+  module.exports.cat(test, common)
 }
 
 function initDat(opts, cb) {
