@@ -41,7 +41,7 @@ Pass them in like this in the dat options:
 {
   "transformations": {
     "get": "transform-uppercase",
-    "put": {"module": "./lowercase-stream.js"}
+    "put": [{"module": "./lowercase-stream.js"}]
   }
 }
 ```
