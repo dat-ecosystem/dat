@@ -2,6 +2,7 @@ var request = require('request').defaults({json: true})
 var parallel = require('run-parallel')
 var concat = require('concat-stream')
 var ldj = require('ndjson')
+var csv = require('csv-parser')
 var fs = require('fs')
 var path = require('path')
 
@@ -390,7 +391,7 @@ module.exports.csvExport = function(test, common) {
 }
 
 module.exports.jsonExport = function(test, common) {
-  test('GET /api/rows returns json array', function(t) {
+  test('GET /api/rows returns json object with rows', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
@@ -402,12 +403,96 @@ module.exports.jsonExport = function(test, common) {
       
       post.on('response', function(resp) {
         resp.on('end', function() {
-          request({uri: 'http://localhost:' + dat.options.port + '/api/rows', json: true}, function(err, res, json) {
+          // json: false, because request will set accept headers otherwise and we want to check defaults
+          request({uri: 'http://localhost:' + dat.options.port + '/api/rows', json: false}, function(err, res, data) {
             if (err) throw err
+            var json
+            try { json = JSON.parse(data) } 
+            catch(e) { t.fail('json parsing error') }
             t.equal(json.rows.length, 2, '2 objects returned')
             t.equal(json.rows[0]['a'], '1', 'data matches')
             cleanup()
           })
+        })
+      })
+    })
+  })
+}
+
+module.exports.jsonExportFormats = function (test, common) {
+  test('GET /api/rows format tests', function (t) {
+    common.getDat(t, function(dat, cleanup) {
+      var headers = {'content-type': 'text/csv'}
+      var post = request({method: 'POST', uri: 'http://localhost:' + dat.options.port + '/api/bulk', headers: headers})
+      post.write('a,b,c\n')
+      post.write('1,2,3\n')
+      post.write('4,5,6')
+      post.end()
+      
+      function commonFormatTest(cb, type, rows) {
+        t.equal(rows.length, 2, type + ', 2 objects returned')
+        t.equal(rows[0]['a'], '1', type + ', data matches')
+        cb()
+      }
+      
+      function sseTest(cb, msg, err, res, body) {
+        if(err) throw err
+        var chunks = body.split('\n\n').slice(0, 2)
+        t.ok(chunks.every(function (chunk) {
+          return chunk.slice(0, 'event: data'.length) === 'event: data'
+        }), 'format=sse, correct sse message headers')
+        var rows = chunks.map(function (chunk) {
+          return JSON.parse(chunk.slice('event: data\ndata: '.length))
+        })
+        commonFormatTest(cb, msg, rows)
+      }
+      
+      post.on('response', function (resp) {
+        resp.on('end', function () {
+          parallel([
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/rows?format=json', json: true}, function(err, res, json) {
+                if (err) throw err
+                commonFormatTest(cb, 'format=json', json.rows)
+              })
+            },
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/rows', headers: {'Accept': 'application/json'} ,json: true}, function(err, res, json) {
+                if (err) throw err
+                commonFormatTest(cb, 'accept:application/json', json.rows)
+              })
+            },
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/rows?format=json&style=array', json: true}, function(err, res, json) {
+                if (err) throw err
+                commonFormatTest(cb, 'format=json&style=array', json)
+              })
+            },
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/rows?format=csv'})
+                .pipe(csv())
+                .pipe(concat(commonFormatTest.bind(null, cb, 'format=csv')))
+            },
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/rows', headers: {'Accept': 'text/csv'}})
+                .pipe(csv())
+                .pipe(concat(commonFormatTest.bind(null, cb, 'accept:text/csv')))
+            },
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/rows?format=ndjson'})
+                .pipe(ldj.parse())
+                .pipe(concat(commonFormatTest.bind(null, cb, 'format=ndjson')))
+            },
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/rows?format=sse'}, sseTest.bind(null, cb, 'format=sse'))
+            },
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/rows', headers: {'Accept': 'text/event-stream'}}, 
+                sseTest.bind(null, cb, 'accept:text/event-stream'))
+            }
+            ], function (err) {
+              cleanup()
+            })
         })
       })
     })
@@ -440,7 +525,7 @@ module.exports.jsonExportLimit = function(test, common) {
 }
 
 module.exports.changes = function(test, common) {
-  test('GET /api/changes returns ldjson change data', function(t) {
+  test('GET /api/changes various requests', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       var headers = {'content-type': 'text/csv'}
@@ -452,31 +537,93 @@ module.exports.changes = function(test, common) {
       
       post.on('response', function(resp) {
         resp.on('end', function() {
-          var changeReq = request({uri: 'http://localhost:' + dat.options.port + '/api/changes', json: true})
-          changeReq.pipe(ldj.parse()).pipe(concat(collect))
-          function collect(rows) {
-            t.equal(rows.length, 3, '3 objects returned') // 2 docs + 1 schema
-            t.ok(rows[0].key, 'row 1 has a key')
-            t.ok(rows[1].key, 'row 2 has a key')
-            t.ok(rows[2].key, 'row 3 has a key')
-            
-            // tail=2 to get last 2 changes
-            var changeReq2 = request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true', json: true})
-            changeReq2.pipe(ldj.parse()).pipe(concat(collect2))
-            function collect2(rows) {
-              t.equal(rows.length, 1, '1 object returned') // latest doc
-              t.equal(rows[0].value.a, '4', 'row 1 is correct')
-              cleanup()
+          
+          parallel([
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes', json: false}, function (err, res, data) {
+                if(err) throw err
+                var json
+                try { json = JSON.parse(data) } 
+                catch(e) { t.fail('json parsing error') }
+                var rows = json.rows
+                t.equal(rows.length, 3, '3 objects returned') // 2 docs + 1 schema
+                t.ok(rows[0].key, 'row 1 has a key')
+                t.ok(rows[1].key, 'row 2 has a key')
+                t.ok(rows[2].key, 'row 3 has a key')
+                cb()
+              })
+
+            },
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true', json: true}, function (err, res, json) {
+                if(err) throw err
+                formatTest(cb, 'style=object (default)', json.rows)
+              })
+            },
+            function (cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true&style=array', json: true}, function (err, res, rows) {
+                if(err) throw err
+                formatTest(cb, 'style=array', rows)
+              })
+            },
+            function(cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes?format=csv'})
+                .pipe(csv())
+                .pipe(concat(function (rows) {
+                    // not testing values because csv-write-stream doesn't support
+                    // objects as keys yet
+                    t.equal(rows.length, 3, 'format=csv, 3 objects returned') // 2 docs + 1 schema
+                    t.ok(rows[0].key, 'format=csv, row 1 has a key')
+                  cb()
+                }))
+            },
+            function(cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true&format=ndjson'})
+                .pipe(ldj.parse())
+                .pipe(concat(formatTest.bind(null, cb, 'format=ndjson')))
+            },
+            function(cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true&style=newline'})
+                .pipe(ldj.parse())
+                .pipe(concat(formatTest.bind(null, cb, 'style=newline (legacy)')))
+            },
+            function(cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true&format=sse'})
+                .pipe(concat(sseTest.bind(null, cb, 'format=sse')))
+            },
+            function(cb) {
+              request({uri: 'http://localhost:' + dat.options.port + '/api/changes?tail=1&data=true&style=sse'})
+                .pipe(concat(sseTest.bind(null, cb, 'style=sse (legacy)')))
             }
+            ], function (err) {
+              cleanup()
+            })
+            
+          
+          function formatTest(cb, type, rows) {
+            t.equal(rows.length, 1, type + ', 1 object returned') // latest doc
+            t.equal(rows[0].value.a, '4', type + ', row 1 is correct')
+            cb()
           }
+
+          function sseTest(cb, type, sse) {
+            var lines = sse.toString().split('\n')
+            t.equal(lines[0], 'event: data', type + ', correct event')
+            var row = JSON.parse(lines[1].slice('data: '.length))
+            t.equal(row.value.a, '4', type + ', row 1 is correct')
+            cb()
+          }
+
         })
       })
     })
   })
+  
+  
 }
 
 module.exports.changesLiveTail = function(test, common) {
-  test('GET /api/changes?tail=true&live=true&data=true returns only new data', function(t) {
+  test('GET /api/changes?tail=true&live=true&data=true returns only new data and switches to ndjson', function(t) {
     if (common.rpc) return t.end()
     common.getDat(t, function(dat, cleanup) {
       
@@ -489,19 +636,22 @@ module.exports.changesLiveTail = function(test, common) {
           resp.on('end', cb)
         })
       }
-      
+      var rows = []
       insert('key,name\n1,bob\n2,sue', function() {
-        var changeReq = request({uri: 'http://localhost:' + dat.options.port + '/api/changes?live=true&tail=true&data=true', json: true})
-        changeReq.pipe(ldj.parse()).pipe(concat(collect))
+        var changeReq = request({uri: 'http://localhost:' + dat.options.port + '/api/changes?live=true&tail=true&data=true'})
+        changeReq.pipe(ldj.parse()).on('data', function (row) {
+          rows.push(row)
+          if(rows.length === 2) collect(rows)
+          if(rows.length > 2) t.fail('more than 2 objects returned')
+        })
         insert('key,name\n3,bill\n4,sally', function() {
           setTimeout(function() {
             changeReq.abort()
-          }, 5000)
+          }, 500)
         })
       })
       
       function collect(rows) {
-        t.equal(rows.length, 2, '2 objects returned')
         t.ok(rows[0].key, 'row 1 has a key')
         t.equal(rows[0].value.name, 'bill', 'row 1 is bill')
         t.equal(rows[1].value.name, 'sally', 'row 2 is sally')
@@ -627,8 +777,9 @@ module.exports.all = function (test, common) {
   module.exports.logout(test, common)
   module.exports.csvExport(test, common)
   module.exports.jsonExport(test, common)
+  module.exports.jsonExportFormats(test, common)
   module.exports.jsonExportLimit(test, common)
   module.exports.changes(test, common)
-  // module.exports.changesLiveTail(test, common) keeps acting weird: TODO investigate
+  module.exports.changesLiveTail(test, common)
   module.exports.pagination(test, common)
 }
