@@ -4,13 +4,16 @@ var tty = require('tty')
 
 var isTTY = tty.isatty(0)
 
-module.exports = function(dat, opts, cb) {
+module.exports = blobsPut
+
+blobsPut.usage = 'dat blobs put <row> [file-path-to-read] [--name=blob-name-to-use-as-key] [--version=row-version-to-update]'
+
+function blobsPut(dat, opts, cb) {
   var args = opts._.slice(2)
-  var usage = 'Usage: dat blobs put <row> [file-path-to-read] [--name=blob-name-to-use-as-key] [--version=row-version-to-update]'
-  if (args.length === 0) return cb(new Error(usage))
+  if (args.length === 0) return cb(new Error('Usage ' + blobsPut.usage))
   var key = args[0]
   var blob = args[1]
-  if (!opts.name && !blob) return cb(new Error('Must either specify a blob name (--name) to use or a filename. ' + usage))
+  if (!opts.name && !blob) return cb(new Error('Must either specify a blob name (--name) to use or a filename. '))
   var row = { key: key }
   var version = opts.version || opts.v
   
