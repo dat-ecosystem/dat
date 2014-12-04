@@ -24,13 +24,13 @@ function importCmd(dat, opts, cb) {
     if (!opts.quiet) console.error('No import file specified, using STDIN as input')
     input = process.stdin
   } else if (filename) {
-    if (!(opts.json || opts.csv)) {
+    if (!(opts.json || opts.csv || opts.tsv)) {
       var ending = path.extname(filename)
       if (ending === '.json') {
           opts.json = true;
       } else if (ending === '.tsv') {
-          opts.csv = true;
-          opts.separator = '	';  // use tab separator
+          opts.tsv = true;
+          opts.separator = '\t';  // use tab separator
       } else if (ending === '.csv') {
           opts.csv = true;
       }
