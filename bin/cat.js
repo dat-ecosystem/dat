@@ -2,16 +2,34 @@ var stdout = require('stdout-stream')
 var multistream = require('multistream')
 var eos = require('end-of-stream')
 var through = require('through2')
-var ldj = require('ndjson')
 var pump = require('pump')
+var formatData = require('format-data')
+var EOL = require('os').EOL
 
-module.exports = function(dat, opts, cb) {
+module.exports = cat
+
+cat.usage = [
+ 'dat cat',
+ 'stream the most recent of all rows'
+ ].join(EOL)
+
+function cat(dat, opts, cb) {
   if (!opts) opts = {}
-  if (!opts.f && !opts.json) opts.json = true
-
+  if(!opts.format) {
+    if(opts.csv) opts.format = 'csv'
+    if(opts.json) opts.format = 'json'
+    if(opts.ndjson) opts.format = 'ndjson'
+    if(opts.sse) opts.format = 'sse'
+  }
+  var format = opts.format || 'ndjson'
+  opts.format = 'objectMode'
   var readStream = dat.createReadStream(opts)
 
   if (opts.live) {
+    if(['ndjson', 'csv', 'sse'].indexOf(format) === -1) {
+      format = 'ndjson'
+    }
+    
     var changes = dat.createChangesReadStream({
       since: dat.storage.change,
       data: true,
@@ -19,13 +37,18 @@ module.exports = function(dat, opts, cb) {
       live: true
     })
 
-    var format = through.obj(function(data, enc, cb) {
+    var selectValues = through.obj(function(data, enc, cb) {
+      // Somehow data.value has no valid version key
+      var row = data.value
+      data.value.version = data.to
       cb(null, data.value)
     })
 
-    readStream = multistream([readStream, pump(changes, format, ldj.serialize())])
+    readStream = multistream.obj([readStream, pump(changes, selectValues)])
   }
 
-  readStream.pipe(stdout)
-  eos(readStream, cb)
+  opts.format = format
+  var formatter = formatData(opts)
+  readStream.pipe(formatter).pipe(stdout)
+  eos(formatter, cb)
 }

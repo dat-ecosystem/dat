@@ -17,10 +17,6 @@ var onerror = function(err) {
   exit(2)
 }
 
-// rules:
-// a 1 part command and a 2 part command can't share the same first part
-// e.g. if 'dat cat' exists you can't add 'dat cat dog'
-
 var bin = {
   "cat": './bin/cat',
   "export": './bin/cat',
@@ -34,11 +30,8 @@ var bin = {
   "clone": './bin/clone',
   "serve": './bin/listen',
   "listen": './bin/listen',
-  "blobs get": "./bin/blobs-get",
-  "blobs put": "./bin/blobs-put",
-  "rows get": "./bin/rows-get",
-  "rows delete": "./bin/rows-delete",
-  "rows put": "./bin/rows-put"
+  "blobs": './bin/blobs',
+  "rows": "./bin/rows"
 }
 
 var argv = minimist(process.argv.slice(2), {boolean: true})
@@ -48,23 +41,40 @@ var second = argv._[1] || ''
 var cmd = first
 if (!bin.hasOwnProperty(first)) cmd = first + ' ' + second
 
-var defaultMessage = "Usage: dat <command> [<args>]" + EOL + EOL + "Enter 'dat help' for help"
-var badMessage = ['Command not found: ' + cmd, '', defaultMessage].join(EOL)
-
 if (!bin.hasOwnProperty(first) && !bin.hasOwnProperty(cmd)) {
-  console.error(first ? badMessage : defaultMessage)
+  if(first) console.error('Command not found: ' + cmd + EOL)
+  console.error("Usage: dat <command> [<args>]" + EOL)
+  if(!first) {
+    console.error('where <command> is one of:')
+    Object.keys(bin).forEach(function (key) {
+      console.error('  ' + key )
+    })
+  }
+  console.error(EOL + "Enter 'dat <command> -h' for usage information")
+  console.error("For an introduction to dat see 'dat help'")
   exit(1)
 }
 
 var dir = (first === 'clone' && (argv._[2] || toFolder(argv._[1]))) || argv.path || '.' // leaky
 var noDat = (first === 'init' || first === 'clone' || first === 'version' || first === 'help')
 
+var cmdModule = require(bin[cmd])
+
+if(argv.h || argv.help) {
+  var usage = cmdModule.usage
+  if(usage) { // if it doesn't export usage just continue
+    if(typeof usage == 'function') usage = usage(argv)
+    console.log('Usage:', usage)
+    exit()
+  }
+}
+
 var dat = Dat(dir, {init: false}, function(err) {
   if (err) return onerror(err)
 
   var execCommand = function(err) {
     if (err) return onerror(err)
-    require(bin[cmd])(dat, argv, function(err) {
+    cmdModule(dat, argv, function(err) {
       if (err) {
         if (cmd === 'init') {
           console.error(err.message)
@@ -93,10 +103,10 @@ function close() {
     stdout.end()
 
     // if there aren't any active connections then we can close the server
-    if (dat.connections.sockets.length === 0) dat.close()
+    if (dat._connections.sockets.length === 0) dat.close()
 
     // otherwise wait for the current connections to close
-    dat.connections.on('idle', function() {
+    dat._connections.on('idle', function() {
       debug('dat close due to idle')
       dat.close()
     })
