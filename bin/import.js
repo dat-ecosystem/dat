@@ -9,7 +9,14 @@ var path = require('path')
 
 var isTTY = tty.isatty(0)
 
-module.exports = function(dat, opts, cb) {
+module.exports = importCmd
+
+importCmd.usage = ['dat import [<file>]',
+  'import tabular data into dat', '',
+  'also allows piping, e.g. cat file.json | dat import --json'
+].join(EOL)
+
+function importCmd(dat, opts, cb) {
   var filename = opts._[1]
   var input = null
 

@@ -1,6 +1,10 @@
-module.exports = function (dat, opts, cb) {
+module.exports = rowsGet
+
+rowsGet.usage = 'dat rows get <rowKey> [<version>]'
+
+function rowsGet(dat, opts, cb) {
   var args = opts._.slice(2)
-  if (args.length < 1) return cb(new Error('Usage: dat rows get <rowKey> [<version>]'))
+  if(args.length === 0) return cb(new Error('Usage: ' + rowsGet.usage))
   var opts = {}
   if(args[1]) opts.version = Number(args[1])
   

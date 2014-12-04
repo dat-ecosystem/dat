@@ -2,7 +2,11 @@ var log = require('../lib/progress-log')
 var EOL = require('os').EOL
 var through = require('through2')
 
-module.exports = function(dat, opts, cb) {
+module.exports = push
+
+push.usage = ['dat push <remoteurl>', 'push data to another dat'].join(EOL)
+
+function push(dat, opts, cb) {
   var remote = opts._[1]
   var push = dat.push(remote, opts, cb)
 

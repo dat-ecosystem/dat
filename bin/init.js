@@ -1,7 +1,13 @@
 var path = require('path')
 var read = require('read')
+var EOL = require('os').EOL
 
-module.exports = function(dat, opts, cb) {
+module.exports = init
+
+init.usage = ['dat init', 'initialize dat store'].join(EOL)
+
+
+function init(dat, opts, cb) {
   dat.exists(opts, function(exists) {
     if (exists) return cb(new Error('Skipping dat init because there is already a dat here'))
     prompt(function(err) {

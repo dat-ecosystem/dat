@@ -1,8 +1,11 @@
 var fs = require('fs')
 var concat = require('concat-stream')
 
-// 'Usage: dat rows put <file-path-to-read> [--key=row-key-to-use]'
-module.exports = function (dat, opts, cb) {
+module.exports = rowsPut
+
+rowsPut.usage = 'dat rows put <file-path-to-read> [--key=row-key-to-use]'
+
+function rowsPut(dat, opts, cb) {
   var args = opts._.slice(2)
   var key = opts.key || opts.k
   var file = args[0]
