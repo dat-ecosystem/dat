@@ -620,6 +620,24 @@ module.exports.multipleCSVWriteStreamsChangingSchemas = function(test, common) {
   })
 }
 
+module.exports.csvWithVersionKey = function (test, common) {
+  test('csv with version key', function (t) {
+    common.getDat(t, function (dat, done) {
+      var ws = dat.createWriteStream({csv: true, quiet: true})
+      ws.write(bops.from('a,b,version\n1,2,3\n1,2,\n1,2,missing'))
+      ws.end()
+      ws.on('finish', function () {
+        dat.createReadStream().pipe(concat(function (rows) {
+          t.equals(rows[0].version, 3)
+          t.equals(rows[1].version, 1)
+          t.equals(rows[2].version, 1)
+          done()
+        }))
+      })
+    })
+  })
+}
+
 module.exports.keepTotalRowCount = function(test, common) {
   test('keeps row count for streams', function(t) {
     common.getDat(t, function(dat, done) {
@@ -838,6 +856,7 @@ module.exports.all = function (test, common) {
   module.exports.writeStreamCsvNoHeaderRow(test, common)
   module.exports.writeStreamMultipleWithRandomKeys(test, common)
   module.exports.multipleCSVWriteStreamsChangingSchemas(test, common)
+  module.exports.csvWithVersionKey(test, common)
   module.exports.keepTotalRowCount(test, common)
   module.exports.detectInputType(test, common)
 }
