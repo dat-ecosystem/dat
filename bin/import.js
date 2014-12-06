@@ -7,7 +7,7 @@ var pump = require('pump')
 var EOL = require('os').EOL
 var path = require('path')
 
-var isTTY = tty.isatty(0)
+var inIsTTY  = tty.isatty(0)
 
 module.exports = importCmd
 
@@ -20,8 +20,10 @@ function importCmd(dat, opts, cb) {
   var filename = opts._[1]
   var input = null
 
-  if (filename === '-' || (!filename && !isTTY) || opts.stdin) { // TODO: reevaluate the !isTTY thing
-    if (!opts.quiet) console.error('No import file specified, using STDIN as input')
+  var quiet = opts.quiet || opts.q
+  
+  if (filename === '-' || (!filename && !inIsTTY) || opts.stdin) {
+    if (!quiet) console.error('No import file specified, using STDIN as input')
     input = process.stdin
   } else if (filename) {
     if (!(opts.json || opts.csv || opts.tsv)) {
@@ -45,8 +47,7 @@ function importCmd(dat, opts, cb) {
 
   var writer = dat.createWriteStream(opts)
 
-  // if you didnt specify --quiet and you are a tty
-  var showImport = !opts.quiet && isTTY
+  var showImport = !quiet
 
   if (opts.results) writer.pipe(resultPrinter())
   else if (showImport) var logger = log(writer, 'Parsed', 'Done')
