@@ -15,7 +15,7 @@ module.exports.restHello = function(test, common) {
       publisher: 'cat@imadat.com'
     }
     var datPath = path.join(common.dat1tmp, 'dat.json')
-    fs.mkdir(common.dat1tmp)
+    fs.mkdirSync(common.dat1tmp)
     fs.writeFile(datPath, JSON.stringify(opts), function (err) {
       if (err) throw err
       common.getDat(t, function(dat, cleanup) {
