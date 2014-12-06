@@ -45,16 +45,21 @@ function importCmd(dat, opts, cb) {
 
   var writer = dat.createWriteStream(opts)
 
+  // if you didnt specify --quiet and you are a tty
+  var showImport = !opts.quiet && isTTY
+
   if (opts.results) writer.pipe(resultPrinter())
-  else if (!opts.quiet && !isTTY) var logger = log(writer, 'Parsed', 'Done')
+  else if (showImport) var logger = log(writer, 'Parsed', 'Done')
 
   writer.on('detect', function (detected) {
     var detectInfo = 'Parsing detected format ' + detected.format
+
     if (detected.format === 'csv')
       detectInfo += ' with separator "' + detected.separator + '"'
-    else if(detected.format === 'json')
+    else if (detected.format === 'json')
       detectInfo += ' in ' + detected.style + ' style'
-    if(opts.results) console.error(detectInfo)
+
+    if (opts.results) console.error(detectInfo)
     else if (logger) logger.log(detectInfo)
   })
 
@@ -63,7 +68,7 @@ function importCmd(dat, opts, cb) {
 
 function resultPrinter() { // TODO: ask @maxogden what the result printer is for
   var results = through.obj(onResultWrite)
-  function onResultWrite (obj, enc, next) {
+  function onResultWrite(obj, enc, next) {
     process.stdout.write(JSON.stringify(obj) + EOL)
     next()
   }
