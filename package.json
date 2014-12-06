@@ -25,7 +25,7 @@
   "license": "BSD",
   "dependencies": {
     "JSONStream": "^0.8.2",
-    "animate-tty": "^1.0.0",
+    "animate-tty": "^1.0.2",
     "ansimd": "0.0.1",
     "basic": "~0.0.1",
     "bops": "~0.1.0",
