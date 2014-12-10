@@ -610,9 +610,8 @@ module.exports.clone = function(test, common) {
     common.destroyTmpDats(function() {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
-        var dat = spawn(datCliPath, ['clone', 'localhost:9999'], {cwd: path.join(common.dat1tmp, '..'), env: process.env})
+        var dat = spawn(datCliPath, ['clone', 'localhost:9999', '--quiet'], {cwd: path.join(common.dat1tmp, '..'), env: process.env})
         getFirstOutput(dat.stderr, verify)
-        
         function verify(output) {
           t.ok(output.indexOf('ECONNREFUSED') > -1, 'got ECONNREFUSED')
           
