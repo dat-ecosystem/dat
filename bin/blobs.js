@@ -1,18 +1,20 @@
-module.exports = rows
+module.exports = blobs
 
 var subModules = {
   'put': './blobs-put',
   'get': './blobs-get',
 }
 
-rows.commands = {
+blobs.commands = {
   'put': require('./blobs-put'),
   'get': require('./blobs-get')
 }
 
-var usage = rows.usage = 'dat blobs <put|get> [options]'
+blobs.noDat = true
+
+var usage = blobs.usage = 'dat blobs <put|get> [options]'
   
-function rows(dat, opts, cb) {
+function blobs(dat, opts, cb) {
   return cb(new Error('Usage: ' + usage))
 }
     

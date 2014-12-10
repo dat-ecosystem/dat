@@ -34,7 +34,8 @@ var bin = {
   "blobs": './bin/blobs',
   "rows": "./bin/rows"
 }
-var cmd = process.argv[2]
+var argv = minimist(process.argv.slice(2))
+var cmd = argv._[0]
 
 if (!bin.hasOwnProperty(cmd)) {
   if(cmd) console.error('Command not found: ' + cmd + EOL)
@@ -42,9 +43,15 @@ if (!bin.hasOwnProperty(cmd)) {
   if(!cmd) {
     console.error('where <command> is one of:')
     Object.keys(bin).forEach(function (key) {
-      console.error('  ' + key )
+      console.error('  ' + key)
+      if(argv.l || argv.long) {
+        var cliModule = require(bin[key])
+        cliclopts(cliModule.options).print(process.stderr)
+        console.error()
+      }
     })
   }
+  
   console.error(EOL + "Enter 'dat <command> -h' for usage information")
   console.error("For an introduction to dat see 'dat help'")
   exit(1)
@@ -54,21 +61,23 @@ var cmdModule = require(bin[cmd])
 
 // look for subcommands
 if(cmdModule.hasOwnProperty('commands')) {
-  var second = process.argv[3]
+  var second = argv._[1]
   if(cmdModule.commands.hasOwnProperty(second))
     cmdModule = cmdModule.commands[second]
 }
 
 var clopts = cliclopts(cmdModule.options)
 
-var argv = minimist(process.argv.slice(2), {
+// parse argv again with minimist options
+argv = minimist(process.argv.slice(2), {
   boolean: clopts.boolean(),
   alias: clopts.alias(),
   default: clopts.default()
 })
 
 var dir = (cmd === 'clone' && (argv._[2] || toFolder(argv._[1]))) || argv.path || '.' // leaky
-var noDat = (cmd === 'init' || cmd === 'clone' || cmd === 'version' || cmd === 'help')
+
+var noDat = cmdModule.noDat
 
 if(argv.h || argv.help) {
   var usage = cmdModule.usage

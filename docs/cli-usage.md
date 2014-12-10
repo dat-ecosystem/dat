@@ -32,18 +32,6 @@ or
 dat import --csv some_csv.csv
 ```
 
-use a custom newline delimiter:
-
-```
-cat some_csv.csv | dat import --csv --newline $'\r\n'
-```
-
-use a custom value separator:
-
-```
-cat some_tsv.tsv | dat import --csv --separator $'\t'
-```
-
 ## stream NDJSON into dat
 
 You can pipeline Newline Delimited JSON ([NDJSON](http://ndjson.org/)) into dat on stdin and it will be stored

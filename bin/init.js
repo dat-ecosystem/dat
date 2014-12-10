@@ -9,7 +9,6 @@ init.usage = ['dat init', 'initialize dat store'].join(EOL)
 init.options = [
   {
     name: 'prompt',
-    abbr: 'p',
     default: true,
     boolean: true,
     help: 'show prompt'
@@ -28,6 +27,7 @@ init.options = [
  }
 ]
 
+init.noDat = true
 
 function init(dat, opts, cb) {
   dat.exists(opts, function(exists) {

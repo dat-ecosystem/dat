@@ -18,6 +18,10 @@ importCmd.usage = ['dat import [<file>]',
 
 importCmd.options = [
   {
+    name: 'primary',
+    help: 'specify a primary key to use'
+  },
+  {
     name: 'format',
     abbr: 'f',
     help: 'specify format'

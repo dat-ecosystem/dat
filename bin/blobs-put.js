@@ -18,6 +18,12 @@ blobsPut.options = [
     name: 'version',
     abbr: 'v',
     help: 'row version to update'
+  },
+  {
+    name: 'quiet',
+    abbr: 'q',
+    boolean: true,
+    help: 'less logging'
   }
 ]
 
@@ -28,7 +34,7 @@ function blobsPut(dat, opts, cb) {
   var blob = args[1]
   if (!opts.name && !blob) return cb(new Error('Must either specify a blob name (--name) to use or a filename. '))
   var row = { key: key }
-  var version = opts.version || opts.v
+  var version = opts.version
   
   dat.get(key, { version: version }, function(err, existing) {
     if (existing) {
