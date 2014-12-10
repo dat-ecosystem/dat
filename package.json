@@ -63,6 +63,7 @@
     "level-manifest": "~1.2.0",
     "leveldown-prebuilt": "~0.10.2",
     "levelup": "~0.18.2",
+    "leven": "^1.0.1",
     "lexicographic-integer": "~1.1.0",
     "minimist": "~0.2.0",
     "mkdirp": "~0.3.5",

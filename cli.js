@@ -12,6 +12,7 @@ var rimraf = require('rimraf')
 var debug = require('debug')('dat.cli')
 var exit = require('exit')
 var cliclopts = require('cliclopts')
+var leven = require('leven')
 
 var onerror = function(err) {
   console.error('Error: ' + err.message)
@@ -38,9 +39,24 @@ var argv = minimist(process.argv.slice(2))
 var cmd = argv._[0]
 
 if (!bin.hasOwnProperty(cmd)) {
-  if(cmd) console.error('Command not found: ' + cmd + EOL)
-  console.error("Usage: dat <command> [<args>]" + EOL)
-  if(!cmd) {
+  if(cmd) {
+    console.error('Command not found: ' + cmd)
+    var candidates = Object.keys(bin)
+      .filter(function (key) {
+        return leven(key, cmd) < 3
+      })
+      .sort(function (a,b) {
+        return leven(a, cmd) - leven(b, cmd)
+      })
+      .slice(0, 3)
+    if(candidates.length > 0) {
+      console.error(EOL + 'Did you mean:')
+      candidates.forEach(function (candidate) {
+        console.log('  ', candidate)
+      })
+    }
+  } else {
+    console.error("Usage: dat <command> [<args>]" + EOL)
     console.error('where <command> is one of:')
     Object.keys(bin).forEach(function (key) {
       console.error('  ' + key)
