@@ -6,7 +6,20 @@ var isTTY = tty.isatty(0)
 
 module.exports = blobsPut
 
-blobsPut.usage = 'dat blobs put <row> [file-path-to-read] [--name=blob-name-to-use-as-key] [--version=row-version-to-update]'
+blobsPut.usage = 'dat blobs put <row> [options]'
+
+blobsPut.options = [
+  {
+    name: 'name',
+    abbr: 'n',
+    help: 'blob name to use as key'
+  },
+  {
+    name: 'version',
+    abbr: 'v',
+    help: 'row version to update'
+  }
+]
 
 function blobsPut(dat, opts, cb) {
   var args = opts._.slice(2)

@@ -30,6 +30,7 @@
     "basic": "~0.0.1",
     "bops": "~0.1.0",
     "byte-stream": "~2.0.2",
+    "cliclopts": "^1.0.0",
     "concat-stream": "~1.4.3",
     "connections": "~1.0.0",
     "content-addressable-blob-store": "^4.0.2",

@@ -3,11 +3,25 @@ var concat = require('concat-stream')
 
 module.exports = rowsPut
 
-rowsPut.usage = 'dat rows put <file-path-to-read> [--key=row-key-to-use]'
+rowsPut.usage = 'dat rows put <file-path-to-read>'
+
+rowsPut.options = [
+  {
+    name: 'key',
+    abbr: 'k',
+    help: 'row key to use'
+  },
+  {
+    name: 'quiet',
+    abbr: 'q',
+    boolean: true,
+    help: 'less logging'
+  }
+]
 
 function rowsPut(dat, opts, cb) {
   var args = opts._.slice(2)
-  var key = opts.key || opts.k
+  var key = opts.key
   var file = args[0]
   
   if(file && file !== '-') {

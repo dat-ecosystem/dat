@@ -5,6 +5,15 @@ module.exports = pull
 
 pull.usage = ['dat pull <remoteurl>', 'pull data from another dat'].join(EOL)
 
+pull.options = [
+  {
+    name: 'quiet',
+    abbr: 'q',
+    boolean: true,
+    help: 'less logging'
+  }
+]
+
 function pull(dat, opts, cb) {
   var remote = opts._[1]
   var pull = dat.pull(remote, opts, cb)

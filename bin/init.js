@@ -6,6 +6,28 @@ module.exports = init
 
 init.usage = ['dat init', 'initialize dat store'].join(EOL)
 
+init.options = [
+  {
+    name: 'prompt',
+    abbr: 'p',
+    default: true,
+    boolean: true,
+    help: 'show prompt'
+  },
+  {
+    name: 'name', 
+    help: 'name of the dat'
+  },
+  {
+    name: 'description',
+    help: 'description of the dat'
+  },
+  {
+    name: 'publisher',
+    help: 'publisher of the dat'
+ }
+]
+
 
 function init(dat, opts, cb) {
   dat.exists(opts, function(exists) {

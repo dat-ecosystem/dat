@@ -11,6 +11,7 @@ var path = require('path')
 var rimraf = require('rimraf')
 var debug = require('debug')('dat.cli')
 var exit = require('exit')
+var cliclopts = require('cliclopts')
 
 var onerror = function(err) {
   console.error('Error: ' + err.message)
@@ -33,18 +34,12 @@ var bin = {
   "blobs": './bin/blobs',
   "rows": "./bin/rows"
 }
+var cmd = process.argv[2]
 
-var argv = minimist(process.argv.slice(2), {boolean: true})
-var first = argv._[0] || ''
-var second = argv._[1] || ''
-
-var cmd = first
-if (!bin.hasOwnProperty(first)) cmd = first + ' ' + second
-
-if (!bin.hasOwnProperty(first) && !bin.hasOwnProperty(cmd)) {
-  if(first) console.error('Command not found: ' + cmd + EOL)
+if (!bin.hasOwnProperty(cmd)) {
+  if(cmd) console.error('Command not found: ' + cmd + EOL)
   console.error("Usage: dat <command> [<args>]" + EOL)
-  if(!first) {
+  if(!cmd) {
     console.error('where <command> is one of:')
     Object.keys(bin).forEach(function (key) {
       console.error('  ' + key )
@@ -55,16 +50,32 @@ if (!bin.hasOwnProperty(first) && !bin.hasOwnProperty(cmd)) {
   exit(1)
 }
 
-var dir = (first === 'clone' && (argv._[2] || toFolder(argv._[1]))) || argv.path || '.' // leaky
-var noDat = (first === 'init' || first === 'clone' || first === 'version' || first === 'help')
-
 var cmdModule = require(bin[cmd])
+
+// look for subcommands
+if(cmdModule.hasOwnProperty('commands')) {
+  var second = process.argv[3]
+  if(cmdModule.commands.hasOwnProperty(second))
+    cmdModule = cmdModule.commands[second]
+}
+
+var clopts = cliclopts(cmdModule.options)
+
+var argv = minimist(process.argv.slice(2), {
+  boolean: clopts.boolean(),
+  alias: clopts.alias(),
+  default: clopts.default()
+})
+
+var dir = (cmd === 'clone' && (argv._[2] || toFolder(argv._[1]))) || argv.path || '.' // leaky
+var noDat = (cmd === 'init' || cmd === 'clone' || cmd === 'version' || cmd === 'help')
 
 if(argv.h || argv.help) {
   var usage = cmdModule.usage
   if(usage) { // if it doesn't export usage just continue
     if(typeof usage == 'function') usage = usage(argv)
-    console.log('Usage:', usage)
+    console.log('Usage:', usage, EOL)
+    clopts.print()
     exit()
   }
 }
@@ -87,7 +98,7 @@ var dat = Dat(dir, {init: false}, function(err) {
   }
 
   if (!dat.db && !noDat) return onerror(new Error('There is no dat here'))
-  if (first !== 'listen' && !dat.rpcClient) return dat.listen(argv.port, argv, execCommand)
+  if (cmd !== 'listen' && !dat.rpcClient) return dat.listen(argv.port, argv, execCommand)
   execCommand()
 })
 

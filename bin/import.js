@@ -16,11 +16,50 @@ importCmd.usage = ['dat import [<file>]',
   'also allows piping, e.g. cat file.json | dat import --json'
 ].join(EOL)
 
+importCmd.options = [
+  {
+    name: 'format',
+    abbr: 'f',
+    help: 'specify format'
+  },
+  {
+    name: 'json',
+    boolean: true,
+    help: 'parse json'
+  },
+  {
+    name: 'csv',
+    boolean: true,
+    help: 'parse character separated values'
+  },
+  {
+    name: 'tsv',
+    boolean: true,
+    help: 'parse tab separated values'
+  },
+  {
+    name: 'separator',
+    default: ',',
+    help: 'character to use as csv delimiter'
+  },
+  {
+    name: 'results',
+    boolean: true,
+    help: 'show results of import'
+  },
+  {
+    name: 'quiet',
+    abbr: 'q',
+    boolean: true,
+    help: 'less logging'
+  }
+]
+
 function importCmd(dat, opts, cb) {
   var filename = opts._[1]
   var input = null
 
-  var quiet = opts.quiet || opts.q
+  var quiet = opts.quiet
   
   if (filename === '-' || (!filename && !inIsTTY) || opts.stdin) {
     if (!quiet) console.error('No import file specified, using STDIN as input')
@@ -42,7 +81,7 @@ function importCmd(dat, opts, cb) {
 
   if (!input) return cb(new Error('You must specify an input file'))
 
-  var format = opts.format || opts.f
+  var format = opts.format
   if (format) opts[format] = true
 
   var writer = dat.createWriteStream(opts)
