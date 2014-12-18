@@ -25,15 +25,26 @@ How big is your data?
 
   * **Under 10,000 rows or 25MB**: You can use [heroku-dat-template](https://github.com/bmpvieira/heroku-dat-template/blob/master/README.md) to deploy your data FOR FREE! Follow the instructions and then come back here for step 2.
 
-  * **Actually, it's more than 10,000 rows or 25MB:**  You can buy [digital ocean](https://www.digitalocean.com/) droplet for a cheaper price than heroku, or find a friend (or IT specialist!) that can help you out.
+  * **More than 10,000 rows or 25MB:**  You can buy [digital ocean](https://www.digitalocean.com/) droplet for a cheaper price than heroku, or find a friend (or IT specialist!) that can help you out.
+
+
+If you don't have access or time for a server, you could just do:
+
+  ```bash
+  $ dat init
+  ```
+
+And then start the server on your computer:
+
+  ```bash
+  $ dat listen
+  ```
 
 ### Step 2: Clone the dat
 
 Do you have a dat URL?
 
-*you: yes, I have a dat at `http://mydat.herokuapp.com`*
-
-Cool, you probably want to clone it then.
+If you do, you should first clone it.
 
   ```bash
   $ dat clone http://mydat.herokuapp.com
@@ -45,7 +56,7 @@ Cool, you probably want to clone it then.
   Clone from remote has completed.
   ```
 
-You now have that dat on your local machine, too!
+You can take a look at the contents -- a `dat.json` file and a .dat/ folder with the dat database.
 
   ```bash
   $ cd mydat.herokuapp.com
