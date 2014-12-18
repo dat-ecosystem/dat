@@ -1,45 +1,106 @@
 # Getting started with dat
 
-## About dat
+Here, we discuss the fastest way to publish your data. We assume you have the following materials:
 
-`dat` is primarily intended as a command line tool. There is also a programmatic API that you can use in node.js programs for more advanced use cases.
+  1. Access to a server or a heroku account
+  2. Raw JSON, CSV, or blob data
+  3. A terminal
 
-The `dat` module is designed with a small-core philosophy. It defines an API for reading, writing and syncing datasets. It's written using Node and [a variety of modules](https://github.com/maxogden/dat/blob/master/docs/modules.md).
+### What you need to know
 
-* For high-level description read [what is `dat`?](https://github.com/maxogden/dat/blob/master/docs/what-is-dat.md)
-* Are you a coder? Pick your favorite database/API/file format and try to hook it up to dat. Check out our [data importing guide](https://github.com/maxogden/dat/blob/master/docs/importing.md) to learn how
-* We also have a [module wishlist](https://github.com/datproject/discussions/issues/5) in case you are looking for a module to hack on
-* Check out the [JS API docs](https://github.com/maxogden/dat/blob/master/docs/js-api.md) or the [CLI usage docs](https://github.com/maxogden/dat/blob/master/docs/cli-usage.md)
-* Curious about how we built dat? Read about the node [modules we used](https://github.com/maxogden/dat/blob/master/docs/modules.md)
-* Interested in contributing to dat core? Start by checking out our [help wanted issue](https://github.com/maxogden/dat/labels/help%20wanted)
-* Want to ask questions in IRC? Join `#dat` on freenode. Chat logs are [available here](https://botbot.me/freenode/dat/)
-* Watch the `dat` repo on Github or follow [@dat_project](https://twitter.com/dat_project) on twitter
-* Suggest an organization that should be using `dat` to distribute their data. Let us know [on Twitter](http://twitter.com/dat_project)
-* Have any other questions/concerns? [Open an issue](https://github.com/maxogden/dat/issues)
+Dat is a project that seeks to set up better tools to store, sync, and share your data.
 
-## The dat APIs
+A `dat` includes both a *tabular* and a *blob* store.
 
-There are three main interfaces to dat:
+* The *tabular store* is just a table. As the data changes, it is versioned so that you can always go back in time. **Data is never deleted from a dat**.
 
-- [command line](https://github.com/maxogden/dat/blob/master/docs/cli-usage.md)
-- [REST API](https://github.com/maxogden/dat/blob/master/docs/rest-api.md)
-- [JavaScript API](https://github.com/maxogden/dat/blob/master/docs/js-api.md)
+* The *blob store* is for data that you can't necessarily fit into a cell. This could be any attachement, such as an image.
 
-In addition to the JS API documentation linked above we also [wrote a guide that shows examples](https://github.com/maxogden/dat/blob/master/docs/using-dat-from-node.md) of how to use the dat JS API from Node.
-
-Internally dat has two kinds of data storage: tabular and blob. The default tabular data store is [LevelDB](http://leveldb.org) and the default blob store stores files on the [local filesystem](https://github.com/mafintosh/fs-blob-store). Both of these default backends can be swapped out for other backends.
-
-To learn about how replication works in detail check out [our replication guide](https://github.com/maxogden/dat/blob/master/docs/replication.md).
-
-## Using dat with gasket
-
-To help build data pipelines with dat we have a complementary tool called [gasket](https://github.com/datproject/gasket).
-
-The best way to learn about gasket is to do the [data-plumber](https://www.npmjs.org/package/data-plumber) workshop.
+You can read more details about how dat works in our [importing guide](https://github.com/maxogden/dat/blob/master/docs/importing.md).
 
 
-## Beginner tutorials about technologies used by dat
+### Step 1: Setting up a dat server
 
- - [Node](https://github.com/maxogden/art-of-node#the-art-of-node)
- - [RESTful Interface](http://stackoverflow.com/questions/671118/what-exactly-is-restful-programming)
- - [Command Line](http://learncodethehardway.org/cli/book/cli-crash-course.html)
+How big is your data?
+
+  * **Under 10,000 rows or 25MB**: You can use [heroku-dat-template](https://github.com/bmpvieira/heroku-dat-template/blob/master/README.md) to deploy your data FOR FREE! Follow the instructions and then come back here for step 2.
+
+  * **Actually, it's more than 10,000 rows or 25MB:**  You can buy [digital ocean](https://www.digitalocean.com/) droplet for a cheaper price than heroku, or find a friend (or IT specialist!) that can help you out.
+
+### Step 2: Clone the dat
+
+Do you have a dat URL?
+
+*you: yes, I have a dat at `http://mydat.herokuapp.com`*
+
+Cool, you probably want to clone it then.
+
+  ```bash
+  $ dat clone http://mydat.herokuapp.com
+  Elapsed      : 2 s
+  Pulled       : 0 B       (0 B/s)
+  changes : 0
+  blobs   : 0
+
+  Clone from remote has completed.
+  ```
+
+You now have that dat on your local machine, too!
+
+  ```bash
+  $ cd mydat.herokuapp.com
+  $ ls -a
+  dat.json .dat/
+  ```
+
+And you can even see what's in it
+
+  ```bash
+  $ dat cat
+
+  ```
+
+But nothing comes out. You actually need to put data in it first!
+
+  ```bash
+  $ ls
+  my-data.csv
+
+  $ dat import my-data.csv --csv
+  Elapsed      : 0 s
+  Parsed       : 78.13 kB  (78.13 kB/s)
+  changes : 435
+
+  Done
+  ```
+
+So now, you'll need to push it to `http://mydat.herokuapp.com` so other people can get access.
+
+  ```bash
+  $ dat push http://mydat.herokuapp.com
+  Access denied.
+  ```
+
+You have to make sure you put your username and password in the URL. (*We'll be changing this soon*)
+
+[I forgot my password.](https://github.com/maxogden/dat/blob/master/docs/forgot-password.md)
+
+Okay, so once you get your password:
+
+  ```bash
+  $ dat push http://admin:iamapassword@mydat.herokuapp.com
+  Elapsed      : 6 s
+  Pushed       : 95.53 kB  (0 B/s)
+   - changes : 435
+   - blobs   : 0
+
+  Push to remote has completed.
+  ```
+
+Now, you can go to `http://mydat.herokuapp.com` and other people can `dat clone` your data. Boom!
+
+
+
+
+
+
