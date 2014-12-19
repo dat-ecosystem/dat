@@ -62,19 +62,21 @@ module.exports.init = function(test, common) {
         t.notOk(err, 'no err')
         var dat = spawn(datCliPath, ['init', '--no-prompt'], {cwd: common.dat1tmp, env: process.env})
         getFirstOutput(dat.stdout, verify)
-        
+
         function verify(output) {
           var success = (output.indexOf('Initialized dat store') > -1)
           if (!success) console.log(['output:', output])
           t.ok(success, 'output matches')
           var port = fs.existsSync(path.join(common.dat1tmp, '.dat', 'PORT'))
           t.false(port, 'should have no PORT file')
+          var readme = fs.existsSync(path.join(common.dat1tmp, 'README.md'))
+          t.ok(readme, 'should have a README file')
           kill(dat.pid)
           common.destroyTmpDats(function() {
             t.end()
           })
         }
-        
+
       })
     })
   })
