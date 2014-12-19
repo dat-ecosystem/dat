@@ -38,6 +38,7 @@
     "corsify": "~1.0.2",
     "csv-parser": "^1.2.1",
     "cuid": "^1.2.4",
+    "daemon": "^1.1.0",
     "dat-editor-prebuilt": "^1.0.19",
     "dat-remote-blobs": "^2.0.0",
     "dat-replicator": "^3.2.1",

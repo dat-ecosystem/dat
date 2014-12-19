@@ -89,6 +89,12 @@ dat rows get burrito
 dat listen
 ```
 
+## start a dat server to run in the background
+
+```
+dat listen -d
+```
+
 then you can poke around at the REST API:
 
 ```
