@@ -90,6 +90,7 @@
     "stdout-stream": "^1.3.0",
     "stream-splicer": "^1.1.0",
     "through2": "^0.6.1",
+    "tilde-expansion": "0.0.0",
     "write-transform-read": "^1.0.0"
   },
   "directories": {
