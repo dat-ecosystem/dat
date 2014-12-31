@@ -72,7 +72,7 @@
     "negotiator": "^0.4.9",
     "peek-stream": "^1.1.1",
     "pretty-bytes": "^0.1.1",
-    "protocol-buffers": "^2.3.3",
+    "protocol-buffers": "^2.4.5",
     "pump": "^0.3.5",
     "pumpify": "^1.3.2",
     "read": "^1.0.5",
