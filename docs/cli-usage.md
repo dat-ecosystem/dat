@@ -83,6 +83,18 @@ dat rows put burrito-recipe.json
 dat rows get burrito
 ```
 
+## delete a single row by key
+
+```
+dat rows delete burrito
+```
+
+## but rows are never truly deleted. you can always go find a row at the version it was last seen. in this case, that row was at version 1
+
+```
+dat rows get burrito 1
+```
+
 ## start a dat server
 
 ```
