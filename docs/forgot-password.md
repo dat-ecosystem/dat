@@ -30,8 +30,8 @@ export DAT_ADMIN_PASS='password'
 You can check to see what they are like this:
 
 ```bash
-$ echo $DAT_ADMIN_PASS
-username
 $ echo $DAT_ADMIN_USER
+username
+$ echo $DAT_ADMIN_PASS
 password
 ```
