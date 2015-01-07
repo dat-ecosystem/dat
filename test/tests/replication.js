@@ -200,22 +200,24 @@ module.exports.pushReplication = function(test, common) {
       var doc1 = {a: 'pizza'}
       var doc2 = {a: 'walrus'}
       var dat2port
-      
+
       var dat2 = new Dat(common.dat2tmp, function ready(err) {
         if (err) throw err
-        
+
+     var server = require('dat-server-experiment')(dat);
+     server.listen(function () {
         dat2.listen(function(err) {
           if (err) throw err
           dat2port = dat2._server.address().port
-        
+
           putPushCompare(doc1, function() {
             putPushCompare(doc2, function() {
               done()
             })
           })
-          
+
         })
-        
+
       })
 
       function putPushCompare(doc, cb) {

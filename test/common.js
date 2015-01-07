@@ -37,11 +37,12 @@ module.exports = function() {
       }
       debug('using DAT_TEST_LEVELDOWN', opts.leveldown)
     }
-  
+
     var datPath = opts.datPath || dat1tmp
     var dat = new Dat(datPath, opts, function ready(err) {
       if (err) throw err
-      dat.listen(function(err) {
+      var server = require('dat-server-experiment')(dat);
+      var server.listen(function(err) {
         if (err) throw err
         if (common.rpc) {
           dat2 = new Dat(datPath, opts, function ready(err) {
