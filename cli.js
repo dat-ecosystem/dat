@@ -28,7 +28,6 @@ var bin = {
   "push": './bin/push',
   "clean": './bin/clean',
   "clone": './bin/clone',
-  "serve": './bin/listen',
   "listen": './bin/listen',
   "blobs": './bin/blobs',
   "rows": "./bin/rows"
