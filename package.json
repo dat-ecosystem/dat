@@ -99,6 +99,7 @@
     "url": "https://github.com/maxogden/dat/issues"
   },
   "devDependencies": {
+    "dat-server-experiment": "git://github.com/sethvincent/dat-server-experiment",
     "memdown": "^0.7.1",
     "run-parallel": "^1.0.0",
     "run-series": "^1.0.2",
