@@ -37,7 +37,8 @@ If you don't have access or time for a server, you could just do:
 And then start the server on your computer:
 
   ```bash
-  $ dat listen
+  $ npm install -g dat-server
+  $ dat-server listen
   ```
 
 ### Step 2: Clone the dat

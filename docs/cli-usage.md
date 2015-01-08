@@ -98,7 +98,8 @@ dat rows get burrito 1
 ## start a dat server
 
 ```
-dat listen
+npm install -g dat-server
+dat-server listen
 ```
 
 then you can poke around at the REST API:

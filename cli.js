@@ -5,7 +5,6 @@ var Dat = require('./')
 var minimist = require('minimist')
 var EOL = require('os').EOL
 var url = require('url')
-var stdout = require('stdout-stream')
 var fs = require('fs')
 var path = require('path')
 var rimraf = require('rimraf')
@@ -28,7 +27,6 @@ var bin = {
   "push": './bin/push',
   "clean": './bin/clean',
   "clone": './bin/clone',
-  "serve": './bin/listen',
   "listen": './bin/listen',
   "blobs": './bin/blobs',
   "rows": "./bin/rows"
@@ -87,7 +85,6 @@ var dat = Dat(dir, {init: false}, function(err) {
   }
 
   if (!dat.db && !noDat) return onerror(new Error('There is no dat here'))
-  if (first !== 'listen' && !dat.rpcClient) return dat.listen(argv.port, argv, execCommand)
   execCommand()
 })
 
@@ -97,21 +94,5 @@ function toFolder(dir) {
 }
 
 function close() {
-  // if _server exists it means dat is the rpc server
-  if (dat._server) {
-    // since the server process can't exit yet we must manually close stdout
-    stdout.end()
-
-    // if there aren't any active connections then we can close the server
-    if (dat._connections.sockets.length === 0) dat.close()
-
-    // otherwise wait for the current connections to close
-    dat._connections.on('idle', function() {
-      debug('dat close due to idle')
-      dat.close()
-    })
-
-  } else {
-    dat.close()
-  }
+  dat.close()
 }
