@@ -6,6 +6,7 @@ var debug = require('debug')('dat.test-common')
 
 var datPath = path.join(__dirname, '..')
 var Dat = require(datPath)
+var DatServer = require('dat-server-experiment')
 
 var tmp = os.tmpdir()
 var dat1tmp = path.join(tmp, 'dat1')
@@ -25,9 +26,9 @@ module.exports = function() {
       cb = opts
       opts = {}
     }
-  
+
     var dat2
-    
+
     var leveldown = process.env['DAT_LEVELDOWN']
     var leveldownPath = process.env['DAT_LEVELDOWN_PATH']
     if (leveldown) {
@@ -37,11 +38,12 @@ module.exports = function() {
       }
       debug('using DAT_TEST_LEVELDOWN', opts.leveldown)
     }
-  
+
     var datPath = opts.datPath || dat1tmp
     var dat = new Dat(datPath, opts, function ready(err) {
       if (err) throw err
-      dat.listen(function(err) {
+      var server = DatServer(dat);
+      server.listen(function(err) {
         if (err) throw err
         if (common.rpc) {
           dat2 = new Dat(datPath, opts, function ready(err) {
@@ -52,10 +54,10 @@ module.exports = function() {
         }
       })
     })
-  
+
     function done(cb) {
       setTimeout(destroy, 100) // fixes weird test errors on travis-ci
-      
+
       function destroy() {
         dat.destroy(function(err) {
           if (err) throw err
@@ -65,7 +67,7 @@ module.exports = function() {
               cleanup()
             })
           } else cleanup()
-      
+
           function cleanup() {
             common.destroyTmpDats(function() {
               if (opts.noTestEnd) {
@@ -97,7 +99,7 @@ module.exports = function() {
       })
     })
   }
-  
+
   return common
 }
 

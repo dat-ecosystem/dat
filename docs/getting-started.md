@@ -28,18 +28,6 @@ How big is your data?
   * **More than 10,000 rows or 25MB:**  You can buy [digital ocean](https://www.digitalocean.com/) droplet for a cheaper price than heroku, or find a friend (or IT specialist!) that can help you out.
 
 
-If you don't have access or time for a server, you could just do:
-
-  ```bash
-  $ dat init
-  ```
-
-And then start the server on your computer:
-
-  ```bash
-  $ dat listen
-  ```
-
 ### Step 2: Clone the dat
 
 Do you have a dat URL?
