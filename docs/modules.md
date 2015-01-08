@@ -34,7 +34,7 @@ This module makes it easy to add CORS support to HTTP servers. We use it to make
 
 ## [csv-parser](http://npmjs.org/csv-parser)
 
-We wrote this CSV parser because we needed high performance and a simple API. 
+We wrote this CSV parser because we needed high performance and a simple API.
 
 ## [csv-write-stream](http://npmjs.org/csv-write-stream)
 
@@ -71,10 +71,6 @@ This lets us extend the idea of the popular [debug](http://npmjs.org/debug) to h
 ## [gasket](http://npmjs.org/gasket)
 
 We wrote `gasket` to make building and sharing streaming data processing pipelines easier. We also wrote a NodeSchool workshop that teaches streaming data processing and gasket called [data-plumber](https://www.npmjs.org/package/data-plumber)
-
-## [getport](http://npmjs.org/getport)
-
-Gets an open port for binding the dat http server during `dat listen`
 
 ## [isnumber](http://npmjs.org/isnumber)
 

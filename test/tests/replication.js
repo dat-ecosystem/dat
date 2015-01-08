@@ -3,6 +3,7 @@ var fs = require('fs')
 var path = require('path')
 var bops = require('bops')
 var concat = require('concat-stream')
+var DatServer = require('dat-server-experiment')
 var Dat = require('../../')
 
 module.exports.pullReplication = function(test, common) {
@@ -12,7 +13,7 @@ module.exports.pullReplication = function(test, common) {
       common.getDat(t, function(dat, cleanup) {
         var ws = dat.createWriteStream({ csv: true, quiet: true })
         var nums = []
-        
+
         ws.on('finish', function() {
           dat2.pull({ quiet: true }, function(err) {
             if (err) throw err
@@ -21,10 +22,10 @@ module.exports.pullReplication = function(test, common) {
             })
           })
         })
-        
+
         ws.write(bops.from('a\n1\n2'))
         ws.end()
-        
+
         function done() {
           var rs = dat2.createReadStream()
           rs.pipe(concat(function(data) {
@@ -86,7 +87,7 @@ module.exports.pullReplicationSparse = function(test, common) {
     var dat2 = new Dat(common.dat2tmp, function ready() {
       common.getDat(t, function(dat, cleanup) {
         var ws = dat.createWriteStream({ quiet: true })
-        
+
         ws.on('finish', function() {
           dat2.pull({ quiet: true },function(err) {
             if (err) throw err
@@ -98,16 +99,16 @@ module.exports.pullReplicationSparse = function(test, common) {
             }))
           })
         })
-        
+
         ws.on('error', function(e) {
           t.notOk(e, e.message)
         })
-        
+
         ws.write({"doc1": "val1"})
         ws.write({"doc2": "val2"})
         ws.write({"doc3": "val3"})
         ws.end()
-        
+
         function done() {
           dat2.destroy(function(err) {
             t.false(err, 'no err')
@@ -126,13 +127,13 @@ module.exports.pullReplicationMultiple = function(test, common) {
       common.getDat(t, function(dat, cleanup) {
         var doc1 = {a: 'pizza'}
         var doc2 = {a: 'walrus'}
-        
+
         putPullCompare(doc1, function() {
           putPullCompare(doc2, function() {
             done()
           })
         })
-        
+
         function putPullCompare(doc, cb) {
           dat.put(doc, function(err, doc) {
             if (err) throw err
@@ -144,7 +145,7 @@ module.exports.pullReplicationMultiple = function(test, common) {
             })
           })
         }
-        
+
         function done() {
           dat2.createReadStream().pipe(concat(function(data) {
             var results = data.map(function(r) { return r.a })
@@ -168,7 +169,7 @@ module.exports.pullReplicationLive = function(test, common) {
         dat.put({foo: 'bar'}, function(err) {
           if (err) throw err
           var ok = false
-          
+
           dat2.createChangesReadStream({ live: true, data: true, decode: true }).on('data', function(change) {
             if (change.subset) return
             var data = change.value
@@ -200,22 +201,24 @@ module.exports.pushReplication = function(test, common) {
       var doc1 = {a: 'pizza'}
       var doc2 = {a: 'walrus'}
       var dat2port
-      
+      var server
+
       var dat2 = new Dat(common.dat2tmp, function ready(err) {
         if (err) throw err
-        
-        dat2.listen(function(err) {
+
+        server = DatServer(dat2)
+        server.listen(function(err) {
           if (err) throw err
-          dat2port = dat2._server.address().port
-        
+          dat2port = server._server.address().port
+
           putPushCompare(doc1, function() {
             putPushCompare(doc2, function() {
               done()
             })
           })
-          
+
         })
-        
+
       })
 
       function putPushCompare(doc, cb) {
@@ -225,16 +228,17 @@ module.exports.pushReplication = function(test, common) {
             if (err) throw err
             common.compareData(t, dat, dat2, function() {
               cb()
-            })                
+            })
           })
         })
       }
-    
+
       function done() {
         dat2.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r.a })
           t.equals(JSON.stringify(results), JSON.stringify(expected), 'createReadStream() matches')
           dat2.destroy(function(err) {
+            server.close()
             t.false(err, 'no err')
             cleanup()
           })
@@ -251,15 +255,17 @@ module.exports.pushReplicationURLNormalize = function(test, common) {
       var doc1 = {a: 'pizza'}
       var doc2 = {a: 'walrus'}
       var dat2port
-      
+      var server
+
       var dat2 = new Dat(common.dat2tmp, function ready(err) {
         if (err) throw err
-        
-        dat2.listen(function(err) {
+
+        server = DatServer(dat2)
+        server.listen(function(err, port) {
           if (err) throw err
-        
-          dat2port = dat2._server.address().port
-        
+
+          dat2port = port
+
           putPushCompare(doc1, function() {
             putPushCompare(doc2, function() {
               done()
@@ -275,16 +281,17 @@ module.exports.pushReplicationURLNormalize = function(test, common) {
             if (err) throw err
             common.compareData(t, dat, dat2, function() {
               cb()
-            })                
+            })
           })
         })
       }
-    
+
       function done() {
         dat2.createReadStream().pipe(concat(function(data) {
           var results = data.map(function(r) { return r.a })
           t.equals(JSON.stringify(results), JSON.stringify(expected), 'createReadStream() matches')
           dat2.destroy(function(err) {
+            server.close()
             t.false(err, 'no err')
             cleanup()
           })
@@ -298,7 +305,7 @@ module.exports.pushReplicationURLNormalize = function(test, common) {
 module.exports.remoteClone = function(test, common) {
   test('clone from remote', function(t) {
     common.getDat(t, function(dat, cleanup) {
-      
+
       dat.put({foo: 'bar'}, function(err) {
         if (err) throw err
         var dat2 = new Dat(common.dat2tmp, { init: false }, function ready() {
@@ -309,7 +316,7 @@ module.exports.remoteClone = function(test, common) {
           })
         })
       })
-      
+
       function verify(dat2) {
         dat2.createReadStream().pipe(concat(function(data) {
           t.equal(data.length, 1)
@@ -321,7 +328,7 @@ module.exports.remoteClone = function(test, common) {
           })
         }))
       }
-      
+
     })
   })
 }
@@ -329,10 +336,10 @@ module.exports.remoteClone = function(test, common) {
 module.exports.skimClone = function(test, common) {
   test('clone --skim from remote', function(t) {
     common.getDat(t, function(dat, cleanup) {
-      
+
       dat.put({key: 'foo'}, function(err, stored) {
         if (err) throw err
-        
+
         var ws = dat.createBlobWriteStream('write-streams.js', stored, function(err, doc) {
           t.notOk(err, 'no blob write err')
           var dat2 = new Dat(common.dat2tmp, { init: false }, function ready() {
@@ -342,32 +349,32 @@ module.exports.skimClone = function(test, common) {
               verify(dat2)
             })
           })
-          
+
           function verify(dat2) {
             dat2.get('foo', function(err, row) {
               t.notOk(err, 'no get err')
               t.equal(row.key, 'foo', 'got foo')
-              
+
               dat2.blobs.backend.exists(row.blobs['write-streams.js'], function(err, exists) {
                 t.notOk(exists, 'blob is not in local blob backend')
-                
+
                 var rs = dat2.createBlobReadStream('foo', 'write-streams.js')
                 rs.pipe(concat(function(contents) {
                   t.equal(contents.length, row.blobs['write-streams.js'].size, 'blob size matches')
-                  
+
                   dat2.destroy(function(err) {
                     if (err) throw err
                     cleanup()
                   })
-                  
+
                 }))
-                
+
               })
             })
           }
-          
+
         })
-      
+
         fs.createReadStream(path.join(__dirname, 'replication.js')).pipe(ws)
       })
     })

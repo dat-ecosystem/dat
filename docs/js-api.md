@@ -8,7 +8,7 @@
 var db = dat([path], [options], [onReady])
 ```
 
-Returns a new dat instance and either opens the existing underlying database or creates a new empty one. All arguments are optional. 
+Returns a new dat instance and either opens the existing underlying database or creates a new empty one. All arguments are optional.
 
 `path` is the path to the folder inside of which dat should put it's `.dat` folder. If a `.dat` folder already exists there dat will open the existing dat store, otherwise a new one will be created. If not specified it will use `process.cwd()`
 
@@ -80,7 +80,7 @@ A dat listen hook currently must be a Node module in the following form:
 ```js
 module.exports = function hook(dat, done) {
   // do stuff with dat
-  
+
   // must call done when the hook is done initializing, even if you call it immediately
   done()
 }
@@ -272,14 +272,6 @@ Returns a readable stream of blob data.
 
 * `version` (default latest) - the version of the row to get
 
-## listen
-
-```js
-dat.listen([port], [cb])
-```
-
-Starts the dat HTTP server. `port` defaults to `6461` or the next largest available open port, `cb` gets called with `(err)` when the server has started/failed.
-
 ## clone
 
 ```js
@@ -328,7 +320,7 @@ Creates a new empty dat folder and database at `path/.dat`. This method is calle
 var paths = dat.paths(path)
 ```
 
-Returns an object with the various absolute paths (calculated using `path` as the base dir) for different parts of dat, e.g. the `.dat` folder, the leveldb folder, the blob store. 
+Returns an object with the various absolute paths (calculated using `path` as the base dir) for different parts of dat, e.g. the `.dat` folder, the leveldb folder, the blob store.
 
 ## exists
 
