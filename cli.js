@@ -5,7 +5,6 @@ var Dat = require('./')
 var minimist = require('minimist')
 var EOL = require('os').EOL
 var url = require('url')
-var stdout = require('stdout-stream')
 var fs = require('fs')
 var path = require('path')
 var rimraf = require('rimraf')
