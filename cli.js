@@ -86,7 +86,6 @@ var dat = Dat(dir, {init: false}, function(err) {
   }
 
   if (!dat.db && !noDat) return onerror(new Error('There is no dat here'))
-  if (first !== 'listen' && !dat.rpcClient) return dat.listen(argv.port, argv, execCommand)
   execCommand()
 })
 

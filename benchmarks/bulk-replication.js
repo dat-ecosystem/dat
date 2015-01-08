@@ -15,6 +15,7 @@
 // replicate 50000: 1997ms
 
 var Dat = require('../')
+var DatServer = require('dat-server-experiment')
 
 var path = require('path')
 var fs = require('fs')
@@ -36,24 +37,25 @@ cleanup(function() {
 function testReplication(size) {
   size = size || 1000
   var dat = new Dat(sourcePath, function(err) {
-    dat.listen(function(err) {
+    var server = DatServer(dat);
+    server.listen(function(err) {
       if (err) throw err
-      
+
       var ws = dat.createWriteStream({ csv: true })
       console.time('writestream ' + size)
       ws.on('end', function() {
         console.timeEnd('writestream ' + size)
         var opts = {}
         console.time('replicate ' + size)
-    
+
         var dat2 = new Dat(destPath, function(err) {
           if (err) throw err
-      
+
           dat2.pull(function(err) {
             if (err) throw err
             done()
           })
-      
+
           function done() {
             console.timeEnd('replicate ' + size)
             dat.close() // stops http server
@@ -61,15 +63,15 @@ function testReplication(size) {
           }
         })
       })
-    
+
       ws.write(new Buffer('a,b,c\n'))
-    
+
       for (var i = 0; i < size; i++) {
         ws.write(new Buffer(i + ',2,3\n'))
       }
 
       ws.end()
-      
+
     })
   })
 }
