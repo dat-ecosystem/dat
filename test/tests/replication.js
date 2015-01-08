@@ -207,9 +207,9 @@ module.exports.pushReplication = function(test, common) {
         if (err) throw err
 
         server = DatServer(dat2)
-        server.listen(function(err) {
+        server.listen(function(err, port) {
           if (err) throw err
-          dat2port = server._server.address().port
+          dat2port = port
 
           putPushCompare(doc1, function() {
             putPushCompare(doc2, function() {

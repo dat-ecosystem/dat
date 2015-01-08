@@ -95,21 +95,5 @@ function toFolder(dir) {
 }
 
 function close() {
-  // if _server exists it means dat is the rpc server
-  if (dat._server) {
-    // since the server process can't exit yet we must manually close stdout
-    stdout.end()
-
-    // if there aren't any active connections then we can close the server
-    if (dat._connections.sockets.length === 0) dat.close()
-
-    // otherwise wait for the current connections to close
-    dat._connections.on('idle', function() {
-      debug('dat close due to idle')
-      dat.close()
-    })
-
-  } else {
-    dat.close()
-  }
+  dat.close()
 }
