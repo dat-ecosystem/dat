@@ -152,6 +152,26 @@ module.exports.sameDir = function(test, common) {
   })
 }
 
+module.exports.customDb = function(test, common) {
+  test('instantiate + pass in custom levelup instance', function(t) {
+    var memdb = require('memdb')()
+    var dat = new Dat(common.dat1tmp, { db: memdb }, function ready() {
+      dat.put({'foo': 'bar'}, function(err) {
+        t.notOk(err, 'no put err')
+        var onDiskDat = fs.existsSync(path.join(common.dat1tmp, '.dat', 'store.dat'))
+        t.notOk(onDiskDat, 'no dat folder was created')
+        memdb.createReadStream().pipe(concat(function(rows) {
+          t.ok(rows.length > 0, 'got rows from memdb')
+          dat.destroy(function(err) {
+            t.false(err, 'destroy ok')
+            t.end()
+          })
+        }))
+      })
+    })
+  })
+}
+
 module.exports.customBackend = function(test, common) {
   test('instantiate + pass in custom leveldown instance', function(t) {
     var memdown = require('memdown')
@@ -196,6 +216,7 @@ module.exports.all = function (test, common) {
   module.exports.existingRepo(test, common)
   module.exports.existingRepoClone(test, common)
   module.exports.autoPort(test, common)
+  module.exports.customDb(test, common)
   module.exports.customBackend(test, common)
   module.exports.customBlobBackend(test, common)
   // module.exports.close(test, common)

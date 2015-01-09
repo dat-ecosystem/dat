@@ -21,6 +21,7 @@ Returns a new dat instance and either opens the existing underlying database or 
 * `path` (default `process.cwd()`) - if not specified as the first argument to the constructor it will check `options.path` instead
 * `adminUser` and `adminPass` (default `undefined`) - if both are set any write operations will require HTTP basic auth w/ these credentials
 * `leveldown` (default `require('leveldown-prebuilt')`) - pass in a custom leveldown backend
+* `db` - pass in a custom levelup instance. if specified the `leveldown` option will be ignored, and your tabular data will be stored entirely in the `db` instance you pass in
 * `blobs` (default `require('lib/blobs.js')`) - pass in a custom blob store
 * `replicator` (default `require('lib/replicator.js')`) - pass in a custom replicator
 * `remoteAddress` (default `undefined`) - if specified then dat will run in RPC client mode
