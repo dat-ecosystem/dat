@@ -22,6 +22,34 @@ When the dat instance is ready it will emit events `.on('ready')` and `.on('open
 * `blobs` (default `require('lib/blobs.js')`) - pass in a custom blob store
 * `skim` - TODO decide on semantics
 * `feed` - pass in a custom [changes-feed](https://www.npmjs.com/package/changes-feed) instance
+* `merge` - pass in a custom merge resolution function
+
+## db.head
+
+A string property available on the db instance containing the latest stable version hash.
+
+## db.status
+
+A string representing the current status of this Dat.
+
+Possible values are:
+
+- *"new"*      - newly created, not opened or closed
+- *"opening"*  - waiting for the database to be opened
+- *"open"*     - successfully opened the database, available for use
+- *"conflict"* - the database has entered conflict mode and conflicts must be resolved or aborted
+- *"closing"*  - waiting for the database to be closed
+- *"closed"*   - database has been successfully closed, should not be used
+
+## db.on
+
+An event emitter instance to hook into Dat status changes with.
+
+Each `db.status` will be emitted as an event, e.g. `db.on('conflict')`.
+
+Additionally there is an `error` event for listening for critical errors.
+
+**Note** `conflict` is a special, mandatory event. If you do not handle it (e.g. you do not have a `on('conflict')` event bound or you do not have a `merge` function registered with the db) then the db will emit an `error` event if it enters conflict mode.
 
 ## db.createChangesStream
 
@@ -45,6 +73,61 @@ Changes are emitted as JS objects that look like `{change: 352, key: 'foo', vers
 * `tail` (default `false`) - if true it will set `since` to the very last change so you only get new changes
 * `limit` (default unlimited) - how many changes to return before stopping
 * `live` (default `false`) - if true will emit new changes as they happen + never end (unless you manually end the stream)
+
+## db.createConflictStream
+
+```js
+db.createConflictStream(opts)
+```
+
+Returns a new readable object stream that emits conflicts. If you are not in conflict mode the stream will immediately end.
+
+The object that gets emitted will be an objects with these properties:
+
+- `key` - the key for this conflict
+- `dataset` - the dataset name for this conflict
+- `versions` - an array of objects, each object is a different conflicted version in the same format as what is returned by `dataset.get`
+
+If specified, `opts` can have these properties:
+
+- `format` (default `objectMode`) - if set to `csv`, `json` or `protobuf` the stream will not be an object mode stream and will emit serialized data
+
+## db.merge
+
+```js
+db.merge(versions, value, cb)
+```
+
+Resolve multiple versions of a conflicted row into a new single merged version.
+
+- `versions` (required) an array of version hash strings *or* objects to merge (see below)
+- `value` (required) the new value to store
+- `cb` (optional) called when done with `(err, updated)` where `updated` is the new version of the row that was stored (same format as what you get from `dataset.get`)
+
+If `versions` is an array of strings, it should be the hashes of the versions you want to merge. If it is an array of objects, the objects should be the same format as what you get back from `createConflictStream`.
+
+## db.createMergeStream
+
+```js
+db.createMergeStream(opts)
+```
+
+Returns a writable object stream. Each object you write will be merged using the same semantics as `db.merge`. This makes it possible to implement streaming merge pipelines externally from Dat for automation purposes.
+
+The objects must have these properties:
+
+- `versions` (required) an array of version hash strings *or* objects to merge
+- `value` (required) the new value to store
+
+## db.rollback
+
+```js
+db.rollback(version, cb)
+```
+
+Performs a **destructive** (repeat: **destructive**) rollback to the state at `version` and calls `cb` when done with `(err)`. 
+
+
 
 ## dataset
 
@@ -71,7 +154,7 @@ example:
 ```js
 dataset.get(whatever, function cb(err, obj) {
   // if err exists it will be some type of DatError
-  // {type: 'file', 'key': 'photo', version: '324i2h3i4b2iu', value: {foo: 'bar'}}
+  // {type: 'file', dataset: 'salaries', 'key': 'photo', version: '324i2h3i4b2iu', value: {foo: 'bar'}}
 })
 ```
 
@@ -227,10 +310,10 @@ Returns a readable stream of file data.
 
 # Replication
 
-## db.push
+## db.createPushStream
 
 ```js
-db.push([opts])
+db.createPushStream([opts])
 ```
 
 Returns a duplex replication stream that you can pipe over a transport stream to a remote replication endpoint. Pushes local data into remote.
@@ -239,10 +322,10 @@ Returns a duplex replication stream that you can pipe over a transport stream to
 
 TODO decide on options
 
-## db.pull
+## db.createPullStream
 
 ```js
-db.pull([opts])
+db.createPullStream([opts])
 ```
 
 Returns a duplex replication stream that you can pipe over a transport stream to a remote replication endpoint. Pulls data from remote and merges into local.
@@ -251,7 +334,7 @@ Returns a duplex replication stream that you can pipe over a transport stream to
 
 TODO decide on options
 
-## db.synchronize([opts])
+## db.createSyncStream([opts])
 
 Returns a duplex replication stream that you can pipe over a transport stream to a remote replication endpoint. Does both a push and a pull.
 
