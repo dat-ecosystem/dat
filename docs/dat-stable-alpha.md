@@ -78,6 +78,6 @@ In the future we would also like to work on a way to easily host and share datas
 
 We also want to hook dat up to P2P networks, so that we can make downloads faster but also so that datasets become more permanent. Dat advisor Juan Benet is now working on [IPFS](http://ipfs.io/), which we are excited to hook up to dat when it is ready.
 
-Certain datasets are simply too large to share, so we also expect to work on a distributed computation layer on top of dat in the future (similar to the [ESGF](http://esgf.org/) project).
+Certain datasets are simply too large to share, so we also expect to work on a distributed computation layer on top of dat in the future (similar to the [ESGF](http://esgf.llnl.gov/) project).
 
 You can help us discuss these high level future ideas on [this issue](https://github.com/datproject/discussions/issues/1).
