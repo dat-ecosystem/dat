@@ -6,3 +6,6 @@ node_js:
 branches:
   except:
     - beta
+
+# Using faster container based build environment.
+sudo: false
