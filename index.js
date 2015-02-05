@@ -4,6 +4,8 @@ var util = require('util')
 var levelup = require('levelup')
 var thunky = require('thunky')
 var mkdirp = require('mkdirp')
+var hyperlog = require('hyperlog')
+var subleveldown = require('subleveldown')
 var path = require('path')
 var dataset = require('./lib/dataset')
 
@@ -19,6 +21,7 @@ var Dat = function (dir, opts) {
 
   this.path = datPath
   this.db = null
+  this.log = null
 
   this.open = thunky(function (cb) {
     fs.exists(datPath, function (exists) {
@@ -28,6 +31,8 @@ var Dat = function (dir, opts) {
         if (err) return cb(err)
 
         self.db = levelup(path.join(datPath, 'db'), {db: backend})
+        self.log = hyperlog(subleveldown(self.db, 'hyperlog'))
+
         cb(null, self)
       })
     })
