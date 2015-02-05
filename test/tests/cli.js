@@ -61,8 +61,11 @@ module.exports.init = function(test, common) {
       mkdirp(common.dat1tmp, function(err) {
         t.notOk(err, 'no err')
         var dat = spawn(datCliPath, ['init', '--no-prompt'], {cwd: common.dat1tmp, env: process.env})
+        dat.on('exit', function (code, signal) {
+          t.equals(code, 0, 'init exits with code 0')
+        })
         getFirstOutput(dat.stdout, verify)
-        
+
         function verify(output) {
           var success = (output.indexOf('Initialized dat store') > -1)
           if (!success) console.log(['output:', output])
