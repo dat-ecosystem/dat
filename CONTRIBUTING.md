@@ -1,6 +1,6 @@
 # How to contribute
 
-Code changes are welcome and should follow the guidelines below. 
+Code changes are welcome and should follow the guidelines below.
 
 * Try to adhere to the prevailing code-style that you're adding to
   * We don't use a linter or have a specific style guide
@@ -33,3 +33,4 @@ Complete list of commit message tags
 * REF: Refactor
 * TYP: Typo
 * STY: Style (code style, e.g., removing whitespace)
+* BRK: Breaking change
