@@ -7,6 +7,7 @@ var mkdirp = require('mkdirp')
 var hyperlog = require('hyperlog')
 var subleveldown = require('subleveldown')
 var path = require('path')
+var duplexify = require('duplexify')
 var dataset = require('./lib/dataset')
 
 var Dat = function (dir, opts) {
@@ -40,6 +41,31 @@ var Dat = function (dir, opts) {
 }
 
 util.inherits(Dat, events.EventEmitter)
+
+Dat.prototype.createPullStream = function() {
+  return this.createSyncStream({mode: 'pull'})
+}
+
+Dat.prototype.createPushStream = function() {
+  return this.createSyncStream({mode: 'push'})
+}
+
+Dat.prototype.createSyncStream = function(opts) {
+  if (!opts) opts = {}
+
+  var mode = opts.mode || 'sync'
+  if (this.log) return this.log.createReplicationStream({mode: mode})
+  var proxy = duplexify()
+
+  this.open(function (err, dat) {
+    if (err || proxy.destroyed) return proxy.destroy(err)
+    var repl = dat.log.createReplicationStream({mode: mode})
+    proxy.setReadable(repl)
+    proxy.setWritable(repl)
+  })
+
+  return proxy
+}
 
 Dat.prototype.dataset = function(name) {
   return dataset(this, name)
