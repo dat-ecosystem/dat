@@ -11,3 +11,7 @@ before_script:
 
 script:
  - npm test
+
+branches:
+  except:
+    - beta
