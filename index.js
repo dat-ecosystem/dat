@@ -42,15 +42,15 @@ var Dat = function (dir, opts) {
 
 util.inherits(Dat, events.EventEmitter)
 
-Dat.prototype.createPullStream = function() {
+Dat.prototype.createPullStream = function () {
   return this.createSyncStream({mode: 'pull'})
 }
 
-Dat.prototype.createPushStream = function() {
+Dat.prototype.createPushStream = function () {
   return this.createSyncStream({mode: 'push'})
 }
 
-Dat.prototype.createSyncStream = function(opts) {
+Dat.prototype.createSyncStream = function (opts) {
   if (!opts) opts = {}
 
   var mode = opts.mode || 'sync'
@@ -67,7 +67,35 @@ Dat.prototype.createSyncStream = function(opts) {
   return proxy
 }
 
-Dat.prototype.dataset = function(name) {
+Dat.prototype.heads = function (name, cb) {
+  this.open(function (err, dat) {
+    if (err) return cb(err)
+
+    var heads = []
+    var changes = dat.log.createChangesStream()
+
+    changes.on('data', function (data) {
+      if (dataset.decode(data.value).dataset !== name) return
+
+      data.links.forEach(function (link) {
+        var i = heads.indexOf(link.hash)
+        if (i > -1) heads.splice(i, 1)
+      })
+
+      heads.push(data.hash)
+    })
+
+    changes.on('error', function (err) {
+      cb(err)
+    })
+
+    changes.on('end', function () {
+      cb(null, heads)
+    })
+  })
+}
+
+Dat.prototype.dataset = function (name) {
   return dataset(this, name)
 }
 
