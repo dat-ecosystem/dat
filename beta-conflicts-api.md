@@ -72,3 +72,64 @@ db.on('conflict', function() {
   })
 }
 ```
+
+# branches, datasets, conflicts, forks
+
+## branches
+
+A linear path the graph
+
+```
+A         B
+|         |
+|         3
+|         |
+* - 2 - - * - 4 - - C
+|
+1
+|
+*
+```
+
+```
+   createReadStream(hash(a+b), hash(a+b+ÿ))
+      /                \
+  a: mathias: put: b=1    b: max: put: c=1
+     \                 /
+        max: put: a=1
+```
+
+```
+diffhash+commit1hash=changedata
+```
+
+```
+g
+|                   i -- [diff2]
+|                   |
+f         e - - - - [diff]
+|         |         |
+|         |         |
+b - - - - c - - - - d
+|
+|
+|
+a (init dataset "salaries")
+```
+
+```
+dat.branches('salaries') -> f d e
+dat.heads('salaries') -> g e d
+```
+
+## datasets
+
+A user defined label for a branch
+
+## conflicts
+
+We do not have conflicts
+
+## forks
+
+Any instance where there is more than one branch with a shared common ancestor
