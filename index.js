@@ -24,6 +24,9 @@ var Dat = function (dir, opts) {
   this.db = null
   this.log = null
 
+  this._view = null
+  this._branches = {}
+
   this.open = thunky(function (cb) {
     fs.exists(datPath, function (exists) {
       if (!exists && !opts.createIfMissing) return cb(new Error('No dat here'))
@@ -33,8 +36,37 @@ var Dat = function (dir, opts) {
 
         self.db = levelup(path.join(datPath, 'db'), {db: backend})
         self.log = hyperlog(subleveldown(self.db, 'hyperlog'))
+        self._view = subleveldown(self.db, 'view')
 
-        cb(null, self)
+        self.log.createChangesStream()
+          .on('data', function (data) {
+            var value = JSON.parse(data.value.toString())
+            var set = value.dataset
+
+            if (!set) return
+            if (!self._branches[set]) self._branches[set] = {}
+
+            data.links.slice(1).forEach(function (link) {
+              delete self._branches[set][link.hash]
+            })
+
+            var prev = data.links.length && data.links[0]
+
+            if (!prev || !self._branches[set][prev.hash]) {
+              self._branches[set][data.hash] = {root: data, head: data, db: subleveldown(self._view, data.hash), changes: data.changes}
+              return
+            }
+
+            self._branches[set][prev.hash].head = data
+            self._branches[set][data.hash] = self._branches[set][prev.hash]
+            delete self._branches[set][prev.hash]
+          })
+          .on('error', function (err) {
+            cb(err)
+          })
+          .on('end', function () {
+            cb(null, self)
+          })
       })
     })
   })
@@ -67,36 +99,17 @@ Dat.prototype.createSyncStream = function (opts) {
   return proxy
 }
 
-Dat.prototype.heads = function (name, cb) {
+Dat.prototype.branches = function (name, cb) {
   this.open(function (err, dat) {
     if (err) return cb(err)
+    if (!dat._branches[name]) return cb(new Error('Dataset does not exist'))
 
-    var heads = []
-    var changes = dat.log.createChangesStream()
-
-    changes.on('data', function (data) {
-      if (dataset.decode(data.value).dataset !== name) return
-
-      data.links.forEach(function (link) {
-        var i = heads.indexOf(link.hash)
-        if (i > -1) heads.splice(i, 1)
-      })
-
-      heads.push(data.hash)
-    })
-
-    changes.on('error', function (err) {
-      cb(err)
-    })
-
-    changes.on('end', function () {
-      cb(null, heads)
-    })
+    cb(null, Object.keys(dat._branches[name]))
   })
 }
 
-Dat.prototype.dataset = function (name) {
-  return dataset(this, name)
+Dat.prototype.dataset = function (name, branch) {
+  return dataset(this, name, branch)
 }
 
 module.exports = Dat
