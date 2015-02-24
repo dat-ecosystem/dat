@@ -119,20 +119,12 @@ dat files delete <dataset> <filename>
 cat rows as ndjson
 
 ```bash
-dat rows <dataset> <filename>
+dat rows <dataset>
 ```
 
 ### dat rows add
 
-Add rows to a dataset
-
-```bash
-dat rows add <dataset> <filename>
-```
-
-### dat rows add
-
-Add a single row to a dataset
+Add a single row to a dataset:
 
 ```bash
 dat rows add <dataset> <key> <value>
