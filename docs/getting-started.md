@@ -1,5 +1,7 @@
 # Getting started with dat
 
+**Note** The currently available version of Dat is the Alpha release. Our target audience with the Alpha is early adopters and developers. If you are unsure if Dat is a good fit for your use case, let us know in IRC, on Twitter (@datproject) or by opening an issue in this repository.
+
 Here, we discuss the fastest way to publish your data. We assume you have the following materials:
 
   1. Access to a server or a heroku account
