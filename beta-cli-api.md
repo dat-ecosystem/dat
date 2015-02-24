@@ -18,18 +18,70 @@ Show current status, including row count, file count, last updated, current bran
 dat status
 ```
 
+## dat log
+
+Show history
+
+```bash
+dat log
+```
+
+## dat changes
+
+Stream changes out in historical order as ndjson
+
+```bash
+dat changes
+```
+
+## dat branches
+
+View a list of branches
+
+```bash
+dat branches
+```
+
+## dat merge
+
+Merge branches
+
+```bash
+dat merge a b -s "gasket run merge" --dry-run
+```
+
+## dat compare
+
+Check for potential conflicts during a merge between branches and list keys that will conflict
+
+```
+dat compare a b
+```
+
 ## dat checkout
 
 Set head to a point in history
 
 ```bash
-dat checkout <commit-hash or tag>
+dat checkout <commit-hash or tag or branch hash or branch name>
 ```
 
-Check out latest
+Check out latest commit on default branch
 
 ```bash
-dat checkout latest
+dat checkout default
+```
+
+Check out latest commit on some other branch
+
+```bash
+dat checkout add-names
+```
+
+Check out older commit by hash
+
+```bash
+dat checkout n2iu3h492uhbi234hoiu
 ```
 
 ### dat add
@@ -50,14 +102,6 @@ Lists datasets
 
 ```bash
 dat datasets
-```
-
-### dat datasets add
-
-Create a dataset
-
-```bash
-dat datasets add <dataset-name> 
 ```
 
 ### dat datasets delete
@@ -114,15 +158,20 @@ Remove a file from a dataset
 dat files delete <dataset> <filename>
 ```
 
-## dat rows
+### dat rows get
 
-Cat all rows as ndjson
+Cat all rows in all datasets as ndjson:
 
 ```bash
-dat rows <dataset>
+dat rows get
 ```
 
-### dat rows get
+Get rows from a dataset:
+
+
+```bash
+dat rows get <dataset>
+```
 
 Get a single row from a dataset:
 
@@ -130,12 +179,27 @@ Get a single row from a dataset:
 dat rows get <dataset> <key>
 ```
 
+Get rows with options:
+
+```bash
+dat rows get --gte foo --lt z --limit 1
+```
+
+
 ### dat rows add
 
-Add a single row to a dataset:
+Add data to a dataset.
+
+Add a single row:
 
 ```bash
 dat rows add <dataset> <key> <value>
+```
+
+Open a writable stream:
+
+```bash
+dat rows add <dataset>
 ```
 
 ### dat rows delete
@@ -145,3 +209,4 @@ Delete a single row from a dataset
 ```bash
 dat rows delete <dataset> <key>
 ```
+
