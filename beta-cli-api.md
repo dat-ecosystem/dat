@@ -10,6 +10,14 @@ Lists available commands and shows instructions
 dat
 ```
 
+## dat init
+
+Init a new dat. Will prompt for metadata if not supplied as --name etc.
+
+```bash
+dat init
+```
+
 ## dat status
 
 Show current status, including row count, file count, last updated, current branch, current head, checkout status
@@ -210,3 +218,22 @@ Delete a single row from a dataset
 dat rows delete <dataset> <key>
 ```
 
+## dat push
+
+Push your local changes to a remote dat
+
+```bash
+dat push <remote>
+```
+
+## dat pull
+
+Pull remote changes into your local dat. Might create new branches.
+
+```bash
+dat pull <remote>
+```
+
+## dat sync
+
+Same as doing a `dat push` and `dat pull` at the same time
