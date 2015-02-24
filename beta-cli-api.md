@@ -116,10 +116,18 @@ dat files delete <dataset> <filename>
 
 ## dat rows
 
-cat rows as ndjson
+Cat all rows as ndjson
 
 ```bash
 dat rows <dataset>
+```
+
+### dat rows get
+
+Get a single row from a dataset:
+
+```bash
+dat rows get <dataset> <key>
 ```
 
 ### dat rows add
