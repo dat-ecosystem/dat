@@ -1,6 +1,6 @@
 # Conflicts in Dat
 
-Dat uses a **d**irected **a**cyclic **g**raph (AKA ['dag'](https://github.com/jbenet/random-ideas/issues/20), similar to git) to
+Dat uses a direct acyclic graph (AKA ['dag'](https://github.com/jbenet/random-ideas/issues/20), similar to what git uses) to
 reason about changes over time. When you `dat pull` from someone, and they
 have a different version of a key than you, you store both your version
 and their version of that key, but you immediately enter 'conflict mode'.
