@@ -303,10 +303,12 @@ Synchronizes local dat with a remote dat by pushing all changes to the remote da
 ## pull
 
 ```js
-dat.pull([cb])
+dat.pull([remote], [cb])
 ```
 
-Synchronizes local dat with the remote dat this one was cloned from by pulling all changes from the remote dat over HTTP. Calls `cb` when done.
+Synchronizes local dat with the remote dat by pulling all changes from the remote dat over HTTP. Calls `cb` when done.
+
+`remote` (default: the url this one was cloned from) should be the base HTTP address of the remote dat, e.g. `http://localhost:6461`.
 
 ### Options
 
