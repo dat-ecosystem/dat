@@ -374,10 +374,10 @@ Prints the raw encoded key/value data from leveldb to stdout as line separated J
 ## getRowCount
 
 ```js
-var number = dat.getRowCount()
+dat.getRowCount(cb)
 ```
 
-Returns the current number of rows in the db.
+Finds the current number of rows in the db and calls `cb` with `(err, count)`.
 
 ## headers
 
