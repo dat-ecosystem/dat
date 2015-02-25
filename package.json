@@ -34,7 +34,7 @@
     "connections": "~1.0.0",
     "content-addressable-blob-store": "^4.0.2",
     "cookie-auth": "^2.0.0",
-    "corsify": "~1.0.2",
+    "corsify": "^2.0.0",
     "csv-parser": "^1.2.1",
     "cuid": "^1.2.4",
     "dat-editor-prebuilt": "^1.0.19",
