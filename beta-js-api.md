@@ -66,6 +66,15 @@ Changes are emitted as JS objects that look like `{change: 352, key: 'foo', vers
 - `version` - the version hash at the time of this change
 - `links` - the previous changes in the change graph that this change points to
 
+
+Example response
+```
+{ "change": 13, "key": "foo", "hash": "b342df", "from": 0, "to": 1}
+{ "change": 14, "key": "foo", "hash": "a3bc5f", "from": 1, "to": 2}
+```
+
+*mafintosh: there is no guarantee that the 'change', 'from', and 'to' local numbers are the same across multiple dats. the only guarantee is that all the dependencies for a specific entry in the change feed (previous nodes in the graph) have a lower change number*
+
 ### Options
 
 * `values` (default `false`) - if true will `get` the row data at the change version and include it `change.value`
