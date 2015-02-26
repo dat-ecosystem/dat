@@ -10,7 +10,7 @@ Lists available commands and shows instructions
 dat
 ```
 
-## dat init
+### dat init
 
 Init a new dat. Will prompt for metadata if not supplied as --name etc.
 
@@ -18,7 +18,7 @@ Init a new dat. Will prompt for metadata if not supplied as --name etc.
 dat init
 ```
 
-## dat status
+### dat status
 
 Show current status, including row count, file count, last updated, current branch, current head, checkout status
 
@@ -26,7 +26,7 @@ Show current status, including row count, file count, last updated, current bran
 dat status
 ```
 
-## dat log
+### dat log
 
 Show history
 
@@ -34,7 +34,7 @@ Show history
 dat log
 ```
 
-## dat changes
+### dat changes
 
 Stream changes out in historical order as ndjson
 
@@ -42,7 +42,7 @@ Stream changes out in historical order as ndjson
 dat changes
 ```
 
-## dat branches
+### dat branches
 
 View a list of branches
 
@@ -50,7 +50,7 @@ View a list of branches
 dat branches
 ```
 
-## dat merge
+### dat merge
 
 Merge branches
 
@@ -58,7 +58,7 @@ Merge branches
 dat merge a b -s "gasket run merge" --dry-run
 ```
 
-## dat compare
+### dat compare
 
 Check for potential conflicts during a merge between branches and list keys that will conflict
 
@@ -66,7 +66,7 @@ Check for potential conflicts during a merge between branches and list keys that
 dat compare a b
 ```
 
-## dat checkout
+### dat checkout
 
 Set head to a point in history
 
