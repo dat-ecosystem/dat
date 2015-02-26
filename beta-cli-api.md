@@ -34,6 +34,26 @@ Show history
 dat log
 ```
 
+### dat push
+
+Push your local changes to a remote dat
+
+```bash
+dat push <remote>
+```
+
+### dat pull
+
+Pull remote changes into your local dat. Might create new branches.
+
+```bash
+dat pull <remote>
+```
+
+### dat sync
+
+Same as doing a `dat push` and `dat pull` at the same time
+
 ### dat changes
 
 Stream changes out in historical order as ndjson
@@ -217,23 +237,3 @@ Delete a single row from a dataset
 ```bash
 dat rows delete <dataset> <key>
 ```
-
-## dat push
-
-Push your local changes to a remote dat
-
-```bash
-dat push <remote>
-```
-
-## dat pull
-
-Pull remote changes into your local dat. Might create new branches.
-
-```bash
-dat pull <remote>
-```
-
-## dat sync
-
-Same as doing a `dat push` and `dat pull` at the same time
