@@ -55,7 +55,7 @@ For an introduction to dat see 'dat help'
 
 ## First time here?
 
-Welcome! You should do one of two things (or both if you feel like it). If you want to get started with a dat now, take a look at the [getting started guide](https://github.com/maxogden/dat/blob/master/docs/getting-started.md).
+Welcome! You should do one of two things (or both if you feel like it). If you want to get started with dat now, take a look at the [getting started guide](https://github.com/maxogden/dat/blob/master/docs/getting-started.md).
 
 If you just want to learn about how dat works, we have prepared an in-browser workshop: [http://maxogden.github.io/get-dat](http://maxogden.github.io/get-dat)
 
