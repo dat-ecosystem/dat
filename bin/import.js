@@ -6,6 +6,7 @@ var through = require('through2')
 var pump = require('pump')
 var EOL = require('os').EOL
 var path = require('path')
+var tilde = require('tilde-expansion')
 
 var inIsTTY  = tty.isatty(0)
 
@@ -20,11 +21,12 @@ function importCmd(dat, opts, cb) {
   var filename = opts._[1]
   var input = null
 
-  var quiet = opts.quiet || opts.q
-  
+  opts.quiet = opts.quiet || opts.q
+
   if (filename === '-' || (!filename && !inIsTTY) || opts.stdin) {
-    if (!quiet) console.error('No import file specified, using STDIN as input')
-    input = process.stdin
+    if (!opts.quiet) console.error('No import file specified, using STDIN as input')
+    opts.input = process.stdin
+    writeData(dat, opts, cb)
   } else if (filename) {
     if (!(opts.json || opts.csv || opts.tsv)) {
       var ending = path.extname(filename)
@@ -37,9 +39,16 @@ function importCmd(dat, opts, cb) {
           opts.csv = true;
       }
     }
-    input = fs.createReadStream(filename)
+    tilde(filename, function (filename) {
+      opts.input = fs.createReadStream(filename)
+      writeData(dat, opts, cb)
+    })
   }
+}
 
+
+function writeData(dat, opts, cb) {
+  var input = opts.input
   if (!input) return cb(new Error('You must specify an input file'))
 
   var format = opts.format || opts.f
@@ -47,7 +56,7 @@ function importCmd(dat, opts, cb) {
 
   var writer = dat.createWriteStream(opts)
 
-  var showImport = !quiet
+  var showImport = !opts.quiet
 
   if (opts.results) writer.pipe(resultPrinter())
   else if (showImport) var logger = log(writer, 'Parsed', 'Done')
