@@ -1,7 +1,7 @@
 {
   "name": "dat",
   "version": "6.9.6",
-  "description": "real-time replication and versioning for data sets (tabular and blobs)",
+  "description": "versioning and sync tool for data sets",
   "preferGlobal": true,
   "keywords": [
     "hyperdata",
@@ -11,7 +11,7 @@
   ],
   "main": "index.js",
   "bin": {
-    "dat": "cli.js"
+    "dat-beta": "cli.js"
   },
   "scripts": {
     "test": "node test/run.js | tap-spec"
@@ -23,11 +23,13 @@
   "author": "max ogden",
   "license": "BSD",
   "dependencies": {
+    "cliclopts": "^1.0.0",
+    "dat-core": "*",
+    "meow": "^3.1.0"
   },
   "bugs": {
     "url": "https://github.com/maxogden/dat/issues"
   },
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "homepage": "https://github.com/maxogden/dat"
 }
