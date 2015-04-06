@@ -12,6 +12,39 @@ cat.usage = [
  'dat cat',
  'stream the most recent of all rows'
  ].join(EOL)
+ 
+ cat.options = [
+   {
+     name: 'format',
+     abbr: 'f',
+     help: 'specify output format'
+   },
+  {
+    name: 'csv',
+    help: 'output as csv',
+    boolean: true,
+  },
+  {
+    name: 'json',
+    help: 'output as json',
+    boolean: true
+  },
+  {
+    name: 'ndjson',
+    help: 'output as newline delimited json',
+    boolean: true
+  },
+  {
+    name: 'sse',
+    help: 'output as server-sent events',
+    boolean: true
+  },
+  {
+    name: 'live',
+    help: 'stream live changes (does not support json output)',
+    boolean: true
+  }
+ ]
 
 function cat(dat, opts, cb) {
   if (!opts) opts = {}

@@ -2,6 +2,14 @@ module.exports = rowsGet
 
 rowsGet.usage = 'dat rows get <rowKey> [<version>]'
 
+rowsGet.options = [
+  {
+    name: 'version',
+    abbr: 'v',
+    help: 'version of the key'
+  }
+]
+
 function rowsGet(dat, opts, cb) {
   var args = opts._.slice(2)
   if(args.length === 0) return cb(new Error('Usage: ' + rowsGet.usage))

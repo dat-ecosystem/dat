@@ -1,22 +1,16 @@
 module.exports = rows
 
-var usage = 'dat rows <put|get|delete>'
+var usage = rows.usage  =  'dat rows <put|get|delete>'
 
-var subModules = {
-  'put': './rows-put',
-  'get': './rows-get',
-  'delete': './rows-delete'
+rows.commands = {
+  'put': require('./rows-put'),
+  'get': require('./rows-get'),
+  'delete': require('./rows-delete')
 }
 
-rows.usage = function (opts) {
-  var modulePath = subModules[opts._[1]]
-  if(!modulePath) return usage
-  return require(modulePath).usage
-}
+rows.noDat = true
     
 function rows(dat, opts, cb) {
-  var modulePath = subModules[opts._[1]]
-  if(!modulePath) return cb(new Error('Usage: ' + usage))
-  require(modulePath)(dat, opts,cb)
+  return cb(new Error('Usage: ' + usage))
 }
         

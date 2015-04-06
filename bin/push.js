@@ -6,6 +6,21 @@ module.exports = push
 
 push.usage = ['dat push <remoteurl>', 'push data to another dat'].join(EOL)
 
+push.options = [
+  {
+    name: 'results',
+    abbr: 'r',
+    boolean: true,
+    help: 'log rows that are pushed'
+  },
+  {
+    name: 'quiet',
+    abbr: 'q',
+    boolean: true,
+    help: 'less logging'
+  }
+]
+
 function push(dat, opts, cb) {
   var remote = opts._[1]
   var push = dat.push(remote, opts, cb)

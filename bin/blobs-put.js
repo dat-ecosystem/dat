@@ -6,7 +6,26 @@ var isTTY = tty.isatty(0)
 
 module.exports = blobsPut
 
-blobsPut.usage = 'dat blobs put <row> [file-path-to-read] [--name=blob-name-to-use-as-key] [--version=row-version-to-update]'
+blobsPut.usage = 'dat blobs put <row> [options]'
+
+blobsPut.options = [
+  {
+    name: 'name',
+    abbr: 'n',
+    help: 'blob name to use as key'
+  },
+  {
+    name: 'version',
+    abbr: 'v',
+    help: 'row version to update'
+  },
+  {
+    name: 'quiet',
+    abbr: 'q',
+    boolean: true,
+    help: 'less logging'
+  }
+]
 
 function blobsPut(dat, opts, cb) {
   var args = opts._.slice(2)
@@ -15,7 +34,7 @@ function blobsPut(dat, opts, cb) {
   var blob = args[1]
   if (!opts.name && !blob) return cb(new Error('Must either specify a blob name (--name) to use or a filename. '))
   var row = { key: key }
-  var version = opts.version || opts.v
+  var version = opts.version
   
   dat.get(key, { version: version }, function(err, existing) {
     if (existing) {
