@@ -1,28 +1,14 @@
 #!/usr/bin/env node
-
+var path = require('path')
 var Dat = require('dat-core')
-var meow = require('meow')
+var subcommand = require('subcommand')
 
-var cliclopts = require('cliclopts')
-
-var options = [
-  {
-    name: 'verbose',
-    abbr: 'v',
-    alias: ['loud'],
-    boolean: true,
-    help: 'be verbose'
-  },
-  {
-    name: 'path',
-    abbr: 'p',
-    default: 'dat.json',
-    help: 'path to file'
-  }
+var bins = [
+  require(path.join(__dirname, 'bin', 'init.js'))
 ]
 
-var clopts = cliclopts(options)
-
-var cli = meow({
-  help: 'Usage\n' + clopts.usage()
-}, clopts.options())
+var commands = subcommand(bins)
+var handled = commands(process.argv.slice(2))
+if (!handled) {
+  console.error('Command not found')
+}
