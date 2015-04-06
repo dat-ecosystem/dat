@@ -50,7 +50,7 @@ Pull remote changes into your local dat. Might create new branches.
 dat pull <remote>
 ```
 
-### dat sync
+### dat replicate
 
 Same as doing a `dat push` and `dat pull` at the same time
 
@@ -62,28 +62,26 @@ Stream changes out in historical order as ndjson
 dat changes
 ```
 
-### dat branches
-
-View a list of branches
-
-```bash
-dat branches
-```
-
 ### dat merge
 
-Merge branches
+Merge layers
 
 ```bash
-dat merge a b -s "gasket run merge" --dry-run
+dat merge <head-hash1> <head-hash2> ... <head-hashN>
+```
+
+options
+
+```
+-s "gasket run merge" --dry-run
 ```
 
 ### dat compare
 
-Check for potential conflicts during a merge between branches and list keys that will conflict
+Check for potential conflicts during a merge between layers and list keys that will conflict
 
 ```
-dat compare a b
+dat compare <head-hash1> <head-hash2> ... <head-hashN>
 ```
 
 ### dat checkout
@@ -91,25 +89,13 @@ dat compare a b
 Set head to a point in history
 
 ```bash
-dat checkout <commit-hash or tag or branch hash or branch name>
+dat checkout <commit-hash>
 ```
 
 Check out latest commit on default branch
 
 ```bash
-dat checkout default
-```
-
-Check out latest commit on some other branch
-
-```bash
-dat checkout add-names
-```
-
-Check out older commit by hash
-
-```bash
-dat checkout n2iu3h492uhbi234hoiu
+dat checkout latest
 ```
 
 ### dat add
@@ -168,7 +154,7 @@ Possible examples of updating an existing file:
 
 ```bash
 $ dat files add cities my_us_cities_viz.png
-This will override my_us_cities_viz.png at c2342d (y/n): y
+This will overwrite my_us_cities_viz.png at c2342d (y/n): y
 ...done
 maxogden updated my_us_cities_viz.png to be253f on Sat Jan 17, 9:33pm
 ```
@@ -196,7 +182,6 @@ dat rows get
 
 Get rows from a dataset:
 
-
 ```bash
 dat rows get <dataset>
 ```
@@ -212,7 +197,6 @@ Get rows with options:
 ```bash
 dat rows get --gte foo --lt z --limit 1
 ```
-
 
 ### dat rows add
 
