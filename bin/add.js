@@ -1,6 +1,5 @@
 var fs = require('fs')
 var path = require('path')
-var dat = require('dat-core')
 var pump = require('pump')
 var through = require('through2')
 var uuid = require('cuid')
@@ -33,12 +32,12 @@ function handleAdd (args) {
     abort()
   }
   
-  openDat(args, function ready (err, dat) {
+  openDat(args, function ready (err, db) {
     if (err) abort(err)
-    handleInputStream()
+    handleInputStream(db)
   })
 
-  function handleInputStream () {
+  function handleInputStream (db) {
     var inputStream
     if (args._[0] === '-') inputStream = process.stdin
     else inputStream = fs.createReadStream(args._[0])

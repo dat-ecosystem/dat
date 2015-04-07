@@ -9,7 +9,10 @@ var config = {
   commands: [
     require(path.join(__dirname, 'bin', 'init.js')),
     require(path.join(__dirname, 'bin', 'cat.js')),
-    require(path.join(__dirname, 'bin', 'add.js'))
+    require(path.join(__dirname, 'bin', 'add.js')),
+    require(path.join(__dirname, 'bin', 'push.js')),
+    require(path.join(__dirname, 'bin', 'pull.js')),
+    require(path.join(__dirname, 'bin', 'receive-replication.js'))
   ],
   defaults: require(path.join(__dirname, 'bin', 'defaults.js')),
   none: noMatch

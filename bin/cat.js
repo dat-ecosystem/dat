@@ -1,8 +1,8 @@
 var fs = require('fs')
 var path = require('path')
-var dat = require('dat-core')
 var pump = require('pump')
 var ndjson = require('ndjson')
+var openDat = require('../lib/open-dat.js')
 
 module.exports = {
   name: 'cat',
@@ -28,10 +28,14 @@ module.exports = {
 
 function handleCat (args) {
   if (args.help) return usage()
-  var readStream = db.createReadStream({gt: args.gt, lt: args.lt})
+  openDat(args, function ready (err, db) {
+    if (err) abort(err)
   
-  pump(readStream, ndjson.serialize(), process.stdout, function done (err) {
-    if (err) abort(err, 'dat: cat error')
+    var readStream = db.createReadStream({gt: args.gt, lt: args.lt})
+  
+    pump(readStream, ndjson.serialize(), process.stdout, function done (err) {
+      if (err) abort(err, 'dat: cat error')
+    })
   })
 }
 
