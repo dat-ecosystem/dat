@@ -56,7 +56,7 @@ function handleAdd (args) {
 }
 
 function usage () {
-  console.log(fs.readFileSync(path.join(__dirname, '..', 'usage', 'add.txt')).toString())
+  console.error(fs.readFileSync(path.join(__dirname, '..', 'usage', 'add.txt')).toString())
 }
 
 function abort (err, message) {

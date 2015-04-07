@@ -42,5 +42,5 @@ function abort (err, message) {
 }
 
 function usage () {
-  console.log(fs.readFileSync(path.join(__dirname, '..', 'usage', 'cat.txt')).toString())
+  console.error(fs.readFileSync(path.join(__dirname, '..', 'usage', 'cat.txt')).toString())
 }

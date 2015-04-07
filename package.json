@@ -15,7 +15,7 @@
     "dat-beta": "cli.js"
   },
   "scripts": {
-    "test": "node test/tests/*.js"
+    "test": "tape tests/*.js | tap-spec"
   },
   "repository": {
     "type": "git",
