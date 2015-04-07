@@ -1,0 +1,7 @@
+usage: dat <command(s)> [--flag] [--key=value]
+
+commands:
+
+  init      initialize a new dat store in a directory
+
+type `dat command --help` to view detailed help about a specific subcommand

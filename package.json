@@ -14,7 +14,7 @@
     "dat-beta": "cli.js"
   },
   "scripts": {
-    "test": "node test/run.js | tap-spec"
+    "test": "node test/tests/*.js"
   },
   "repository": {
     "type": "git",
@@ -23,13 +23,15 @@
   "author": "max ogden",
   "license": "BSD",
   "dependencies": {
-    "dat-core": "*",
-    "read": "^1.0.5",
-    "subcommand": "^1.0.1"
+    "dat-core": "git://github.com/maxogden/dat-core.git",
+    "subcommand": "^1.1.0"
   },
   "bugs": {
     "url": "https://github.com/maxogden/dat/issues"
   },
-  "devDependencies": {},
+  "devDependencies": {
+    "npm-execspawn": "^1.1.0",
+    "tap-spec": "^3.0.0"
+  },
   "homepage": "https://github.com/maxogden/dat"
 }

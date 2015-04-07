@@ -1,14 +1,26 @@
 #!/usr/bin/env node
+var fs = require('fs')
 var path = require('path')
 var Dat = require('dat-core')
 var subcommand = require('subcommand')
 
-var bins = [
+var toplevelOpts = [
+  {name: 'version', alias: 'v', boolean: false}
+]
+
+var commands = [
+  {name: "", options: toplevelOpts, command: onNoSubcommand},
   require(path.join(__dirname, 'bin', 'init.js'))
 ]
 
-var commands = subcommand(bins)
-var handled = commands(process.argv.slice(2))
+var route = subcommand(commands)
+var handled = route(process.argv.slice(2))
 if (!handled) {
-  console.error('Command not found')
+  console.error('dat: not a valid command')
+}
+
+function onNoSubcommand (args) {
+  if (args.version) return console.log(require('./package.json').version)
+  
+  console.log(fs.readFileSync('usage.txt').toString())
 }
