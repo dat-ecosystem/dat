@@ -2,5 +2,7 @@ usage: dat <command(s)> [--flag] [--key=value]
 
 commands:
   init      initialize a new dat store in a directory
+  cat       streams data out of dat
+  add       import a file into dat
 
 type `dat command --help` to view detailed help about a specific subcommand
