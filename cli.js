@@ -11,19 +11,7 @@ var config = {
     require(path.join(__dirname, 'bin', 'cat.js')),
     require(path.join(__dirname, 'bin', 'add.js'))
   ],
-  defaults: [
-    {
-      name: 'path',
-      boolean: false,
-      default: process.cwd(),
-      abbr: 'p'
-    },
-    {
-      name: 'help',
-      boolean: true,
-      abbr: 'h'
-    },
-  ],
+  defaults: require(path.join(__dirname, 'bin', 'defaults.js')),
   none: noMatch
 }
 
