@@ -4,8 +4,9 @@
   "description": "versioning and sync tool for data sets",
   "preferGlobal": true,
   "keywords": [
-    "hyperdata",
     "synchronization",
+    "replication",
+    "versioning",
     "dataset",
     "data package"
   ],
