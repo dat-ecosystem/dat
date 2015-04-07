@@ -12,5 +12,5 @@ module.exports = {
 function onCommand (args) {
   if (args.version) return console.log(require('../package.json').version)
   
-  console.log(fs.readFileSync(path.join(__dirname, 'usage.txt')).toString())
+  console.log(fs.readFileSync(path.join(__dirname, '..', 'usage', 'default.txt')).toString())
 }

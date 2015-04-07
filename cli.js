@@ -6,7 +6,9 @@ var subcommand = require('subcommand')
 
 var commands = [
   require(path.join(__dirname, 'bin', 'default.js')),
-  require(path.join(__dirname, 'bin', 'init.js'))
+  require(path.join(__dirname, 'bin', 'init.js')),
+  require(path.join(__dirname, 'bin', 'cat.js')),
+  require(path.join(__dirname, 'bin', 'add.js'))
 ]
 
 var route = subcommand(commands)

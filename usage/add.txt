@@ -1,0 +1,5 @@
+dat add <filename or directory>
+  # optional arguments, will prompt if not supplied
+  -n <dataset-name> # the name of the dataset to create
+  -f <data-format> # how to parse the file to add
+  --help # show help

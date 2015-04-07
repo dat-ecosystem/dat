@@ -13,7 +13,7 @@ test('dat -v (version)', function (t) {
 
 test('dat (usage)', function (t) {
   var st = spawn(t, "node cli.js")
-  st.stdout.match(fs.readFileSync(path.join('bin', 'usage.txt')).toString() + '\n', 'usage matched')
+  st.stdout.match(fs.readFileSync(path.join('usage', 'default.txt')).toString() + '\n', 'usage matched')
   st.stderr.empty()
   st.end()
 })
