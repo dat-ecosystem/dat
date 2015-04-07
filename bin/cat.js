@@ -1,3 +1,5 @@
+var fs = require('fs')
+var path = require('path')
 var dat = require('dat-core')
 var pump = require('pump')
 var ndjson = require('ndjson')
@@ -20,32 +22,25 @@ module.exports = {
       name: 'less-than',
       boolean: false,
       abbr: 'lt'
-    },
-    {
-      name: 'path',
-      boolean: false,
-      default: process.cwd(),
-      abbr: 'p'
     }
   ]
 }
 
 function handleCat (args) {
-  var db = dat(args.path, {valueEncoding: 'json'})
-  db.on('error', notExists)
-  
+  if (args.help) return usage()
   var readStream = db.createReadStream({gt: args.gt, lt: args.lt})
   
   pump(readStream, ndjson.serialize(), process.stdout, function done (err) {
-    if (err) {
-      console.error('Dat cat error', err)
-      process.exit(1)
-    }
+    if (err) abort(err, 'dat: cat error')
   })
 }
 
-function notExists (err) {
-  if (err.message === 'No dat here') console.error('This is not a dat repository, you need to dat init first')
-  else console.error('Error reading dat', err.message)
+function abort (err, message) {
+  if (message) console.error(message)
+  if (err) throw err
   process.exit(1)
+}
+
+function usage () {
+  console.log(fs.readFileSync(path.join(__dirname, '..', 'usage', 'cat.txt')).toString())
 }

@@ -1,0 +1,3 @@
+dat cat [--gt=key --lt=key --greater-than=key --less-than=key]
+
+streams tabular out of data, defaults to newline delimited json format (ndjson)

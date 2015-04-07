@@ -1,22 +1,16 @@
+var fs = require('fs')
 var path = require('path')
 var dat = require('dat-core')
 var debug = require('debug')('bin/init')
 
 module.exports = {
   name: 'init',
-  command: handleInit,
-  options: [
-    {
-      name: 'path',
-      boolean: false,
-      default: process.cwd(),
-      abbr: 'p'
-    }
-  ]
+  command: handleInit
 }
 
 function handleInit (args) {
   debug('handleInit', args)
+  if (args.help) return usage()
   tryOpen()
   
   function tryOpen () {
@@ -26,6 +20,7 @@ function handleInit (args) {
 
     function ready () {
       console.error('Skipping init, there is already a dat at', path.join(args.path, '.dat'))
+      process.exit(0)
     }
   }
   
@@ -38,6 +33,11 @@ function handleInit (args) {
 
     db.on('ready', function ready () {
       console.error('Initialized a new dat at', path.join(args.path, '.dat'))
+      process.exit(0)
     })
   }
+}
+
+function usage () {
+  console.log(fs.readFileSync(path.join(__dirname, '..', 'usage', 'init.txt')).toString())
 }
