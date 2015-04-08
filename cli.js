@@ -1,20 +1,17 @@
 #!/usr/bin/env node
-var fs = require('fs')
-var path = require('path')
-var Dat = require('dat-core')
 var subcommand = require('subcommand')
 
 var config = {
-  root: require(path.join(__dirname, 'bin', 'root.js')),
+  root: require('./bin/root.js'),
   commands: [
-    require(path.join(__dirname, 'bin', 'init.js')),
-    require(path.join(__dirname, 'bin', 'cat.js')),
-    require(path.join(__dirname, 'bin', 'add.js')),
-    require(path.join(__dirname, 'bin', 'push.js')),
-    require(path.join(__dirname, 'bin', 'pull.js')),
-    require(path.join(__dirname, 'bin', 'receive-replication.js'))
+    require('./bin/init.js'),
+    require('./bin/cat.js'),
+    require('./bin/add.js'),
+    require('./bin/push.js'),
+    require('./bin/pull.js'),
+    require('./bin/receive-replication.js')
   ],
-  defaults: require(path.join(__dirname, 'bin', 'defaults.js')),
+  defaults: require('./bin/defaults.js'),
   none: noMatch
 }
 

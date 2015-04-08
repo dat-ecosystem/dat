@@ -12,7 +12,7 @@ function handleInit (args) {
   debug('handleInit', args)
   if (args.help) return usage()
   tryOpen()
-  
+
   function tryOpen () {
     var db = dat(args.path)
     db.on('error', create)
@@ -23,7 +23,7 @@ function handleInit (args) {
       process.exit(0)
     }
   }
-  
+
   function create () {
     var db = dat(args.path, {createIfMissing: true})
 

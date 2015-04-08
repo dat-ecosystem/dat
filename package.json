@@ -15,7 +15,8 @@
     "dat-beta": "cli.js"
   },
   "scripts": {
-    "test": "tape tests/*.js | tap-spec"
+    "test": "standard && npm run tape | tap-spec",
+    "tape": "tape tests/*.js"
   },
   "repository": {
     "type": "git",
@@ -42,6 +43,7 @@
   },
   "devDependencies": {
     "npm-execspawn": "^1.1.0",
+    "standard": "^3.3.2",
     "tap-spec": "^3.0.0"
   },
   "homepage": "https://github.com/maxogden/dat"

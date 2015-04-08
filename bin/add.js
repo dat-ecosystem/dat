@@ -26,12 +26,12 @@ module.exports = {
 
 function handleAdd (args) {
   debug('handleAdd', args)
-  
+
   if (args.help || args._.length === 0) {
     usage()
     abort()
   }
-  
+
   openDat(args, function ready (err, db) {
     if (err) abort(err)
     handleInputStream(db)
@@ -41,14 +41,14 @@ function handleAdd (args) {
     var inputStream
     if (args._[0] === '-') inputStream = process.stdin
     else inputStream = fs.createReadStream(args._[0])
-  
+
     var transform = through.obj(function (obj, enc, next) {
       var key = obj[args.key] || obj.key || uuid()
       next(null, {type: 'put', key: key, value: obj})
     })
-  
+
     pump(inputStream, parseInputStream(), transform, db.createWriteStream(), function done (err) {
-      if (err) abort(err, "Error adding data")
+      if (err) abort(err, 'Error adding data')
       console.error('Done adding data')
     })
   }

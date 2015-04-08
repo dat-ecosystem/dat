@@ -1,6 +1,3 @@
-var path = require('path')
-var url = require('url')
-var child = require('child_process')
 var openDat = require('../lib/open-dat.js')
 
 module.exports = {
@@ -13,7 +10,7 @@ function handlePush (args) {
     if (err) abort(err)
     receivePush(db)
   })
-  
+
   function receivePush (db, remote) {
     var replicateStream = db.replicate()
     process.stdin.pipe(replicateStream).pipe(process.stdout)

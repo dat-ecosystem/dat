@@ -30,9 +30,9 @@ function handleCat (args) {
   if (args.help) return usage()
   openDat(args, function ready (err, db) {
     if (err) abort(err)
-  
+
     var readStream = db.createReadStream({gt: args.gt, lt: args.lt})
-  
+
     pump(readStream, ndjson.serialize(), process.stdout, function done (err) {
       if (err) abort(err, 'dat: cat error')
     })

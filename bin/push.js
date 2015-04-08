@@ -1,7 +1,4 @@
 var url = require('url')
-var child = require('child_process')
-var os = require('os')
-var through = require('through2')
 var openDat = require('../lib/open-dat.js')
 var sshStream = require('../lib/ssh-stream.js')
 
