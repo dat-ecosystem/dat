@@ -1,0 +1,3 @@
+dat heads
+
+prints out all heads

@@ -9,7 +9,9 @@ var config = {
     require('./bin/add.js'),
     require('./bin/push.js'),
     require('./bin/pull.js'),
-    require('./bin/receive-replication.js')
+    require('./bin/receive-replication.js'),
+    require('./bin/diff.js'),
+    require('./bin/heads.js')
   ],
   defaults: require('./bin/defaults.js'),
   none: noMatch
