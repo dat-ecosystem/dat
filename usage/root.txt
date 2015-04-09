@@ -4,5 +4,9 @@ commands:
   init      initialize a new dat store in a directory
   cat       streams data out of dat
   add       import a file into dat
+  push      push data to a remote dat
+  pull      pull data from a remote dat
+  heads     list heads of the current dat
+  diff      see differences between two heads
 
 type `dat command --help` to view detailed help about a specific subcommand
