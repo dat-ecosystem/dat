@@ -1,10 +1,10 @@
-var fs = require('fs')
-var path = require('path')
 var pump = require('pump')
 var through = require('through2')
 var ndjson = require('ndjson')
 var diffStream = require('sorted-diff-stream')
 var openDat = require('../lib/open-dat.js')
+var abort = require('../lib/abort.js')
+var usage = require('../lib/usage.js')('diff.txt')
 
 module.exports = {
   name: 'diff',
@@ -54,14 +54,4 @@ function handleDiff (args) {
 function jsonEquals (a, b, cb) {
   if (JSON.stringify(a.value) === JSON.stringify(b.value)) cb(null, true)
   else cb(null, false)
-}
-
-function abort (err, message) {
-  if (message) console.error(message)
-  if (err) throw err
-  process.exit(1)
-}
-
-function usage () {
-  console.error(fs.readFileSync(path.join(__dirname, '..', 'usage', 'diff.txt')).toString())
 }

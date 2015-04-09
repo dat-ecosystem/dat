@@ -1,7 +1,8 @@
-var fs = require('fs')
 var path = require('path')
 var dat = require('dat-core')
 var debug = require('debug')('bin/init')
+var abort = require('../lib/abort.js')
+var usage = require('../lib/usage.js')('init.txt')
 
 module.exports = {
   name: 'init',
@@ -28,7 +29,7 @@ function handleInit (args) {
     var db = dat(args.path, {createIfMissing: true})
 
     db.on('error', function error (err) {
-      throw err
+      abort(err)
     })
 
     db.on('ready', function ready () {
@@ -36,8 +37,4 @@ function handleInit (args) {
       process.exit(0)
     })
   }
-}
-
-function usage () {
-  console.error(fs.readFileSync(path.join(__dirname, '..', 'usage', 'init.txt')).toString())
 }

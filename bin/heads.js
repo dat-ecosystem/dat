@@ -1,6 +1,6 @@
-var fs = require('fs')
-var path = require('path')
+var usage = require('../lib/usage.js')('heads.txt')
 var openDat = require('../lib/open-dat.js')
+var abort = require('../lib/abort.js')
 
 module.exports = {
   name: 'heads',
@@ -18,14 +18,4 @@ function handleHeads (args) {
       })
       .on('error', abort)
   })
-}
-
-function abort (err, message) {
-  if (message) console.error(message)
-  if (err) throw err
-  process.exit(1)
-}
-
-function usage () {
-  console.error(fs.readFileSync(path.join(__dirname, '..', 'usage', 'heads.txt')).toString())
 }

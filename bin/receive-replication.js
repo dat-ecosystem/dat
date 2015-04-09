@@ -1,4 +1,5 @@
 var openDat = require('../lib/open-dat.js')
+var abort = require('../lib/abort.js')
 
 module.exports = {
   name: 'receive-replication',
@@ -18,10 +19,4 @@ function handlePush (args) {
       process.exit(0)
     })
   }
-}
-
-function abort (err, message) {
-  if (message) console.error(message)
-  if (err) throw err
-  process.exit(1)
 }

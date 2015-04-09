@@ -1,8 +1,8 @@
-var fs = require('fs')
-var path = require('path')
 var pump = require('pump')
 var ndjson = require('ndjson')
+var abort = require('../lib/abort.js')
 var openDat = require('../lib/open-dat.js')
+var usage = require('../lib/usage.js')('cat.txt')
 
 module.exports = {
   name: 'cat',
@@ -37,14 +37,4 @@ function handleCat (args) {
       if (err) abort(err, 'dat: cat error')
     })
   })
-}
-
-function abort (err, message) {
-  if (message) console.error(message)
-  if (err) throw err
-  process.exit(1)
-}
-
-function usage () {
-  console.error(fs.readFileSync(path.join(__dirname, '..', 'usage', 'cat.txt')).toString())
 }

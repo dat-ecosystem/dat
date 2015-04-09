@@ -1,11 +1,12 @@
 var fs = require('fs')
-var path = require('path')
 var pump = require('pump')
 var through = require('through2')
 var uuid = require('cuid')
 var debug = require('debug')('bin/add')
 var parseInputStream = require('../lib/parse-input-stream.js')
 var openDat = require('../lib/open-dat.js')
+var abort = require('../lib/abort.js')
+var usage = require('../lib/usage.js')('add.txt')
 
 module.exports = {
   name: 'add',
@@ -52,14 +53,4 @@ function handleAdd (args) {
       console.error('Done adding data')
     })
   }
-}
-
-function usage () {
-  console.error(fs.readFileSync(path.join(__dirname, '..', 'usage', 'add.txt')).toString())
-}
-
-function abort (err, message) {
-  if (message) console.error(message)
-  if (err) throw err
-  process.exit(1)
 }

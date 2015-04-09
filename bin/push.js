@@ -1,6 +1,6 @@
-var fs = require('fs')
-var path = require('path')
 var url = require('url')
+var usage = require('../lib/usage.js')('push.txt')
+var abort = require('../lib/abort.js')
 var openDat = require('../lib/open-dat.js')
 var sshStream = require('../lib/ssh-stream.js')
 
@@ -22,14 +22,4 @@ function handlePush (args) {
     var pushStream = db.push()
     ssh.pipe(pushStream).pipe(ssh)
   })
-}
-
-function abort (err, message) {
-  if (message) console.error(message)
-  if (err) throw err
-  process.exit(1)
-}
-
-function usage () {
-  console.error(fs.readFileSync(path.join(__dirname, '..', 'usage', 'push.txt')).toString())
 }
