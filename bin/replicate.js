@@ -2,7 +2,7 @@ var openDat = require('../lib/open-dat.js')
 var abort = require('../lib/abort.js')
 
 module.exports = {
-  name: 'receive-replication',
+  name: 'replicate',
   command: handlePush
 }
 

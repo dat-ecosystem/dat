@@ -9,7 +9,7 @@ var config = {
     require('./bin/add.js'),
     require('./bin/push.js'),
     require('./bin/pull.js'),
-    require('./bin/receive-replication.js'),
+    require('./bin/replicate.js'),
     require('./bin/diff.js'),
     require('./bin/heads.js')
   ],
