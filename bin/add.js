@@ -48,7 +48,7 @@ function handleAdd (args) {
       next(null, {type: 'put', key: key, value: obj})
     })
 
-    pump(inputStream, parseInputStream(), transform, db.createWriteStream(), function done (err) {
+    pump(inputStream, parseInputStream(args), transform, db.createWriteStream(), function done (err) {
       if (err) abort(err, 'Error adding data')
       console.error('Done adding data')
     })
