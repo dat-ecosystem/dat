@@ -1,22 +1,28 @@
 var openDat = require('../lib/open-dat.js')
 var abort = require('../lib/abort.js')
+var usage = require('../lib/usage.js')('replicate.txt')
+var transports = require('../lib/transports')
 
 module.exports = {
   name: 'replicate',
-  command: handlePush
+  command: handleReplicate
 }
 
-function handlePush (args) {
-  openDat(args, function ready (err, db) {
-    if (err) abort(err)
-    receivePush(db)
+function handleReplicate (args) {
+  if (args._.length === 0) return usage()
+
+  try {
+    var stream = transports(args._[0])
+  } catch (err) {
+    return usage()
+  }
+
+  stream.on('warn', function (data) {
+    console.error(data)
   })
 
-  function receivePush (db, remote) {
-    var replicateStream = db.replicate()
-    process.stdin.pipe(replicateStream).pipe(process.stdout)
-    replicateStream.on('end', function onEnd () {
-      process.exit(0)
-    })
-  }
+  openDat(args, function ready (err, db) {
+    if (err) return abort(err)
+    stream.pipe(db.replicate()).pipe(stream)
+  })
 }
