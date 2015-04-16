@@ -11,7 +11,8 @@ var config = {
     require('./bin/pull.js'),
     require('./bin/replicate.js'),
     require('./bin/diff.js'),
-    require('./bin/heads.js')
+    require('./bin/heads.js'),
+    require('./bin/merge.js')
   ],
   defaults: require('./bin/defaults.js'),
   none: noMatch

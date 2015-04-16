@@ -1,13 +1,13 @@
-var fs = require('fs')
 var path = require('path')
 var test = require('tape')
 var spawn = require('tape-spawn')
 var tmp = require('os').tmpdir()
 var rimraf = require('rimraf')
 var mkdirp = require('mkdirp')
+var through = require('through2')
 
 var dat = path.resolve(__dirname + '/../cli.js')
-var hashes
+var hashes, diff
 
 var csvs = {
   a: path.resolve(__dirname + '/fixtures/a.csv'),
@@ -94,7 +94,7 @@ test('dat1 diff', function (t) {
   st.stderr.empty()
   st.stdout.match(function match (output) {
     try {
-      var diff = JSON.parse(output)
+      diff = JSON.parse(output)
     } catch (e) {
       return false
     }
@@ -103,3 +103,20 @@ test('dat1 diff', function (t) {
   st.end()
 })
 
+test('dat1 merge', function (t) {
+  var diff = spawn(t, dat + ' diff ' + hashes.join(' '), {cwd: dat1})
+  var merge = spawn(t, dat + ' merge ' + hashes.join(' '), {cwd: dat1})
+  
+  diff.stdout.stream
+    .pipe(through.obj(function (obj, enc, next) {
+      next(null, obj.versions[0])
+    }))
+    .pipe(merge.stdin)
+  
+  diff.stderr.empty()
+  diff.end()
+    
+  merge.stderr.empty()
+  merge.stdout.empty()
+  merge.end()
+})

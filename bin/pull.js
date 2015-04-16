@@ -1,4 +1,3 @@
-var url = require('url')
 var usage = require('../lib/usage.js')('pull.txt')
 var abort = require('../lib/abort.js')
 var openDat = require('../lib/open-dat.js')
