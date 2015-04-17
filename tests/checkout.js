@@ -26,16 +26,11 @@ harness.twodats(function (dat1, dat2) {
     })
 
     test('dat1 checkout gets proper cat', function (t) {
-      console.log(hashes[0])
       var checkout = spawn(t, dat + ' checkout ' + hashes[0], {cwd: dat1})
       checkout.stdout.match(/Checked out to/)
 
       var cat = spawn(t, dat + ' cat', {cwd: dat1})
-      cat.stdout.match(function match (output) {
-        console.log(output)
-        return output
-      })
-
+      cat.stdout.match(/Max/)
       checkout.stderr.empty()
       checkout.end()
 
