@@ -8,6 +8,7 @@ var config = {
     require('./bin/cat.js'),
     require('./bin/add.js'),
     require('./bin/push.js'),
+    require('./bin/checkout.js'),
     require('./bin/pull.js'),
     require('./bin/replicate.js'),
     require('./bin/diff.js'),
