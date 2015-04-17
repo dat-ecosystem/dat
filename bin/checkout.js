@@ -17,18 +17,16 @@ function handleCheckout (args) {
 
   openDat(args, function ready (err, db) {
     if (err) abort(err)
-    try {
-      var head = args._[0]
-      var checkout = db.checkout(head)
+    var head = args._[0]
 
-      // write config file
-      var checkoutPath = path.join(process.cwd(), '.dat', 'checkout')
-      var writer = fs.createWriteStream(checkoutPath)
-      writer.write(head)
+    try {
+      var checkout = db.checkout(head)
+      var layer = checkout._index.mainLayer
+      db.open(function() { db.meta.put('layer', layer) })
+      console.log('Checked out to', head)
     }
-    catch (err){
+    catch (err) {
       abort(err, "Could not find checkout with hash ", head)
     }
-
   })
 }
