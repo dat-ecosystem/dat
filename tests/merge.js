@@ -106,16 +106,16 @@ test('dat1 diff', function (t) {
 test('dat1 merge', function (t) {
   var diff = spawn(t, dat + ' diff ' + hashes.join(' '), {cwd: dat1})
   var merge = spawn(t, dat + ' merge ' + hashes.join(' '), {cwd: dat1})
-  
+
   diff.stdout.stream
     .pipe(through.obj(function (obj, enc, next) {
       next(null, obj.versions[0])
     }))
     .pipe(merge.stdin)
-  
+
   diff.stderr.empty()
   diff.end()
-    
+
   merge.stderr.empty()
   merge.stdout.empty()
   merge.end()

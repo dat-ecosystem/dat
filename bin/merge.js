@@ -10,7 +10,7 @@ module.exports = {
 
 function handleMerge (args) {
   if (args._.length === 0) return usage()
-    
+
   var headA = args._[0]
   var headB = args._[1]
   if (!headA || !headB) return usage()
