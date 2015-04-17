@@ -52,7 +52,7 @@
     "standard": "^3.3.2",
     "tap-spec": "^3.0.0",
     "tape": "^4.0.0",
-    "tape-spawn": "^1.1.0"
+    "tape-spawn": "^1.2.1"
   },
   "homepage": "https://github.com/maxogden/dat"
 }
