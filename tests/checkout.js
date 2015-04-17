@@ -1,8 +1,7 @@
 var path = require('path')
 var test = require('tape')
 var spawn = require('tape-spawn')
-var twodats = require('./twodats.js')
-var conflict = require('./conflict.js')
+var harness = require('./harness.js')
 
 var dat = path.resolve(__dirname + '/../cli.js')
 
@@ -12,8 +11,8 @@ var csvs = {
   c: path.resolve(__dirname + '/fixtures/c.csv')
 }
 
-twodats(function (dat1, dat2) {
-  conflict(dat1, dat2, csvs, function (dat1, dat2) {
+harness.twodats(function (dat1, dat2) {
+  harness.conflict(dat1, dat2, csvs, function (dat1, dat2) {
     test('dat1 heads', function (t) {
       var st = spawn(t, dat + ' heads', {cwd: dat1})
       st.stderr.empty()
