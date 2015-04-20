@@ -7,30 +7,25 @@ var mkdirp = require('mkdirp')
 
 var dat = path.resolve(__dirname + '/../cli.js')
 
+function onedat (path, cb) {
+  rimraf.sync(path)
+  mkdirp.sync(path)
+
+  test('init a dat', function (t) {
+    var st = spawn(t, dat + ' init', {cwd: path})
+    st.stderr.match(/Initialized a new dat/)
+    st.stdout.empty()
+    st.end()
+  })
+}
+
 module.exports = {
+  onedat: onedat,
   twodats: function (cb) {
     var dat1 = path.join(tmp, 'dat-1')
     var dat2 = path.join(tmp, 'dat-2')
-
-    rimraf.sync(dat1)
-    rimraf.sync(dat2)
-    mkdirp.sync(dat1)
-    mkdirp.sync(dat2)
-
-    test('dat1 init', function (t) {
-      var st = spawn(t, dat + ' init', {cwd: dat1})
-      st.stderr.match(/Initialized a new dat/)
-      st.stdout.empty()
-      st.end()
-    })
-
-    test('dat2 init', function (t) {
-      var st = spawn(t, dat + ' init', {cwd: dat2})
-      st.stderr.match(/Initialized a new dat/)
-      st.stdout.empty()
-      st.end()
-    })
-
+    onedat(dat1)
+    onedat(dat2)
     cb(dat1, dat2)
   },
   conflict: function (dat1, dat2, csvs, cb) {
