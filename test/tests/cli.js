@@ -72,12 +72,42 @@ module.exports.init = function(test, common) {
           t.ok(success, 'output matches')
           var port = fs.existsSync(path.join(common.dat1tmp, '.dat', 'PORT'))
           t.false(port, 'should have no PORT file')
+          var readme = fs.existsSync(path.join(common.dat1tmp, 'README.md'))
+          t.ok(readme, 'should have a README file')
           kill(dat.pid)
           common.destroyTmpDats(function() {
             t.end()
           })
         }
-        
+
+      })
+    })
+  })
+}
+
+module.exports.initNoReadme = function(test, common) {
+  test('CLI dat init without readme', function(t) {
+    if (common.rpc) return t.end()
+    common.destroyTmpDats(function() {
+      mkdirp(common.dat1tmp, function(err) {
+        t.notOk(err, 'no err')
+        var dat = spawn(datCliPath, ['init', '--no-prompt', '--no-readme'], {cwd: common.dat1tmp, env: process.env})
+        getFirstOutput(dat.stdout, verify)
+
+        function verify(output) {
+          var success = (output.indexOf('Initialized dat store') > -1)
+          if (!success) console.log(['output:', output])
+          t.ok(success, 'output matches')
+          var port = fs.existsSync(path.join(common.dat1tmp, '.dat', 'PORT'))
+          t.false(port, 'should have no PORT file')
+          var readme = fs.existsSync(path.join(common.dat1tmp, 'README.md'))
+          t.false(readme, 'should have no README file')
+          kill(dat.pid)
+          common.destroyTmpDats(function() {
+            t.end()
+          })
+        }
+
       })
     })
   })
@@ -711,6 +741,7 @@ module.exports.all = function (test, common) {
   module.exports.spawn(test, common)
   module.exports.noArgs(test, common)
   module.exports.init(test, common)
+  module.exports.initNoReadme(test, common)
   module.exports.listen(test, common)
   module.exports.listenEmptyDir(test, common)
   module.exports.listenPort(test, common)
