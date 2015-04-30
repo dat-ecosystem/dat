@@ -2,12 +2,14 @@ usage: dat <command(s)> [--flag] [--key=value]
 
 commands:
   init      initialize a new dat store in a directory
-  cat       streams data out of dat
+  checkout  dat will operate at a particular head
   add       import a file into dat
   push      push data to a remote dat
   pull      pull data from a remote dat
+  copy      streams data in a given format
   heads     list heads of the current dat
-  checkout  dat will operate at a particular head
   diff      see differences between two heads
+  merge     merge two heads
+  cat       streams all data out of dat
 
 type `dat command --help` to view detailed help about a specific subcommand
