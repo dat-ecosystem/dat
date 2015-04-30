@@ -15,10 +15,9 @@ module.exports = {
 }
 
 function onedat (datPath) {
-  rimraf.sync(datPath)
-  mkdirp.sync(datPath)
-
   test('init a dat', function (t) {
+    rimraf.sync(datPath)
+    mkdirp.sync(datPath)
     var st = spawn(t, dat + ' init', {cwd: datPath})
     st.stderr.match(/Initialized a new dat/)
     st.stdout.empty()
