@@ -1,15 +1,15 @@
 var os = require('os')
-var fs = require('fs')
 var path = require('path')
 var test = require('tape')
 var spawn = require('tape-spawn')
-var initDat = require('./helpers/init-dat.js')
+var helpers = require('./helpers')
 
 var tmp = os.tmpdir()
 var dat = path.resolve(__dirname + '/../cli.js')
 var dat1 = path.join(tmp, 'dat-1')
+var dat2 = path.join(tmp, 'dat-2')
 
-initDat(test, dat1)
+helpers.onedat(dat1)
 
 test('dat add csv', function (t) {
   var csv = path.resolve(__dirname + '/fixtures/all_hour.csv')
@@ -21,7 +21,7 @@ test('dat add csv', function (t) {
 
 verify()
 
-initDat(test, dat1)
+helpers.onedat(dat2)
 
 test('dat add json', function (t) {
   var json = path.resolve(__dirname + '/fixtures/all_hour.json')
