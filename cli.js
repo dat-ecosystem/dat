@@ -11,7 +11,7 @@ var config = {
     require('./bin/checkout.js'),
     require('./bin/pull.js'),
     require('./bin/replicate.js'),
-    require('./bin/export.js'),
+    require('./bin/copy.js'),
     require('./bin/diff.js'),
     require('./bin/heads.js'),
     require('./bin/merge.js')

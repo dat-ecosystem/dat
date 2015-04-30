@@ -9,7 +9,7 @@ var usage = require('../lib/usage.js')('copy.txt')
 
 module.exports = {
   name: 'copy',
-  command: handleExport,
+  command: handleCopy,
   options: [
     {
       name: 'name',
@@ -24,8 +24,8 @@ module.exports = {
   ]
 }
 
-function handleExport (args) {
-  debug('handlecopy', args)
+function handleCopy (args) {
+  debug('handleCopy', args)
 
   if (args.help) {
     usage()
