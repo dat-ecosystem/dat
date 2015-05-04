@@ -27,7 +27,7 @@ module.exports = {
 function handleCopy (args) {
   debug('handleCopy', args)
 
-  if (args.help) {
+  if (args.help || !args._[0]) {
     usage()
     abort()
   }
@@ -46,17 +46,15 @@ function handleCopy (args) {
   })
 
   function handleOuputStream (db) {
-    var outputStream
-    if (!args._[0]) outputStream = process.stdout
-    else outputStream = fs.createWriteStream(args._[0])
+    var outputStream = fs.createWriteStream(args._[0])
 
     var parseReadStream = through.obj(function (data, enc, next) {
       next(null, data.value)
     })
 
     pump(db.createReadStream(), parseReadStream, formatData(args.f), outputStream, function done (err) {
-      if (err) abort(err, 'Error adding data')
-      console.error('Done adding data')
+      if (err) abort(err, 'Error copying data to', args._[0])
+      console.error('Done copying data to', args._[0])
     })
   }
 }
