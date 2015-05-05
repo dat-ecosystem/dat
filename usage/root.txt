@@ -6,7 +6,7 @@ commands:
   add       import a file into dat
   push      push data to a remote dat
   pull      pull data from a remote dat
-  copy      streams data in a given format
+  export    streams data to a file in a given format
   heads     list heads of the current dat
   diff      see differences between two heads
   merge     merge two heads

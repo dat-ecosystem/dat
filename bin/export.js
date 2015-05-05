@@ -1,15 +1,15 @@
 var fs = require('fs')
 var pump = require('pump')
 var through = require('through2')
-var debug = require('debug')('bin/copy')
+var debug = require('debug')('bin/export')
 var formatData = require('format-data')
 var openDat = require('../lib/open-dat.js')
 var abort = require('../lib/abort.js')
-var usage = require('../lib/usage.js')('copy.txt')
+var usage = require('../lib/usage.js')('export.txt')
 
 module.exports = {
-  name: 'copy',
-  command: handleCopy,
+  name: 'export',
+  command: handleExport,
   options: [
     {
       name: 'dataset',
@@ -24,8 +24,8 @@ module.exports = {
   ]
 }
 
-function handleCopy (args) {
-  debug('handleCopy', args)
+function handleExport (args) {
+  debug('handleExport', args)
 
   if (args.help || !args._[0]) {
     usage()
@@ -49,8 +49,8 @@ function handleCopy (args) {
     })
 
     pump(db.createReadStream(), parseReadStream, formatData(args.f), outputStream, function done (err) {
-      if (err) abort(err, 'Error copying data to', args._[0])
-      console.error('Done copying data to', args._[0])
+      if (err) abort(err, 'Error exporting data to', args._[0])
+      console.error('Done exporting data to', args._[0])
     })
   }
 }
