@@ -105,7 +105,7 @@ Import a file. High level. Prompts for missing info
 ```bash
 dat add <filename or directory>
   # optional arguments, will prompt if not supplied
-  -n <dataset-name> # the name of the dataset to create
+  -d <dataset-name> # the name of the dataset to create
   -f <data-format> # how to parse the file to add
   --help # show help
 ```
@@ -123,7 +123,7 @@ dat datasets
 Remove (destructively) a dataset
 
 ```bash
-dat datasets delete <dataset-name> 
+dat datasets delete -d <dataset-name> 
 ```
 
 ## dat files
@@ -131,7 +131,7 @@ dat datasets delete <dataset-name>
 List files in a dataset
 
 ```bash
-dat files <dataset-name>
+dat files -d <dataset-name>
 ```
 
 ### dat files get
@@ -139,7 +139,7 @@ dat files <dataset-name>
 Stream a file from a dataset
 
 ```bash
-dat files get <dataset> <filename>
+dat files get <filename> -d <dataset> 
 ```
 
 ### dat files add
@@ -147,7 +147,7 @@ dat files get <dataset> <filename>
 Stream a file into a dataset
 
 ```bash
-dat files add <dataset> <filename>
+dat files add <filename> -d <dataset> 
 ```
 
 Possible examples of updating an existing file:
@@ -169,7 +169,7 @@ maxogden updated my_us_cities_viz.png to be253f on Sat Jan 17, 9:33pm
 Remove a file from a dataset
 
 ```bash
-dat files delete <dataset> <filename>
+dat files delete <filename> -d <dataset>
 ```
 
 ### dat rows get
@@ -183,13 +183,13 @@ dat rows get
 Get rows from a dataset:
 
 ```bash
-dat rows get <dataset>
+dat rows get -d <dataset>
 ```
 
 Get a single row from a dataset:
 
 ```bash
-dat rows get <dataset> <key>
+dat rows get key -d <dataset> 
 ```
 
 Get rows with options:
@@ -205,13 +205,13 @@ Add data to a dataset.
 Add a single row:
 
 ```bash
-dat rows add <dataset> <key> <value>
+dat rows add <key> <value> -d <dataset> 
 ```
 
 Open a writable stream:
 
 ```bash
-dat rows add <dataset>
+dat rows add -d <dataset>
 ```
 
 ### dat rows delete
@@ -219,5 +219,5 @@ dat rows add <dataset>
 Delete a single row from a dataset
 
 ```bash
-dat rows delete <dataset> <key>
+dat rows delete <key> -d <dataset> 
 ```
