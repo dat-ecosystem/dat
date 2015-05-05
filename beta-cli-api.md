@@ -110,6 +110,17 @@ dat add <filename or directory>
   --help # show help
 ```
 
+### dat export
+
+Export data to a file. High level.
+
+```bash
+dat export <filename>
+  -d <dataset-name> # the name of the dataset to create
+  -f <data-format> # how to export the file
+  --help # show help
+```
+
 ## dat datasets
 
 Lists datasets
@@ -123,7 +134,7 @@ dat datasets
 Remove (destructively) a dataset
 
 ```bash
-dat datasets delete -d <dataset-name> 
+dat datasets delete -d <dataset-name>
 ```
 
 ## dat files
@@ -139,7 +150,7 @@ dat files -d <dataset-name>
 Stream a file from a dataset
 
 ```bash
-dat files get <filename> -d <dataset> 
+dat files get <filename> -d <dataset>
 ```
 
 ### dat files add
@@ -147,7 +158,7 @@ dat files get <filename> -d <dataset>
 Stream a file into a dataset
 
 ```bash
-dat files add <filename> -d <dataset> 
+dat files add <filename> -d <dataset>
 ```
 
 Possible examples of updating an existing file:
@@ -189,7 +200,7 @@ dat rows get -d <dataset>
 Get a single row from a dataset:
 
 ```bash
-dat rows get key -d <dataset> 
+dat rows get key -d <dataset>
 ```
 
 Get rows with options:
@@ -205,7 +216,7 @@ Add data to a dataset.
 Add a single row:
 
 ```bash
-dat rows add <key> <value> -d <dataset> 
+dat rows add <key> <value> -d <dataset>
 ```
 
 Open a writable stream:
@@ -219,5 +230,5 @@ dat rows add -d <dataset>
 Delete a single row from a dataset
 
 ```bash
-dat rows delete <key> -d <dataset> 
+dat rows delete <key> -d <dataset>
 ```
