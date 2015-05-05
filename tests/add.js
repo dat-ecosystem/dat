@@ -45,7 +45,7 @@ function verify (dataset, datN) {
     st.stdout.match(function (output) {
       var lines = output.split('\n')
       t.ok('less than 10 lines', lines.length <= 10)
-      if (lines.length === 9) {
+      if (lines.length === 10) {
         if (JSON.parse(lines[0]).key === 'ak11246285') return true
         return false
       }

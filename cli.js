@@ -10,6 +10,7 @@ var config = {
     require('./bin/push.js'),
     require('./bin/checkout.js'),
     require('./bin/pull.js'),
+    require('./bin/get.js'),
     require('./bin/replicate.js'),
     require('./bin/export.js'),
     require('./bin/diff.js'),
