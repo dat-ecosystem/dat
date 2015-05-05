@@ -10,6 +10,4 @@ commands:
   checkout  dat will operate at a particular head
   diff      see differences between two heads
 
-  datasets delete  delete a dataset
-
 type `dat command --help` to view detailed help about a specific subcommand
