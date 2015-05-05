@@ -12,9 +12,9 @@ module.exports = {
   command: handleCopy,
   options: [
     {
-      name: 'name',
+      name: 'dataset',
       boolean: false,
-      abbr: 'n'
+      abbr: 'd'
     },
     {
       name: 'format',
@@ -34,10 +34,6 @@ function handleCopy (args) {
 
   if (!args.f) {
     args.f = 'csv'
-  }
-
-  if (!args.n) {
-    args.n = 'default'
   }
 
   openDat(args, function ready (err, db) {

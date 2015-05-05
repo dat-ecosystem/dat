@@ -28,12 +28,12 @@ test('dat add csv', function (t) {
 test('dat copy to file', function (t) {
   var st = spawn(t, dat + ' copy ' + copyfile, {cwd: dat1})
   st.stdout.empty()
-  st.stdout.match(/Done copying data to/)
+  st.stderr.match(/Done copying data to/)
   st.end()
 })
 
 test('dat copy output matches original file', function (t) {
-  t.plan(9)
+  t.plan(37)
   var sorter = sort(function (a, b) {
     return parseFloat(a['latitude']) < parseFloat(b['latitude'])
   })
@@ -43,12 +43,19 @@ test('dat copy output matches original file', function (t) {
   var read = iterate(original)
   var read2 = iterate(copied)
 
-  read(function (err, line, next) {
-     read2(function (err, line2, next2) {
-      t.deepEquals(line, line2)
-      next()
-      next2()
+  function loop () {
+    read(function (err, line, next) {
+       read2(function (err, line2, next2) {
+        t.ifError(err)
+        if (!line || !line2) return
+        t.deepEquals(line, line2)
+        next()
+        next2()
+        loop()
+      })
     })
-  })
+  }
+
+  loop()
 
 })
