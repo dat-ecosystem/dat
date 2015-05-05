@@ -13,9 +13,9 @@ module.exports = {
   command: handleAdd,
   options: [
     {
-      name: 'name',
+      name: 'dataset',
       boolean: false,
-      abbr: 'n'
+      abbr: 'd'
     },
     {
       name: 'format',
