@@ -18,40 +18,9 @@ function handleDiff (args) {
   openDat(args, function ready (err, db) {
     if (err) abort(err)
 
-    var checkoutA = db.checkout(args._[0])
-    var checkoutB = db.checkout(args._[1])
-    var diffs = diffStream(checkoutA.createReadStream(), checkoutB.createReadStream(), jsonEquals)
-    pump(diffs, datDiffFormatter(), ndjson.serialize(), process.stdout, function done (err) {
+    var diffs = db.createDiffStream(args._[0], args._[1])
+    pump(diffs, ndjson.serialize(), process.stdout, function done (err) {
       if (err) throw err
     })
-
-    function datDiffFormatter () {
-      return through.obj(function write (obj, enc, next) {
-        var a = obj[0]
-        var b = obj[1]
-        var diff = {}
-        if (a) diff.key = a.key
-        if (b) diff.key = b.key
-        diff.versions = []
-        if (a) {
-          a.checkout = checkoutA.head
-          diff.versions.push(a)
-        } else {
-          diff.versions.push(null)
-        }
-        if (b) {
-          b.checkout = checkoutB.head
-          diff.versions.push(b)
-        } else {
-          diff.versions.push(null)
-        }
-        next(null, diff)
-      })
-    }
   })
-}
-
-function jsonEquals (a, b, cb) {
-  if (JSON.stringify(a.value) === JSON.stringify(b.value)) cb(null, true)
-  else cb(null, false)
 }
