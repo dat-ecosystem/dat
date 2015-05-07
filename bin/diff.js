@@ -1,7 +1,5 @@
 var pump = require('pump')
-var through = require('through2')
 var ndjson = require('ndjson')
-var diffStream = require('sorted-diff-stream')
 var openDat = require('../lib/open-dat.js')
 var abort = require('../lib/abort.js')
 var usage = require('../lib/usage.js')('diff.txt')
