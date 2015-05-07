@@ -59,7 +59,7 @@ test('dat1 diff', function (t) {
 
 test('dat1 merge', function (t) {
   var diff = spawn(t, dat + ' diff ' + hashes.join(' '), {cwd: dat1})
-  var merge = spawn(t, dat + ' merge ' + hashes.join(' '), {cwd: dat1})
+  var merge = spawn(t, dat + ' merge --live' + hashes.join(' '), {cwd: dat1})
 
   diff.stdout.stream
     .pipe(through.obj(function (obj, enc, next) {
@@ -69,7 +69,23 @@ test('dat1 merge', function (t) {
     .pipe(merge.stdin)
 
   diff.stderr.empty()
-  merge.stderr.empty()
+  merge.stderr.match(/Merged/)
   merge.stdout.empty()
   t.end()
+})
+
+test('verify merge version', function (t) {
+  var st = spawn(t, dat + ' cat ', {cwd: dat1})
+
+  st.stderr.empty()
+  st.stdout.match(function match (output) {
+    try {
+      output = JSON.parse(output)
+      return output.value.name === 'max'
+    } catch (e) {
+      return false
+    }
+  })
+
+  st.end()
 })

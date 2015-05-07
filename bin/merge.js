@@ -2,6 +2,7 @@ var pump = require('pump')
 var knead = require('knead')
 var through = require('through2')
 
+var debug = require('debug')('bin/merge')
 var usage = require('../lib/usage.js')('merge.txt')
 var abort = require('../lib/abort.js')
 var openDat = require('../lib/open-dat.js')
@@ -34,7 +35,7 @@ function handleMerge (args) {
       }
       resolutionStream = knead(diffStream, opts)
       resolutionStream.on('data', function (data) {
-        console.log('resolutionStream', data)
+        debug('resolutionStream', data)
       })
     }
 
