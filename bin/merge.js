@@ -9,7 +9,14 @@ var openDat = require('../lib/open-dat.js')
 
 module.exports = {
   name: 'merge',
-  command: handleMerge
+  command: handleMerge,
+  options: [
+    {
+      name: 'live',
+      boolean: false,
+      abbr: 'l'
+    }
+  ]
 }
 
 function handleMerge (args) {
