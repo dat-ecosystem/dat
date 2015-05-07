@@ -26,7 +26,6 @@
   "license": "BSD",
   "dependencies": {
     "JSONStream": "^0.10.0",
-    "byte-stream": "^2.1.0",
     "csv-parser": "^1.5.2",
     "cuid": "^1.2.4",
     "dat-core": "git://github.com/maxogden/dat-core.git",

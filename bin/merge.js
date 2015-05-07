@@ -1,6 +1,5 @@
 var pump = require('pump')
 var knead = require('knead')
-var batcher = require('byte-stream')
 var through = require('through2')
 
 var usage = require('../lib/usage.js')('merge.txt')
@@ -29,13 +28,11 @@ function handleMerge (args) {
       resolutionStream = process.stdin
     } else {
       var diffStream = db.createDiffStream(headA, headB)
-
-      var limit = 20 * 2 // rows * 2 (to include diffs)
-      var batchStream = batcher(limit)
       var opts = {
+        limit: 20 * 2, // * 2 to account for diff
         rowPath: function (row) { return row.value }
       }
-      resolutionStream = diffStream.pipe(batchStream).pipe(knead(opts))
+      resolutionStream = knead(diffStream, opts)
       resolutionStream.on('data', function (data) {
         console.log('resolutionStream', data)
       })
