@@ -1,6 +1,5 @@
 var pump = require('pump')
 var knead = require('knead')
-var through = require('through2')
 
 var debug = require('debug')('bin/merge')
 var usage = require('../lib/usage.js')('merge.txt')
@@ -52,4 +51,3 @@ function handleMerge (args) {
     })
   })
 }
-
