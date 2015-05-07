@@ -63,14 +63,13 @@ test('dat1 merge', function (t) {
 
   diff.stdout.stream
     .pipe(through.obj(function (obj, enc, next) {
-      next(null, obj.versions[0])
+      obj = JSON.parse(obj.toString())
+      next(null, obj.versions[0].toString())
     }))
     .pipe(merge.stdin)
 
   diff.stderr.empty()
-  diff.end()
-
   merge.stderr.empty()
   merge.stdout.empty()
-  merge.end()
+  t.end()
 })
