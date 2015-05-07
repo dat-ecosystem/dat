@@ -33,6 +33,7 @@
     "detect-csv": "^1.0.1",
     "detect-json-style": "^1.0.2",
     "duplexify": "^3.2.0",
+    "format-data": "^2.1.1",
     "knead": "^1.0.2",
     "ndjson": "^1.3.0",
     "peek-stream": "^1.1.1",
