@@ -18,21 +18,21 @@ var csvfile = path.resolve(__dirname + '/fixtures/all_hour.csv')
 var exportfile = path.join(dat1, 'out.csv')
 
 test('dat add csv', function (t) {
-  var st = spawn(t, dat + ' add ' + csvfile + ' --key=id', {cwd: dat1})
+  var st = spawn(t, dat + ' add ' + csvfile + ' -d test-ds --key=id', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(/Done adding data/)
   st.end()
 })
 
 test('dat export to file', function (t) {
-  var st = spawn(t, dat + ' export ' + exportfile, {cwd: dat1})
+  var st = spawn(t, dat + ' export ' + exportfile + ' -d test-ds ', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(/Done exporting data to/)
   st.end()
 })
 
 test('dat export output matches original file', function (t) {
-  t.plan(56)
+  t.plan(29)
   var sorter = sort(function (a, b) {
     return parseFloat(a['latitude']) < parseFloat(b['latitude'])
   })

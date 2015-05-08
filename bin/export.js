@@ -27,7 +27,7 @@ module.exports = {
 function handleExport (args) {
   debug('handleExport', args)
 
-  if (args.help || !args._[0]) {
+  if (args.help || !args._[0] || !args.d) {
     usage()
     abort()
   }
@@ -48,7 +48,7 @@ function handleExport (args) {
       next(null, data.value)
     })
 
-    pump(db.createReadStream(), parseReadStream, formatData(args.f), outputStream, function done (err) {
+    pump(db.createReadStream({ dataset:args.d }), parseReadStream, formatData(args.f), outputStream, function done (err) {
       if (err) abort(err, 'Error exporting data to', args._[0])
       console.error('Done exporting data to', args._[0])
     })

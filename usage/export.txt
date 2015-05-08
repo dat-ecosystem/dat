@@ -1,0 +1,3 @@
+dat export <filename>  -d <dataset-name> [--gt=key --lt=key  --gte=key --lte=key -f <format>]
+
+streams tabular data out of dat, defaults to newline delimited json format (ndjson)
