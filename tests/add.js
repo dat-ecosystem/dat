@@ -8,6 +8,7 @@ var tmp = os.tmpdir()
 var dat = path.resolve(__dirname + '/../cli.js')
 var dat1 = path.join(tmp, 'dat-1')
 var dat2 = path.join(tmp, 'dat-2')
+var dat3 = path.join(tmp, 'dat-3')
 
 helpers.onedat(dat1)
 
@@ -33,9 +34,10 @@ test('dat add json', function (t) {
 
 verify()
 
-function verify () {
+function verify (dataset) {
+  if (!dataset) dataset = ''
   test('dat cat', function (t) {
-    var st = spawn(t, dat + ' cat', {cwd: dat1})
+    var st = spawn(t, dat + ' cat ' + dataset, {cwd: dat1})
     st.stderr.empty()
     st.stdout.match(function (output) {
       var lines = output.split('\n')
@@ -47,3 +49,16 @@ function verify () {
     st.end()
   })
 }
+
+helpers.onedat(dat3)
+
+test('dat add json to dataset', function (t) {
+  var json = path.resolve(__dirname + '/fixtures/all_hour.json')
+  var st = spawn(t, dat + ' add ' + json + ' --key=id -d add-test3' , {cwd: dat1})
+  st.stdout.empty()
+  st.stderr.match(/Done adding data/)
+  st.end()
+})
+
+verify('add-test3')
+

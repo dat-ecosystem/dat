@@ -33,7 +33,7 @@ function handleExport (args) {
   }
 
   if (!args.f) {
-    args.f = 'csv'
+    args.f = 'ndjson'
   }
 
   openDat(args, function ready (err, db) {
