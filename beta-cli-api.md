@@ -110,6 +110,12 @@ dat add <filename or directory>
   --help # show help
 ```
 
+Open a writable stream
+
+```bash
+cat demographics.csv | dat add -
+```
+
 ### dat export
 
 Export data to a file. High level.
@@ -183,46 +189,30 @@ Remove a file from a dataset
 dat files delete <filename> -d <dataset>
 ```
 
-### dat rows get
-
-Cat all rows in all datasets as ndjson:
-
-```bash
-dat rows get
-```
-
 Get rows from a dataset:
 
 ```bash
-dat rows get -d <dataset>
+dat get -d <dataset>
 ```
 
 Get a single row from a dataset:
 
 ```bash
-dat rows get key -d <dataset>
+dat get <key> -d <dataset>
 ```
 
 Get rows with options:
 
 ```bash
-dat rows get --gte foo --lt z --limit 1
+dat get --gte foo --lt z --limit 1
 ```
 
-### dat rows add
-
-Add data to a dataset.
+### dat put
 
 Add a single row:
 
 ```bash
-dat rows add <key> <value> -d <dataset>
-```
-
-Open a writable stream:
-
-```bash
-dat rows add -d <dataset>
+dat put <key> <value> -d <dataset>
 ```
 
 ### dat rows delete
@@ -230,5 +220,5 @@ dat rows add -d <dataset>
 Delete a single row from a dataset
 
 ```bash
-dat rows delete <key> -d <dataset>
+dat delete <key> -d <dataset>
 ```

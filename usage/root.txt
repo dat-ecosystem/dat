@@ -11,5 +11,6 @@ commands:
   diff      see differences between two heads
   merge     merge two heads
   cat       streams all data out of dat
+  get       get rows in a dataset
 
 type `dat command --help` to view detailed help about a specific subcommand
