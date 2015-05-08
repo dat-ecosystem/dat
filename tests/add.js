@@ -2,6 +2,7 @@ var os = require('os')
 var path = require('path')
 var test = require('tape')
 var spawn = require('tape-spawn')
+var debug = require('debug')('bin/add')
 var helpers = require('./helpers')
 
 var tmp = os.tmpdir()
@@ -20,28 +21,32 @@ test('dat add csv', function (t) {
   st.end()
 })
 
-verify()
+verify(dat1)
 
 helpers.onedat(dat2)
 
 test('dat add json', function (t) {
   var json = path.resolve(__dirname + '/fixtures/all_hour.json')
-  var st = spawn(t, dat + ' add ' + json + ' --key=id', {cwd: dat1})
+  var st = spawn(t, dat + ' add ' + json + ' --key=id', {cwd: dat2})
   st.stdout.empty()
   st.stderr.match(/Done adding data/)
   st.end()
 })
 
-verify()
+verify(dat2)
 
-function verify (dataset) {
-  if (!dataset) dataset = ''
+function verify (dataset, datN) {
+  if (!datN) {
+    datN = dataset
+    dataset = ''
+  }
   test('dat cat', function (t) {
-    var st = spawn(t, dat + ' cat ' + dataset, {cwd: dat1})
+    var st = spawn(t, dat + ' cat --dataset=' + dataset, {cwd: datN})
     st.stderr.empty()
     st.stdout.match(function (output) {
       var lines = output.split('\n')
-      if (lines.length === 10) {
+      t.ok('less than 10 lines', lines.length <= 10)
+      if (lines.length === 9) {
         if (JSON.parse(lines[0]).key === 'ak11246285') return true
         return false
       }
@@ -52,13 +57,23 @@ function verify (dataset) {
 
 helpers.onedat(dat3)
 
-test('dat add json to dataset', function (t) {
+test('dat add all_hour to test3', function (t) {
   var json = path.resolve(__dirname + '/fixtures/all_hour.json')
-  var st = spawn(t, dat + ' add ' + json + ' --key=id -d add-test3' , {cwd: dat1})
+  var st = spawn(t, dat + ' add ' + json + ' --key=id --dataset=add-test3' , {cwd: dat3})
   st.stdout.empty()
   st.stderr.match(/Done adding data/)
   st.end()
 })
 
-verify('add-test3')
+verify('add-test3', dat3)
+
+test('dat add all_hour to separate dataset', function (t) {
+  var json = path.resolve(__dirname + '/fixtures/all_hour.json')
+  var st = spawn(t, dat + ' add ' + json + ' --key=id --dataset=add-test4' , {cwd: dat3})
+  st.stdout.empty()
+  st.stderr.match(/Done adding data/)
+  st.end()
+})
+
+verify('add-test4', dat3)
 
