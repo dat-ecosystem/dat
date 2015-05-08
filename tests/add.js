@@ -2,7 +2,6 @@ var os = require('os')
 var path = require('path')
 var test = require('tape')
 var spawn = require('tape-spawn')
-var debug = require('debug')('bin/add')
 var helpers = require('./helpers')
 
 var tmp = os.tmpdir()
@@ -59,7 +58,7 @@ helpers.onedat(dat3)
 
 test('dat add all_hour to test3', function (t) {
   var json = path.resolve(__dirname + '/fixtures/all_hour.json')
-  var st = spawn(t, dat + ' add ' + json + ' --key=id --dataset=add-test3' , {cwd: dat3})
+  var st = spawn(t, dat + ' add ' + json + ' --key=id --dataset=add-test3', {cwd: dat3})
   st.stdout.empty()
   st.stderr.match(/Done adding data/)
   st.end()
@@ -69,11 +68,10 @@ verify('add-test3', dat3)
 
 test('dat add all_hour to separate dataset', function (t) {
   var json = path.resolve(__dirname + '/fixtures/all_hour.json')
-  var st = spawn(t, dat + ' add ' + json + ' --key=id --dataset=add-test4' , {cwd: dat3})
+  var st = spawn(t, dat + ' add ' + json + ' --key=id --dataset=add-test4', {cwd: dat3})
   st.stdout.empty()
   st.stderr.match(/Done adding data/)
   st.end()
 })
 
 verify('add-test4', dat3)
-

@@ -32,7 +32,7 @@ test('dat export to file', function (t) {
 })
 
 test('dat export output matches original file', function (t) {
-  t.plan(29)
+  t.plan(53)
   var sorter = sort(function (a, b) {
     return parseFloat(a['latitude']) < parseFloat(b['latitude'])
   })

@@ -1,7 +1,6 @@
 var pump = require('pump')
 var ndjson = require('ndjson')
 
-var debug = require('debug')('bin/cat')
 var abort = require('../lib/abort.js')
 var openDat = require('../lib/open-dat.js')
 var usage = require('../lib/usage.js')('cat.txt')
