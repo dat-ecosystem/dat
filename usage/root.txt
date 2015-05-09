@@ -12,5 +12,6 @@ commands:
   merge     merge two heads
   cat       streams all data out of dat
   get       get rows in a dataset
+  put       put a row in a dataset
 
 type `dat command --help` to view detailed help about a specific subcommand

@@ -14,6 +14,7 @@ var config = {
     require('./bin/replicate.js'),
     require('./bin/export.js'),
     require('./bin/diff.js'),
+    require('./bin/put.js'),
     require('./bin/heads.js'),
     require('./bin/merge.js')
   ],
