@@ -1,6 +1,7 @@
 var os = require('os')
 var path = require('path')
 var test = require('tape')
+var csv = require('csv')
 var spawn = require('tape-spawn')
 var helpers = require('./helpers')
 
@@ -12,27 +13,47 @@ helpers.onedat(dat1)
 var json = path.resolve(__dirname + '/fixtures/all_hour.json')
 
 test('dat add dataset', function (t) {
-  var st = spawn(t, dat + ' add ' + json + ' --key=id --dataset=test-dataset', {cwd: dat1})
+  var st = spawn(t, dat + ' add ' + json + ' --key=id --dataset=get-test', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(/Done adding data/)
   st.end()
 })
 
 test('dat get from dataset', function (t) {
-  var st = spawn(t, dat + ' get --dataset=test-dataset', {cwd: dat1})
+  var st = spawn(t, dat + ' get --dataset=get-test', {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function (output) {
     var lines = output.split('\n')
     if (lines.length === 10) {
-      if (JSON.parse(lines[0]).key === 'ak11246285') return true
-      return false
+      var line = JSON.parse(lines[0])
+      if (line.key === 'ak11246285') {
+        return line.value.latitude === '61.3482'
+      }
+      return true
     }
   })
   st.end()
 })
 
+
+test('dat get from dataset with csv', function (t) {
+  var st = spawn(t, dat + ' get --dataset=get-test --format=csv', {cwd: dat1})
+  st.stderr.empty()
+  st.stdout.match(function (output) {
+    var lines = output.split('\n')
+    if (lines.length === 10) {
+      var headers = lines[0].split(',')
+      t.equals(headers.length, 16)
+      return true
+    }
+    return false
+  })
+  st.end()
+})
+
+
 test('dat get a key from dataset', function (t) {
-  var st = spawn(t, dat + ' get ak11246293 --dataset=test-dataset', {cwd: dat1})
+  var st = spawn(t, dat + ' get ak11246293 --dataset=get-test', {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function (output) {
     output = JSON.parse(output)
