@@ -10,49 +10,96 @@ Lists available commands and shows instructions
 dat
 ```
 
+Example output:
+
+```
+$ dat
+usage: dat <command(s)> [--flag] [--key=value]
+
+commands:
+  init      initialize a new dat store in a directory
+  checkout  dat will operate at a particular head
+  add       import a file into dat
+  push      push data to a remote dat
+  pull      pull data from a remote dat
+  export    streams data to a file in a given format
+  heads     list heads of the current dat
+  diff      see differences between two heads
+  merge     merge two heads
+  cat       streams all data out of dat
+  get       get rows in a dataset
+
+type `dat command --help` to view detailed help about a specific subcommand
+```
+
 ### dat init
 
-Init a new dat. Will prompt for metadata if not supplied as --name etc.
+Init a new dat.
 
 ```bash
 dat init
 ```
 
+Example output:
+
+```
+$ cd /test
+$ dat init
+Initialized a new dat at /test/.dat
+```
+
 ### dat status
 
-Show current status, including row count, file count, last updated, current branch, current head, checkout status
+Show current status, including row count, file count, last updated
 
 ```bash
 dat status
 ```
 
-### dat log
+Example output:
 
-Show history
-
-```bash
-dat log
+```
+$ dat status
+Checked out to 8eaf3b0739d32849687a544efae8487b5b05df52
+438 files, 32 rows, 3 commits, 143 Mb total
+Last updated 3 seconds ago
 ```
 
 ### dat push
 
-Push your local changes to a remote dat
+Push changes from your local dat to a remote dat
 
 ```bash
 dat push <remote>
 ```
 
+Example output:
+
+```
+$ dat push ssh://192.168.0.5:~/data
+Pushed 438 changes (32.03 Mb, 4.4 Mb/s).
+Push completed successfully.
+```
+
 ### dat pull
 
-Pull remote changes into your local dat. Might create new branches.
+Pull new changes from a remote dat into your local dat.
 
 ```bash
 dat pull <remote>
 ```
 
+Example output:
+
+```
+$ dat pull ssh://192.168.0.5:~/data
+Pulled 823 changes (93.88 Mb, 3.4 Mb/s).
+Pull completed successfully.
+```
+
 ### dat replicate
 
-Same as doing a `dat push` and `dat pull` at the same time
+Same as doing a `dat push` and `dat pull` at the same time. Use it when you are on the other end of a `dat pull` or a `dat push` (e.g. if you are hosting dat on a server).
 
 ### dat changes
 
@@ -62,31 +109,19 @@ Stream changes out in historical order as ndjson
 dat changes
 ```
 
-### dat merge
+Example output:
 
-Merge layers
-
-```bash
-dat merge <head-hash1> <head-hash2> ... <head-hashN>
-```
-
-options
+#### TODO Finalize exact change output
 
 ```
--s "gasket run merge" --dry-run
-```
-
-### dat compare
-
-Check for potential conflicts during a merge between layers and list keys that will conflict
-
-```
-dat compare <head-hash1> <head-hash2> ... <head-hashN>
+$ dat changes --limit=2
+{ "change": 1, "key": "foo", "hash": "6bdd624ae6f9ddb96069e04fc030c6e964e77ac7", "from": 0, "to": 1}
+{ "change": 2, "key": "foo", "hash": "7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517", "from": 1, "to": 2}
 ```
 
 ### dat checkout
 
-Set head to a point in history
+Non-destructive rollback state to a hash in the past
 
 ```bash
 dat checkout <commit-hash>
@@ -98,127 +133,30 @@ Check out latest commit on default branch
 dat checkout latest
 ```
 
-### dat add
+Example output
 
-Import a file. High level. Prompts for missing info
-
-```bash
-dat add <filename or directory>
-  # optional arguments, will prompt if not supplied
-  -d <dataset-name> # the name of the dataset to create
-  -f <data-format> # how to parse the file to add
-  --help # show help
+```
+$ dat checkout 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
+Checked out state of dat to 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
 ```
 
-Open a writable stream
+### dat get
+
+Get a single row:
 
 ```bash
-cat demographics.csv | dat add -
+dat get <key>
 ```
 
-### dat export
-
-Export data to a file. High level.
+Get a range of keys (outputs ndjson):
 
 ```bash
-dat export <filename>
-  -d <dataset-name> # the name of the dataset to create
-  -f <data-format> # how to export the file
-  --help # show help
+dat get --gte b --lt d --limit 1
 ```
 
-## dat datasets
+Example output:
 
-Lists datasets
-
-```bash
-dat datasets
 ```
-
-### dat datasets delete
-
-Remove (destructively) a dataset
-
-```bash
-dat datasets delete -d <dataset-name>
-```
-
-## dat files
-
-List files in a dataset
-
-```bash
-dat files -d <dataset-name>
-```
-
-### dat files get
-
-Stream a file from a dataset
-
-```bash
-dat files get <filename> -d <dataset>
-```
-
-### dat files add
-
-Stream a file into a dataset
-
-```bash
-dat files add <filename> -d <dataset>
-```
-
-Possible examples of updating an existing file:
-
-```bash
-$ dat files add cities my_us_cities_viz.png
-This will overwrite my_us_cities_viz.png at c2342d (y/n): y
-...done
-maxogden updated my_us_cities_viz.png to be253f on Sat Jan 17, 9:33pm
-```
-
-```bash
-$ dat files add cities my_us_cities_viz.png --no-prompt/--force(?)
-maxogden updated my_us_cities_viz.png to be253f on Sat Jan 17, 9:33pm
-```
-
-### dat files delete
-
-Remove a file from a dataset
-
-```bash
-dat files delete <filename> -d <dataset>
-```
-
-Get rows from a dataset:
-
-```bash
-dat get -d <dataset>
-```
-
-Get a single row from a dataset:
-
-```bash
-dat get <key> -d <dataset>
-```
-
-Get rows with options:
-
-```bash
-dat get --gte foo --lt z --limit 1
-```
-
-### dat put
-
-Add a single row:
-
-```bash
-dat put <key> <value> -d <dataset>
-```
-
-### dat rows delete
-
-Delete a single row from a dataset
-
-```bash
-dat delete <key> -d <dataset>
+$ dat get uw60748112
+{"content":"row","key":"uw60748112","version":"5abd6625cd2e64a116628a9a306de2fbd73a05ea5905e26d5d4e58e077be2203","value":{"time":"2014-04-30T00:09:37.000Z","latitude":"46.7557","longitude":"-121.9855","depth":"8.3","mag":"0.3","magType":"Md","nst":"","gap":"198","dmin":"0.11678099","rms":"0.12","net":"uw","id":"uw60748112","updated":"2014-04-30T00:28:40.807Z","place":"24km ESE of Eatonville, Washington","type":"earthquake"}}
 ```
