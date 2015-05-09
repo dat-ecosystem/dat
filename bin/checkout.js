@@ -13,14 +13,19 @@ function handleCheckout (args) {
   openDat(args, function ready (err, db) {
     if (err) abort(err)
     var head = args._[0]
+    var checkout = db.checkout(head === 'latest' ? null : head)
 
-    try {
-      var checkout = db.checkout(head)
-      var layer = checkout._index.mainLayer
-      db.open(function () { db.meta.put('layer', layer) })
-      console.log('Checked out to', head)
-    } catch (err) {
-      abort(err, 'Could not find checkout with hash ', head)
+    checkout.on('error', done)
+
+    checkout.open(function (err) {
+      if (err) return done(err)
+      if (head === 'latest') db.meta.del('checkout', done)
+      else db.meta.put('checkout', head, done)
+    })
+
+    function done (err) {
+      if (err) return abort(err, 'Could not find checkout with hash ', head)
+      console.log('Checked out to', checkout.head)
     }
   })
 }
