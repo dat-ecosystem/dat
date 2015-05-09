@@ -63,11 +63,13 @@ function handleRows (args) {
 
     var parseReadStream
     if (args.f === 'ndjson') parseReadStream = ndjson.serialize()
-    else parseReadStream = through.obj(function (data, enc, next) {
-      var val = data.value
-      val.key = data.key
-      next(null, val)
-    })
+    else {
+      parseReadStream = through.obj(function (data, enc, next) {
+        var val = data.value
+        val.key = data.key
+        next(null, val)
+      })
+    }
 
     if (!key) {
       pump(db.createReadStream(args), parseReadStream, formatData(args.f), process.stdout, function done (err) {

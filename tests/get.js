@@ -1,7 +1,6 @@
 var os = require('os')
 var path = require('path')
 var test = require('tape')
-var csv = require('csv')
 var spawn = require('tape-spawn')
 var helpers = require('./helpers')
 
@@ -35,7 +34,6 @@ test('dat get from dataset', function (t) {
   st.end()
 })
 
-
 test('dat get from dataset with csv', function (t) {
   var st = spawn(t, dat + ' get --dataset=get-test --format=csv', {cwd: dat1})
   st.stderr.empty()
@@ -50,7 +48,6 @@ test('dat get from dataset with csv', function (t) {
   })
   st.end()
 })
-
 
 test('dat get a key from dataset', function (t) {
   var st = spawn(t, dat + ' get ak11246293 --dataset=get-test', {cwd: dat1})
