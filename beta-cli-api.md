@@ -103,7 +103,7 @@ Same as doing a `dat push` and `dat pull` at the same time. Use it when you are 
 
 ### dat changes
 
-Stream changes out in historical order as ndjson
+Stream changes out in historical order as json
 
 ```bash
 dat changes
@@ -148,7 +148,7 @@ Get a single row:
 dat get <key>
 ```
 
-Get a range of keys (outputs ndjson):
+Get a range of keys (outputs json):
 
 ```bash
 dat get --gte b --lt d --limit 1
@@ -158,5 +158,5 @@ Example output:
 
 ```
 $ dat get uw60748112
-{"content":"row","key":"uw60748112","version":"5abd6625cd2e64a116628a9a306de2fbd73a05ea5905e26d5d4e58e077be2203","value":{"time":"2014-04-30T00:09:37.000Z","latitude":"46.7557","longitude":"-121.9855","depth":"8.3","mag":"0.3","magType":"Md","nst":"","gap":"198","dmin":"0.11678099","rms":"0.12","net":"uw","id":"uw60748112","updated":"2014-04-30T00:28:40.807Z","place":"24km ESE of Eatonville, Washington","type":"earthquake"}}
+{"content":"row","key":"uw60748112","version":"5abd6625cd2e64a116628a9a306de2fbd73a05ea5905e26d5d4e58e077be2203","value":{"time":"2014-04-30T00:09:37.000Z","latitude":"46.7557","longitude":"-121.9855","place":"24km ESE of Eatonville, Washington","type":"earthquake"}}
 ```
