@@ -28,6 +28,7 @@ commands:
   merge     merge two heads
   cat       streams all data out of dat
   get       get rows in a dataset
+  put       put a row into a dataset
 
 type `dat command --help` to view detailed help about a specific subcommand
 ```
@@ -63,6 +64,28 @@ $ dat status
 Checked out to 8eaf3b0739d32849687a544efae8487b5b05df52
 438 files, 32 rows, 3 commits, 143 Mb total
 Last updated 3 seconds ago
+```
+
+### dat add
+
+Add bulk data to dat
+
+```bash
+dat add <filename> -d <dataset-name> -f <data-format>
+```
+
+Stream data through stdin:
+
+```bash
+cat file.json | dat add -
+```
+
+Example output:
+
+```
+$ dat add flights.json -d flights
+Added 302,143 rows (32.03 Mb, 4.4 Mb/s).
+Data added successfully.
 ```
 
 ### dat push
@@ -151,7 +174,7 @@ dat get <key>
 Get a range of keys (outputs json):
 
 ```bash
-dat get --gte b --lt d --limit 1
+dat get --gte b --lt d --limit 1 -d my-dataset
 ```
 
 Example output:
@@ -160,3 +183,20 @@ Example output:
 $ dat get uw60748112
 {"content":"row","key":"uw60748112","version":"5abd6625cd2e64a116628a9a306de2fbd73a05ea5905e26d5d4e58e077be2203","value":{"time":"2014-04-30T00:09:37.000Z","latitude":"46.7557","longitude":"-121.9855","place":"24km ESE of Eatonville, Washington","type":"earthquake"}}
 ```
+
+
+### dat put
+
+Put a single row:
+
+```bash
+dat put <key> <value> -d my-dataset
+```
+
+Example output:
+
+```
+$ dat put uw60748112 "{time:2014-04-30T00:09:37.000Z,latitude:46.7557,longitude:-121.9855,place:24km ESE of Eatonville, Washington,type:earthquake}"
+Done adding data.
+```
+
