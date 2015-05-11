@@ -37,7 +37,6 @@ test('dat1 checkout gets proper cat', function (t) {
   var cat = spawn(t, dat + ' cat', {cwd: dat1})
   cat.stdout.match(/Max/)
   checkout.stderr.empty()
-  checkout.end()
 
   cat.stderr.empty()
   cat.end()
