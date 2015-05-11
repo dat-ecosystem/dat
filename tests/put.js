@@ -31,7 +31,7 @@ test('dat put', function (t) {
   st.stdout.match(function (output) {
     var row = JSON.parse(output)
     if (row.key === 'ak11246285') {
-      t.same(row.value, "hello-world")
+      t.same(row.value, 'hello-world')
       return true
     }
     return false

@@ -62,8 +62,9 @@ function handleRows (args) {
     if (args.f === 'json') args.f = 'ndjson'
 
     var parseReadStream
-    if (args.f === 'ndjson') parseReadStream = ndjson.serialize()
-    else {
+    if (args.f === 'ndjson') {
+      parseReadStream = ndjson.serialize()
+    } else {
       parseReadStream = through.obj(function (data, enc, next) {
         var val = data.value
         val.key = data.key
