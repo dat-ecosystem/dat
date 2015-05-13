@@ -41,7 +41,8 @@ All commands have these options:
 
 - `path`/`p` - specify the path to the dat directory that the command should use. Default is current working directory
 - `help`/`h` (boolean) - pass this option to show the help for a command
-- `json` (boolean) - pass this option to change the response format for status/response messages to JSON for easy parsing
+- `log` (default 'text') - set this to 'json' to change the response format logging for status/response messages to JSON for easy parsing
+- `checkout`
 
 Example output:
 
@@ -88,7 +89,7 @@ Example output:
 ```
 $ dat status
 Checked out to 8eaf3b0739d32849687a544efae8487b5b05df52
-438 files, 32 rows, 3 commits, 143 Mb total
+438 keys, 32 files, 3 commits, 143 Mb total
 Last updated 3 seconds ago
 ```
 
@@ -99,6 +100,10 @@ Push changes from your local dat to a remote dat
 ```bash
 dat push <remote>
 ```
+
+#### Options
+
+- `live` - Keep pushing even after the initial pushing finishes
 
 Example output:
 
@@ -116,6 +121,10 @@ Pull new changes from a remote dat into your local dat.
 dat pull <remote>
 ```
 
+#### Options
+
+- `live` - Keep pulling even after the initial pulling finishes
+
 Example output:
 
 ```
@@ -128,12 +137,22 @@ Pull completed successfully.
 
 Same as doing a `dat push` and `dat pull` at the same time. Use it when you are on the other end of a `dat pull` or a `dat push` (e.g. if you are hosting dat on a server).
 
-### dat changes
+Example output:
 
-Stream changes out in historical order as json
+```
+$ dat pull ssh://192.168.0.5:~/data
+Pushed 403 changes (13.88 Mb).
+Pulled 823 changes (93.88 Mb).
+Average speed: 4.3 Mb/s.
+Replication completed successfully.
+```
+
+### dat versions
+
+Stream versions out in historical order as json
 
 ```bash
-dat changes
+dat versions
 ```
 
 Example output:
@@ -141,7 +160,7 @@ Example output:
 #### TODO Finalize exact change output
 
 ```
-$ dat changes --limit=2
+$ dat versions --limit=2
 { "change": 1, "key": "foo", "hash": "6bdd624ae6f9ddb96069e04fc030c6e964e77ac7", "from": 0, "to": 1}
 { "change": 2, "key": "foo", "hash": "7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517", "from": 1, "to": 2}
 ```
@@ -175,25 +194,25 @@ You can either run these commands from inside the dataset folder, or by explicit
 
 - `dataset`/`d` - specify the dataset to use. defauts to the dataset in the folder you are in.
 
-### dat add
+### dat parse
 
-Add bulk data to dat
+Parse tabular data into dat
 
 ```bash
-dat add <filename>
+dat parse <filename>
 ```
 
 Stream data from stdin:
 
 ```bash
-cat file.json | dat add -
+cat file.json | dat parse -
 ```
 
 Example output:
 
 ```
-$ dat add flights.json -d flights
-Added 302,143 rows (32.03 Mb, 4.4 Mb/s).
+$ dat parse flights.json -d flights
+Added 302,143 keys (32.03 Mb, 4.4 Mb/s).
 Data added successfully.
 ```
 
@@ -211,26 +230,16 @@ If there are specified, the `<key>` you pass to get will be ignored and you may 
 
 - `lt`, `lte`, `gt`, `gte` - specify start/end key range values using less than, less than equals, greater than, greater than equals
 - `limit` - default unlimited. specify how many results to receive
-- `reverse` - default false. if true keys will come out in reverse sorted order
+- `versions` - 
 
 Example output:
 
 ```
 $ dat get uw60748112
-{"content":"row","key":"uw60748112","version":"5abd6625cd2e64a116628a9a306de2fbd73a05ea5905e26d5d4e58e077be2203","value":{"time":"2014-04-30T00:09:37.000Z","latitude":"46.7557","longitude":"-121.9855","place":"24km ESE of Eatonville, Washington","type":"earthquake"}}
+{"key":"uw60748112","version":"5abd6625cd2e64a116628a9a306de2fbd73a05ea5905e26d5d4e58e077be2203","value":{"time":"2014-04-30T00:09:37.000Z","latitude":"46.7557","longitude":"-121.9855","place":"24km ESE of Eatonville, Washington","type":"earthquake"}}
 ```
 
-### dat put
+### dat cat
 
-Put a single key:
+read all data
 
-```bash
-dat put <key> <value>
-```
-
-Example output:
-
-```
-$ dat put uw60748112 "{time:2014-04-30T00:09:37.000Z,latitude:46.7557,longitude:-121.9855,place:24km ESE of Eatonville, Washington,type:earthquake}"
-Done adding data.
-```
