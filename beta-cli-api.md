@@ -250,7 +250,7 @@ $ dat diff --pretty 163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb05245186
 Merge two checkouts of a dataset into a single checkout.
 
 ```
-dat merge <checkout1> <checkout2> <file>
+dat merge <versionA> <versionB> <file>
 ```
 
 #### Options
