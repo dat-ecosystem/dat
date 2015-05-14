@@ -11,6 +11,7 @@ This is the proposed CLI API for our Beta release. Please leave feedback [in thi
   - [dat replicate](#dat-replicate)
   - [dat versions](#dat-versions)
   - [dat checkout](#dat-checkout)
+  - [dat diff](#dat-diff)
 - [dataset commands](#dataset-commands)
   - [dat import](#dat-import)
   - [dat export](#dat-export)
@@ -174,8 +175,8 @@ Example output:
 
 ```
 $ dat versions --limit=2
-{ "change": 1, "key": "foo", "hash": "6bdd624ae6f9ddb96069e04fc030c6e964e77ac7", "from": 0, "to": 1}
-{ "change": 2, "key": "foo", "hash": "7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517", "from": 1, "to": 2}
+{ "change": 1, "version": "6bdd624ae6f9ddb96069e04fc030c6e964e77ac7"}
+{ "change": 2, "version": "7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517"}
 ```
 
 ### dat checkout
@@ -197,6 +198,49 @@ Example output
 ```
 $ dat checkout 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
 Checked out state of dat to 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
+```
+
+### dat diff
+
+Generate a diff between two versions of the repository
+
+```
+dat diff <versionA> <versionB>
+```
+
+If the same key is in both versions but the values differ, a diff object will be written to the output. You will get a diff object for each diff that is found.
+
+Example output
+
+```
+$ dat diff --pretty 163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502 64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3
+{
+  "key": "1",
+  "versions": [
+    {
+      "type": "put",
+      "version": "163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502",
+      "change": 3,
+      "key": "1",
+      "value": {
+        "key": "1",
+        "name": "Max"
+      },
+      "checkout": "163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502"
+    },
+    {
+      "type": "put",
+      "version": "64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3",
+      "change": 1,
+      "key": "1",
+      "value": {
+        "key": "1",
+        "name": "MAX"
+      },
+      "checkout": "64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3"
+    }
+  ]
+}
 ```
 
 ## dataset commands
