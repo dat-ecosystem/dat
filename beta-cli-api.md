@@ -12,6 +12,7 @@ This is the proposed CLI API for our Beta release. Please leave feedback [in thi
   - [dat versions](#dat-versions)
   - [dat checkout](#dat-checkout)
   - [dat diff](#dat-diff)
+  - [dat merge](#dat-merge)
 - [dataset commands](#dataset-commands)
   - [dat import](#dat-import)
   - [dat export](#dat-export)
@@ -245,23 +246,43 @@ $ dat diff --pretty 163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb05245186
 
 ### dat merge
 
-Merge two checkouts of a dataset into a single checkout. Opens a program
+Merge two checkouts of a dataset into a single checkout.
 
 ```
-dat merge ab3234dfe5 bdc3ae23cef
+dat merge <checkout1> <checkout2> <file>
 ```
 
-`--live`: will wait for changes from stdin
-`--merge-tool`: run the given merge tool
+#### Options
+`--merge-tool`: run the given merge tool to assist in resolving conflicts manually.
+`-` for <file>: receive resolved changes on stdin
 
 ```
-cat changes.json | dat merge ab3234dfe5 bdc3ae23cef --live
+cat changes.json | dat merge ab3234dfe5 bdc3ae23cef -
 ```
 
+A custom merge tool should output the changes we want to keep in this dataset as ndjson.
+An example change:
 ```
-dat merge ab3234dfe5 bdc3ae23cef --merge-tool="my-merge-tool.sh"
+{
+  "type": "put",
+  "version": "64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3",
+  "change": 1,
+  "key": "1",
+  "value": {
+    "key": "1",
+    "name": "MAX"
+  },
+  "checkout": "64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3"
+}
 ```
 
+Example output:
+
+```
+$ dat merge ab3234dfe5 bdc3ae23cef --merge-tool="my-merge-tool.sh"
+Changes resolved successfully.
+Checked out to b04adb64fdf2203
+```
 
 ## dataset commands
 
