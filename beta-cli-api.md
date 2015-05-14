@@ -3,7 +3,20 @@
 This is the proposed CLI API for our Beta release. Please leave feedback [in this thread](https://github.com/maxogden/dat/issues/195).
 
 - [repository commands](#repository-commands)
+  - [dat](#dat)
+  - [dat init](#dat-init)
+  - [dat status](#dat-status)
+  - [dat push](#dat-push)
+  - [dat pull](#dat-pull)
+  - [dat replicate](#dat-replicate)
+  - [dat versions](#dat-versions)
+  - [dat checkout](#dat-checkout)
 - [dataset commands](#dataset-commands)
+  - [dat import](#dat-import)
+  - [dat export](#dat-export)
+  - [dat store](#dat-store)
+  - [dat get](#dat-get)
+  - [dat cat](#dat-cat)
 
 ## repository commands
 
@@ -250,7 +263,6 @@ Storing photo.jpg (8.3 Mb, 38 Mb/s).
 Stored photo.jpg successfully.
 ```
 
-
 ### dat get
 
 Get a single key + value out of a dataset
@@ -264,4 +276,19 @@ Example output:
 ```
 $ dat get uw60748112
 {"key":"uw60748112","version":"5abd6625cd2e64a116628a9a306de2fbd73a05ea5905e26d5d4e58e077be2203","value":{"time":"2014-04-30T00:09:37.000Z","latitude":"46.7557","longitude":"-121.9855","place":"24km ESE of Eatonville, Washington","type":"earthquake"}}
+```
+
+### dat cat
+
+Read binary data from a file stored in dat
+
+```
+dat cat <filename key>
+```
+
+Example output:
+
+```
+$ dat cat photo.jpg
+<binary data here>
 ```
