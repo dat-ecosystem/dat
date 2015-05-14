@@ -352,7 +352,7 @@ dat write <path-to-file>
 Stream data from stdin:
 
 ```bash
-cat photo.jpg | dat write - --key=photo.jpg
+cat photo.jpg | dat write photo.jpg -
 ```
 
 Example output:
