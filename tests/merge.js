@@ -1,11 +1,13 @@
+var os = require('os')
 var path = require('path')
 var test = require('tape')
 var spawn = require('tape-spawn')
 var through = require('through2')
+var parallel = require('run-parallel')
+var ndjson = require('ndjson')
 var helpers = require('./helpers/index.js')
-var tmp = require('os').tmpdir()
-var through = require('through2')
 
+var tmp = os.tmpdir()
 var dat = path.resolve(__dirname + '/../cli.js')
 var hashes, diff
 
@@ -58,26 +60,29 @@ test('dat1 diff', function (t) {
 })
 
 test('dat1 merge', function (t) {
-  var diff = spawn(t, dat + ' diff ' + hashes.join(' '), {cwd: dat1})
-  var merge = spawn(t, dat + ' merge ' + hashes.join(' ') + ' --live', {cwd: dat1})
+  var diff = spawn(t, dat + ' diff ' + hashes.join(' '), {cwd: dat1, end: false})
+  var merge = spawn(t, dat + ' merge ' + hashes.join(' ') + ' --stdin', {cwd: dat1, end: false})
 
   diff.stdout.stream
+    .pipe(ndjson.parse())
     .pipe(through.obj(function (obj, enc, next) {
-      obj = JSON.parse(obj.toString())
-      next(null, obj.versions[0].toString())
+      console.error(JSON.stringify(obj, null, '  '))
+      next(null, obj.versions[0])
     }))
+    .pipe(ndjson.serialize())
     .pipe(merge.stdin)
 
   diff.stderr.empty()
-  diff.end()
-
   merge.stdout.empty()
   merge.stderr.match(/Merged/)
-  merge.end()
+
+  parallel([merge.end.bind(merge), diff.end.bind(diff)], function () {
+    t.end()
+  })
 })
 
 test('verify merge version', function (t) {
-  var st = spawn(t, dat + ' cat ', {cwd: dat1})
+  var st = spawn(t, dat + ' cat', {cwd: dat1})
 
   st.stderr.empty()
   st.stdout.match(function match (output) {
