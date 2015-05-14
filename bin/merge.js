@@ -1,6 +1,5 @@
 var pump = require('pump')
 var ndjson = require('ndjson')
-var debug = require('debug')('bin/merge')
 var usage = require('../lib/usage.js')('merge.txt')
 var abort = require('../lib/abort.js')
 var openDat = require('../lib/open-dat.js')
@@ -22,7 +21,7 @@ function handleMerge (args) {
   var headA = args._[0]
   var headB = args._[1]
   if (!headA || !headB) return usage()
-    
+
   if (args._[2] === '-') args.stdin = true
 
   openDat(args, function ready (err, db) {

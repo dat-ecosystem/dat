@@ -51,6 +51,7 @@
     "mkdirp": "^0.5.0",
     "npm-execspawn": "^1.1.0",
     "rimraf": "^2.3.2",
+    "run-parallel": "^1.1.1",
     "sort-stream": "^1.0.1",
     "standard": "^3.3.2",
     "stream-iterate": "^1.1.1",
