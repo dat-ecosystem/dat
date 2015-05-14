@@ -311,13 +311,31 @@ Current version is now b04adb64fdf2203
 
 ### dat export
 
-Get a range of keys + values out of a dataset
+Stream a range of keys + values out of a dataset.
+
+```bash
+dat export
+```
+
+Stream data to a file:
+
+```bash
+dat export > woah-my-data.json
+```
 
 ### Options
 
 - `lt`, `lte`, `gt`, `gte` - specify start/end key range values using less than, less than equals, greater than, greater than equals
 - `limit` - default unlimited. specify how many results to receive
 - `versions` - boolean, default `false`. if `true` it will include the `version` hash along with the key/value pair when exporting it
+
+
+Example output:
+```
+$ dat export
+{"content":"row","key":"1","version":"9e4629196e4db21a244fad8c8a989847fa3827e5747d2ad392363e46223fa888","value":{"key":"1","name":"MAX"}}
+{"content":"row","key":"1","version":"163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502","value":{"key":"1","name":"Max"}}
+```
 
 ### dat store
 
