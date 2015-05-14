@@ -243,6 +243,26 @@ $ dat diff --pretty 163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb05245186
 }
 ```
 
+### dat merge
+
+Merge two checkouts of a dataset into a single checkout. Opens a program
+
+```
+dat merge ab3234dfe5 bdc3ae23cef
+```
+
+`--live`: will wait for changes from stdin
+`--merge-tool`: run the given merge tool
+
+```
+cat changes.json | dat merge ab3234dfe5 bdc3ae23cef --live
+```
+
+```
+dat merge ab3234dfe5 bdc3ae23cef --merge-tool="my-merge-tool.sh"
+```
+
+
 ## dataset commands
 
 These are meant to affect a specific dataset inside a repository. Each dataset is a folder inside the repository.
