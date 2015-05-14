@@ -194,43 +194,70 @@ You can either run these commands from inside the dataset folder, or by explicit
 
 - `dataset`/`d` - specify the dataset to use. defauts to the dataset in the folder you are in.
 
-### dat parse
+### dat import
 
-Parse tabular data into dat
+Import key/value data into dat
 
 ```bash
-dat parse <filename>
+dat import <filename>
 ```
 
 Stream data from stdin:
 
 ```bash
-cat file.json | dat parse -
+cat file.json | dat import -
 ```
 
 Example output:
 
 ```
-$ dat parse flights.json -d flights
+$ dat import flights.json
 Added 302,143 keys (32.03 Mb, 4.4 Mb/s).
 Data added successfully.
 ```
 
-### dat get
+### dat export
 
-Get a key or a range of keys out of a dataset
+Get a range of keys + values out of a dataset
 
-```
-dat get <single key> OR [range options]
-```
-
-### Range options
-
-If there are specified, the `<key>` you pass to get will be ignored and you may receive many keys
+### Options
 
 - `lt`, `lte`, `gt`, `gte` - specify start/end key range values using less than, less than equals, greater than, greater than equals
 - `limit` - default unlimited. specify how many results to receive
-- `versions` - 
+- `versions` - boolean, default `false`. if `true` it will include the `version` hash along with the key/value pair when exporting it
+
+### dat store
+
+Store a binary file in dat. This differs from `import` in that it doesn't parse the file, it just stores it as a binary attachment. `import` is designed for key/value row-like, or tabular data. `store` is meant for large files, blobs, or attachments that you can't parse into rows.
+
+Store a file in dat:
+
+```
+dat store <path-to-file>
+```
+
+Stream data from stdin:
+
+```bash
+cat photo.jpg | dat import -
+```
+
+Example output:
+
+```
+$ dat store photo.jpg
+Storing photo.jpg (8.3 Mb, 38 Mb/s).
+Stored photo.jpg successfully.
+```
+
+
+### dat get
+
+Get a single key + value out of a dataset
+
+```
+dat get <key>
+```
 
 Example output:
 
@@ -238,8 +265,3 @@ Example output:
 $ dat get uw60748112
 {"key":"uw60748112","version":"5abd6625cd2e64a116628a9a306de2fbd73a05ea5905e26d5d4e58e077be2203","value":{"time":"2014-04-30T00:09:37.000Z","latitude":"46.7557","longitude":"-121.9855","place":"24km ESE of Eatonville, Washington","type":"earthquake"}}
 ```
-
-### dat cat
-
-read all data
-
