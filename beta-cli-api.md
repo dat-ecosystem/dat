@@ -146,6 +146,7 @@ Example output:
 $ dat pull ssh://192.168.0.5:~/data
 Pulled 823 changes (93.88 Mb, 3.4 Mb/s).
 Pull completed successfully.
+Checked out to b04adb64fdf2203
 ```
 
 ### dat replicate
@@ -312,6 +313,7 @@ Example output:
 $ dat import flights.json
 Added 302,143 keys (32.03 Mb, 4.4 Mb/s).
 Data added successfully.
+Checked out to b04adb64fdf2203
 ```
 
 ### dat export
@@ -346,6 +348,7 @@ Example output:
 $ dat store photo.jpg
 Storing photo.jpg (8.3 Mb, 38 Mb/s).
 Stored photo.jpg successfully.
+Checked out to b04adb64fdf2203
 ```
 
 ### dat get
