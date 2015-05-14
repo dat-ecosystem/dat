@@ -103,7 +103,7 @@ Example output:
 
 ```
 $ dat status
-Checked out to 8eaf3b0739d32849687a544efae8487b5b05df52
+Current version is now 8eaf3b0739d32849687a544efae8487b5b05df52
 438 keys, 32 files, 3 commits, 143 Mb total
 Last updated 3 seconds ago
 ```
@@ -146,7 +146,7 @@ Example output:
 $ dat pull ssh://192.168.0.5:~/data
 Pulled 823 changes (93.88 Mb, 3.4 Mb/s).
 Pull completed successfully.
-Checked out to b04adb64fdf2203
+Current version is now b04adb64fdf2203
 ```
 
 ### dat replicate
@@ -255,35 +255,28 @@ dat merge <versionA> <versionB> <file>
 
 #### Options
 `--merge-tool`: run the given merge tool to assist in resolving conflicts manually.
+
 `-` for <file>: receive resolved changes on stdin
 
-```
-cat changes.json | dat merge ab3234dfe5 bdc3ae23cef -
-```
-
-A custom merge tool should output the changes we want to keep in this dataset as ndjson.
-An example change:
-```
-{
-  "type": "put",
-  "version": "64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3",
-  "change": 1,
-  "key": "1",
-  "value": {
-    "key": "1",
-    "name": "MAX"
-  },
-  "checkout": "64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3"
-}
-```
 
 Example output:
 
 ```
 $ dat merge ab3234dfe5 bdc3ae23cef --merge-tool="my-merge-tool.sh"
 Changes resolved successfully.
-Checked out to b04adb64fdf2203
+Current version is now b04adb64fdf2203
 ```
+
+#### Merge tools
+
+A `dat merge` receives a stream of changes that will be applied to resolve conflicts between two versions. In this example, the `<merge-function/tool>` decides which change to keep between the versions suppled in a `dat diff`, outputting the json for each kept change to stdout.
+
+```
+$ dat diff ab3234dfe5 bdc3ae23cef | <merge-function/tool> | dat merge ab3234dfe5 bdc3ae23cef -
+Changes resolved successfully.
+Current version is now b04adb64fdf2203
+```
+
 
 ## dataset commands
 
@@ -313,7 +306,7 @@ Example output:
 $ dat import flights.json
 Added 302,143 keys (32.03 Mb, 4.4 Mb/s).
 Data added successfully.
-Checked out to b04adb64fdf2203
+Current version is now b04adb64fdf2203
 ```
 
 ### dat export
@@ -348,7 +341,7 @@ Example output:
 $ dat store photo.jpg
 Storing photo.jpg (8.3 Mb, 38 Mb/s).
 Stored photo.jpg successfully.
-Checked out to b04adb64fdf2203
+Current version is now b04adb64fdf2203
 ```
 
 ### dat get
