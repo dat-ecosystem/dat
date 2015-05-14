@@ -173,13 +173,14 @@ dat versions
 
 Example output:
 
-#### TODO Finalize exact change output
-
 ```
 $ dat versions --limit=2
-{ "change": 1, "version": "6bdd624ae6f9ddb96069e04fc030c6e964e77ac7"}
-{ "change": 2, "version": "7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517"}
+{ "change": 1, "version": "6bdd624ae6f9ddb96069e04fc030c6e964e77ac7", links: [...], "puts": 12, "deletes": 3, "date": "2015..."}
+{ "change": 2, "version": "7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517", links: [...], "puts": 0, "deletes": 2, "date": "2015..."}
 ```
+
+`Links` is a list of older versions that are referenced from this current version (forms a directed acyclic graph if drawn).
+
 
 ### dat checkout
 
@@ -195,7 +196,7 @@ Check out latest commit on default branch
 dat checkout latest
 ```
 
-Example output
+Example output:
 
 ```
 $ dat checkout 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
@@ -212,7 +213,7 @@ dat diff <versionA> <versionB>
 
 If the same key is in both versions but the values differ, a diff object will be written to the output. You will get a diff object for each diff that is found.
 
-Example output
+Example output:
 
 ```
 $ dat diff --pretty 163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502 64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3
@@ -383,7 +384,7 @@ $ dat get uw60748112
 Read binary data from a file stored in dat
 
 ```
-dat cat <filename key>
+dat cat <filename>
 ```
 
 Example output:
