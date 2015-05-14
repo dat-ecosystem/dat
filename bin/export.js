@@ -1,6 +1,4 @@
-var fs = require('fs')
 var pump = require('pump')
-var through = require('through2')
 var debug = require('debug')('bin/export')
 var formatData = require('format-data')
 var openDat = require('../lib/open-dat.js')
@@ -27,7 +25,7 @@ module.exports = {
 function handleExport (args) {
   debug('handleExport', args)
 
-  if (args.help || !args._[0] || !args.d) {
+  if (args.help) {
     usage()
     abort()
   }
@@ -42,13 +40,9 @@ function handleExport (args) {
   })
 
   function handleOuputStream (db) {
-    var outputStream = fs.createWriteStream(args._[0])
+    var outputStream = process.stdout
 
-    var parseReadStream = through.obj(function (data, enc, next) {
-      next(null, data.value)
-    })
-
-    pump(db.createReadStream({ dataset: args.d }), parseReadStream, formatData(args.f), outputStream, function done (err) {
+    pump(db.createReadStream({ dataset: args.d }), formatData(args.f), outputStream, function done (err) {
       if (err) abort(err, 'Error exporting data to', args._[0])
       console.error('Done exporting data to', args._[0])
     })

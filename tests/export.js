@@ -17,17 +17,17 @@ helpers.onedat(dat1)
 var csvfile = path.resolve(__dirname + '/fixtures/all_hour.csv')
 var exportfile = path.join(dat1, 'out.csv')
 
-test('dat add csv', function (t) {
-  var st = spawn(t, dat + ' add ' + csvfile + ' -d test-ds --key=id', {cwd: dat1})
+test('dat import csv', function (t) {
+  var st = spawn(t, dat + ' import ' + csvfile + ' -d test-ds --key=id', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(/Done adding data/)
+  st.stderr.match(/Done importing data/)
   st.end()
 })
 
 test('dat export to file', function (t) {
-  var st = spawn(t, dat + ' export ' + exportfile + ' -d test-ds ', {cwd: dat1})
+  var st = spawn(t, dat + ' export -d test-ds > ' + exportfile, {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(/Done exporting data to/)
+  st.stderr.empty()
   st.end()
 })
 

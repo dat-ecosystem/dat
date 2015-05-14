@@ -11,10 +11,10 @@ var dat1 = path.join(tmp, 'dat-1')
 helpers.onedat(dat1)
 var json = path.resolve(__dirname + '/fixtures/all_hour.json')
 
-test('dat add dataset', function (t) {
-  var st = spawn(t, dat + ' add ' + json + ' --key=id --dataset=get-test', {cwd: dat1})
+test('dat import dataset', function (t) {
+  var st = spawn(t, dat + ' import ' + json + ' --key=id --dataset=get-test', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(/Done adding data/)
+  st.stderr.match(/Done importing data/)
   st.end()
 })
 

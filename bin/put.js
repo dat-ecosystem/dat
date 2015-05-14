@@ -11,11 +11,6 @@ module.exports = {
       name: 'dataset',
       boolean: false,
       abbr: 'd'
-    },
-    {
-      name: 'format',
-      boolean: false,
-      abbr: 'f'
     }
   ]
 }
@@ -36,11 +31,11 @@ function handlePut (args) {
   function handleInputStream (db) {
     var key = args._[0]
     var value = args._[1]
-    if (!args.f) args.f = 'json'
 
     var opts = {
       dataset: args.d
     }
+
     db.put(key, value, opts, function (err, key) {
       if (err) abort(err, 'dat: err in put')
       console.error('Done adding data.')

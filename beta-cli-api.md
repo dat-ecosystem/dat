@@ -321,6 +321,7 @@ Stream data to a file:
 
 ```bash
 dat export > woah-my-data.json
+
 ```
 
 ### Options
@@ -350,7 +351,7 @@ dat store <path-to-file>
 Stream data from stdin:
 
 ```bash
-cat photo.jpg | dat import -
+cat photo.jpg | dat store -
 ```
 
 Example output:

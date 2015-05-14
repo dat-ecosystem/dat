@@ -3,9 +3,9 @@ var path = require('path')
 var test = require('tape')
 var spawn = require('tape-spawn')
 
-test('dat add -h', function (t) {
-  var st = spawn(t, 'node cli.js add -h')
-  st.stderr.match(fs.readFileSync(path.join('usage', 'add.txt')).toString() + '\n', 'usage matched')
+test('dat import -h', function (t) {
+  var st = spawn(t, 'node cli.js import -h')
+  st.stderr.match(fs.readFileSync(path.join('usage', 'import.txt')).toString() + '\n', 'usage matched')
   st.stdout.empty()
   st.end()
 })

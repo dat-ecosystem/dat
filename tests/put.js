@@ -10,11 +10,11 @@ var dat1 = path.join(tmp, 'dat-1')
 
 helpers.onedat(dat1)
 
-test('dat add csv', function (t) {
+test('dat import csv', function (t) {
   var csv = path.resolve(__dirname + '/fixtures/all_hour.csv')
-  var st = spawn(t, dat + ' add ' + csv + ' --key=id', {cwd: dat1})
+  var st = spawn(t, dat + ' import ' + csv + ' --key=id', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(/Done adding data/)
+  st.stderr.match(/Done importing data/)
   st.end()
 })
 

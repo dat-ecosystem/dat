@@ -2,15 +2,15 @@ var fs = require('fs')
 var pump = require('pump')
 var through = require('through2')
 var uuid = require('cuid')
-var debug = require('debug')('bin/add')
+var debug = require('debug')('bin/import')
 var parseInputStream = require('../lib/parse-input-stream.js')
 var openDat = require('../lib/open-dat.js')
 var abort = require('../lib/abort.js')
-var usage = require('../lib/usage.js')('add.txt')
+var usage = require('../lib/usage.js')('import.txt')
 
 module.exports = {
-  name: 'add',
-  command: handleAdd,
+  name: 'import',
+  command: handleImport,
   options: [
     {
       name: 'dataset',
@@ -25,8 +25,8 @@ module.exports = {
   ]
 }
 
-function handleAdd (args) {
-  debug('handleAdd', args)
+function handleImport (args) {
+  debug('handleImport', args)
 
   if (args.help || args._.length === 0) {
     usage()
@@ -49,8 +49,8 @@ function handleAdd (args) {
     })
 
     pump(inputStream, parseInputStream(args), transform, db.createWriteStream({ dataset: args.d }), function done (err) {
-      if (err) abort(err, 'Error adding data')
-      console.error('Done adding data')
+      if (err) abort(err, 'Error importing data')
+      console.error('Done importing data')
     })
   }
 }

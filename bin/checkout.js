@@ -25,7 +25,7 @@ function handleCheckout (args) {
 
     function done (err) {
       if (err) return abort(err, 'Could not find checkout with hash ', head)
-      console.log('Checked out to', checkout.head)
+      console.error('Current version is now', checkout.head)
     }
   })
 }
