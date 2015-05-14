@@ -16,9 +16,9 @@ This is the proposed CLI API for our Beta release. Please leave feedback [in thi
 - [dataset commands](#dataset-commands)
   - [dat import](#dat-import)
   - [dat export](#dat-export)
-  - [dat store](#dat-store)
+  - [dat write](#dat-write)
+  - [dat read](#dat-read)
   - [dat get](#dat-get)
-  - [dat cat](#dat-cat)
 
 ## repository commands
 
@@ -66,7 +66,7 @@ $ dat
 usage: dat <command(s)> [-flag] [--key value]
 
 commands:
-  init      initialize a new dat store in a directory
+  init      initialize a new dat in a directory
   checkout  dat will operate at a particular head
   add       import a file into dat
   push      push data to a remote dat
@@ -339,26 +339,26 @@ $ dat export
 {"content":"row","key":"1","version":"163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502","value":{"key":"1","name":"Max"}}
 ```
 
-### dat store
+### dat write
 
-Store a binary file in dat. This differs from `import` in that it doesn't parse the file, it just stores it as a binary attachment. `import` is designed for key/value row-like, or tabular data. `store` is meant for large files, blobs, or attachments that you can't parse into rows.
+Write binary data into dat. This differs from `import` in that it doesn't parse the file, it just stores it as a binary attachment. `import` is designed for key/value row-like, or tabular data. `write` is meant for large files, blobs, or attachments that you can't parse into rows.
 
-Store a file in dat:
+Write a file to dat:
 
 ```
-dat store <path-to-file>
+dat write <path-to-file>
 ```
 
 Stream data from stdin:
 
 ```bash
-cat photo.jpg | dat store -
+cat photo.jpg | dat write - --key=photo.jpg
 ```
 
 Example output:
 
 ```
-$ dat store photo.jpg
+$ dat write photo.jpg
 Storing photo.jpg (8.3 Mb, 38 Mb/s).
 Stored photo.jpg successfully.
 Current version is now b04adb64fdf2203
@@ -379,17 +379,17 @@ $ dat get uw60748112
 {"key":"uw60748112","version":"5abd6625cd2e64a116628a9a306de2fbd73a05ea5905e26d5d4e58e077be2203","value":{"time":"2014-04-30T00:09:37.000Z","latitude":"46.7557","longitude":"-121.9855","place":"24km ESE of Eatonville, Washington","type":"earthquake"}}
 ```
 
-### dat cat
+### dat read
 
 Read binary data from a file stored in dat
 
 ```
-dat cat <filename>
+dat read <filename>
 ```
 
 Example output:
 
 ```
-$ dat cat photo.jpg
+$ dat read photo.jpg
 <binary data here>
 ```
