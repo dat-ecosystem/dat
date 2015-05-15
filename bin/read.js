@@ -19,7 +19,7 @@ module.exports = {
 function handleRead (args) {
   debug('handleRead', args)
 
-  if (args.help) {
+  if (args.help || args._.length === 0) {
     usage()
     abort()
   }

@@ -1,0 +1,3 @@
+Read binary data from a file stored in dat
+
+dat read <filename>

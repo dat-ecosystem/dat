@@ -1,0 +1,10 @@
+Write binary data into dat. This differs from `import` in that it doesn't parse the file, it just stores it as a binary attachment. `import` is designed for key/value row-like, or tabular data. `write` is meant for large files, blobs, or attachments that you can't parse into rows.
+
+Write a file to dat:
+
+dat write <path-to-file> -n <name-of-file>
+
+Stream data from stdin:
+
+cat photo.jpg | dat write photo.jpg -
+
