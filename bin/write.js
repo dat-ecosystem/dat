@@ -41,13 +41,13 @@ function handleWrite (args) {
     var key = args.n || path
 
     var inputStream
-    if (stream) inputStream = process.stdin
-    else stream = fs.createReadStream(path)
+    if (stream === '-') inputStream = process.stdin
+    else inputStream = fs.createReadStream(path)
 
     // TODO: make createFileWriteStream take options
-    var opts = {
-      dataset: args.d
-    }
+    // var opts = {
+    //   dataset: args.d
+    // }
 
     pump(inputStream, db.createFileWriteStream(key), function done (err) {
       if (err) abort(err, 'dat: err in write')

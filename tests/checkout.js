@@ -30,13 +30,13 @@ test('dat1 heads', function (t) {
   st.end()
 })
 
-test('dat1 checkout gets proper cat', function (t) {
+test('dat1 checkout gets proper export', function (t) {
   var checkout = spawn(t, dat + ' checkout ' + hashes[0], {cwd: dat1})
   checkout.stderr.match(/Current version is now/)
 
-  var cat = spawn(t, dat + ' export', {cwd: dat1})
-  cat.stdout.match(/Max/)
+  var exp = spawn(t, dat + ' export', {cwd: dat1})
+  exp.stdout.match(/Max/)
 
-  cat.stderr.empty()
-  cat.end()
+  exp.stderr.empty()
+  exp.end()
 })

@@ -8,6 +8,7 @@ commands:
   export    streams data from a dataset to stdout
   import    import rows into a dataset
   write     write a file into dat
+  cat       reads a file's contents from dat to stdout
   heads     list heads of the current dat
   diff      see differences between two heads
   merge     merge two heads into one

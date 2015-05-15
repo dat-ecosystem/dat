@@ -368,18 +368,18 @@ Stored photo.jpg successfully.
 Current version is now b04adb64fdf2203
 ```
 
-### dat read
+### dat cat
 
 Read binary data from a file stored in dat
 
 ```
-dat read <filename>
+dat cat <filename>
 ```
 
 Example output:
 
 ```
-$ dat read photo.jpg
+$ dat cat photo.jpg
 <binary data here>
 ```
 

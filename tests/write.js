@@ -18,7 +18,7 @@ test('dat write', function (t) {
 })
 
 test('dat get after write', function (t) {
-  var st = spawn(t, dat + ' read test-file.txt', {cwd: dat1})
+  var st = spawn(t, dat + ' cat test-file.txt', {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(/hello world/)
   st.end()

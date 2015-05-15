@@ -1,8 +1,7 @@
 var pump = require('pump')
-var ndjson = require('ndjson')
-
-var abort = require('../lib/abort.js')
+var debug = require('debug')('bin/cat')
 var openDat = require('../lib/open-dat.js')
+var abort = require('../lib/abort.js')
 var usage = require('../lib/usage.js')('cat.txt')
 
 module.exports = {
@@ -13,34 +12,28 @@ module.exports = {
       name: 'dataset',
       boolean: false,
       abbr: 'd'
-    },
-    {
-      name: 'format',
-      boolean: false,
-      abbr: 'f'
-    },
-    {
-      name: 'greater-than',
-      boolean: false,
-      abbr: 'gt'
-    },
-    {
-      name: 'less-than',
-      boolean: false,
-      abbr: 'lt'
     }
   ]
 }
 
 function handleCat (args) {
-  if (args.help) return usage()
+  debug('handleCat', args)
+
+  if (args.help || args._.length === 0) {
+    usage()
+    abort()
+  }
+
   openDat(args, function ready (err, db) {
     if (err) abort(err)
-
-    var readStream = db.createReadStream({dataset: args.d, gt: args.gt, lt: args.lt})
-
-    pump(readStream, ndjson.serialize(), process.stdout, function done (err) {
-      if (err) abort(err, 'dat: cat error')
-    })
+    handleReadStream(db)
   })
+
+  function handleReadStream (db) {
+    var key = args._[0]
+
+    pump(db.createFileReadStream(key), process.stdout, function done (err) {
+      if (err) abort(err, 'dat: err in cat')
+    })
+  }
 }

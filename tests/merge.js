@@ -82,7 +82,7 @@ test('dat1 merge', function (t) {
 })
 
 test('verify merge version', function (t) {
-  var st = spawn(t, dat + ' cat', {cwd: dat1})
+  var st = spawn(t, dat + ' export', {cwd: dat1})
 
   st.stderr.empty()
   st.stdout.match(function match (output) {

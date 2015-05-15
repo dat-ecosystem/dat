@@ -5,7 +5,6 @@ var config = {
   root: require('./bin/root.js'),
   commands: [
     require('./bin/init.js'),
-    require('./bin/cat.js'),
     require('./bin/import.js'),
     require('./bin/push.js'),
     require('./bin/checkout.js'),
@@ -15,7 +14,7 @@ var config = {
     require('./bin/export.js'),
     require('./bin/diff.js'),
     require('./bin/write.js'),
-    require('./bin/read.js'),
+    require('./bin/cat.js'),
     require('./bin/heads.js'),
     require('./bin/merge.js')
   ],
