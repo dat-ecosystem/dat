@@ -1,4 +1,5 @@
 var os = require('os')
+var fs = require('fs')
 var path = require('path')
 var test = require('tape')
 var spawn = require('tape-spawn')
@@ -18,10 +19,7 @@ test('dat write', function (t) {
 })
 
 test('dat cat after write', function (t) {
-  var st = spawn(t, dat + ' cat test-file.txt', {cwd: dat1})
-  st.stderr.empty()
-  st.stdout.match(/hello world/)
-  st.end()
+  datCatEquals(t, 'test-file.txt', /hello world/)
 })
 
 test('dat write to dataset', function (t) {
@@ -32,13 +30,10 @@ test('dat write to dataset', function (t) {
 })
 
 test('dat cat after write to dataset', function (t) {
-  var st = spawn(t, dat + ' cat test-file.txt -d my-dataset', {cwd: dat1})
-  st.stderr.empty()
-  st.stdout.match(/hello world/)
-  st.end()
+  datCatEquals(t, 'test-file.txt', /hello world/, '-d my-dataset')
 })
 
-test('dat write to dataset', function (t) {
+test('dat write to new dataset', function (t) {
   var st = spawn(t, "echo 'goodbye world' | " + dat + ' write -d my-dataset-2 test-file.txt -', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(/Done writing binary data/)
@@ -46,22 +41,69 @@ test('dat write to dataset', function (t) {
 })
 
 test('dat cat after write to dataset 2', function (t) {
-  var st = spawn(t, dat + ' cat test-file.txt -d my-dataset-2', {cwd: dat1})
-  st.stderr.empty()
-  st.stdout.match(/goodbye world/)
-  st.end()
+  datCatEquals(t, 'test-file.txt', /goodbye world/, '-d my-dataset-2')
 })
 
-test('dat overwrite to dataset', function (t) {
+test('dat overwrite to dataset 2', function (t) {
   var st = spawn(t, "echo 'goodbye mars' | " + dat + ' write -d my-dataset-2 test-file.txt -', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(/Done writing binary data/)
   st.end()
 })
 
-test('dat cat after overwrite to dataset', function (t) {
-  var st = spawn(t, dat + ' cat test-file.txt -d my-dataset-2', {cwd: dat1})
-  st.stderr.empty()
-  st.stdout.match(/goodbye mars/)
-  st.end()
+test('dat cat after overwrite to dataset 2', function (t) {
+  datCatEquals(t, 'test-file.txt', /goodbye mars/,  '-d my-dataset-2')
 })
+
+/** from file **/
+
+var blobPath = path.resolve(__dirname + '/fixtures/blob.txt')
+
+test('dat write from file', function (t) {
+  datWrite(t, blobPath, '-d my-dataset-2')
+})
+
+test('dat cat after write from file', function (t) {
+  contents = fs.readFileSync(blobPath).toString()
+  datCatEquals(t, blobPath, contents, '-d my-dataset-2')
+})
+
+test('dat write from file with new name', function (t) {
+  datWrite(t, blobPath, '-d my-dataset-2 --name=new-name.txt')
+})
+
+test('dat cat after write from file with new name', function (t) {
+  contents = fs.readFileSync(blobPath).toString()
+  datCatEquals(t, 'new-name.txt', contents, '-d my-dataset-2')
+})
+
+test('dat write from file with new name with abbr', function (t) {
+  datWrite(t, blobPath, '-d my-dataset-2 -n new-name-abbr.txt')
+})
+
+test('dat cat after write from file with new name with abbr', function (t) {
+  contents = fs.readFileSync(blobPath).toString()
+  datCatEquals(t, 'new-name-abbr.txt', contents, '-d my-dataset-2')
+})
+
+function datWrite(t, blobPath, ext) {
+  var cmd =  ' write '  + blobPath
+  if (ext) {
+    cmd = cmd + ' ' + ext
+  }
+  var st = spawn(t, dat + cmd , {cwd: dat1})
+  st.stdout.empty()
+  st.stderr.match(/Done writing binary data/)
+  st.end()
+}
+
+function datCatEquals(t, key, contents, ext) {
+  var cmd = ' cat ' + key
+  if (ext) {
+    cmd = cmd + ' ' + ext
+  }
+  var st = spawn(t, dat + cmd, {cwd: dat1})
+  st.stderr.empty()
+  st.stdout.match(contents)
+  st.end()
+}
