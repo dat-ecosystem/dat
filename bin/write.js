@@ -51,12 +51,11 @@ function handleWrite (args) {
       inputStream = fs.createReadStream(path)
     }
 
-    // TODO: make createFileWriteStream take options
-    // var opts = {
-    //   dataset: args.d
-    // }
+    var opts = {
+      dataset: args.d
+    }
 
-    pump(inputStream, db.createFileWriteStream(key), function done (err) {
+    pump(inputStream, db.createFileWriteStream(key, opts), function done (err) {
       if (err) abort(err, 'dat: err in write')
       console.error('Done writing binary data.')
     })

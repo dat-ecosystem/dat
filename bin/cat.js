@@ -32,7 +32,11 @@ function handleCat (args) {
   function handleReadStream (db) {
     var key = args._[0]
 
-    pump(db.createFileReadStream(key), process.stdout, function done (err) {
+    var opts = {
+      dataset: args.d
+    }
+
+    pump(db.createFileReadStream(key, opts), process.stdout, function done (err) {
       if (err) abort(err, 'dat: err in cat')
     })
   }
