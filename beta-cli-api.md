@@ -355,28 +355,17 @@ Stream data from stdin:
 cat photo.jpg | dat write photo.jpg -
 ```
 
+#### Options
+
+`name/n`: the name, or lookup key, for the binary file inside dat. If not supplied, will use the 0 position argument for the path to the file as the lookup key.
+
 Example output:
 
 ```
-$ dat write photo.jpg
+$ dat write /some/path/to/photo.jpg --name=photo.jpg
 Storing photo.jpg (8.3 Mb, 38 Mb/s).
 Stored photo.jpg successfully.
 Current version is now b04adb64fdf2203
-```
-
-### dat get
-
-Get a single key + value out of a dataset
-
-```
-dat get <key>
-```
-
-Example output:
-
-```
-$ dat get uw60748112
-{"key":"uw60748112","version":"5abd6625cd2e64a116628a9a306de2fbd73a05ea5905e26d5d4e58e077be2203","value":{"time":"2014-04-30T00:09:37.000Z","latitude":"46.7557","longitude":"-121.9855","place":"24km ESE of Eatonville, Washington","type":"earthquake"}}
 ```
 
 ### dat read
@@ -392,4 +381,19 @@ Example output:
 ```
 $ dat read photo.jpg
 <binary data here>
+```
+
+### dat get
+
+Get a single key + value out of a dataset
+
+```
+dat get <key>
+```
+
+Example output:
+
+```
+$ dat get uw60748112
+{"key":"uw60748112","version":"5abd6625cd2e64a116628a9a306de2fbd73a05ea5905e26d5d4e58e077be2203","value":{"time":"2014-04-30T00:09:37.000Z","latitude":"46.7557","longitude":"-121.9855","place":"24km ESE of Eatonville, Washington","type":"earthquake"}}
 ```

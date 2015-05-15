@@ -1,22 +1,29 @@
-var debug = require('debug')('bin/put')
+var pump = require('pump')
+var fs = require('fs')
+var debug = require('debug')('bin/write')
 var openDat = require('../lib/open-dat.js')
 var abort = require('../lib/abort.js')
-var usage = require('../lib/usage.js')('put.txt')
+var usage = require('../lib/usage.js')('write.txt')
 
 module.exports = {
-  name: 'put',
-  command: handlePut,
+  name: 'write',
+  command: handleWrite,
   options: [
     {
       name: 'dataset',
       boolean: false,
       abbr: 'd'
+    },
+    {
+      name: 'name',
+      boolean: false,
+      abbr: 'n'
     }
   ]
 }
 
-function handlePut (args) {
-  debug('handlePut', args)
+function handleWrite (args) {
+  debug('handleWrite', args)
 
   if (args.help || args._.length === 0) {
     usage()
@@ -29,16 +36,22 @@ function handlePut (args) {
   })
 
   function handleInputStream (db) {
-    var key = args._[0]
-    var value = args._[1]
+    var path = args._[0]
+    var stream = args._[1]
+    var key = args.n || path
 
+    var inputStream
+    if (stream) inputStream = process.stdin
+    else stream = fs.createReadStream(path)
+
+    // TODO: make createFileWriteStream take options
     var opts = {
       dataset: args.d
     }
 
-    db.put(key, value, opts, function (err, key) {
-      if (err) abort(err, 'dat: err in put')
-      console.error('Done adding data.')
+    pump(inputStream, db.createFileWriteStream(key), function done (err) {
+      if (err) abort(err, 'dat: err in write')
+      console.error('Done writing binary data.')
     })
   }
 }
