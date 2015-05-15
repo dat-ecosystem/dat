@@ -52,7 +52,7 @@ test('dat overwrite to dataset 2', function (t) {
 })
 
 test('dat cat after overwrite to dataset 2', function (t) {
-  datCatEquals(t, 'test-file.txt', /goodbye mars/,  '-d my-dataset-2')
+  datCatEquals(t, 'test-file.txt', /goodbye mars/, '-d my-dataset-2')
 })
 
 /** from file **/
@@ -64,7 +64,7 @@ test('dat write from file', function (t) {
 })
 
 test('dat cat after write from file', function (t) {
-  contents = fs.readFileSync(blobPath).toString()
+  var contents = fs.readFileSync(blobPath).toString()
   datCatEquals(t, blobPath, contents, '-d my-dataset-2')
 })
 
@@ -73,7 +73,7 @@ test('dat write from file with new name', function (t) {
 })
 
 test('dat cat after write from file with new name', function (t) {
-  contents = fs.readFileSync(blobPath).toString()
+  var contents = fs.readFileSync(blobPath).toString()
   datCatEquals(t, 'new-name.txt', contents, '-d my-dataset-2')
 })
 
@@ -82,22 +82,22 @@ test('dat write from file with new name with abbr', function (t) {
 })
 
 test('dat cat after write from file with new name with abbr', function (t) {
-  contents = fs.readFileSync(blobPath).toString()
+  var contents = fs.readFileSync(blobPath).toString()
   datCatEquals(t, 'new-name-abbr.txt', contents, '-d my-dataset-2')
 })
 
-function datWrite(t, blobPath, ext) {
-  var cmd =  ' write '  + blobPath
+function datWrite (t, blobPath, ext) {
+  var cmd = ' write ' + blobPath
   if (ext) {
     cmd = cmd + ' ' + ext
   }
-  var st = spawn(t, dat + cmd , {cwd: dat1})
+  var st = spawn(t, dat + cmd, {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(/Done writing binary data/)
   st.end()
 }
 
-function datCatEquals(t, key, contents, ext) {
+function datCatEquals (t, key, contents, ext) {
   var cmd = ' cat ' + key
   if (ext) {
     cmd = cmd + ' ' + ext
