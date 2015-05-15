@@ -7,4 +7,3 @@ dat write <path-to-file> -n <name-of-file>
 Stream data from stdin:
 
 cat photo.jpg | dat write photo.jpg -
-

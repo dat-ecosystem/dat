@@ -41,8 +41,15 @@ function handleWrite (args) {
     var key = args.n || path
 
     var inputStream
-    if (stream === '-') inputStream = process.stdin
-    else inputStream = fs.createReadStream(path)
+    if (stream === '-') {
+      inputStream = process.stdin
+    } else {
+      if (!fs.existsSync(path)) {
+        usage()
+        abort(new Error('File at ' + path + ' does not exist'))
+      }
+      inputStream = fs.createReadStream(path)
+    }
 
     // TODO: make createFileWriteStream take options
     // var opts = {

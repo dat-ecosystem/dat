@@ -357,7 +357,7 @@ cat photo.jpg | dat write photo.jpg -
 
 #### Options
 
-`name/n`: the name, or lookup key, for the binary file inside dat. If not supplied, will use the 0 position argument for the path to the file as the lookup key.
+`name/n`: the name, or lookup key, for the binary file inside dat. If no name is supplied, dat will use the first argument (path-to-file) as the lookup key.
 
 Example output:
 
