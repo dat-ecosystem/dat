@@ -6,6 +6,7 @@ This is the proposed CLI API for our Beta release. Please leave feedback [in thi
   - [dat](#dat)
   - [dat init](#dat-init)
   - [dat status](#dat-status)
+  - [dat clone](#dat-push)
   - [dat push](#dat-push)
   - [dat pull](#dat-pull)
   - [dat replicate](#dat-replicate)
@@ -106,6 +107,19 @@ $ dat status
 Current version is now 8eaf3b0739d32849687a544efae8487b5b05df52
 438 keys, 32 files, 3 commits, 143 Mb total
 Last updated 3 seconds ago
+```
+
+### dat clone
+
+Clone a new repository from a remote dat to create a new dat.
+
+Example output:
+
+```
+$ dat clone ssh://uni.edu/maxogden/flights
+Pulled 823 changes (93.88 Mb, 3.4 Mb/s).
+Clone from remote has completed.
+Current version is now b04adb64fdf2203
 ```
 
 ### dat push
