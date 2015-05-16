@@ -1,5 +1,4 @@
 var pump = require('pump')
-var through = require('through2')
 var ndjson = require('ndjson')
 var debug = require('debug')('bin/versions')
 var openDat = require('../lib/open-dat.js')

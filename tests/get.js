@@ -39,7 +39,7 @@ test('dat get from dataset with csv', function (t) {
   st.stderr.empty()
   st.stdout.match(function (output) {
     var lines = output.split('\n')
-    if (lines.length === 10) {
+    if (lines.length === 11) { // 1 header row + 10 lines
       var headers = lines[0].split(',')
       t.equals(headers.length, 16)
       return true

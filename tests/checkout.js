@@ -31,12 +31,13 @@ test('dat1 heads', function (t) {
 })
 
 test('dat1 checkout gets proper export', function (t) {
-  var checkout = spawn(t, dat + ' checkout ' + hashes[0], {cwd: dat1})
-  checkout.stderr.match(/Current version is now/)
-
-  var exp = spawn(t, dat + ' export', {cwd: dat1})
-  exp.stdout.match(/Max/)
-
-  exp.stderr.empty()
-  exp.end()
+  var checkout = spawn(t, dat + ' checkout ' + hashes[0], {cwd: dat1, end: false})
+  checkout.stderr.match(new RegExp('Current version is now ' + hashes[0]))
+  checkout.stdout.empty()
+  checkout.end(function () {
+    var exp = spawn(t, dat + ' export', {cwd: dat1})
+    exp.stdout.match(/Max/)
+    exp.stderr.empty()
+    exp.end()
+  })
 })

@@ -55,7 +55,6 @@ test('dat1 merge', function (t) {
   diff.stdout.stream
     .pipe(ndjson.parse())
     .pipe(through.obj(function (obj, enc, next) {
-      console.error(JSON.stringify(obj, null, '  '))
       next(null, obj.versions[0])
     }))
     .pipe(ndjson.serialize())
