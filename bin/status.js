@@ -13,16 +13,8 @@ function handleStatus (args) {
   openDat(args, function ready (err, db) {
     if (err) abort(err)
 
-    var heads = []
-    db.heads()
-    .on('data', function head (obj) {
-      heads.push(obj)
+    db.open(function () {
+      console.error('Current version is', db.head)
     })
-    .on('error', abort)
-    .on('end', function () {
-      if (heads.length > 1) console.error('Current versions are\n' + heads.join('\n'))
-      else console.error('Current version is now', heads[0])
-    })
-
   })
 }
