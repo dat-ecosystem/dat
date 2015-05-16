@@ -3,6 +3,7 @@ usage: dat <command(s)> [--flag] [--key=value]
 commands:
   init      initialize a new dat store in a directory
   checkout  dat will operate at a particular head
+  status    show current status
   push      push data to a remote dat
   pull      pull data from a remote dat
   export    streams data from a dataset to stdout

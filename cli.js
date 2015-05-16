@@ -11,6 +11,7 @@ var config = {
     require('./bin/pull.js'),
     require('./bin/get.js'),
     require('./bin/replicate.js'),
+    require('./bin/status.js'),
     require('./bin/export.js'),
     require('./bin/versions.js'),
     require('./bin/diff.js'),
