@@ -6,9 +6,6 @@ var spawn = require('tape-spawn')
 var fs = require('fs')
 var iterate = require('stream-iterate')
 var sort = require('sort-stream')
-var through = require('through2')
-var parallel = require('run-parallel')
-var ndjson = require('ndjson')
 
 var helpers = require('./helpers')
 var tmp = os.tmpdir()
@@ -102,7 +99,6 @@ test('dat export with checkout', function (t) {
   st.end()
 })
 
-
 test('dat export with checkout', function (t) {
   var st = spawn(t, dat + ' export --checkout=' + hashes[1], {cwd: dat2})
   st.stderr.empty()
@@ -116,7 +112,6 @@ test('dat export with checkout', function (t) {
   })
   st.end()
 })
-
 
 test('dat export with checkout abbr', function (t) {
   var st = spawn(t, dat + ' export -c ' + hashes[1], {cwd: dat2})
