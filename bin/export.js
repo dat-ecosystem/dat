@@ -41,8 +41,10 @@ function handleExport (args) {
 
   function handleOuputStream (db) {
     var outputStream = process.stdout
-
-    pump(db.createReadStream({ dataset: args.d }), formatData(args.f), outputStream, function done (err) {
+    var opts = {
+      dataset: args.d
+    }
+    pump(db.createReadStream(opts), formatData(args.f), outputStream, function done (err) {
       if (err) abort(err, 'Error exporting data to', args._[0])
       console.error('Done exporting data to', args._[0])
     })

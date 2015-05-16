@@ -9,5 +9,10 @@ module.exports = [
     name: 'help',
     boolean: true,
     abbr: 'h'
+  },
+  {
+    name: 'checkout',
+    boolean: false,
+    abbr: 'c'
   }
 ]

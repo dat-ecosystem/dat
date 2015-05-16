@@ -56,9 +56,9 @@ dat -p init
 All commands have these options:
 
 - `path`/`p` - specify the path to the dat directory that the command should use. Default is current working directory
-- `help`/`h` (boolean) - pass this option to show the help for a command
-- `log` (default 'text') - set this to 'json' to change the response format logging for status/response messages to JSON for easy parsing
-- `checkout`
+- `help`/`h` (boolean) - pass this option to show the help for a command.
+- `log` (default 'text') - set this to 'json' to change the response format logging for status/response messages to JSON for easy parsing.
+- `checkout` - the version hash to use when retrieving data for a command.
 
 Example output:
 

@@ -34,17 +34,6 @@ test('dat1 heads', function (t) {
   st.end()
 })
 
-test('dat1 heads', function (t) {
-  var st = spawn(t, dat + ' heads', {cwd: dat1})
-  st.stderr.empty()
-  st.stdout.match(function match (output) {
-    var ok = output.length === 130 // 32bit hash 2 in hex (64) x2 (128) + 2 newlines (130)
-    if (ok) hashes = output.split('\n')
-    return ok
-  })
-  st.end()
-})
-
 test('dat1 diff', function (t) {
   var st = spawn(t, dat + ' diff ' + hashes.join(' '), {cwd: dat1})
   st.stderr.empty()
