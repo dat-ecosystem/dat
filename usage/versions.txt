@@ -1,0 +1,3 @@
+Stream versions out in historical order as json
+
+$ dat versions --limit=2
