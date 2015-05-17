@@ -5,7 +5,7 @@ var spawn = require('tape-spawn')
 var through = require('through2')
 var parallel = require('run-parallel')
 var ndjson = require('ndjson')
-var helpers = require('./helpers/index.js')
+var helpers = require('./helpers')
 
 var tmp = os.tmpdir()
 var dat = path.resolve(__dirname + '/../cli.js')

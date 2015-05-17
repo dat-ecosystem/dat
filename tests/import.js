@@ -34,26 +34,6 @@ test('dat import json', function (t) {
 
 verify(dat2)
 
-function verify (dataset, datN) {
-  if (!datN) {
-    datN = dataset
-    dataset = ''
-  }
-  test('dat cat', function (t) {
-    var st = spawn(t, dat + ' export --dataset=' + dataset, {cwd: datN})
-    st.stderr.empty()
-    st.stdout.match(function (output) {
-      var lines = output.split('\n')
-      t.ok('less than 10 lines', lines.length <= 10)
-      if (lines.length === 10) {
-        if (JSON.parse(lines[0]).key === 'ak11246285') return true
-        return false
-      }
-    })
-    st.end()
-  })
-}
-
 helpers.onedat(dat3)
 
 test('dat import all_hour to test3', function (t) {
@@ -75,3 +55,23 @@ test('dat import all_hour to separate dataset', function (t) {
 })
 
 verify('import-test4', dat3)
+
+function verify (dataset, datN) {
+  if (!datN) {
+    datN = dataset
+    dataset = ''
+  }
+  test('dat cat', function (t) {
+    var st = spawn(t, dat + ' export --dataset=' + dataset, {cwd: datN})
+    st.stderr.empty()
+    st.stdout.match(function (output) {
+      var lines = output.split('\n')
+      t.ok('less than 10 lines', lines.length <= 10)
+      if (lines.length === 10) {
+        if (JSON.parse(lines[0]).key === 'ak11246285') return true
+        return false
+      }
+    })
+    st.end()
+  })
+}
