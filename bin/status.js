@@ -14,7 +14,15 @@ function handleStatus (args) {
     if (err) abort(err)
 
     db.open(function () {
-      console.error('Current version is', db.head)
+      if (args.l === 'json') {
+        var output = {
+          'version': db.head
+        }
+        console.log(JSON.stringify(output))
+      }
+      else {
+        console.error('Current version is', db.head)
+      }
     })
   })
 }

@@ -14,5 +14,10 @@ module.exports = [
     name: 'checkout',
     boolean: false,
     abbr: 'c'
+  },
+  {
+    name: 'log',
+    boolean: false,
+    abbr: 'l'
   }
 ]
