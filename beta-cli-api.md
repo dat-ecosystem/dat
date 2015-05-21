@@ -262,10 +262,10 @@ $ dat diff --pretty 163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb05245186
 
 ### dat merge
 
-Merge two checkouts of a dataset into a single checkout.
+Merge two checkouts of a dataset into a single checkout. Uses [knead](http://github.com/karissa/knead) as default merge tool for now.
 
 ```
-dat merge <versionA> <versionB> <file>
+dat merge <versionA> <versionB>
 ```
 
 #### Options
@@ -274,7 +274,17 @@ dat merge <versionA> <versionB> <file>
 `-` for <file>: receive resolved changes on stdin
 
 
-Example output:
+#### Resolutions from file
+
+A `dat merge` receives a stream of changes that will be applied to resolve conflicts between two versions.
+
+```
+$ cat resolutions.json | dat merge ab3234dfe5 bdc3ae23cef -
+Changes resolved successfully.
+Current version is now b04adb64fdf2203
+```
+
+#### Merge tools
 
 ```
 $ dat merge ab3234dfe5 bdc3ae23cef --merge-tool="my-merge-tool.sh"
@@ -282,16 +292,13 @@ Changes resolved successfully.
 Current version is now b04adb64fdf2203
 ```
 
-#### Merge tools
-
-A `dat merge` receives a stream of changes that will be applied to resolve conflicts between two versions. In this example, the `<merge-function/tool>` decides which change to keep between the versions suppled in a `dat diff`, outputting the json for each kept change to stdout.
+In this example, the `<merge-function/tool>` decides which change to keep between the versions suppled in a `dat diff`, outputting the json for each kept change to stdout.
 
 ```
 $ dat diff ab3234dfe5 bdc3ae23cef | <merge-function/tool> | dat merge ab3234dfe5 bdc3ae23cef -
 Changes resolved successfully.
 Current version is now b04adb64fdf2203
 ```
-
 
 ## dataset commands
 
