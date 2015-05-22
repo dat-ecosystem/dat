@@ -30,9 +30,9 @@ function twodats (dat1, dat2) {
   onedat(dat2)
 }
 
-function conflict (dat1, dat2, csvs) {
+function conflict (dat1, dat2, dataset, csvs) {
   test('dat1 import', function (t) {
-    var st = spawn(t, dat + ' import ' + csvs.a, {cwd: dat2})
+    var st = spawn(t, dat + ' import -d ' + dataset + ' ' + csvs.a, {cwd: dat2})
     st.stderr.match(/Done importing data/)
     st.stdout.empty()
     st.end()
@@ -46,14 +46,14 @@ function conflict (dat1, dat2, csvs) {
   })
 
   test('dat2 import b', function (t) {
-    var st = spawn(t, dat + ' import ' + csvs.b, {cwd: dat2})
+    var st = spawn(t, dat + ' import -d ' + dataset + ' ' + csvs.b, {cwd: dat2})
     st.stderr.match(/Done importing data/)
     st.stdout.empty()
     st.end()
   })
 
   test('dat1 import c', function (t) {
-    var st = spawn(t, dat + ' import ' + csvs.c, {cwd: dat1})
+    var st = spawn(t, dat + ' import -d ' + dataset + ' ' + csvs.c, {cwd: dat1})
     st.stderr.match(/Done importing data/)
     st.stdout.empty()
     st.end()

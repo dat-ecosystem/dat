@@ -17,7 +17,7 @@ var dat1 = path.join(tmp, 'dat-1')
 var dat2 = path.join(tmp, 'dat-2')
 
 helpers.twodats(dat1, dat2)
-helpers.conflict(dat1, dat2, csvs)
+helpers.conflict(dat1, dat2, 'checkout-test-dataset', csvs)
 
 test('dat1 heads', function (t) {
   var st = spawn(t, dat + ' heads', {cwd: dat1})
@@ -30,12 +30,12 @@ test('dat1 heads', function (t) {
   st.end()
 })
 
-test('dat1 checkout gets proper export', function (t) {
-  var checkout = spawn(t, dat + ' checkout ' + hashes[0], {cwd: dat1, end: false})
+test('dat1 gets proper export', function (t) {
+  var checkout = spawn(t, dat + ' checkout -d checkout-test-dataset ' + hashes[0], {cwd: dat1, end: false})
   checkout.stderr.match(new RegExp('Current version is now ' + hashes[0]))
   checkout.stdout.empty()
   checkout.end(function () {
-    var exp = spawn(t, dat + ' export', {cwd: dat1})
+    var exp = spawn(t, dat + ' export -d checkout-test-dataset', {cwd: dat1})
     exp.stdout.match(/Max/)
     exp.stderr.empty()
     exp.end()
