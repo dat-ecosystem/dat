@@ -75,3 +75,14 @@ function verify (dataset, datN) {
     st.end()
   })
 }
+
+test('dat import with log to json', function (t) {
+  var json = path.resolve(__dirname + '/fixtures/all_hour.json')
+  var st = spawn(t, dat + ' import ' + json + ' --log=json --key=id --dataset=import-test5', {cwd: dat3})
+  st.stdout.match(function (output) {
+    var json = JSON.parse(output)
+    return json.version.length === 64 // 32bit hash 2 in hex (64)
+  })
+  st.stderr.empty()
+  st.end()
+})

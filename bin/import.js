@@ -21,6 +21,11 @@ module.exports = {
       name: 'format',
       boolean: false,
       abbr: 'f'
+    },
+    {
+      name: 'key',
+      boolean: true,
+      abbr: 'k'
     }
   ]
 }
@@ -44,13 +49,19 @@ function handleImport (args) {
     else inputStream = fs.createReadStream(args._[0])
 
     var transform = through.obj(function (obj, enc, next) {
+      debug('heres my obj!', obj)
       var key = obj[args.key] || obj.key || uuid()
       next(null, {type: 'put', key: key, value: obj})
     })
 
     pump(inputStream, parseInputStream(args), transform, db.createWriteStream({ dataset: args.d }), function done (err) {
       if (err) abort(err, 'Error importing data')
-      console.error('Done importing data')
+      if (args.log === 'json') {
+        var output = {
+          version: db.head
+        }
+        console.log(JSON.stringify(output))
+      } else console.error('Done importing data')
     })
   }
 }

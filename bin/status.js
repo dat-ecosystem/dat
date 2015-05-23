@@ -19,8 +19,7 @@ function handleStatus (args) {
           'version': db.head
         }
         console.log(JSON.stringify(output))
-      }
-      else {
+      } else {
         console.error('Current version is', db.head)
       }
     })

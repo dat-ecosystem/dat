@@ -5,7 +5,6 @@ var helpers = require('./helpers')
 var tmp = require('os').tmpdir()
 
 var dat = path.resolve(__dirname + '/../cli.js')
-var hashes
 
 var dat1 = path.join(tmp, 'dat-1')
 var dat2 = path.join(tmp, 'dat-2')
@@ -38,8 +37,8 @@ test('dat1 status as json', function (t) {
   var st = spawn(t, dat + ' status --log=json', {cwd: dat1})
   st.stdout.match(function (output) {
     try {
-      var output = JSON.parse(output)
-      return output.version.length === 64 // 32bit hash 2 in hex (64)
+      var json = JSON.parse(output)
+      return json.version.length === 64 // 32bit hash 2 in hex (64)
     } catch (e) {
       return false
     }
