@@ -21,6 +21,20 @@ This is the proposed CLI API for our Beta release. Please leave feedback [in thi
   - [dat read](#dat-read)
   - [dat get](#dat-get)
 
+## example repository folder structure
+
+```
+repo/
+  - .dat/
+  - dat.json
+  -  dataset-a/
+     - dataset.json
+     - readme.md
+  -  dataset-b/
+     - dataset.json
+     - readme.md
+```
+
 ## repository commands
 
 ### dat
