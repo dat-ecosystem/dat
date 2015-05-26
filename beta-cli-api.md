@@ -196,8 +196,12 @@ Replication completed successfully.
 Stream versions out in historical order as json
 
 ```bash
-dat log
+dat log <version hash>
 ```
+
+By default (no arguments) it will print out a stream of json representing each version of the repository.
+
+If `<version hash>` is specified as the first positional argument then the individual change data for that version will be streamed out.
 
 Example output:
 
@@ -336,6 +340,11 @@ Stream data from stdin:
 cat file.json | dat import -
 ```
 
+### Options
+
+- `key` - specify which field to use as the primary key
+- `no-key` - generate a random unique key
+
 Example output:
 
 ```
@@ -357,21 +366,18 @@ Stream data to a file:
 
 ```bash
 dat export > woah-my-data.json
-
 ```
 
 ### Options
 
 - `lt`, `lte`, `gt`, `gte` - specify start/end key range values using less than, less than equals, greater than, greater than equals
 - `limit` - default unlimited. specify how many results to receive
-- `versions` - boolean, default `false`. if `true` it will include the `version` hash along with the key/value pair when exporting it
-
+- `format` - default `json`. you can also specify `csv`.
 
 Example output:
 ```
 $ dat export
-{"content":"row","key":"1","version":"9e4629196e4db21a244fad8c8a989847fa3827e5747d2ad392363e46223fa888","value":{"key":"1","name":"MAX"}}
-{"content":"row","key":"1","version":"163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502","value":{"key":"1","name":"Max"}}
+{"key": "maxogden", "firstname": "Max", "lastname": "Ogden"}
 ```
 
 ### dat write
