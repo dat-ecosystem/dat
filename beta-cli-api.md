@@ -191,18 +191,18 @@ Average speed: 4.3 Mb/s.
 Replication completed successfully.
 ```
 
-### dat versions
+### dat log
 
 Stream versions out in historical order as json
 
 ```bash
-dat versions
+dat log
 ```
 
 Example output:
 
 ```
-$ dat versions --limit=2
+$ dat log --limit=2
 { "change": 1, "version": "6bdd624ae6f9ddb96069e04fc030c6e964e77ac7", links: [...], "puts": 12, "deletes": 3, "date": "2015..."}
 { "change": 2, "version": "7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517", links: [...], "puts": 0, "deletes": 2, "date": "2015..."}
 ```
