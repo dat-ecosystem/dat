@@ -10,7 +10,7 @@ This is the proposed CLI API for our Beta release. Please leave feedback [in thi
   - [dat push](#dat-push)
   - [dat pull](#dat-pull)
   - [dat replicate](#dat-replicate)
-  - [dat versions](#dat-versions)
+  - [dat log](#dat-log)
   - [dat checkout](#dat-checkout)
   - [dat diff](#dat-diff)
   - [dat merge](#dat-merge)
