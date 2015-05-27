@@ -19,6 +19,31 @@ module.exports = {
       name: 'format',
       boolean: false,
       abbr: 'f'
+    },
+    {
+      name: 'greater-than-equal',
+      boolean: false,
+      abbr: 'gte'
+    },
+    {
+      name: 'greater-than',
+      boolean: false,
+      abbr: 'gt'
+    },
+    {
+      name: 'less-than-equal',
+      boolean: false,
+      abbr: 'lte'
+    },
+    {
+      name: 'less-than',
+      boolean: false,
+      abbr: 'lt'
+    },
+    {
+      name: 'limit',
+      boolean: false,
+      abbr: 'l'
     }
   ]
 }
@@ -41,10 +66,6 @@ function handleExport (args) {
   })
 
   function handleOuputStream (db) {
-    var opts = {
-      dataset: args.d
-    }
-
     var parseOutput = through.obj(function (data, enc, next) {
       debug('exporting through data', data)
       if (data.content === 'row') {
@@ -54,7 +75,7 @@ function handleExport (args) {
       }
     })
 
-    pump(db.createReadStream(opts), parseOutput, formatData(args.f), process.stdout, function done (err) {
+    pump(db.createReadStream(args), parseOutput, formatData(args.f), process.stdout, function done (err) {
       if (err) abort(err, 'Error exporting data')
     })
   }
