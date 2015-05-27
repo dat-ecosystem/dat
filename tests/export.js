@@ -31,6 +31,13 @@ test('dat export to file', function (t) {
   st.end()
 })
 
+test('dat export without dataset errors', function (t) {
+  var st = spawn(t, dat + ' export', {cwd: dat1})
+  st.stdout.empty()
+  st.stderr.match(fs.readFileSync(path.join('usage', 'export.txt')).toString() + '\n', 'usage matched')
+  st.end()
+})
+
 test('dat export output matches original file', function (t) {
   t.plan(53)
   var sorter = sort(function (a, b) {

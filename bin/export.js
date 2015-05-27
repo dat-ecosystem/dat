@@ -26,7 +26,7 @@ module.exports = {
 function handleExport (args) {
   debug('handleExport', args)
 
-  if (args.help) {
+  if (args.help || !args.dataset) {
     usage()
     abort()
   }
