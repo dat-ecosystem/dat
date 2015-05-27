@@ -25,7 +25,7 @@ module.exports = {
 function handleWrite (args) {
   debug('handleWrite', args)
 
-  if (args.help || args._.length === 0) {
+  if (args.help || !args.dataset || args._.length === 0) {
     usage()
     abort()
   }

@@ -11,15 +11,11 @@ var dat1 = path.join(tmp, 'dat-1')
 
 helpers.onedat(dat1)
 
-test('dat write', function (t) {
+test('dat write errors without dataset', function (t) {
   var st = spawn(t, "echo 'hello world' | " + dat + ' write test-file.txt -', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(/Done writing binary data/)
+  st.stderr.match(fs.readFileSync(path.join('usage', 'write.txt')).toString() + '\n', 'usage matched')
   st.end()
-})
-
-test('dat cat after write', function (t) {
-  datCatEquals(t, 'test-file.txt', /hello world/)
 })
 
 test('dat write to dataset', function (t) {

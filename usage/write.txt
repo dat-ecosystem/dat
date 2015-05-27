@@ -2,8 +2,11 @@ Write binary data into dat. This differs from `import` in that it doesn't parse 
 
 Write a file to dat:
 
-dat write <path-to-file> -n <name-of-file>
+ dat write <path-to-file>
+  -d <dataset-name> # the name of the dataset to create. required
+  -n <filename> # the name of the file. if not supplied, uses the path
 
 Stream data from stdin:
 
-cat photo.jpg | dat write photo.jpg -
+  python generate_model_data.py | dat write model_data -
+
