@@ -57,7 +57,14 @@ function handleWrite (args) {
 
     pump(inputStream, db.createFileWriteStream(key, opts), function done (err) {
       if (err) abort(err, 'dat: err in write')
-      console.error('Done writing binary data.')
+
+      if (args.log === 'json') {
+        var output = {
+          version: db.head
+        }
+        console.log(JSON.stringify(output))
+      } else console.error('Done writing binary data.')
+
     })
   }
 }
