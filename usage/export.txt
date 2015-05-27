@@ -1,3 +1,3 @@
-dat export <filename>  -d <dataset-name> [--gt=key --lt=key  --gte=key --lte=key -f <format>]
+dat export --dataset=<dataset-name> [--limit=<num>] [--format=json,csv]
 
-streams tabular data out of dat, defaults to newline delimited json format (ndjson)
+Stream a range of rows out of a dataset.

@@ -1,6 +1,7 @@
 var pump = require('pump')
-var debug = require('debug')('bin/export')
+var through = require('through2')
 var formatData = require('format-data')
+var debug = require('debug')('bin/export')
 var openDat = require('../lib/open-dat.js')
 var abort = require('../lib/abort.js')
 var usage = require('../lib/usage.js')('export.txt')
@@ -30,7 +31,7 @@ function handleExport (args) {
     abort()
   }
 
-  if (!args.f) {
+  if (!args.f || args.f === 'json') {
     args.f = 'ndjson'
   }
 
@@ -40,13 +41,21 @@ function handleExport (args) {
   })
 
   function handleOuputStream (db) {
-    var outputStream = process.stdout
     var opts = {
       dataset: args.d
     }
-    pump(db.createReadStream(opts), formatData(args.f), outputStream, function done (err) {
-      if (err) abort(err, 'Error exporting data to', args._[0])
-      console.error('Done exporting data to', args._[0])
+
+    var parseOutput = through.obj(function (data, enc, next) {
+      debug('exporting through data', data)
+      if (data.content === 'row') {
+        var row = data.value
+        row.key = data.key
+        return next(null, row)
+      }
+    })
+
+    pump(db.createReadStream(opts), parseOutput, formatData(args.f), process.stdout, function done (err) {
+      if (err) abort(err, 'Error exporting data')
     })
   }
 }

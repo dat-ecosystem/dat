@@ -21,7 +21,7 @@ var dat1 = path.join(tmp, 'dat-1')
 var dat2 = path.join(tmp, 'dat-2')
 
 helpers.twodats(dat1, dat2)
-helpers.conflict(dat1, dat2, csvs)
+helpers.conflict(dat1, dat2, 'merge-test', csvs)
 
 test('dat1 heads', function (t) {
   var st = spawn(t, dat + ' heads', {cwd: dat1})
@@ -70,7 +70,7 @@ test('dat1 merge', function (t) {
 })
 
 test('verify merge version', function (t) {
-  var st = spawn(t, dat + ' export', {cwd: dat1})
+  var st = spawn(t, dat + ' export -d merge-test', {cwd: dat1})
 
   st.stderr.empty()
   st.stdout.match(function match (output) {

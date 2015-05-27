@@ -72,7 +72,7 @@ var dat2 = path.join(tmp, 'dat-2')
 var dat3 = path.join(tmp, 'dat-1')
 
 helpers.twodats(dat2, dat3)
-helpers.conflict(dat2, dat3, csvs)
+helpers.conflict(dat2, dat3, 'max', csvs)
 
 test('dat heads', function (t) {
   var st = spawn(t, dat + ' heads', {cwd: dat2})
@@ -86,7 +86,7 @@ test('dat heads', function (t) {
 })
 
 test('dat export with checkout', function (t) {
-  var st = spawn(t, dat + ' export --checkout=' + hashes[0], {cwd: dat2})
+  var st = spawn(t, dat + ' export --dataset=max --checkout=' + hashes[0], {cwd: dat2})
   st.stderr.empty()
   st.stdout.match(function match (output) {
     try {
@@ -94,13 +94,50 @@ test('dat export with checkout', function (t) {
     } catch (e) {
       return false
     }
-    if (row.value.name === 'Max') return true
+    if (row.name === 'MAX') return true
   })
+  st.end()
+})
+
+test('dat export with checkout hash 1', function (t) {
+  var st = spawn(t, dat + ' export --dataset=max --checkout=' + hashes[1], {cwd: dat2})
+  st.stderr.empty()
+  st.stdout.match(function match (output) {
+    try {
+      row = JSON.parse(output)
+    } catch (e) {
+      return false
+    }
+    if (row.name === 'Max') return true
+  })
+  st.end()
+})
+
+test('dat export with checkout hash 1 abbr', function (t) {
+  var st = spawn(t, dat + ' export -d max -c ' + hashes[1], {cwd: dat2})
+  st.stderr.empty()
+  st.stdout.match(function match (output) {
+    try {
+      row = JSON.parse(output)
+    } catch (e) {
+      return false
+    }
+    if (row.name === 'Max') return true
+  })
+  st.end()
+})
+
+// export after write file
+
+test('dat write', function (t) {
+  var st = spawn(t, "echo 'hello world' | " + dat + ' write test-file.txt -d max -', {cwd: dat1})
+  st.stdout.empty()
+  st.stderr.match(/Done writing binary data/)
   st.end()
 })
 
 test('dat export with checkout', function (t) {
-  var st = spawn(t, dat + ' export --checkout=' + hashes[1], {cwd: dat2})
+  var st = spawn(t, dat + ' export -d max', {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function match (output) {
     try {
@@ -108,21 +145,7 @@ test('dat export with checkout', function (t) {
     } catch (e) {
       return false
     }
-    if (row.value.name === 'MAX') return true
-  })
-  st.end()
-})
-
-test('dat export with checkout abbr', function (t) {
-  var st = spawn(t, dat + ' export -c ' + hashes[1], {cwd: dat2})
-  st.stderr.empty()
-  st.stdout.match(function match (output) {
-    try {
-      row = JSON.parse(output)
-    } catch (e) {
-      return false
-    }
-    if (row.value.name === 'MAX') return true
+    if (row.name === 'Max') return true
   })
   st.end()
 })

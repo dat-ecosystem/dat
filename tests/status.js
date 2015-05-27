@@ -24,7 +24,7 @@ test('dat1 status', function (t) {
   st.end()
 })
 
-helpers.conflict(dat1, dat2, csvs)
+helpers.conflict(dat1, dat2, 'status-test', csvs)
 
 test('dat1 status with multiple heads', function (t) {
   var st = spawn(t, dat + ' status', {cwd: dat1})
