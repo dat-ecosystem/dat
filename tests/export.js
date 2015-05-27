@@ -18,23 +18,16 @@ var csvfile = path.resolve(__dirname + '/fixtures/all_hour.csv')
 var exportfile = path.join(dat1, 'out.csv')
 
 test('dat import csv', function (t) {
-  var st = spawn(t, dat + ' import ' + csvfile + ' -d test-ds --key=id', {cwd: dat1})
+  var st = spawn(t, dat + ' import ' + csvfile + ' -d export-test --key=id', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(/Done importing data/)
   st.end()
 })
 
 test('dat export to file', function (t) {
-  var st = spawn(t, dat + ' export -d test-ds > ' + exportfile, {cwd: dat1})
+  var st = spawn(t, dat + ' export -d export-test > ' + exportfile, {cwd: dat1})
   st.stdout.empty()
   st.stderr.empty()
-  st.end()
-})
-
-test('dat export without dataset errors', function (t) {
-  var st = spawn(t, dat + ' export', {cwd: dat1})
-  st.stdout.empty()
-  st.stderr.match(fs.readFileSync(path.join('usage', 'export.txt')).toString() + '\n', 'usage matched')
   st.end()
 })
 
@@ -62,9 +55,89 @@ test('dat export output matches original file', function (t) {
       })
     })
   }
-
   loop()
+})
 
+test('dat export with limit', function (t) {
+  var st = spawn(t, dat + ' export --limit=5 --dataset=export-test', {cwd: dat1})
+  st.stderr.empty()
+  st.stdout.match(function (output) {
+    var lines = output.split('\n')
+    if (lines.length > 6) return false
+    if (lines.length === 6) {
+      var line = JSON.parse(lines[4]) // 5th line is empty string due to splittage
+      if (line.key === 'ak11246293') {
+        return line.latitude === '60.0366'
+      }
+      return false
+    }
+  })
+  st.end()
+})
+
+test('dat export with limit and csv', function (t) {
+  var st = spawn(t, dat + ' export --limit=5 --dataset=export-test --format=csv', {cwd: dat1})
+  st.stderr.empty()
+  var ok = false
+  st.stdout.match(function (output) {
+    var lines = output.split('\n')
+    if (lines.length > 6) return ok
+    if (lines.length === 6) {
+      ok = lines[5] === '' // last is empty due to splittage
+    }
+  })
+  st.end()
+})
+
+test('dat export with limit and csv without dataset errors', function (t) {
+  var st = spawn(t, dat + ' export --limit=5 --format=csv', {cwd: dat1})
+  st.stdout.empty()
+  st.stderr.match(fs.readFileSync(path.join('usage', 'export.txt')).toString() + '\n', 'usage matched')
+  st.end()
+})
+
+test('dat export with range options without dataset errors', function (t) {
+  var st = spawn(t, dat + ' export --lt=ak11246291', {cwd: dat1})
+  st.stdout.empty()
+  st.stderr.match(fs.readFileSync(path.join('usage', 'export.txt')).toString() + '\n', 'usage matched')
+  st.end()
+})
+
+test('dat export with lt', function (t) {
+  var st = spawn(t, dat + ' export --dataset=export-test --lt=ak11246291', {cwd: dat1})
+  st.stderr.empty()
+  st.stdout.match(function (output) {
+    var lines = output.split('\n')
+    if (lines.length === 4) {
+      return (
+        (JSON.parse(lines[0]).id === 'ak11246285') &&
+        (JSON.parse(lines[1]).id === 'ak11246287') &&
+        (JSON.parse(lines[2]).id === 'ak11246289')
+      )
+    }
+    return false
+  })
+  st.end()
+})
+
+test('dat export with lt and limit options', function (t) {
+  var st = spawn(t, dat + ' export --dataset=export-test --lt=ak11246291 --limit=1', {cwd: dat1})
+  st.stderr.empty()
+  st.stdout.match(function (output) {
+    var lines = output.split('\n')
+    if (lines.length === 2) {
+      return (JSON.parse(lines[0]).id === 'ak11246285')
+    }
+    return false
+  })
+  st.end()
+})
+
+test('dat export without dataset errors', function (t) {
+  var st = spawn(t, dat + ' export', {cwd: dat1})
+  st.stdout.empty()
+  st.stderr.match(fs.readFileSync(path.join('usage', 'export.txt')).toString() + '\n', 'usage matched')
+  st.end()
 })
 
 var hashes, row
@@ -143,7 +216,7 @@ test('dat write', function (t) {
   st.end()
 })
 
-test('dat export with checkout', function (t) {
+test('dat export with checkout after write', function (t) {
   var st = spawn(t, dat + ' export -d max', {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function match (output) {
