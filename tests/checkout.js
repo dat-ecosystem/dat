@@ -31,8 +31,8 @@ test('dat1 heads', function (t) {
 })
 
 test('dat1 gets proper export', function (t) {
-  var checkout = spawn(t, dat + ' checkout -d checkout-test-dataset ' + hashes[0], {cwd: dat1, end: false})
-  checkout.stderr.match(new RegExp('Current version is now ' + hashes[0]))
+  var checkout = spawn(t, dat + ' checkout -d checkout-test-dataset ' + hashes[1], {cwd: dat1, end: false})
+  checkout.stderr.match(new RegExp('Current version is now ' + hashes[1]))
   checkout.stdout.empty()
   checkout.end(function () {
     var exp = spawn(t, dat + ' export -d checkout-test-dataset', {cwd: dat1})

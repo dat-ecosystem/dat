@@ -1,3 +1,5 @@
+var prettyBytes = require('pretty-bytes')
+var relativeDate = require('relative-date')
 var abort = require('../lib/abort.js')
 var openDat = require('../lib/open-dat.js')
 var usage = require('../lib/usage.js')('checkout.txt')
@@ -13,14 +15,17 @@ function handleStatus (args) {
   openDat(args, function ready (err, db) {
     if (err) abort(err)
 
-    db.open(function () {
-      if (args.l === 'json') {
-        var output = {
-          'version': db.head
-        }
-        console.log(JSON.stringify(output))
+    db.status(function (err, status) {
+      if (args.log === 'json') {
+        console.log(JSON.stringify(status))
       } else {
-        console.error('Current version is', db.head)
+        var output = ''
+        output += 'Current version is ' + status.head
+        if (!status.checkout) output += ' (latest)\n'
+        else output += '\n'
+        output += status.rows + ' keys, ' + status.files + ' files, ' + status.versions + ' versions, ' + prettyBytes(status.size) + ' total\n'
+        output += 'Last updated ' + relativeDate(status.modified)
+        console.error(output)
       }
     })
   })

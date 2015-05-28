@@ -14,6 +14,7 @@ This is the proposed CLI API for our Beta release. Please leave feedback [in thi
   - [dat checkout](#dat-checkout)
   - [dat diff](#dat-diff)
   - [dat merge](#dat-merge)
+  - [dat forks](#dat-forks)
 - [dataset commands](#dataset-commands)
   - [dat import](#dat-import)
   - [dat export](#dat-export)
@@ -71,7 +72,7 @@ All commands have these options:
 
 - `path`/`p` - specify the path to the dat directory that the command should use. Default is current working directory
 - `help`/`h` (boolean) - pass this option to show the help for a command.
-- `log` (default 'text') - set this to 'json' to change the response format logging for status/response messages to JSON for easy parsing.
+- `json` - set this to true to change all output to JSON for easy parsing.
 - `checkout` - the version hash to use when retrieving data for a command.
 
 Example output:
@@ -82,7 +83,7 @@ usage: dat <command(s)> [-flag] [--key value]
 
 commands:
   init      initialize a new dat in a directory
-  checkout  dat will operate at a particular head
+  checkout  dat will operate at a particular fork
   add       import a file into dat
   push      push data to a remote dat
   ... etc
@@ -119,7 +120,7 @@ Example output:
 ```
 $ dat status
 Current version is now 8eaf3b0739d32849687a544efae8487b5b05df52
-438 keys, 32 files, 3 commits, 143 Mb total
+438 keys, 32 files, 3 versions, 143 Mb total
 Last updated 3 seconds ago
 ```
 
@@ -173,7 +174,7 @@ Example output:
 ```
 $ dat pull ssh://192.168.0.5:~/data
 Pulled 823 changes (93.88 Mb, 3.4 Mb/s).
-Pull completed successfully.
+Pull completed successfully, you now have 2 forks.
 Current version is now b04adb64fdf2203
 ```
 
@@ -206,9 +207,16 @@ If `<version hash>` is specified as the first positional argument then the indiv
 Example output:
 
 ```
-$ dat log --limit=2
-{ "change": 1, "version": "6bdd624ae6f9ddb96069e04fc030c6e964e77ac7", links: [...], "puts": 12, "deletes": 3, "date": "2015..."}
-{ "change": 2, "version": "7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517", links: [...], "puts": 0, "deletes": 2, "date": "2015..."}
+$ dat log --limit=1
+Version: 6bdd624ae6f9ddb96069e04fc030c6e964e77ac7 [+12, -3]
+Date:    April 15th 2015, 7:30PM PST
+
+  added cool csv
+```
+
+```
+$ dat log --limit=1 --json
+{ "change": 1, "version": "6bdd624ae6f9ddb96069e04fc030c6e964e77ac7", links: [...], "puts": 12, "deletes": 3, "date": "2015...", "message": "added cool csv"}
 ```
 
 `Links` is a list of older versions that are referenced from this current version (forms a directed acyclic graph if drawn).
@@ -219,10 +227,10 @@ $ dat log --limit=2
 Non-destructive rollback state to a hash in the past
 
 ```bash
-dat checkout <commit-hash>
+dat checkout <version-hash>
 ```
 
-Check out latest commit on default branch
+Check out latest version on default branch
 
 ```bash
 dat checkout latest
@@ -248,9 +256,22 @@ If the same key is in both versions but the values differ, a diff object will be
 Example output:
 
 ```
-$ dat diff --pretty 163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502 64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3
+$ dat diff 64843f272df
+Diff between "Imported csv" and "Re-imported edited csv"
+  ? "first":"Max" -> "MAX"
+  - "hey": "deleted"
+  + "foo": "bar"
+Diff between "Initial data import" and "Re-imported edited csv"
+  ? "first":"Bob" -> "BOB"
+  - "hey": "deleted"
+  + "foo": "bar"
+```
+
+```
+$ dat diff --pretty --json 64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3
 {
   "key": "1",
+  "forks": ["163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502", "64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3" ]
   "versions": [
     {
       "type": "put",
@@ -260,8 +281,7 @@ $ dat diff --pretty 163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb05245186
       "value": {
         "key": "1",
         "name": "Max"
-      },
-      "checkout": "163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502"
+      }
     },
     {
       "type": "put",
@@ -271,51 +291,56 @@ $ dat diff --pretty 163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb05245186
       "value": {
         "key": "1",
         "name": "MAX"
-      },
-      "checkout": "64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3"
+      }
     }
   ]
 }
+<... etc for each key in the diff>
 ```
 
 ### dat merge
 
-Merge two checkouts of a dataset into a single checkout. Uses [knead](http://github.com/karissa/knead) as default merge tool for now.
+Merges two forks.
 
 ```
-dat merge <versionA> <versionB>
+dat merge <forkA> <forkB>
 ```
 
 #### Options
-`--merge-tool`: run the given merge tool to assist in resolving conflicts manually.
 
-`-` for <file>: receive resolved changes on stdin
+- `-` for <file>: receive resolved changes on stdin
+- `left`: pick the left side as the winner
+- `right`: pick the right side as the winner
+- `yolo`: pick random side for each key
 
-
-#### Resolutions from file
+Example output:
 
 A `dat merge` receives a stream of changes that will be applied to resolve conflicts between two versions.
 
+$ dat merge
+
+Merging from a file:
+
 ```
-$ cat resolutions.json | dat merge ab3234dfe5 bdc3ae23cef -
+$ dat merge resolutions.json
 Changes resolved successfully.
 Current version is now b04adb64fdf2203
 ```
 
-#### Merge tools
+Merging as a stream using `dat diff`:
 
 ```
-$ dat merge ab3234dfe5 bdc3ae23cef --merge-tool="my-merge-tool.sh"
+$ dat diff ab3234dfe5 bdc3ae23cef | <tool> | dat merge -
 Changes resolved successfully.
-Current version is now b04adb64fdf2203
+Current version is now 98v8catb4bvcddf
 ```
 
-In this example, the `<merge-function/tool>` decides which change to keep between the versions suppled in a `dat diff`, outputting the json for each kept change to stdout.
+Merging two forks by picking one side:
 
 ```
-$ dat diff ab3234dfe5 bdc3ae23cef | <merge-function/tool> | dat merge ab3234dfe5 bdc3ae23cef -
+$ dat merge ab3234dfe5 bdc3ae23cef --left
 Changes resolved successfully.
-Current version is now b04adb64fdf2203
+Current version is now b2bg304823h32h2
 ```
 
 ## dataset commands
@@ -342,8 +367,9 @@ cat file.json | dat import -
 
 ### Options
 
-- `key` - specify which field to use as the primary key
+- `key`/`k` - specify which field to use as the primary key
 - `no-key` - generate a random unique key
+- `message`/`m` - a short description of this import
 
 Example output:
 
@@ -437,4 +463,26 @@ Example output:
 ```
 $ dat get uw60748112
 {"key":"uw60748112","version":"5abd6625cd2e64a116628a9a306de2fbd73a05ea5905e26d5d4e58e077be2203","value":{"time":"2014-04-30T00:09:37.000Z","latitude":"46.7557","longitude":"-121.9855","place":"24km ESE of Eatonville, Washington","type":"earthquake"}}
+```
+
+### dat forks
+
+List the current forks
+
+```
+dat forks
+```
+
+Example output:
+
+```
+$ dat forks
+64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3 - Imported csv
+163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502 - Updated names
+```
+
+```
+$ dat forks --json
+{version: "64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3", message: "Imported csv"}
+{version: "163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502", message: "Updated names"}
 ```

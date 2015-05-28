@@ -1,13 +1,13 @@
-var usage = require('../lib/usage.js')('heads.txt')
+var usage = require('../lib/usage.js')('forks.txt')
 var openDat = require('../lib/open-dat.js')
 var abort = require('../lib/abort.js')
 
 module.exports = {
-  name: 'heads',
-  command: handleHeads
+  name: 'forks',
+  command: handleForks
 }
 
-function handleHeads (args) {
+function handleForks (args) {
   if (args.help) return usage()
   openDat(args, function ready (err, db) {
     if (err) abort(err)

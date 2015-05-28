@@ -17,7 +17,7 @@ var config = {
     require('./bin/diff.js'),
     require('./bin/write.js'),
     require('./bin/cat.js'),
-    require('./bin/heads.js'),
+    require('./bin/forks.js'),
     require('./bin/merge.js')
   ],
   defaults: require('./bin/defaults.js'),

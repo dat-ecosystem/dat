@@ -166,7 +166,7 @@ test('dat heads', function (t) {
 })
 
 test('dat export with checkout', function (t) {
-  var st = spawn(t, dat + ' export --dataset=max --checkout=' + hashes[0], {cwd: dat2})
+  var st = spawn(t, dat + ' export --dataset=max --checkout=' + hashes[1], {cwd: dat2})
   st.stderr.empty()
   st.stdout.match(function match (output) {
     try {
@@ -180,7 +180,7 @@ test('dat export with checkout', function (t) {
 })
 
 test('dat export with checkout hash 1', function (t) {
-  var st = spawn(t, dat + ' export --dataset=max --checkout=' + hashes[1], {cwd: dat2})
+  var st = spawn(t, dat + ' export --dataset=max --checkout=' + hashes[0], {cwd: dat2})
   st.stderr.empty()
   st.stdout.match(function match (output) {
     try {
@@ -194,7 +194,7 @@ test('dat export with checkout hash 1', function (t) {
 })
 
 test('dat export with checkout hash 1 abbr', function (t) {
-  var st = spawn(t, dat + ' export -d max -c ' + hashes[1], {cwd: dat2})
+  var st = spawn(t, dat + ' export -d max -c ' + hashes[0], {cwd: dat2})
   st.stderr.empty()
   st.stdout.match(function match (output) {
     try {
