@@ -76,7 +76,7 @@ test('verify merge version', function (t) {
   st.stdout.match(function match (output) {
     try {
       output = JSON.parse(output)
-      return output.value.name === 'Max'
+      return output.name === 'MAX'
     } catch (e) {
       return false
     }
