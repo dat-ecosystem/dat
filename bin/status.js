@@ -16,11 +16,14 @@ function handleStatus (args) {
     if (err) abort(err)
 
     db.status(function (err, status) {
+      if (err) abort(err)
+      status.version = status.head
+      delete status.head
       if (args.log === 'json') {
         console.log(JSON.stringify(status))
       } else {
         var output = ''
-        output += 'Current version is ' + status.head
+        output += 'Current version is ' + status.version
         if (!status.checkout) output += ' (latest)\n'
         else output += '\n'
         output += status.rows + ' keys, ' + status.files + ' files, ' + status.versions + ' versions, ' + prettyBytes(status.size) + ' total\n'
