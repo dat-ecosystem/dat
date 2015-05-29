@@ -26,7 +26,7 @@ test('dat1 status', function (t) {
 
 helpers.conflict(dat1, dat2, 'status-test', csvs)
 
-test('dat1 status with multiple heads', function (t) {
+test('dat1 status with multiple forks', function (t) {
   var st = spawn(t, dat + ' status', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(/Current version is/)

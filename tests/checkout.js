@@ -19,8 +19,8 @@ var dat2 = path.join(tmp, 'dat-2')
 helpers.twodats(dat1, dat2)
 helpers.conflict(dat1, dat2, 'checkout-test-dataset', csvs)
 
-test('dat1 heads', function (t) {
-  var st = spawn(t, dat + ' heads', {cwd: dat1})
+test('dat1 forks', function (t) {
+  var st = spawn(t, dat + ' forks', {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function match (output) {
     var ok = output.length === 130 // 32bit hash 2 in hex (64) x2 (128) + 2 newlines (130)
@@ -36,7 +36,7 @@ test('dat1 gets proper export', function (t) {
   checkout.stdout.empty()
   checkout.end(function () {
     var exp = spawn(t, dat + ' export -d checkout-test-dataset', {cwd: dat1})
-    exp.stdout.match(/Max/)
+    exp.stdout.match(/MAX/)
     exp.stderr.empty()
     exp.end()
   })

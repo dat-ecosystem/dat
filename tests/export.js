@@ -154,8 +154,8 @@ var dat3 = path.join(tmp, 'dat-1')
 helpers.twodats(dat2, dat3)
 helpers.conflict(dat2, dat3, 'max', csvs)
 
-test('dat heads', function (t) {
-  var st = spawn(t, dat + ' heads', {cwd: dat2})
+test('dat forks', function (t) {
+  var st = spawn(t, dat + ' forks', {cwd: dat2})
   st.stderr.empty()
   st.stdout.match(function match (output) {
     var ok = output.length === 130 // 32bit hash 2 in hex (64) x2 (128) + 2 newlines (130)
