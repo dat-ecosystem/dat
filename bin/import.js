@@ -38,6 +38,12 @@ function handleImport (args) {
     abort()
   }
 
+  if (!args.dataset) {
+    usage()
+    console.error('\nError: Must specify dataset (-d <name>)')
+    abort()
+  }
+
   openDat(args, function ready (err, db) {
     if (err) abort(err)
     handleInputStream(db)
@@ -54,9 +60,9 @@ function handleImport (args) {
       next(null, {type: 'put', key: key, value: obj})
     })
 
-    pump(inputStream, parseInputStream(args), transform, db.createWriteStream({ dataset: args.d }), function done (err) {
+    pump(inputStream, parseInputStream(args), transform, db.createWriteStream({ dataset: args.dataset }), function done (err) {
       if (err) abort(err, 'Error importing data')
-      if (args.log === 'json') {
+      if (args.json) {
         var output = {
           version: db.head
         }

@@ -1,4 +1,4 @@
-dat import <filename or directory>
-  -d <dataset-name> # the name of the dataset to create
+dat import <filename or - for stdin> (required)
+  -d <dataset-name> (required) # the name of the dataset to create
   -f <data-format> # how to parse the file to add
   --help # show help

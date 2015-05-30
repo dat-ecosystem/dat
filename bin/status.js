@@ -19,7 +19,7 @@ function handleStatus (args) {
       if (err) abort(err)
       status.version = status.head
       delete status.head
-      if (args.log === 'json') {
+      if (args.json) {
         console.log(JSON.stringify(status))
       } else {
         var output = ''
@@ -28,7 +28,7 @@ function handleStatus (args) {
         else output += '\n'
         output += status.rows + ' keys, ' + status.files + ' files, ' + status.versions + ' versions, ' + prettyBytes(status.size) + ' total\n'
         output += 'Last updated ' + relativeDate(status.modified)
-        console.error(output)
+        console.log(output)
       }
     })
   })

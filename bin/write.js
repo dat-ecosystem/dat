@@ -58,7 +58,7 @@ function handleWrite (args) {
     pump(inputStream, db.createFileWriteStream(key, opts), function done (err) {
       if (err) abort(err, 'dat: err in write')
 
-      if (args.log === 'json') {
+      if (args.json) {
         var output = {
           version: db.head
         }

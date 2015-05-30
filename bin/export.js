@@ -56,9 +56,8 @@ function handleExport (args) {
     abort()
   }
 
-  if (!args.f || args.f === 'json') {
-    args.f = 'ndjson'
-  }
+  var format = 'ndjson'
+  if (args.format) format = args.format
 
   openDat(args, function ready (err, db) {
     if (err) abort(err)
@@ -75,7 +74,7 @@ function handleExport (args) {
       }
     })
 
-    pump(db.createReadStream(args), parseOutput, formatData(args.f), process.stdout, function done (err) {
+    pump(db.createReadStream(args), parseOutput, formatData(format), process.stdout, function done (err) {
       if (err) abort(err, 'Error exporting data')
     })
   }

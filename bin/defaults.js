@@ -16,8 +16,7 @@ module.exports = [
     abbr: 'c'
   },
   {
-    name: 'log',
-    boolean: false,
-    abbr: 'l'
+    name: 'json',
+    boolean: true
   }
 ]
