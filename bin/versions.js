@@ -26,7 +26,7 @@ function handleVersions (args) {
   }
 
   openDat(args, function ready (err, db) {
-    if (err) abort(err)
+    if (err) abort(err, args)
     handleReadStream(db)
   })
 
@@ -36,7 +36,7 @@ function handleVersions (args) {
     }
 
     pump(db.createChangesStream(opts), ndjson.serialize(), process.stdout, function done (err) {
-      if (err) abort(err, 'dat: err in versions')
+      if (err) abort(err, args, 'dat: err in versions')
     })
   }
 }

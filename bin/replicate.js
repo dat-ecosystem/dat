@@ -22,7 +22,7 @@ function handleReplicate (args) {
   })
 
   openDat(args, function ready (err, db) {
-    if (err) return abort(err)
+    if (err) return abort(err, args)
     stream.pipe(db.replicate()).pipe(stream)
   })
 }

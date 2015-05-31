@@ -25,11 +25,11 @@ function handleRows (args) {
   }
 
   openDat(args, function ready (err, db) {
-    if (err) abort(err)
+    if (err) abort(err, args)
     var key = args._[0]
 
     db.get(key, args, function (err, value) {
-      if (err) abort(err, 'dat get error')
+      if (err) abort(err, args, 'dat get error')
       process.stdout.write(JSON.stringify(value))
     })
   })

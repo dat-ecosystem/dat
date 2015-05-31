@@ -31,7 +31,7 @@ function handleWrite (args) {
   }
 
   openDat(args, function ready (err, db) {
-    if (err) abort(err)
+    if (err) abort(err, args)
     handleInputStream(db)
   })
 
@@ -46,7 +46,7 @@ function handleWrite (args) {
     } else {
       if (!fs.existsSync(path)) {
         usage()
-        abort(new Error('File at ' + path + ' does not exist'))
+        abort(new Error('File at ' + path + ' does not exist'), args)
       }
       inputStream = fs.createReadStream(path)
     }
@@ -56,7 +56,7 @@ function handleWrite (args) {
     }
 
     pump(inputStream, db.createFileWriteStream(key, opts), function done (err) {
-      if (err) abort(err, 'dat: err in write')
+      if (err) abort(err, args, 'dat: err in write')
 
       if (args.json) {
         var output = {

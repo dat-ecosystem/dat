@@ -11,7 +11,7 @@ function handleCheckout (args) {
   if (args.help || args._.length === 0) return usage()
 
   openDat(args, function ready (err, db) {
-    if (err) abort(err)
+    if (err) abort(err, args)
     var head = args._[0]
     var checkout = db.checkout(head === 'latest' ? null : head)
 
@@ -24,7 +24,7 @@ function handleCheckout (args) {
     })
 
     function done (err) {
-      if (err) return abort(err, 'Could not find checkout with hash ', head)
+      if (err) return abort(err, args, 'Could not find checkout with hash ', head)
       console.error('Current version is now', checkout.head)
     }
   })

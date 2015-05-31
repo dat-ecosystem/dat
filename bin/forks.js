@@ -10,12 +10,14 @@ module.exports = {
 function handleForks (args) {
   if (args.help) return usage()
   openDat(args, function ready (err, db) {
-    if (err) abort(err)
+    if (err) abort(err, args)
 
     db.heads()
       .on('data', function head (obj) {
         console.log(obj)
       })
-      .on('error', abort)
+      .on('error', function (err) {
+        abort(err, args)
+      })
   })
 }

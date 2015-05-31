@@ -14,7 +14,7 @@ helpers.twodats(dat1, dat2)
 test('status: dat1 status', function (t) {
   var st = spawn(t, dat + ' status', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(/Current version is/)
+  st.stderr.match(/This dat is empty/)
   st.end()
 })
 
@@ -22,13 +22,13 @@ helpers.conflict(dat1, dat2, 'status-test')
 
 test('status: dat1 status with multiple forks', function (t) {
   var st = spawn(t, dat + ' status', {cwd: dat1})
-  st.stdout.empty()
-  st.stderr.match(/Current version is/)
+  st.stderr.empty()
+  st.stdout.match(/Current version is/)
   st.end()
 })
 
 test('status: dat1 status as json', function (t) {
-  var st = spawn(t, dat + ' status --log=json', {cwd: dat1})
+  var st = spawn(t, dat + ' status --json', {cwd: dat1})
   st.stdout.match(function (output) {
     try {
       var json = JSON.parse(output)

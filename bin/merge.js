@@ -25,10 +25,10 @@ function handleMerge (args) {
   if (args._[2] === '-') args.stdin = true
 
   openDat(args, function ready (err, db) {
-    if (err) return abort(err)
+    if (err) return abort(err, args)
     var mergeStream = db.merge(headA, headB)
     pump(process.stdin, ndjson.parse(), mergeStream, function done (err) {
-      if (err) return abort(err)
+      if (err) return abort(err, args)
       console.error('Merged', headA, headB, 'into', db.head)
     })
   })

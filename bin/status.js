@@ -13,10 +13,10 @@ function handleStatus (args) {
   if (args.help) return usage()
 
   openDat(args, function ready (err, db) {
-    if (err) abort(err)
+    if (err) abort(err, args)
 
     db.status(function (err, status) {
-      if (err) abort(err)
+      if (err) abort(err, args)
       status.version = status.head
       delete status.head
       if (args.json) {

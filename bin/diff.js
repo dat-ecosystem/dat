@@ -15,7 +15,7 @@ function handleDiff (args) {
   if (args._.length < 2) return usage()
 
   openDat(args, function ready (err, db) {
-    if (err) abort(err)
+    if (err) abort(err, args)
 
     var headA = args._[0]
     var headB = args._[1]

@@ -29,7 +29,7 @@ function handleInit (args) {
     var db = dat(args.path, {createIfMissing: true})
 
     db.on('error', function error (err) {
-      abort(err)
+      abort(err, args)
     })
 
     db.on('ready', function ready () {

@@ -45,7 +45,7 @@ function handleImport (args) {
   }
 
   openDat(args, function ready (err, db) {
-    if (err) abort(err)
+    if (err) abort(err, args)
     handleInputStream(db)
   })
 
@@ -61,7 +61,7 @@ function handleImport (args) {
     })
 
     pump(inputStream, parseInputStream(args), transform, db.createWriteStream({ dataset: args.dataset }), function done (err) {
-      if (err) abort(err, 'Error importing data')
+      if (err) abort(err, args, 'Error importing data')
       if (args.json) {
         var output = {
           version: db.head

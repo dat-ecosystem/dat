@@ -18,5 +18,10 @@ module.exports = [
   {
     name: 'json',
     boolean: true
+  },
+  {
+    name: 'verbose',
+    boolean: true,
+    default: false
   }
 ]

@@ -60,7 +60,7 @@ function handleExport (args) {
   if (args.format) format = args.format
 
   openDat(args, function ready (err, db) {
-    if (err) abort(err)
+    if (err) abort(err, args)
     handleOuputStream(db)
   })
 
@@ -75,7 +75,7 @@ function handleExport (args) {
     })
 
     pump(db.createReadStream(args), parseOutput, formatData(format), process.stdout, function done (err) {
-      if (err) abort(err, 'Error exporting data')
+      if (err) abort(err, args, 'Error exporting data')
     })
   }
 }

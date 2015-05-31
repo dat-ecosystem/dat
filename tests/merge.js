@@ -9,27 +9,18 @@ var helpers = require('./helpers')
 
 var tmp = os.tmpdir()
 var dat = path.resolve(__dirname + '/../cli.js')
-var hashes, diff
+var forks, diff
 
 var dat1 = path.join(tmp, 'dat-merge-1')
 var dat2 = path.join(tmp, 'dat-merge-2')
 
 helpers.twodats(dat1, dat2)
-helpers.conflict(dat1, dat2, 'merge-test')
-
-test('merge: dat1 forks', function (t) {
-  var st = spawn(t, dat + ' forks', {cwd: dat1})
-  st.stderr.empty()
-  st.stdout.match(function match (output) {
-    var ok = output.length === 130 // 32bit hash 2 in hex (64) x2 (128) + 2 newlines (130)
-    if (ok) hashes = output.split('\n')
-    return ok
-  })
-  st.end()
+helpers.conflict(dat1, dat2, 'merge-test', function (conflictForks) {
+  forks = conflictForks
 })
 
 test('merge: dat1 diff', function (t) {
-  var st = spawn(t, dat + ' diff ' + hashes.join(' '), {cwd: dat1})
+  var st = spawn(t, dat + ' diff ' + forks.remotes[0], {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function match (output) {
     try {
@@ -43,8 +34,8 @@ test('merge: dat1 diff', function (t) {
 })
 
 test('merge: dat1 merge', function (t) {
-  var diff = spawn(t, dat + ' diff ' + hashes.join(' '), {cwd: dat1, end: false})
-  var merge = spawn(t, dat + ' merge ' + hashes.join(' ') + ' --stdin', {cwd: dat1, end: false})
+  var diff = spawn(t, dat + ' diff ' + forks.remotes[0], {cwd: dat1, end: false})
+  var merge = spawn(t, dat + ' merge ' + forks.remotes[0] + ' --stdin', {cwd: dat1, end: false})
 
   diff.stdout.stream
     .pipe(ndjson.parse())
