@@ -140,33 +140,18 @@ test('export: dat export without dataset errors', function (t) {
   st.end()
 })
 
-var hashes, row, statusJson
-
-var csvs = {
-  a: path.resolve(__dirname + '/fixtures/a.csv'),
-  b: path.resolve(__dirname + '/fixtures/b.csv'),
-  c: path.resolve(__dirname + '/fixtures/c.csv')
-}
+var forks, row
 
 var dat2 = path.join(tmp, 'dat-2')
 var dat3 = path.join(tmp, 'dat-1')
 
 helpers.twodats(dat2, dat3)
-helpers.conflict(dat2, dat3, 'max', csvs)
-
-test('export: dat forks', function (t) {
-  var st = spawn(t, dat + ' forks', {cwd: dat2})
-  st.stderr.empty()
-  st.stdout.match(function match (output) {
-    var ok = output.length === 130 // 32bit hash 2 in hex (64) x2 (128) + 2 newlines (130)
-    if (ok) hashes = output.split('\n')
-    return ok
-  })
-  st.end()
+helpers.conflict(dat2, dat3, 'max', function (conflictForks) {
+  forks = conflictForks
 })
 
 test('export: dat export with checkout', function (t) {
-  var st = spawn(t, dat + ' export --dataset=max --checkout=' + hashes[1], {cwd: dat2})
+  var st = spawn(t, dat + ' export --dataset=max --checkout=' + forks.mine, {cwd: dat2})
   st.stderr.empty()
   st.stdout.match(function match (output) {
     try {
@@ -179,8 +164,8 @@ test('export: dat export with checkout', function (t) {
   st.end()
 })
 
-test('export: dat export with checkout hash 1', function (t) {
-  var st = spawn(t, dat + ' export --dataset=max --checkout=' + hashes[0], {cwd: dat2})
+test('export: dat export with checkout remote fork', function (t) {
+  var st = spawn(t, dat + ' export --dataset=max --checkout=' + forks.remotes[0], {cwd: dat2})
   st.stderr.empty()
   st.stdout.match(function match (output) {
     try {
@@ -193,8 +178,8 @@ test('export: dat export with checkout hash 1', function (t) {
   st.end()
 })
 
-test('export: dat export with checkout hash 1 abbr', function (t) {
-  var st = spawn(t, dat + ' export -d max -c ' + hashes[0], {cwd: dat2})
+test('export: dat export with checkout remote fork abbr', function (t) {
+  var st = spawn(t, dat + ' export -d max -c ' + forks.remotes[0], {cwd: dat2})
   st.stderr.empty()
   st.stdout.match(function match (output) {
     try {

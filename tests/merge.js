@@ -11,17 +11,11 @@ var tmp = os.tmpdir()
 var dat = path.resolve(__dirname + '/../cli.js')
 var hashes, diff
 
-var csvs = {
-  a: path.resolve(__dirname + '/fixtures/a.csv'),
-  b: path.resolve(__dirname + '/fixtures/b.csv'),
-  c: path.resolve(__dirname + '/fixtures/c.csv')
-}
-
 var dat1 = path.join(tmp, 'dat-merge-1')
 var dat2 = path.join(tmp, 'dat-merge-2')
 
 helpers.twodats(dat1, dat2)
-helpers.conflict(dat1, dat2, 'merge-test', csvs)
+helpers.conflict(dat1, dat2, 'merge-test')
 
 test('merge: dat1 forks', function (t) {
   var st = spawn(t, dat + ' forks', {cwd: dat1})

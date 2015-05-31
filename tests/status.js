@@ -9,12 +9,6 @@ var dat = path.resolve(__dirname + '/../cli.js')
 var dat1 = path.join(tmp, 'dat-status-1')
 var dat2 = path.join(tmp, 'dat-status-2')
 
-var csvs = {
-  a: path.resolve(__dirname + '/fixtures/a.csv'),
-  b: path.resolve(__dirname + '/fixtures/b.csv'),
-  c: path.resolve(__dirname + '/fixtures/c.csv')
-}
-
 helpers.twodats(dat1, dat2)
 
 test('status: dat1 status', function (t) {
@@ -24,7 +18,7 @@ test('status: dat1 status', function (t) {
   st.end()
 })
 
-helpers.conflict(dat1, dat2, 'status-test', csvs)
+helpers.conflict(dat1, dat2, 'status-test')
 
 test('status: dat1 status with multiple forks', function (t) {
   var st = spawn(t, dat + ' status', {cwd: dat1})
