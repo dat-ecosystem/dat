@@ -300,15 +300,23 @@ $ dat diff --pretty --json 64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6
 
 ### dat merge
 
-Merges two forks.
+Merges two forks
 
 ```
-dat merge <forkA> <forkB>
+dat merge [<fork> or <filename>] (options)
 ```
+
+You can either merge from a file/STDIN or you can merge based on a fork and a built-in strategy.
+
+If using a file/STDIN your file should contain a resolution stream (TODO link to example)
+
+If merging a fork, `<fork>` should be the hash of the fork you want to merge into the fork you are currently on and you should specify a strategy option.
+
+Use `dat status` and `dat forks` to determine these values.
 
 #### Options
 
-- `-` for <file>: receive resolved changes on stdin
+- `-` as `<filename>`: receive resolved changes on stdin
 - `left`: pick the left side as the winner
 - `right`: pick the right side as the winner
 - `yolo`: pick random side for each key
@@ -323,23 +331,23 @@ Merging from a file:
 
 ```
 $ dat merge resolutions.json
-Changes resolved successfully.
+Changes merged successfully.
 Current version is now b04adb64fdf2203
 ```
 
 Merging as a stream using `dat diff`:
 
 ```
-$ dat diff ab3234dfe5 bdc3ae23cef | <tool> | dat merge -
-Changes resolved successfully.
+$ dat diff ab3234dfe5 | <tool> | dat merge -
+Changes merged successfully.
 Current version is now 98v8catb4bvcddf
 ```
 
-Merging two forks by picking one side:
+Merging by picking one side:
 
 ```
-$ dat merge ab3234dfe5 bdc3ae23cef --left
-Changes resolved successfully.
+$ dat merge bdc3ae23cef --left
+Changes merged successfully.
 Current version is now b2bg304823h32h2
 ```
 
