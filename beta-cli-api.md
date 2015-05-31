@@ -319,7 +319,7 @@ Use `dat status` and `dat forks` to determine these values.
 - `-` as `<filename>`: receive resolved changes on stdin
 - `left`: pick the left side as the winner
 - `right`: pick the right side as the winner
-- `yolo`: pick random side for each key
+- `random`: pick random side for each key
 
 Example output:
 
