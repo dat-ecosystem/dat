@@ -17,21 +17,21 @@ helpers.onedat(dat1)
 var csvfile = path.resolve(__dirname + '/fixtures/all_hour.csv')
 var exportfile = path.join(dat1, 'out.csv')
 
-test('dat import csv', function (t) {
+test('export: dat import csv', function (t) {
   var st = spawn(t, dat + ' import ' + csvfile + ' -d export-test --key=id', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(/Done importing data/)
   st.end()
 })
 
-test('dat export to file', function (t) {
+test('export: dat export to file', function (t) {
   var st = spawn(t, dat + ' export -d export-test > ' + exportfile, {cwd: dat1})
   st.stdout.empty()
   st.stderr.empty()
   st.end()
 })
 
-test('dat export output matches original file', function (t) {
+test('export: dat export output matches original file', function (t) {
   t.plan(53)
   var sorter = sort(function (a, b) {
     return parseFloat(a.latitude) < parseFloat(b.longitude)
@@ -58,7 +58,7 @@ test('dat export output matches original file', function (t) {
   loop()
 })
 
-test('dat export with limit', function (t) {
+test('export: dat export with limit', function (t) {
   var st = spawn(t, dat + ' export --limit=5 --dataset=export-test', {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function (output) {
@@ -75,7 +75,7 @@ test('dat export with limit', function (t) {
   st.end()
 })
 
-test('dat export with limit and csv', function (t) {
+test('export: dat export with limit and csv', function (t) {
   var st = spawn(t, dat + ' export --limit=5 --dataset=export-test --format=csv', {cwd: dat1})
   st.stderr.empty()
   var ok = false
@@ -89,21 +89,21 @@ test('dat export with limit and csv', function (t) {
   st.end()
 })
 
-test('dat export with limit and csv without dataset errors', function (t) {
+test('export: dat export with limit and csv without dataset errors', function (t) {
   var st = spawn(t, dat + ' export --limit=5 --format=csv', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(fs.readFileSync(path.join('usage', 'export.txt')).toString() + '\n', 'usage matched')
   st.end()
 })
 
-test('dat export with range options without dataset errors', function (t) {
+test('export: dat export with range options without dataset errors', function (t) {
   var st = spawn(t, dat + ' export --lt=ak11246291', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(fs.readFileSync(path.join('usage', 'export.txt')).toString() + '\n', 'usage matched')
   st.end()
 })
 
-test('dat export with lt', function (t) {
+test('export: dat export with lt', function (t) {
   var st = spawn(t, dat + ' export --dataset=export-test --lt=ak11246291', {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function (output) {
@@ -120,7 +120,7 @@ test('dat export with lt', function (t) {
   st.end()
 })
 
-test('dat export with lt and limit options', function (t) {
+test('export: dat export with lt and limit options', function (t) {
   var st = spawn(t, dat + ' export --dataset=export-test --lt=ak11246291 --limit=1', {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function (output) {
@@ -133,14 +133,14 @@ test('dat export with lt and limit options', function (t) {
   st.end()
 })
 
-test('dat export without dataset errors', function (t) {
+test('export: dat export without dataset errors', function (t) {
   var st = spawn(t, dat + ' export', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(fs.readFileSync(path.join('usage', 'export.txt')).toString() + '\n', 'usage matched')
   st.end()
 })
 
-var hashes, row
+var hashes, row, statusJson
 
 var csvs = {
   a: path.resolve(__dirname + '/fixtures/a.csv'),
@@ -154,7 +154,7 @@ var dat3 = path.join(tmp, 'dat-1')
 helpers.twodats(dat2, dat3)
 helpers.conflict(dat2, dat3, 'max', csvs)
 
-test('dat forks', function (t) {
+test('export: dat forks', function (t) {
   var st = spawn(t, dat + ' forks', {cwd: dat2})
   st.stderr.empty()
   st.stdout.match(function match (output) {
@@ -165,7 +165,7 @@ test('dat forks', function (t) {
   st.end()
 })
 
-test('dat export with checkout', function (t) {
+test('export: dat export with checkout', function (t) {
   var st = spawn(t, dat + ' export --dataset=max --checkout=' + hashes[1], {cwd: dat2})
   st.stderr.empty()
   st.stdout.match(function match (output) {
@@ -179,7 +179,7 @@ test('dat export with checkout', function (t) {
   st.end()
 })
 
-test('dat export with checkout hash 1', function (t) {
+test('export: dat export with checkout hash 1', function (t) {
   var st = spawn(t, dat + ' export --dataset=max --checkout=' + hashes[0], {cwd: dat2})
   st.stderr.empty()
   st.stdout.match(function match (output) {
@@ -193,7 +193,7 @@ test('dat export with checkout hash 1', function (t) {
   st.end()
 })
 
-test('dat export with checkout hash 1 abbr', function (t) {
+test('export: dat export with checkout hash 1 abbr', function (t) {
   var st = spawn(t, dat + ' export -d max -c ' + hashes[0], {cwd: dat2})
   st.stderr.empty()
   st.stdout.match(function match (output) {
@@ -209,14 +209,14 @@ test('dat export with checkout hash 1 abbr', function (t) {
 
 // export after write file
 
-test('dat write', function (t) {
+test('export: dat write', function (t) {
   var st = spawn(t, "echo 'hello world' | " + dat + ' write test-file.txt -d max -', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(/Done writing binary data/)
   st.end()
 })
 
-test('dat export with checkout after write', function (t) {
+test('export: dat export with checkout after write', function (t) {
   var st = spawn(t, dat + ' export -d max', {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function match (output) {

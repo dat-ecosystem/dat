@@ -12,7 +12,7 @@ var dat3 = path.join(tmp, 'dat-3')
 
 helpers.onedat(dat1)
 
-test('dat import w/ no dataset arg', function (t) {
+test('import: dat import w/ no dataset arg', function (t) {
   var csv = path.resolve(__dirname + '/fixtures/all_hour.csv')
   var st = spawn(t, dat + ' import ' + csv + ' --key=id', {cwd: dat1})
   st.stdout.empty()
@@ -20,7 +20,7 @@ test('dat import w/ no dataset arg', function (t) {
   st.end()
 })
 
-test('dat import csv', function (t) {
+test('import: dat import csv', function (t) {
   var csv = path.resolve(__dirname + '/fixtures/all_hour.csv')
   var st = spawn(t, dat + ' import ' + csv + ' --key=id --dataset=import-test1', {cwd: dat1})
   st.stdout.empty()
@@ -32,7 +32,7 @@ verify('import-test1', dat1)
 
 helpers.onedat(dat2)
 
-test('dat import json', function (t) {
+test('import: dat import json', function (t) {
   var json = path.resolve(__dirname + '/fixtures/all_hour.json')
   var st = spawn(t, dat + ' import ' + json + ' --key=id --dataset=import-test2', {cwd: dat2})
   st.stdout.empty()
@@ -44,7 +44,7 @@ verify('import-test2', dat2)
 
 helpers.onedat(dat3)
 
-test('dat import all_hour to test3', function (t) {
+test('import: dat import all_hour to test3', function (t) {
   var json = path.resolve(__dirname + '/fixtures/all_hour.json')
   var st = spawn(t, dat + ' import ' + json + ' --key=id --dataset=import-test3', {cwd: dat3})
   st.stdout.empty()
@@ -54,7 +54,7 @@ test('dat import all_hour to test3', function (t) {
 
 verify('import-test3', dat3)
 
-test('dat import all_hour to separate dataset', function (t) {
+test('import: dat import all_hour to separate dataset', function (t) {
   var json = path.resolve(__dirname + '/fixtures/all_hour.json')
   var st = spawn(t, dat + ' import ' + json + ' --key=id --dataset=import-test4', {cwd: dat3})
   st.stdout.empty()
@@ -64,7 +64,7 @@ test('dat import all_hour to separate dataset', function (t) {
 
 verify('import-test4', dat3)
 
-test('dat import with json output', function (t) {
+test('import: dat import with json output', function (t) {
   var json = path.resolve(__dirname + '/fixtures/all_hour.json')
   var st = spawn(t, dat + ' import ' + json + ' --json --key=id --dataset=import-test5', {cwd: dat3})
   st.stdout.match(function (output) {
@@ -76,7 +76,7 @@ test('dat import with json output', function (t) {
 })
 
 function verify (dataset, dir) {
-  test('dat export', function (t) {
+  test('import: dat export', function (t) {
     var st = spawn(t, dat + ' export --dataset=' + dataset, {cwd: dir})
     st.stderr.empty()
     st.stdout.match(function (output) {

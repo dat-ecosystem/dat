@@ -20,7 +20,7 @@ var dataset = 'checkout-test-dataset'
 helpers.twodats(dat1, dat2)
 helpers.conflict(dat1, dat2, dataset, csvs)
 
-test('dat1 forks', function (t) {
+test('checkout: dat1 forks', function (t) {
   var st = spawn(t, dat + ' forks', {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function match (output) {
@@ -31,7 +31,7 @@ test('dat1 forks', function (t) {
   st.end()
 })
 
-test('dat1 status returns local version', function (t) {
+test('checkout: dat1 status returns local version', function (t) {
   var stat = spawn(t, dat + ' status --json', {cwd: dat1, end: false})
   stat.stderr.empty()
   stat.stdout.match(function match (output) {
@@ -48,7 +48,7 @@ test('dat1 status returns local version', function (t) {
   })
 })
 
-test('dat1 gets proper export', function (t) {
+test('checkout: dat1 gets proper export', function (t) {
   // determine which has is ours and which came from dat2, then checkout to the remote one
   var remoteHash
   if (hashes[0] === statusJson.version) remoteHash = hashes[1]

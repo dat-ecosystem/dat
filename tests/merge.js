@@ -17,13 +17,13 @@ var csvs = {
   c: path.resolve(__dirname + '/fixtures/c.csv')
 }
 
-var dat1 = path.join(tmp, 'dat-1')
-var dat2 = path.join(tmp, 'dat-2')
+var dat1 = path.join(tmp, 'dat-merge-1')
+var dat2 = path.join(tmp, 'dat-merge-2')
 
 helpers.twodats(dat1, dat2)
 helpers.conflict(dat1, dat2, 'merge-test', csvs)
 
-test('dat1 forks', function (t) {
+test('merge: dat1 forks', function (t) {
   var st = spawn(t, dat + ' forks', {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function match (output) {
@@ -34,7 +34,7 @@ test('dat1 forks', function (t) {
   st.end()
 })
 
-test('dat1 diff', function (t) {
+test('merge: dat1 diff', function (t) {
   var st = spawn(t, dat + ' diff ' + hashes.join(' '), {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function match (output) {
@@ -48,7 +48,7 @@ test('dat1 diff', function (t) {
   st.end()
 })
 
-test('dat1 merge', function (t) {
+test('merge: dat1 merge', function (t) {
   var diff = spawn(t, dat + ' diff ' + hashes.join(' '), {cwd: dat1, end: false})
   var merge = spawn(t, dat + ' merge ' + hashes.join(' ') + ' --stdin', {cwd: dat1, end: false})
 
@@ -69,7 +69,7 @@ test('dat1 merge', function (t) {
   })
 })
 
-test('verify merge version', function (t) {
+test('merge: verify merge version', function (t) {
   var st = spawn(t, dat + ' export -d merge-test', {cwd: dat1})
 
   st.stderr.empty()

@@ -6,8 +6,8 @@ var tmp = require('os').tmpdir()
 
 var dat = path.resolve(__dirname + '/../cli.js')
 
-var dat1 = path.join(tmp, 'dat-1')
-var dat2 = path.join(tmp, 'dat-2')
+var dat1 = path.join(tmp, 'dat-status-1')
+var dat2 = path.join(tmp, 'dat-status-2')
 
 var csvs = {
   a: path.resolve(__dirname + '/fixtures/a.csv'),
@@ -17,7 +17,7 @@ var csvs = {
 
 helpers.twodats(dat1, dat2)
 
-test('dat1 status', function (t) {
+test('status: dat1 status', function (t) {
   var st = spawn(t, dat + ' status', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(/Current version is/)
@@ -26,14 +26,14 @@ test('dat1 status', function (t) {
 
 helpers.conflict(dat1, dat2, 'status-test', csvs)
 
-test('dat1 status with multiple forks', function (t) {
+test('status: dat1 status with multiple forks', function (t) {
   var st = spawn(t, dat + ' status', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(/Current version is/)
   st.end()
 })
 
-test('dat1 status as json', function (t) {
+test('status: dat1 status as json', function (t) {
   var st = spawn(t, dat + ' status --log=json', {cwd: dat1})
   st.stdout.match(function (output) {
     try {
