@@ -7,7 +7,7 @@ This is the proposed CLI API for our Beta release. Please leave feedback [in thi
   - [dat init](#dat-init)
   - [dat status](#dat-status)
   - [dat log](#dat-log)
-  - [dat clone](#dat-push)
+  - [dat clone](#dat-clone)
   - [dat push](#dat-push)
   - [dat pull](#dat-pull)
   - [dat checkout](#dat-checkout)
@@ -143,6 +143,12 @@ $ dat log --limit=1 --json
 ### dat clone
 
 Clone a new repository from a remote dat to create a new dat.
+
+```
+dat clone <repo-url> [output-dir]
+```
+
+Your `repo-url` can use any of the available transports. Default transports are `http`, `https` and `ssh`.
 
 Example output:
 
