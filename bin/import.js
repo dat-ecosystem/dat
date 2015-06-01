@@ -40,8 +40,7 @@ function handleImport (args) {
 
   if (!args.dataset) {
     usage()
-    console.error('\nError: Must specify dataset (-d <name>)')
-    abort()
+    abort(new Error('\nError: Must specify dataset (-d <name>)'))
   }
 
   openDat(args, function ready (err, db) {
