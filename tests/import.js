@@ -40,6 +40,14 @@ test('import: dat import json', function (t) {
   st.end()
 })
 
+test('import: dat import csv with json flag', function (t) {
+  var json = path.resolve(__dirname + '/fixtures/all_hour.csv')
+  var st = spawn(t, dat + ' import ' + json + ' --json --key=id --dataset=import-test2', {cwd: dat2})
+  st.stdout.match(/version/)
+  st.stderr.empty()
+  st.end()
+})
+
 verify('import-test2', dat2)
 
 helpers.onedat(dat3)
