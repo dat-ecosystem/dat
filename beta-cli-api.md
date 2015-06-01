@@ -22,20 +22,6 @@ This is the proposed CLI API for our Beta release. Please leave feedback [in thi
   - [dat read](#dat-read)
   - [dat get](#dat-get)
 
-## example repository folder structure
-
-```
-repo/
-  - .dat/
-  - dat.json
-  -  dataset-a/
-     - dataset.json
-     - readme.md
-  -  dataset-b/
-     - dataset.json
-     - readme.md
-```
-
 ## repository commands
 
 ### dat
@@ -370,11 +356,9 @@ Example:
 
 ## dataset commands
 
-These are meant to affect a specific dataset inside a repository. Each dataset is a folder inside the repository.
+These are meant to affect a specific dataset inside a repository.
 
-You can either run these commands from inside the dataset folder, or by explicitly specifying it with the dataset option:
-
-- `dataset`/`d` - specify the dataset to use. defauts to the dataset in the folder you are in.
+- `dataset`/`d` - specify the dataset to use.
 
 ### dat import
 
