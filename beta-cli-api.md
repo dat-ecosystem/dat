@@ -312,7 +312,7 @@ dat merge <fork> [<filename>]
 
 You can either merge data from a file/STDIN or you can merge based on a built-in strategy.
 
-If using a file/STDIN your file should contain a resolution stream (TODO link to example)
+If using a file/STDIN your file should contain a JSON stream (see below).
 
 If merging a fork, you should specify a strategy option.
 
@@ -353,6 +353,19 @@ Merging by picking one side:
 $ dat merge bdc3ae23cef --left
 Changes merged successfully.
 Current version is now b2bg304823h32h2
+```
+
+#### JSON format
+
+When writing data into a merge operation it should be in the same format as is contained in the individual versions supplied in the `versions` array of `dat diff` output.
+
+`dat merge` expects newline separated JSON objects (ndjson) as input.
+
+Example:
+
+```
+{"type":"put","version":"163c6089c3477ee","change":3,"key":"maxogden","value":{"key":"maxogden","name":"Max"}}
+{"type":"put","version":"b04adb64fdf2203","change":6,"key":"mafintosh","value":{"key":"mafintosh","name":"Mathias"}}
 ```
 
 ## dataset commands
