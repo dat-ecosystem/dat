@@ -1,6 +1,6 @@
 # dat command line API
 
-This is the proposed CLI API for our Beta release. Please leave feedback [in this thread](https://github.com/maxogden/dat/issues/195).
+This is the `dat` command line API as of the Beta release.
 
 - [repository commands](#repository-commands)
   - [dat](#dat)
@@ -138,7 +138,6 @@ $ dat log --limit=1 --json
 ```
 
 `Links` is a list of older versions that are referenced from this current version (forms a directed acyclic graph if drawn).
-
 
 ### dat clone
 
@@ -386,6 +385,8 @@ Replication completed successfully.
 
 These are meant to affect a specific dataset inside a repository.
 
+Currently you **must** specify the dataset when doing any dataset commands.
+
 - `dataset`/`d` - specify the dataset to use.
 
 ### dat import
@@ -396,25 +397,27 @@ Import key/value data into dat
 dat import <filename>
 ```
 
-Stream data from stdin:
-
-```bash
-cat file.json | dat import -
-```
-
 ### Options
 
 - `key`/`k` - specify which field to use as the primary key
 - `no-key` - generate a random unique key
 - `message`/`m` - a short description of this import
 
-Example output:
+Examples:
+
+Import a json file:
 
 ```
 $ dat import flights.json
 Added 302,143 keys (32.03 Mb, 4.4 Mb/s).
 Data added successfully.
 Current version is now b04adb64fdf2203
+```
+
+Stream data from stdin:
+
+```bash
+cat file.json | dat import -
 ```
 
 ### dat export
@@ -438,6 +441,7 @@ dat export > woah-my-data.json
 - `format` - default `json`. you can also specify `csv`.
 
 Example output:
+
 ```
 $ dat export
 {"key": "maxogden", "firstname": "Max", "lastname": "Ogden"}
@@ -464,24 +468,26 @@ Write binary data into dat. This differs from `import` in that it doesn't parse 
 Write a file to dat:
 
 ```
-dat write <path-to-file>
-```
-
-Stream data from stdin:
-
-```bash
-cat photo.jpg | dat write photo.jpg -
+dat write <filename>
 ```
 
 #### Options
 
-`name/n`: the name, or lookup key, for the binary file inside dat. If no name is supplied, dat will use the first argument (path-to-file) as the lookup key.
+`name`/`n`: the name, or lookup key, for the binary file inside dat. If no name is supplied, dat will use the first argument (filename) as the lookup key.
 
 Example output:
 
+Stream data from stdin, save as 'photo.jpg' (must specify name when using STDIN):
+
+```bash
+cat photo.jpg | dat write - --name=photo.jpg
 ```
-$ dat write /some/path/to/photo.jpg --name=photo.jpg
-Storing photo.jpg (8.3 Mb, 38 Mb/s).
-Stored photo.jpg successfully.
+
+Write a file by filename (uses `cat.jpg` as the name automatically):
+
+```
+$ dat write images/cat.jpg
+Storing cat.jpg (8.3 Mb, 38 Mb/s).
+Stored cat.jpg successfully.
 Current version is now b04adb64fdf2203
 ```
