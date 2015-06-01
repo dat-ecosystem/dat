@@ -28,19 +28,19 @@ test('merge: dat1 diff', function (t) {
     } catch (e) {
       return false
     }
-    if (diff.versions[0].value.name === 'Max' && diff.versions[1].value.name === 'MAX') return true
+    if (diff.versions[0].value.name === 'MAX' && diff.versions[1].value.name === 'Max') return true
   })
   st.end()
 })
 
-test('merge: dat1 merge', function (t) {
+test('merge: dat1 diff | merge', function (t) {
   var diff = spawn(t, dat + ' diff ' + forks.remotes[0], {cwd: dat1, end: false})
-  var merge = spawn(t, dat + ' merge ' + forks.remotes[0] + ' --stdin', {cwd: dat1, end: false})
+  var merge = spawn(t, dat + ' merge -', {cwd: dat1, end: false})
 
   diff.stdout.stream
     .pipe(ndjson.parse())
     .pipe(through.obj(function (obj, enc, next) {
-      next(null, obj.versions[0])
+      next(null, obj.versions[0]) // choose left
     }))
     .pipe(ndjson.serialize())
     .pipe(merge.stdin)

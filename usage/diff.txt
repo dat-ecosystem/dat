@@ -1,3 +1,5 @@
-dat diff <head1> <head2>
+dat diff <versionA> [versionB]
 
-compares two heads and streams out any keys that have differing values
+Compares two heads and streams out any keys that have differing values
+
+If you specify one version, your current version will be used as the other version. Otherwise you can pass two versions.

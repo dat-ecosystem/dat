@@ -248,10 +248,12 @@ Checked out state of dat to 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
 Generate a diff between two versions of the repository
 
 ```
-dat diff <versionA> <versionB>
+dat diff <versionA> [<versionB>]
 ```
 
-If the same key is in both versions but the values differ, a diff object will be written to the output. You will get a diff object for each diff that is found.
+If you specify one version, your current version will be used as the other version. Otherwise you can pass two versions.
+
+If the same key is in both versions but the values differ, a diff object will be written to the output. You will get a diff object for each diff that is found. Values that match are skipped.
 
 Example output:
 
@@ -268,7 +270,7 @@ Diff between "Initial data import" and "Re-imported edited csv"
 ```
 
 ```
-$ dat diff --pretty --json 64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3
+$ dat diff --pretty --json 64843f272df
 {
   "key": "1",
   "forks": ["163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502", "64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3" ]
