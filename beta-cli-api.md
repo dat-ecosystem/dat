@@ -60,12 +60,13 @@ All commands have these options:
 - `help`/`h` (boolean) - pass this option to show the help for a command.
 - `json` - set this to true to change all output to JSON for easy parsing.
 - `checkout` - the version hash to use when retrieving data for a command.
+- `verbose` - show the full stack trace/debug info on errors
 
 Example output:
 
 ```
 $ dat
-usage: dat <command(s)> [-flag] [--key value]
+usage: dat <command(s)> [-flag] [--key=value]
 
 commands:
   init      initialize a new dat in a directory
@@ -206,7 +207,6 @@ $ dat log --limit=1 --json
 ```
 
 `Links` is a list of older versions that are referenced from this current version (forms a directed acyclic graph if drawn).
-
 
 ### dat checkout
 
