@@ -35,7 +35,7 @@ test('merge: dat1 diff', function (t) {
 
 test('merge: dat1 diff | merge', function (t) {
   var diff = spawn(t, dat + ' diff ' + forks.remotes[0], {cwd: dat1, end: false})
-  var merge = spawn(t, dat + ' merge -', {cwd: dat1, end: false})
+  var merge = spawn(t, dat + ' merge ' + forks.remotes[0] + ' -', {cwd: dat1, end: false})
 
   diff.stdout.stream
     .pipe(ndjson.parse())

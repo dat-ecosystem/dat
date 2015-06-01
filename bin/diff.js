@@ -16,14 +16,14 @@ function handleDiff (args) {
 
   openDat(args, function ready (err, db) {
     if (err) abort(err, args)
-    
+
     if (args._.length === 2) return diff(args._[0], args._[1])
-      
+
     db.status(function (err, status) {
       if (err) abort(err, args)
       diff(status.head, args._[0])
     })
-    
+
     function diff (headA, headB) {
       var diffs = db.createDiffStream(headA, headB)
       pump(diffs, datDiffFormatter(), ndjson.serialize(), process.stdout, function done (err) {

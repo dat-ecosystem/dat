@@ -1,2 +1,12 @@
-dat merge <head1> <head2>
-  --live # wait for data piped to stdin for merge resolutions
+dat merge <fork(s)> [<filename>]
+
+Merges two forks
+
+  <fork>     (required)  the hash of the fork you want to merge
+  <filename> (optional)  merge resolution JSON data from this file
+  --left     pick the left side as the winner
+  --right    pick the right side as the winner
+  --random   pick random side for each key
+
+If you specify 1 fork, your current fork will be used as the 2nd.
+You can also pass 2 specific forks in.

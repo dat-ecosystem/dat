@@ -305,14 +305,16 @@ $ dat diff --pretty --json 64843f272df
 Merges two forks
 
 ```
-dat merge [<fork> or <filename>] (options)
+dat merge <fork> [<filename>]
 ```
 
-You can either merge from a file/STDIN or you can merge based on a fork and a built-in strategy.
+`<fork>` should be the hash of the fork you want to merge into the fork you are currently on
+
+You can either merge data from a file/STDIN or you can merge based on a built-in strategy.
 
 If using a file/STDIN your file should contain a resolution stream (TODO link to example)
 
-If merging a fork, `<fork>` should be the hash of the fork you want to merge into the fork you are currently on and you should specify a strategy option.
+If merging a fork, you should specify a strategy option.
 
 Use `dat status` and `dat forks` to determine these values.
 
@@ -332,7 +334,7 @@ $ dat merge
 Merging from a file:
 
 ```
-$ dat merge resolutions.json
+$ dat merge ab3234dfe5 resolutions.json
 Changes merged successfully.
 Current version is now b04adb64fdf2203
 ```
@@ -340,7 +342,7 @@ Current version is now b04adb64fdf2203
 Merging as a stream using `dat diff`:
 
 ```
-$ dat diff ab3234dfe5 | <tool> | dat merge -
+$ dat diff ab3234dfe5 | <tool> | dat merge ab3234dfe5 -
 Changes merged successfully.
 Current version is now 98v8catb4bvcddf
 ```
