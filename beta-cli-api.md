@@ -6,21 +6,20 @@ This is the proposed CLI API for our Beta release. Please leave feedback [in thi
   - [dat](#dat)
   - [dat init](#dat-init)
   - [dat status](#dat-status)
+  - [dat log](#dat-log)
   - [dat clone](#dat-push)
   - [dat push](#dat-push)
   - [dat pull](#dat-pull)
-  - [dat replicate](#dat-replicate)
-  - [dat log](#dat-log)
   - [dat checkout](#dat-checkout)
   - [dat diff](#dat-diff)
   - [dat merge](#dat-merge)
   - [dat forks](#dat-forks)
+  - [dat replicate](#dat-replicate)
 - [dataset commands](#dataset-commands)
   - [dat import](#dat-import)
   - [dat export](#dat-export)
-  - [dat write](#dat-write)
   - [dat read](#dat-read)
-  - [dat get](#dat-get)
+  - [dat write](#dat-write)
 
 ## repository commands
 
@@ -34,7 +33,7 @@ dat
 
 ### Options
 
-Options have shorthand `-` and long form `--` variations:
+Options usually have shorthand `-` and long form `--` variations:
 
 ```
 dat -p /test
@@ -75,7 +74,7 @@ commands:
   push      push data to a remote dat
   ... etc
 
-type `dat command --help` to view detailed help about a specific subcommand
+type `dat <command> --help` to view detailed help
 ```
 
 ### dat init
@@ -110,6 +109,36 @@ Current version is now 8eaf3b0739d32849687a544efae8487b5b05df52
 438 keys, 32 files, 3 versions, 143 Mb total
 Last updated 3 seconds ago
 ```
+
+### dat log
+
+Stream versions out in historical order as json
+
+```bash
+dat log <version hash>
+```
+
+By default (no arguments) it will print out a stream of json representing each version of the repository.
+
+If `<version hash>` is specified as the first positional argument then the individual change data for that version will be streamed out.
+
+Example output:
+
+```
+$ dat log --limit=1
+Version: 6bdd624ae6f9ddb96069e04fc030c6e964e77ac7 [+12, -3]
+Date:    April 15th 2015, 7:30PM PST
+
+  added cool csv
+```
+
+```
+$ dat log --limit=1 --json
+{ "change": 1, "version": "6bdd624ae6f9ddb96069e04fc030c6e964e77ac7", links: [...], "puts": 12, "deletes": 3, "date": "2015...", "message": "added cool csv"}
+```
+
+`Links` is a list of older versions that are referenced from this current version (forms a directed acyclic graph if drawn).
+
 
 ### dat clone
 
@@ -164,49 +193,6 @@ Pulled 823 changes (93.88 Mb, 3.4 Mb/s).
 Pull completed successfully, you now have 2 forks.
 Current version is now b04adb64fdf2203
 ```
-
-### dat replicate
-
-Same as doing a `dat push` and `dat pull` at the same time. Use it when you are on the other end of a `dat pull` or a `dat push` (e.g. if you are hosting dat on a server).
-
-Example output:
-
-```
-$ dat pull ssh://192.168.0.5:~/data
-Pushed 403 changes (13.88 Mb).
-Pulled 823 changes (93.88 Mb).
-Average speed: 4.3 Mb/s.
-Replication completed successfully.
-```
-
-### dat log
-
-Stream versions out in historical order as json
-
-```bash
-dat log <version hash>
-```
-
-By default (no arguments) it will print out a stream of json representing each version of the repository.
-
-If `<version hash>` is specified as the first positional argument then the individual change data for that version will be streamed out.
-
-Example output:
-
-```
-$ dat log --limit=1
-Version: 6bdd624ae6f9ddb96069e04fc030c6e964e77ac7 [+12, -3]
-Date:    April 15th 2015, 7:30PM PST
-
-  added cool csv
-```
-
-```
-$ dat log --limit=1 --json
-{ "change": 1, "version": "6bdd624ae6f9ddb96069e04fc030c6e964e77ac7", links: [...], "puts": 12, "deletes": 3, "date": "2015...", "message": "added cool csv"}
-```
-
-`Links` is a list of older versions that are referenced from this current version (forms a directed acyclic graph if drawn).
 
 ### dat checkout
 
@@ -354,6 +340,42 @@ Example:
 {"type":"put","version":"b04adb64fdf2203","change":6,"key":"mafintosh","value":{"key":"mafintosh","name":"Mathias"}}
 ```
 
+### dat forks
+
+List the current forks
+
+```
+dat forks
+```
+
+Example output:
+
+```
+$ dat forks
+64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3 - Imported csv
+163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502 - Updated names
+```
+
+```
+$ dat forks --json
+{version: "64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3", message: "Imported csv"}
+{version: "163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502", message: "Updated names"}
+```
+
+### dat replicate
+
+Same as doing a `dat push` and `dat pull` at the same time. Use it when you are on the other end of a `dat pull` or a `dat push` (e.g. if you are hosting dat on a server).
+
+Example output:
+
+```
+$ dat pull ssh://192.168.0.5:~/data
+Pushed 403 changes (13.88 Mb).
+Pulled 823 changes (93.88 Mb).
+Average speed: 4.3 Mb/s.
+Replication completed successfully.
+```
+
 ## dataset commands
 
 These are meant to affect a specific dataset inside a repository.
@@ -415,6 +437,20 @@ $ dat export
 {"key": "maxogden", "firstname": "Max", "lastname": "Ogden"}
 ```
 
+### dat read
+
+Read binary data from a file stored in dat
+
+```
+dat read <filename>
+```
+
+Example:
+
+```
+$ dat read photo.jpg
+```
+
 ### dat write
 
 Write binary data into dat. This differs from `import` in that it doesn't parse the file, it just stores it as a binary attachment. `import` is designed for key/value row-like, or tabular data. `write` is meant for large files, blobs, or attachments that you can't parse into rows.
@@ -442,56 +478,4 @@ $ dat write /some/path/to/photo.jpg --name=photo.jpg
 Storing photo.jpg (8.3 Mb, 38 Mb/s).
 Stored photo.jpg successfully.
 Current version is now b04adb64fdf2203
-```
-
-### dat cat
-
-Read binary data from a file stored in dat
-
-```
-dat cat <filename>
-```
-
-Example output:
-
-```
-$ dat cat photo.jpg
-<binary data here>
-```
-
-### dat get
-
-Get a single key + value out of a dataset
-
-```
-dat get <key>
-```
-
-Example output:
-
-```
-$ dat get uw60748112
-{"key":"uw60748112","version":"5abd6625cd2e64a116628a9a306de2fbd73a05ea5905e26d5d4e58e077be2203","value":{"time":"2014-04-30T00:09:37.000Z","latitude":"46.7557","longitude":"-121.9855","place":"24km ESE of Eatonville, Washington","type":"earthquake"}}
-```
-
-### dat forks
-
-List the current forks
-
-```
-dat forks
-```
-
-Example output:
-
-```
-$ dat forks
-64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3 - Imported csv
-163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502 - Updated names
-```
-
-```
-$ dat forks --json
-{version: "64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3", message: "Imported csv"}
-{version: "163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502", message: "Updated names"}
 ```
