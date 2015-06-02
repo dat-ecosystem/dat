@@ -10,7 +10,7 @@ Windows        | Mac/Linux
 
 ## Documentation
 
-- For using the CLI `dat` utility see [`cli-docs.md`](cli-docs.md)
+- For using the CLI `dat` utility see [`docs/cli-docs.md`](docs/cli-docs.md)
 - For using the dat JS API see [dat-core](https://github.com/maxogden/dat-core)
 
 ## Installation
