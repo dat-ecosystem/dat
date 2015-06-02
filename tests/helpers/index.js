@@ -51,7 +51,8 @@ function conflict (dat1, dat2, dataset, cb) {
   })
 
   test('helpers: dat2 pull dat1', function (t) {
-    var st = spawn(t, dat + ' pull ' + dat1, {cwd: dat2})
+    // uses --bin since dat is not in the PATH necessarily when running tests
+    var st = spawn(t, dat + ' pull ' + dat1 + ' --bin=' + dat, {cwd: dat2})
     st.stderr.empty()
     st.stdout.empty()
     st.end()
@@ -72,7 +73,7 @@ function conflict (dat1, dat2, dataset, cb) {
   })
 
   test('helpers: dat1 pull dat2', function (t) {
-    var st = spawn(t, dat + ' pull ' + dat2, {cwd: dat1})
+    var st = spawn(t, dat + ' pull ' + dat2 + ' --bin=' + dat, {cwd: dat1})
     st.stderr.empty()
     st.stdout.empty()
     st.end()

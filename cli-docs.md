@@ -169,6 +169,7 @@ dat push <remote>
 #### Options
 
 - `live` - Keep pushing even after the initial pushing finishes
+- `bin` - specify path to the `dat` executable if `dat` is not in your path
 
 Example output:
 
@@ -189,6 +190,7 @@ dat pull <remote>
 #### Options
 
 - `live` - Keep pulling even after the initial pulling finishes
+- `bin` - specify path to the `dat` executable if `dat` is not in your path
 
 Example output:
 
@@ -370,6 +372,10 @@ $ dat forks --json
 ### dat replicate
 
 Same as doing a `dat push` and `dat pull` at the same time. Use it when you are on the other end of a `dat pull` or a `dat push` (e.g. if you are hosting dat on a server).
+
+#### Options
+
+- `bin` - specify path to the `dat` executable if `dat` is not in your path
 
 Example output:
 

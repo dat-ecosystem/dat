@@ -1,7 +1,7 @@
 var usage = require('../lib/usage.js')('push.txt')
 var abort = require('../lib/abort.js')
 var openDat = require('../lib/open-dat.js')
-var transports = require('../lib/transports')
+var transportStream = require('../lib/transports.js')
 
 module.exports = {
   name: 'push',
@@ -10,6 +10,7 @@ module.exports = {
 
 function handlePush (args) {
   if (args._.length === 0) return usage()
+  var transports = transportStream(args.bin)
 
   try {
     var stream = transports(args._[0])
