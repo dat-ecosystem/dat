@@ -11,6 +11,7 @@ This is the `dat` command line API as of the Beta release.
   - [dat push](#dat-push)
   - [dat pull](#dat-pull)
   - [dat checkout](#dat-checkout)
+  - [dat datasets](#dat-datasets)
   - [dat diff](#dat-diff)
   - [dat merge](#dat-merge)
   - [dat forks](#dat-forks)
@@ -203,13 +204,13 @@ Current version is now b04adb64fdf2203
 
 ### dat checkout
 
-Non-destructive rollback state to a hash in the past
+Non-destructive rollback state to a version in the past
 
 ```bash
 dat checkout <version-hash>
 ```
 
-Check out latest version on default branch
+Check out the latest version
 
 ```bash
 dat checkout latest
@@ -221,6 +222,10 @@ Example output:
 $ dat checkout 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
 Checked out state of dat to 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
 ```
+
+### dat datasets
+
+
 
 ### dat diff
 
