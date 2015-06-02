@@ -28,12 +28,12 @@ function onedat (datPath) {
     st.stdout.empty()
     st.end()
   })
-  
+
   function cleanup () {
     rimraf.sync(datPath)
     mkdirp.sync(datPath)
   }
-  
+
   return cleanup
 }
 
