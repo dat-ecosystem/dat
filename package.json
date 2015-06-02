@@ -22,7 +22,7 @@
     "url": "git://github.com/maxogden/dat.git"
   },
   "author": "max ogden",
-  "license": "BSD",
+  "license": "BSD-3-Clause",
   "dependencies": {
     "JSONStream": "^0.10.0",
     "csv-parser": "^1.5.2",
