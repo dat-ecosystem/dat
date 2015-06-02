@@ -7,21 +7,20 @@ http://github.com/maxogden/dat
 
 
 ## Abstract
-Dat is a version-controlled, distributed data tool. Dat is designed to provide data scientists with a common data exchange storage and exchange mechanism to collaborate and share research data. Here, we outline the core motivations, user interface design, and infrastructure, that were informed by key use cases in the scientific community. This serves as a living document to help data scientists and developers understand use cases and extend the core technology for wider use.
+
+The broad adoption of computers in scientific research has made it possible to study phenomenon at an unprecedented scale. Researchers are now able to store and analyze disparate datasets that would have otherwise been impossible or very time-consuming to collect. Scientific peers, however, often have difficulty accessing the source data used during the scientific process. In this paper, we outline the user interface and architecture for Dat, a version-controlled, distributed data tool designed to improve collaboration between data systems and the people who use them. The design decisions described in this article are motivated by real-world use cases developed in collaboration with colleagues in the scientific community. This serves as a living document to help data scientists and developers understand use cases and extend the core technology.
 
 ## 1. Introduction
 
-We’ve reached a time where data collection and analysis on a computer is an integral part of scientific research. An independent researcher should be able to replicate the research of the original author to not only ensure correctness, but also to produce a wide variety of alternative or complementary analyses to a study. In practice, the programs and data produced during the scientific process are very rarely made available to the general public. The source code and data created to produce a paper is often treated like second-class material, and is frequently indecipherable to anyone besides the authors. It is also usually not version controlled over the development and cleaning of the source data, especially if the study involves large data. This can cause a drastically increased workload for collaboration and reproduction.
+Dat is designed to provide data scientists with a common data exchange mechanism to ensure validity in data. Often, data must undergo the painful process of "munging," where the heterogeneity of various sources are integrated together to form source dataset(s). For example, studies that use sensor measurements often depend on a variety of devices and measurements that emit different kinds of data. These sensors will persistently gather data in large quantities, which is cleaned, converted into a format amenable to the researcher's workflow, and transformed for analysis. Teams of researchers do substantial work to build a collaborative workflow that ensures accurate data for publishing. Although data collection and storage across all scientific disciplines as increased, reproducibility of computational analysis still remains primiative.
 
-Another barrier to research is building systems that gather data for a more accurate, broad, or fine-grained picture of the phenomenon in question. This is often rectified in research labs through the painful process of data "munging," where heterogeneity of various components must be integrated together to form source dataset(s). For example, studies that use sensor measurements depend on data that is emitted in different formats at different time intervals. Data from these sensors will often continue to be gathered in large quantities, even after the research is published. A researcher might have to do substantial work to build a system that can integrate, compare, and draft models of this disparate, streaming, real-time data.
+With increasing interconnectedness and complexity, it is often difficult to keep track of forks in the datastream. In other words, analyses that result in significant, irreconciliable changes to the data increase heterogeneity of source data, and thus headache, for an organized researcher. A substainable and scalable collaborative workflow, also known as a data pipeline, is built for this kind of work, which domain experts usually find difficult, expensive, and time-consuming to build. This means that data-intensive research is often limited to those with the necessary computational skills, personal and professional connections, or institutional resources to build and maintain a complex data pipelining system, which is often internal and not open to the public. This *data divide* explicitly "demarcates research 'insiders' and 'outsiders'... undermin[ing] the research community" [1]. If those who have access to internal tools are the only ones able able to reproduce scientific discoveries, the scientific process is broken.
 
-With scenarios of increasing interconnectedness and complexity like these, it is often difficult to support use cases such as checkpoints that can be rolled back on request, or one-off analyses that result in forks of the data. Domain experts usually find it difficult, expensive, or time-consuming to build a substaintially scalable data pipeline. In this way, computationally-intensive research and data access is limited to those with the necessary computational skills, personal and professional connections, or institutional resources to build such system. This *data divide* evokes the ethos of danah boyd and Kate Crawford, characteristic of another "digital divide" that explicitly "demarcates research 'insiders' and 'outsiders'... undermin[ing] the research community" [1].
-
-As tools develop that close the data divide, researchers will be able to focus more on scientific discovery and less on integrating disparate data. We hope data tools like Dat will be key in the evolution of research in this direction: towards data pipelines that are open, thus more accessible; documented, thus more reproducible; and challengeable, thus more correct.
+To close the data divide, we must build tools that allow researchers to be able to focus more on scientific discovery and less on integrating disparate data. We introduce Dat, a version, controlled distributed database and data tool that has user interface of a version control system. Key features of Dat include the ability to *track changes* in tabular and binary formats; *supply access points* across peer-to-peer internal and public networks; *create historical checkpoints* with metadata; *replicate* quickly at a given checkpoint; and *bifurcate and merge* forked data streams.
 
 ## 2. Related Work
 
-There are a variety of ad-hoc systems that can enable the types of interactions that Dat is designed to support, but they are often custom-built and siloed in industry or highly-resourced research labs. Kafka may be the closest analogous database, designed by LinkedIn in 2011 for distributed message processing for enterprise logs, such as clickstream or activity feed data [2]. Like Kafka, Dat is well-suited for storing and transfering large amounts of log data that is immutable and streaming. However, Kafka lacks key interface design for collabration across teams of varing computational expertise. By contrast, we designed dat to be used easily in collaboration with git to integrate data versioning very closely with code versioning.
+There are a variety of ad-hoc systems that can enable the types of interactions that Dat is designed to support, but they are often custom-built and siloed in industry or highly-resourced research labs. Kafka may be the closest analogous database, designed by LinkedIn in 2011 for distributed message processing for enterprise logs, such as clickstream or activity feed data [2]. Like Kafka, Dat is well-suited for storing and transfering large amounts of log data that is immutable and streaming. However, Kafka lacks key interface design for collabration across teams of varing computational expertise. By contrast, we designed Dat to be used easily by data scientists of varying skillsets. We also designed it to work well with git, integrating data and code versioning under a single repository.
 
 We also wanted to build a system that could easily support transfering data over common protocols, like http and ssh for easy distribution of public data. For example, those who sit at the nexus of software development and data production -- librarians, scientists, government agencies, etc. -- have started using online portals like Socrata [3], Harvard's dataverse [4], figshare [5], and others for distributing datasets. However, these data distribution methods post raw data as read-only, never taking contributions. Furthermore, these data portals do not support versioning tabular and binary data, a key component of reproducibility at different points in the original analysis. Finally, version control enables the data get better as more people interact it, because it enables collaboration between data producers, data engineers, data mangers, and data scientists.
 
@@ -68,10 +67,6 @@ All data in dat is read and written as **streams**. That means that a computer r
 ### 3.5 All Data is Log Data
 
 All data in dat is immutable. That means that all data is treated like a log of a particular event, and only the view of the data overwritten when new data is added.
-
-```
-dat purge
-```
 
 
 ## 4. Ecosystem
@@ -125,10 +120,13 @@ Here we should list some basic benchmarks (adding data locally, replication, exp
 ### Room for improvement
 Here we should talk about where there might be room for improvement.
 
+## 6. Conclusion and Final Remarks
+We hope data tools like Dat will be key in the evolution towards data pipelines that are open, thus more accessible; documented, thus more reproducible; and challengeable, thus more correct.
+
 # Bibliography
-[1] danah boyd, five critical questions
-[2] http://research.microsoft.com/en-us/um/people/srikanth/netdb11/netdb11papers/netdb11-final12.pdf
-[3] John S. Erickson, Amar Viswanathan, Joshua Shinavier, Yongmei Shi, James A. Hendler, "Open Government Data: A Data Analytics Approach," IEEE Intelligent Systems, vol. 28, no. 5, pp. 19-23, Sept.-Oct., 2013
-[4] King, Gary. "An introduction to the Dataverse Network as an infrastructure for data sharing." Sociological Methods & Research 36.2 (2007): 173-199.
-[5] http://figshare.com/
-[6] https://github.com/blog/1986-announcing-git-large-file-storage-lfs
+  1. danah boyd, five critical questions
+  2. http://research.microsoft.com/en-us/um/people/srikanth/netdb11/netdb11papers/netdb11-final12.pdf
+  3. John S. Erickson, Amar Viswanathan, Joshua Shinavier, Yongmei Shi, James A. Hendler, "Open Government Data: A Data Analytics Approach," IEEE Intelligent Systems, vol. 28, no. 5, pp. 19-23, Sept.-Oct., 2013
+  4. King, Gary. "An introduction to the Dataverse Network as an infrastructure for data sharing." Sociological Methods & Research 36.2 (2007): 173-199.
+  5. http://figshare.com/
+  6. https://github.com/blog/1986-announcing-git-large-file-storage-lfs
