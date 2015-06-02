@@ -12,49 +12,52 @@ The broad adoption of computers in scientific research has made it possible to s
 
 ## 1. Introduction
 
-dat is designed to provide data scientists with a common data exchange mechanism to ensure validity in data. Often, data must undergo the painful process of "munging," where the heterogeneity of various sources are integrated together to form source dataset(s). For example, studies that use sensor measurements often depend on a variety of devices and measurements that emit different kinds of data. These sensors will persistently gather data in large quantities, which is cleaned, converted into a format amenable to the researcher's workflow, and transformed for analysis. Teams of researchers do substantial work to build a collaborative workflow that ensures accurate data for publishing. Although data collection and storage across all scientific disciplines as increased, reproducibility of computational analysis still remains primiative.
+Often, data must undergo the painful process of "munging," where the heterogeneity of various sources are integrated together to form source dataset(s). Although data collection and storage across all scientific disciplines as increased substantially, reproducibility of computational analysis still remains primiative. For example, most studies depend on measurements and data sources that are stored in a variety of incompatible formats. Researchers persistently transform this data to be amenable for analyses, building an (often collaborative) workflow to ensure interpretation uses accurate data. However, it is often difficult to keep track of forks in the datastream, resulting in increasing interconnectedness and complexity of source data. In other words, analyses that result in significant, irreconciliable transformations increase data heterogeneity, and thus headache for a team.
 
-With increasing interconnectedness and complexity, it is often difficult to keep track of forks in the datastream. In other words, analyses that result in significant, irreconciliable changes to the data increase heterogeneity of source data, and thus headache, for an organized researcher. A substainable and scalable collaborative workflow, also known as a data pipeline, is built for this kind of work, which domain experts usually find difficult, expensive, and time-consuming to build. This means that data-intensive research is often limited to those with the necessary computational skills, personal and professional connections, or institutional resources to build and maintain a complex data pipelining system, which is often internal and not open to the public. This *data divide* explicitly "demarcates research 'insiders' and 'outsiders'... undermin[ing] the research community" [1]. If those who have access to internal tools are the only ones able able to reproduce scientific discoveries, the scientific process is broken.
+A substainable and scalable collaborative workflow, also known as a data pipeline, is built to ensure correctness during this kind of collaborative work. Unfortunately, building this kind of infrastructure is difficult, expensive, and time-consuming, especially for domain experts. This means that data-intensive research is often limited to those with the necessary computational skills, personal and professional connections, or institutional resources to build, maintain, and ensure reproducibility of a complex data pipelining system. This *data divide* explicitly "demarcates research 'insiders' and 'outsiders'... undermin[ing] the research community" [1]. If those who have access to internal tools are the only ones able able to reproduce scientific discoveries, the scientific process is broken.
 
-To close the data divide, we must build tools that allow researchers to be able to focus more on scientific discovery and less on integrating disparate data. We introduce Dat, a version, controlled distributed database and data tool that has user interface of a version control system. Key features of dat include the ability to *track changes* in tabular and binary formats; *supply access points* across peer-to-peer internal and public networks; *create historical checkpoints* with metadata; *replicate* quickly at a given checkpoint; and *encourage forking* of data streams.
+To close the data divide, we must build tools that allow researchers to be able to focus more on scientific discovery and less on integrating disparate data. We introduce Dat, a version-controlled distributed database and data tool that has user interface of a version control system. Key features of dat include the ability to *track changes* in tabular and binary formats; *supply access points* across peer-to-peer internal and public networks; *create historical checkpoints* with metadata; *replicate* quickly at a given checkpoint; and *encourage forking* of data streams.
 
 ## 2. Related Work
 
-There are a variety of ad-hoc systems that can enable the types of interactions that dat is designed to support, but they are often custom-built and siloed in industry or highly-resourced research labs. Kafka may be the closest analogous database, designed by LinkedIn in 2011 for distributed message processing for enterprise logs, such as clickstream or activity feed data [2]. Like Kafka, dat is well-suited for storing and transfering large amounts of log data that is immutable and streaming. However, Kafka lacks key interface design for collabration across teams of varing computational expertise. By contrast, we designed dat to be used easily by data scientists of varying skillsets. We also designed it to work well with git, integrating data and code versioning under a single repository.
+There are a variety of ad-hoc systems that enable interactions that dat is designed to support, but often they involve proprietary software or do not ensure correctness. Kafka may be the closest analogous database, designed by LinkedIn in 2011 for distributed message processing for enterprise logs, such as clickstream or activity feed data [2]. Like Kafka, dat is well-suited for storing, transfering, and merging large amounts of data between incompatible data systems. However, Kafka lacks key interface design for collabration across teams of varing computational expertise. By contrast, we designed dat to be used easily by data scientists of varying skillsets. We also designed it to work well with git in order to integrate data versioning with existing code versioning pipelines.
 
-We also wanted to build a system that could easily support transfering data over common protocols, like http and ssh for easy distribution of public data. For example, those who sit at the nexus of software development and data production -- librarians, scientists, government agencies, etc. -- have started using online portals like Socrata [3], Harvard's dataverse [4], figshare [5], and others for distributing datasets. However, these data distribution methods post raw data as read-only, never taking contributions. Furthermore, these data portals do not support versioning tabular and binary data, a key component of reproducibility at different points in the original analysis. Finally, version control enables the data get better as more people interact it, because it enables collaboration between data producers, data engineers, data mangers, and data scientists.
+We also wanted to build a system that could easily support transfering data over common protocols, like http and ssh for easy distribution of public data. For example, those who sit at the nexus of software development and data production -- librarians, scientists, government agencies, etc. -- have started using online portals like Socrata [3], Harvard's dataverse [4], figshare [5], and others for distributing datasets. However, these data distribution methods post raw data as read-only, never taking contributions. Furthermore, these data portals do not support versioning tabular data at the row-level, a key component of reproducibility at different points in the original analysis. Finally, version control enables the data get better as more people interact it, because it enables collaboration between data producers, data engineers, data mangers, and data scientists.
 
-There have been many well thought-out attempts at version controlled data; however, most of these tools were designed to work best with the developer's main workstation -- a text file.  For those accustomed to a Git-based development model, it is natural to want to extend that model to data. However, because Git was designed to track changes to relatively small text files, many datasets are much too big to distribute with Git. Two years ago, Facebook created a test Git repository to explore its limits, and found that at 1.3 million files with 15 GB of data, Git takes upwards of 40 minutes to respond to a simple command. To fix this, Git released a new extension called the 'Git Large File Storage (LFS)' in 2015 [6]. Git-Annex [7] is another tool written in Haskell that is used to fix this performance problem with Git. Unfortunately, these extensions focus on binary or text-based data, and are not designed well for data science use cases, which often are log-like, streaming, tabular, or relational. While Git has revolutionized the way that open source code is written for the software development world, workflows around collaborating on data in the research world still remain primitive.
+There have been many well thought-out attempts at version controlled data; however, most of these tools were designed to work best with the developer's main workstation -- a text file.  For those accustomed to a Git-based development model, it is natural to want to extend that model to data. However, because Git was designed to track changes to relatively small text files, many datasets are much too big to distribute with Git. Two years ago, Facebook created a test Git repository to explore its limits, and found that at 1.3 million files with 15 GB of data, Git takes upwards of 40 minutes to respond to a simple command [8]. To fix this performance problem with Git, there is an extension called the 'Git Large File Storage (LFS)' released in 2015, and Git-Annex [7], written in Haskell. Unfortunately, these extensions work well for text-based data, but are not designed well for data science use cases, which often require log-like, streaming, tabular, or relational support. While Git has revolutionized the way that open source code is written for the software development world, workflows around collaborating on data in the research world still remain primitive.
 
 ## 3. Design of dat
+
+Dat was designed with the help of our advisors and pilot projects in academia. We prototyped two key case studies to see what it would look like to use Dat in a complex data processing pipeline. See these case studies in Section 4.
 
 ### 3.1 Importing Datasets
 All data is compressed and stored in the hidden `.dat` folder on disk. Values can be defined as binary (i.e., protobufs via `write`) or tabular (csv, tsv, newline-delimited json formats via `import`).
 
-When data is imported into dat, it must be put into a dataset. Each dataset is compartamentalized so that tabular datasets with different schemas can be stored in the same repository without collision. In other words, rows define the schema for a given dataset, and there can be multiple datasets in a single dat. To support bifurcated schemas, we encourage users to create multiple datasets, so that each schema will be independent. A dataset is analogous to a sql table or a nosql collection, however we chose not to use the language of 'table' or 'collection' because dat datasets do not support robust querying at this time.
+When data is imported into dat, it must be put into a dataset. To support bifurcated schemas, we encourage users to create multiple datasets, so that each schema will be independent. A dataset is analogous to a sql table or a nosql collection; however, we chose not to use the language of 'table' or 'collection' because dat datasets do not support robust querying at this time. Each dataset is compartamentalized so that tabular datasets with different schemas can be stored in the same repository without collision. In other words, rows define the schema for a given dataset, and there can be multiple datasets in a single dat.
 
-In Figure 1, we create a new dataset called 'flights' and import some tabular data. To update data later, we must provide a key that identifies each row in the dataset. For example, in this example, the `flightId` column is a unique identifier for each row. Dat will autogenerate keys if the user supplies `--key=false` upon import.
+Here, we create a new dataset called 'cities' and import some tabular data. To update data later, we must provide a key that identifies each row in the dataset. For example, in this example, the `cityId` column is a unique identifier for each row. Dat will autogenerate keys if the user supplies `--key=false` upon import.
 
-**Figure 1**
 ```
-$ cat flights.json
-flightId, airline, date
-12381723, Luftansa, "Mar 21 2002"
+$ cat cities.json
+cityId, name, region, country
+12389720, Porland, Oregon, USA
+41031233, San Francisco, California, USA
+35682579, Copenhagen, Hovedstaden, Denmark
 ...
 
-$ dat import flights.json --dataset=flights --key=flightId
+$ dat import cities.json --dataset=cities --key=cityId
 Added 302,143 keys (32.03 Mb, 4.4 Mb/s).
 Data imported successfully.
 Current version is now 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
 ```
 
-Blob data can be written just like tabular data using `dat write`. Blob data and tabular data are kept separate inside of each dataset -- tabular data is written to leveldb while binary data is written to a content addressable blob object store. Each of these are attached modularly and can be exchanged for alternative backends, such as S3, SQL-variants, and others. More on how this is implemented in Section 5.
+Blob data can be written just like tabular data using `dat write`. Blob data and tabular data are kept separate inside of each dataset -- tabular data is written to leveldb while binary data is written to a content addressable blob object store. Each of these are modular and can be replaced with S3, SQL-variants, and other backends.
 
 ### 3.2 Versioning
 
 When dat begins writing to disk, a new `version` is created -- a uniquely identifiable 64-bit hash that represents the changes that were made during the operation. As each write or import operation is performed, dat creates a new version hash that identifies the entire dat, not just the dataset that was changed.
 
-[img](images/import.png)
+![img](images/import.png)
 
 Human-readable messages can also be attached to a new version. A user can perform a `dat log` to get access to the history of the dat.
 
@@ -75,23 +78,29 @@ To go back in time, a user can `dat checkout` for a non-destructive rollback to 
 
 ### 3.3 Replication
 
-A user can replicate data from another user using typical transport protocols such as http or ssh. Dat is transport agnostic, which is well suited for deployment on various kinds of systems.
+A user can replicate data from another user using typical transport protocols such as http or ssh. Dat is transport agnostic, so it is well suited for deployment on various kinds of systems with little IT overhead. When the repository is pulled from another user, all metadata and changes are replicated exactly as they appear on the peer's disk. Versions are transmitted exactly as represented locally over the transport protocol, and the history never changes. This means that once a version is created, it can be referenced to refer to the same data across all peers (unless purged).
+
+When a peer makes a change (write/import), a new version is created which is then immediately available for peers to pull. When using dat pull, dat will only fetch the newest changes in the repository for fast replication.
 
 ![img](images/pull.png)
 
-When the repository is pulled from another user, all metadata and changes are replicated exactly as they appear on the peer's disk. Versions can be referenced by each user similarly,
+### 3.4: One thousand forks when all you need is a knife isn't irony
 
-### 3.4: One thousand forks when all you need is a knife isn't really irony
-
-After checking out a dataset to a previous point in the past, a user can add more data. Unlike when data is added to the latest version, adding to a version that is not the latest creates a new fork in the dataset.
+After checking out a dataset to a previous point in the past, a user can still add more data. However, adding to a version that is not the latest creates a new fork in the dataset.
 
 ![img](images/fork.png)
 
-Although forks could be represented as conflicts to be merged later, as one might expect in a version control system such as Git, dat's philosophy is the opposite. Dat gives power to users to control and manage forks. In software development, merges are encouraged as all roads ideally lead to a working piece of software. Data, on the other hand, embraces forks as a key tool for experimentation during the data munging and analysis process.
+Although forks could be represented as conflicts to be merged immediately (as one might expect in a version control system such as Git), dat's philosophy is the opposite. Dat gives power to users to control and manage forks. In software development, merges are encouraged as all roads ideally lead to a working piece of software. Data, on the other hand, embraces forks as a key tool for experimentation during the data munging and analysis process. When a user pulls from a peer, forks will also be pulled so that each user has a complete picture of the graph.
 
-Forks can be merged using the commandline. The `dat merge <version>` operation accepts a stream of resolved values in the same format they are emitted in `dat diff`. See the dat repository for more examples on merging.
+Forks can be merged into a single, new commit with a new version hash. The `dat merge <version>` operation accepts a stream of resolved values in the same format they are emitted in `dat diff`. See the dat repository for more examples on merging.
+
+![img](images/merge.png)
 
 ## 4. Ecosystem
+
+To test Dat’s capability to work with large datasets, we worked with Demitri Muna of Ohio State University, and data analyst and programmer Yuhong Wang, to build a system for importing and indexing the 400 GB Wide-field Infrared Survey Explorer (WISE) dataset from NASA/Caltech, which includes data on over 600 million stars [9]. The major goal for us was to use Dat to build a single catalog of raw data files for multiple data sources—one metadata catalog for multiple sky-scan datasets. A secondary goal was to help automate the data import pipeline to make it easy to get installed for users who might want to load data into Trillian. In its raw form, much of the data is scattered across different websites and offer several download procedures.  With Dat's large file capabilities, we were able to perform lazy aggregation on disparate chunks of links, effectively shielding the end user of the database from the complexities of source management and organization.
+
+In our second project, Bruno Vieira of Queen Mary University London worked with us directly to build versioning and data acquisition into Bionode. Bionode is a collection of open source, command-line tools for creating streaming bioinformatics pipelines with Node.js. Vieira has written about how brittle that bioinformatics APIs can be [10], which makes reproducibility very difficult. The main thing the Dat team took away from this project was the importance of not only offering a data versioning and acquisition system, but also making sure we integrate tightly with existing tools that researchers are using to analyze and process their data.
 
 ### Client libraries
 
@@ -153,8 +162,11 @@ We hope data tools like dat will be key in the evolution towards data pipelines 
 # Bibliography
   1. Boyd, Danah, and Kate Crawford. "Critical questions for big data: Provocations for a cultural, technological, and scholarly phenomenon." Information, communication & society 15.5 (2012): 662-679.
   2. Kreps, Jay, Neha Narkhede, and Jun Rao. "Kafka: A distributed messaging system for log processing." Proceedings of 6th International Workshop on Networking Meets Databases (NetDB), Athens, Greece. 2011.
-  3. John S. Erickson, Amar Viswanathan, Joshua Shinavier, Yongmei Shi, James A. Hendler, "Open Government Data: A Data Analytics Approach," IEEE Intelligent Systems, vol. 28, no. 5, pp. 19-23, Sept.-Oct., 2013
+  3. Erickson, John S., Amar Viswanathan, Joshua Shinavier, Yongmei Shi, and James A. Hendler, "Open Government Data: A Data Analytics Approach," IEEE Intelligent Systems, vol. 28, no. 5, pp. 19-23, Sept.-Oct., 2013
   4. King, Gary. "An introduction to the Dataverse Network as an infrastructure for data sharing." Sociological Methods & Research 36.2 (2007): 173-199.
   5. Figshare. Accessed June 1, 2015. <http://figshare.com/>
-  6. Github. Git Large File Storage System. Accessed June 1, 2015. <https://github.com/blog/1986-announcing-git-large-file-storage-lfs>
-  7. Lührig, Jan Philipp. "File synchroniszation using git-annex assistant." 2013. https://media.itm.uni-luebeck.de/teaching/ws2013/sem-cloud-computing/File_synchronization_using_git-annex_assistant.pdf
+  6. Github. "Announcing Git Large File Storage System." June 1, 2015. <https://github.com/blog/1986-announcing-git-large-file-storage-lfs>
+  7. Lührig, Jan Philipp. "File synchroniszation using git-annex assistant." 2013. <https://media.itm.uni-luebeck.de/teaching/ws2013/sem-cloud-computing/File_synchronization_using_git-annex_assistant.pdf>
+  8. Redstone, Joshua. "Git performance results on a large repository." gamne.comp.version-control.git. June 1, 2015. <http://thread.gmane.org/gmane.comp.version-control.git/189776>
+  9. Wang, Yuhong. “dat-wise: Importer for the WISE All-Sky Data Products,” Github. January 19th, 2015. <https://github.com/ywyw/dat-wise>
+  10. Vieira, Bruno. "When Bioinformatics APIs break". Medium. June 1, 2015. <https://medium.com/@bmpvieira/when-bioinformatics-apis-break-821ae9919492>
