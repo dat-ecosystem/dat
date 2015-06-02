@@ -16,7 +16,6 @@ module.exports = {
   ]
 }
 
-
 function handleCat (args) {
   debug('handleCat', args)
 
