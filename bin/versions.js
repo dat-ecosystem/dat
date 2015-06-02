@@ -1,12 +1,13 @@
 var pump = require('pump')
-var debug = require('debug')('bin/cat')
+var ndjson = require('ndjson')
+var debug = require('debug')('bin/versions')
 var openDat = require('../lib/open-dat.js')
 var abort = require('../lib/abort.js')
-var usage = require('../lib/usage.js')('cat.txt')
+var usage = require('../lib/usage.js')('versions.txt')
 
 module.exports = {
-  name: 'cat',
-  command: handleCat,
+  name: 'versions',
+  command: handleVersions,
   options: [
     {
       name: 'dataset',
@@ -16,11 +17,10 @@ module.exports = {
   ]
 }
 
+function handleVersions (args) {
+  debug('handleVersions', args)
 
-function handleCat (args) {
-  debug('handleCat', args)
-
-  if (args.help || args._.length === 0) {
+  if (args.help) {
     usage()
     abort()
   }
@@ -31,14 +31,12 @@ function handleCat (args) {
   })
 
   function handleReadStream (db) {
-    var key = args._[0]
-
     var opts = {
       dataset: args.d
     }
 
-    pump(db.createFileReadStream(key, opts), process.stdout, function done (err) {
-      if (err) abort(err, args, 'dat: err in cat')
+    pump(db.createChangesStream(opts), ndjson.serialize(), process.stdout, function done (err) {
+      if (err) abort(err, args, 'dat: err in versions')
     })
   }
 }

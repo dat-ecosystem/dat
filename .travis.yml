@@ -1,11 +1,19 @@
 language: node_js
 
 node_js:
- - "0.10"
+ - "0.12"
 
 branches:
   except:
     - beta
 
 # Using faster container based build environment.
+
 sudo: false
+
+before_script:
+ - npm install npm
+
+script:
+ - npm test
+

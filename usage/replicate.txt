@@ -1,0 +1,3 @@
+dat replicate <ssh://url>
+
+Replicates (pushes and pulls) the current checkout to the given url. Must be an ssh:// destination.

@@ -1,0 +1,3 @@
+dat checkout <head>
+
+the dat will become the same it was at the given head

@@ -1,39 +1,28 @@
-var log = require('../lib/progress-log')
-var EOL = require('os').EOL
-var through = require('through2')
+var usage = require('../lib/usage.js')('push.txt')
+var abort = require('../lib/abort.js')
+var openDat = require('../lib/open-dat.js')
+var transports = require('../lib/transports')
 
-module.exports = push
-
-push.usage = ['dat push <remoteurl>', 'push data to another dat'].join(EOL)
-
-push.options = [
-  {
-    name: 'results',
-    abbr: 'r',
-    boolean: true,
-    help: 'log rows that are pushed'
-  },
-  {
-    name: 'quiet',
-    abbr: 'q',
-    boolean: true,
-    help: 'less logging'
-  }
-]
-
-function push(dat, opts, cb) {
-  var remote = opts._[1]
-  var push = dat.push(remote, opts, cb)
-
-  if (opts.results) return push.pipe(resultPrinter())
-  if (!opts.quiet) log(push, 'Pushed', 'Push to remote has completed.')
+module.exports = {
+  name: 'push',
+  command: handlePush
 }
 
-function resultPrinter() {
-  var results = through.obj(onResultWrite)
-  function onResultWrite (obj, enc, next) {
-    process.stdout.write(JSON.stringify(obj) + EOL)
-    next()
+function handlePush (args) {
+  if (args._.length === 0) return usage()
+
+  try {
+    var stream = transports(args._[0])
+  } catch (err) {
+    return usage()
   }
-  return results
+
+  stream.on('warn', function (data) {
+    console.error(data)
+  })
+
+  openDat(args, function ready (err, db) {
+    if (err) return abort(err, args)
+    stream.pipe(db.push()).pipe(stream)
+  })
 }

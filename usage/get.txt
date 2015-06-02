@@ -1,0 +1,3 @@
+dat get <key> [-d dataset]
+
+Prints a paricular row by key.

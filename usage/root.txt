@@ -1,0 +1,19 @@
+usage: dat <command(s)> [--flag] [--key=value]
+
+commands:
+  init        initialize a new dat store in a directory
+  status      show current status
+  log         view a list of recent changes
+  clone       download and make a full copy of a remote dat
+  push        push data to a remote dat
+  pull        pull data from a remote dat
+  checkout    dat will operate at a particular head
+  diff        see differences between two forks
+  merge       merge two forks into one
+  forks       list forks of the current dat
+  import      import a tabular file into a dataset
+  export      export tabular data from a dataset
+  read        read a binary file out of a dataset
+  write       write a binary file into a dataset
+
+type `dat <command> --help` to view specific command help

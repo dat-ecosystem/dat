@@ -16,5 +16,5 @@
 - [Tom MacWright](https://github.com/tmcw)
 - [Tyler Stalder](https://github.com/tylerstalder)
 - [Ward Cunningham](https://github.com/WardCunningham)
-- [null](https://github.com/ndarville)
+- [ndarville](https://github.com/ndarville)
 - [zJJ Weber](https://github.com/oncemoreification)

@@ -1,0 +1,3 @@
+dat pull <ssh://url>
+
+Pulls the checkout at the given url to the current dat. Must be a valid ssh:// destination.

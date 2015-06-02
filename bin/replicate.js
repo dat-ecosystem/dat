@@ -1,14 +1,14 @@
-var usage = require('../lib/usage.js')('pull.txt')
-var abort = require('../lib/abort.js')
 var openDat = require('../lib/open-dat.js')
+var abort = require('../lib/abort.js')
+var usage = require('../lib/usage.js')('replicate.txt')
 var transports = require('../lib/transports')
 
 module.exports = {
-  name: 'pull',
-  command: handlePull
+  name: 'replicate',
+  command: handleReplicate
 }
 
-function handlePull (args) {
+function handleReplicate (args) {
   if (args._.length === 0) return usage()
 
   try {
@@ -23,6 +23,6 @@ function handlePull (args) {
 
   openDat(args, function ready (err, db) {
     if (err) return abort(err, args)
-    stream.pipe(db.pull()).pipe(stream)
+    stream.pipe(db.replicate()).pipe(stream)
   })
 }

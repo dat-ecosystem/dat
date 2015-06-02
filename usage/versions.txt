@@ -1,0 +1,3 @@
+dat versions [range options]
+
+Stream versions out in historical order as json
