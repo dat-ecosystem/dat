@@ -71,13 +71,13 @@ Date:   April 15th, 2015, 7:29PM PST
 
 To go back in time, a user can `dat checkout` for a non-destructive rollback to a version in the past. Data is never deleted from dat -- only different views of the data are made accessible given a particular version.
 
-[img](images/checkout.png)
+![img](images/checkout.png)
 
 ### 3.3 Replication
 
 A user can replicate data from another user using typical transport protocols such as http or ssh. Dat is transport agnostic, which is well suited for deployment on various kinds of systems.
 
-[img](images/pull.png)
+![img](images/pull.png)
 
 When the repository is pulled from another user, all metadata and changes are replicated exactly as they appear on the peer's disk. Versions can be referenced by each user similarly,
 
@@ -85,7 +85,7 @@ When the repository is pulled from another user, all metadata and changes are re
 
 After checking out a dataset to a previous point in the past, a user can add more data. Unlike when data is added to the latest version, adding to a version that is not the latest creates a new fork in the dataset.
 
-[img](images/fork.png)
+![img](images/fork.png)
 
 Although forks could be represented as conflicts to be merged later, as one might expect in a version control system such as Git, dat's philosophy is the opposite. Dat gives power to users to control and manage forks. In software development, merges are encouraged as all roads ideally lead to a working piece of software. Data, on the other hand, embraces forks as a key tool for experimentation during the data munging and analysis process.
 

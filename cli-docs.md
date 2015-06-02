@@ -225,7 +225,15 @@ Checked out state of dat to 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
 
 ### dat datasets
 
+List datasets in the dat
 
+```bash
+$ dat datasets
+flights
+cities
+model_data
+pickles
+```
 
 ### dat diff
 
