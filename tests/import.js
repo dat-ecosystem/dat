@@ -6,9 +6,9 @@ var helpers = require('./helpers')
 
 var tmp = os.tmpdir()
 var dat = path.resolve(__dirname + '/../cli.js')
-var dat1 = path.join(tmp, 'dat-1')
-var dat2 = path.join(tmp, 'dat-2')
-var dat3 = path.join(tmp, 'dat-3')
+var dat1 = path.join(tmp, 'dat-import-1')
+var dat2 = path.join(tmp, 'dat-import-2')
+var dat3 = path.join(tmp, 'dat-import-3')
 
 helpers.onedat(dat1)
 

@@ -22,13 +22,19 @@ module.exports = {
 
 function onedat (datPath) {
   test('helpers: init a dat', function (t) {
-    rimraf.sync(datPath)
-    mkdirp.sync(datPath)
+    cleanup()
     var st = spawn(t, dat + ' init', {cwd: datPath})
     st.stderr.match(/Initialized a new dat/, datPath)
     st.stdout.empty()
     st.end()
   })
+  
+  function cleanup () {
+    rimraf.sync(datPath)
+    mkdirp.sync(datPath)
+  }
+  
+  return cleanup
 }
 
 function twodats (dat1, dat2) {
