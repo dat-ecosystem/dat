@@ -240,7 +240,7 @@ pickles
 Generate a diff between two versions of the repository
 
 ```
-dat diff <versionA> [<versionB>]
+dat diff <versionA> [<versionB>] [--dataset=<name>]
 ```
 
 If you specify one version, your current version will be used as the other version. Otherwise you can pass two versions.
