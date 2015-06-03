@@ -477,7 +477,7 @@ dat read <filename>
 Example:
 
 ```
-$ dat read photo.jpg
+$ dat read photo.jpg --dataset=photos
 ```
 
 ### dat write
@@ -487,7 +487,7 @@ Write binary data into dat. This differs from `import` in that it doesn't parse 
 Write a file to dat:
 
 ```
-dat write <filename>
+dat write <filename> --dataset=<dataset-name>
 ```
 
 #### Options
@@ -496,10 +496,10 @@ dat write <filename>
 
 Example output:
 
-Stream data from stdin, save as 'photo.jpg' (must specify name when using STDIN):
+Stream data from stdin, save as 'photo.jpg' (must specify name when using STDIN) in the dataset 'photos' (required):
 
 ```bash
-cat photo.jpg | dat write - --name=photo.jpg
+cat photo.jpg | dat write - --name=photo.jpg --dataset=photos
 ```
 
 Write a file by filename (uses `cat.jpg` as the name automatically):

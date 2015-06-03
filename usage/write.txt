@@ -8,5 +8,5 @@ Write a file to dat:
 
 Stream data from stdin:
 
-  python generate_model_data.py | dat write model_data -
+  python generate_model_data.py | dat write model_data - --dataset=models
 
