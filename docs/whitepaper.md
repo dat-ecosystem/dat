@@ -90,9 +90,9 @@ After checking out a dataset to a previous point in the past, a user can still a
 
 ![img](images/fork.png)
 
-Although forks could be represented as conflicts to be merged immediately (as one might expect in a version control system such as Git), dat's philosophy is the opposite. Dat gives power to users to control and manage forks. In software development, merges are encouraged as all roads ideally lead to a working piece of software. Data, on the other hand, embraces forks as a key tool for experimentation during the data munging and analysis process. When a user pulls from a peer, forks will also be pulled so that each user has a complete picture of the graph.
+Although forks could be represented as conflicts to be merged immediately (as one might expect in a version control system such as Git), dat's philosophy is the opposite. We think that data tools should embrace forks as key support for experimentation during the scientific process. When a user pulls from a peer, forks will also be pulled so that each user has a complete picture of the graph.
 
-Forks can be merged into a single, new commit with a new version hash. The `dat merge <version>` operation accepts a stream of resolved values in the same format they are emitted in `dat diff`. See the dat repository for more examples on merging.
+Forks can be merged into a single, new commit to create a new version hash. The `dat merge <version>` operation accepts a stream of resolved values in the same format they are emitted in `dat diff`. See the dat repository for more examples on merging.
 
 ![img](images/merge.png)
 
@@ -104,7 +104,11 @@ In our second project, Bruno Vieira of Queen Mary University London worked with 
 
 ### Client libraries
 
+We have two currently officially supported client libraries in [R, developed by ropensci](github.com/ropensci/rdat) and [python](github.com/karissa/datpy). We are actively accepting contributors -- reach out to us!
+
 ### Pipelines
+
+We have written a commandline tool and module called [gasket](github.com/datproject/gasket) that allows users to write preconfigured pipelines. This is useful for building data pipelines, although it is still experimental and has not been tested in production. Contributions welcome.
 
 ## 5. Architecture
 
@@ -124,9 +128,34 @@ All data in dat is read and written as **streams**. That means that a computer r
 
 All data in dat is immutable. That means that all data is treated like a log of a particular event, and only the view of the data overwritten when new data is added.
 
-### 5.3 It's a Graph!
+When data is added to the log, it is given a
 
-Whatever you write is appended to the graph as a new node. Each node knows which version it came from, i.e., its parent node.
+### 5.3 It's a graph!
+
+Whatever you write to dat is appended to the graph as a new node. Each node knows which version it came from, i.e., its parent node.
+
+For example, this series of commands produces the following forked graph:
+
+```
+dat import a.csv
+<a>
+dat import b.csv
+<b>
+dat import c.csv
+<c>
+dat checkout <b>
+dat import d.csv
+
+----
+
+a
+|
+b
+| \
+c  d
+```
+
+This is a graph with a fork in it, a common occurrence in a dat repository. This forked repository will then have two **layers**. A new layer is created in one of two ways. The first is when a new dataset is created. The second is when new data is imported as a child node, and the parent is not the head of the graph -- in other words, when new data is added to a historical checkout of an existing dataset.
 
 ```
 a (key: foo, value: bar) (create new layer, layer-id => graph-node-id (version-id))
@@ -136,25 +165,7 @@ b (key: baz, value: foo) (lookup a's layer, if head insert in that layer, if not
 c (key: foo, value: baz) (...)
 ```
 
-A layer is an internal representation of a kind of fork in a dat. A new layer is created in one of two ways. The first is when a new dataset is created. The second is when new data is imported as a child node, and the parent is not the head of the graph -- in other words, when new data is added to a historical checkout of an existing dataset.
-
-```
-a
-|
-b
-| \
-c  d (create new layer, inherit from layer a (checkout at b))
-```
-
-This is the scenario of the fork.
-
-## 6. Performance
-
-### Benchmarks
-Here we should list some basic benchmarks (adding data locally, replication, exporting data).
-
-### Room for improvement
-Here we should talk about where there might be room for improvement.
+See more on implementation details in the [dat-core](github.com/maxogden/dat-core) documentation.
 
 ## 6. Conclusion and Final Remarks
 We hope data tools like dat will be key in the evolution towards data pipelines that are open, thus more accessible; documented, thus more reproducible; and challengeable, thus more correct.
