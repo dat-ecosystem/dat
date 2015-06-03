@@ -20,7 +20,7 @@ helpers.conflict(dat1, dat2, 'merge-test', function (conflictForks) {
 })
 
 test('merge: dat1 diff', function (t) {
-  var st = spawn(t, dat + ' diff ' + forks.remotes[0], {cwd: dat1})
+  var st = spawn(t, dat + ' diff --json ' + forks.remotes[0], {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function match (output) {
     try {
@@ -33,8 +33,15 @@ test('merge: dat1 diff', function (t) {
   st.end()
 })
 
+test('merge: dat1 diff pretty printed', function (t) {
+  var st = spawn(t, dat + ' diff ' + forks.remotes[0], {cwd: dat1})
+  st.stderr.empty()
+  st.stdout.match(/MAX -> Max/)
+  st.end()
+})
+
 test('merge: dat1 diff | merge', function (t) {
-  var diff = spawn(t, dat + ' diff ' + forks.remotes[0], {cwd: dat1, end: false})
+  var diff = spawn(t, dat + ' diff --json ' + forks.remotes[0], {cwd: dat1, end: false})
   var merge = spawn(t, dat + ' merge ' + forks.remotes[0] + ' -', {cwd: dat1, end: false})
 
   diff.stdout.stream
