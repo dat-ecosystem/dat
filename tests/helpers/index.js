@@ -17,6 +17,7 @@ module.exports = {
   onedat: onedat,
   twodats: twodats,
   conflict: conflict,
+  fileConflict: fileConflict,
   randomTmpDir: randomTmpDir
 }
 
@@ -46,11 +47,11 @@ function conflict (dat1, dat2, dataset, cb) {
   // creates conflict where:
   // dat1 does max -> MAX
   // dat2 does max -> Max
-  // dat1 pulls dat2, has 2 heads
-  // if cb is supplied will also retrieve heads
+  // dat1 pulls dat2, has 2 forks
+  // if cb is supplied will also retrieve forks
 
   test('helpers: dat1 import', function (t) {
-    var st = spawn(t, dat + ' import -d ' + dataset + ' ' + csvs.a, {cwd: dat2})
+    var st = spawn(t, dat + ' import -d ' + dataset + ' ' + data.a, {cwd: dat2})
     st.stderr.match(/Done importing data/)
     st.stdout.empty()
     st.end()
@@ -65,15 +66,98 @@ function conflict (dat1, dat2, dataset, cb) {
   })
 
   test('helpers: dat2 import b', function (t) {
-    var st = spawn(t, dat + ' import -d ' + dataset + ' ' + csvs.b, {cwd: dat2})
+    var st = spawn(t, dat + ' import -d ' + dataset + ' ' + data.b, {cwd: dat2})
     st.stderr.match(/Done importing data/)
     st.stdout.empty()
     st.end()
   })
 
   test('helpers: dat1 import c', function (t) {
-    var st = spawn(t, dat + ' import -d ' + dataset + ' ' + csvs.c, {cwd: dat1})
+    var st = spawn(t, dat + ' import -d ' + dataset + ' ' + data.c, {cwd: dat1})
     st.stderr.match(/Done importing data/)
+    st.stdout.empty()
+    st.end()
+  })
+
+  test('helpers: dat1 pull dat2', function (t) {
+    var st = spawn(t, dat + ' pull ' + dat2 + ' --bin=' + dat, {cwd: dat1})
+    st.stderr.empty()
+    st.stdout.empty()
+    st.end()
+  })
+
+  if (!cb) return
+  var hashes
+
+  test('helpers: get forks', function (t) {
+    var st = spawn(t, dat + ' forks', {cwd: dat1})
+    st.stderr.empty()
+    st.stdout.match(function match (output) {
+      var ok = output.length === 130 // 32bit hash 2 in hex (64) x2 (128) + 2 newlines (130)
+      if (ok) hashes = output.trim().split('\n')
+      return ok
+    })
+    st.end()
+  })
+
+  test('helpers: get status', function (t) {
+    var statusJson
+    var stat = spawn(t, dat + ' status --json', {cwd: dat1, end: false})
+    stat.stderr.empty()
+    stat.stdout.match(function match (output) {
+      try {
+        statusJson = JSON.parse(output)
+      } catch (e) {
+        statusJson = false
+      }
+      if (statusJson && statusJson.version) return true
+      else return false
+    })
+    stat.end(function () {
+      var forks = {remotes: []}
+      hashes.forEach(function (hash) {
+        if (hash === statusJson.version) forks.mine = hash
+        else forks.remotes.push(hash)
+      })
+      t.end()
+      cb(forks)
+    })
+  })
+}
+
+
+function fileConflict (dat1, dat2, dataset, filename, cb) {
+  // creates conflict where:
+  // dat1 does hello world -> hello mars
+  // dat2 does hello world -> goodbye mars
+  // dat1 pulls dat2, has 2 forks
+  // if cb is supplied will also retrieve forks
+
+  test('helpers: dat1 import', function (t) {
+    var st = spawn(t, "echo 'hello world' | " + dat + ' write -d ' + dataset + ' ' + filename + ' -', {cwd: dat1})
+    st.stderr.match(/Done writing binary data/)
+    st.stdout.empty()
+    st.end()
+  })
+
+  test('helpers: dat2 pull dat1', function (t) {
+    // uses --bin since dat is not in the PATH necessarily when running tests
+    var st = spawn(t, dat + ' pull ' + dat1 + ' --bin=' + dat, {cwd: dat2})
+    st.stderr.empty()
+    st.stdout.empty()
+    st.end()
+  })
+
+  test('helpers: dat2 import b', function (t) {
+    var st = spawn(t, "echo 'hello mars' | " + dat + ' write -d ' + dataset + ' ' + filename + ' -', {cwd: dat2})
+    st.stderr.match(/Done writing binary data/)
+    st.stdout.empty()
+    st.end()
+  })
+
+  test('helpers: dat1 import c', function (t) {
+    var st = spawn(t, "echo 'goodbye mars' | " + dat + ' write -d ' + dataset + ' ' + filename + ' -', {cwd: dat1})
+    st.stderr.match(/Done writing binary data/)
     st.stdout.empty()
     st.end()
   })
