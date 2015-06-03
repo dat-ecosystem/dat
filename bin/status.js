@@ -29,8 +29,10 @@ function handleStatus (args) {
         output += 'Current version is ' + status.version
         if (!status.checkout) output += ' (latest)\n'
         else output += ' (checkout)\n'
-        output += status.rows + ' keys, ' + status.files + ' files, ' + status.versions + ' versions, ' + prettyBytes(status.size) + ' total\n'
-        output += 'Last updated ' + relativeDate(status.modified)
+        output += status.datasets + ' dataset' + (status.datasets > 1 ? 's, ' : ', ')
+        output += status.rows + ' keys, ' + status.files + ' files, '
+        output += status.versions + ' versions, ' + prettyBytes(status.size) + ' total\n'
+        output += 'Last updated ' + relativeDate(status.modified) + ' (' + status.modified +')'
         console.log(output)
       }
     })
