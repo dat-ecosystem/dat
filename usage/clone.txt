@@ -1,0 +1,3 @@
+dat clone <remote> [<output-dir>]
+
+Make a full clone a remote repository

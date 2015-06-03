@@ -1,7 +1,6 @@
 var path = require('path')
-var dat = require('dat-core')
-var debug = require('debug')('bin/init')
 var abort = require('../lib/abort.js')
+var init = require('../lib/init-dat.js')
 var usage = require('../lib/usage.js')('init.txt')
 
 module.exports = {
@@ -10,31 +9,18 @@ module.exports = {
 }
 
 function handleInit (args) {
-  debug('handleInit', args)
   if (args.help) return usage()
-  tryOpen()
-
-  function tryOpen () {
-    var db = dat(args.path)
-    db.on('error', create)
-    db.on('ready', ready)
-
-    function ready () {
-      console.error('Skipping init, there is already a dat at', path.join(args.path, '.dat'))
+  init(args, function (err, results, db) {
+    if (err) return abort(err, args)
+    if (results.exists) {
+      var msg = 'Skipping init, there is already a dat at ' + path.join(args.path, '.dat')
+      if (args.json) console.error({message: msg, exists: true})
+      else console.error(msg)
+      process.exit(0)
+    } else if (results.created) {
+      var msg = 'Initialized a new dat at ' + path.join(args.path, '.dat')
+      console.error({message: msg, created: true})
       process.exit(0)
     }
-  }
-
-  function create () {
-    var db = dat(args.path, {createIfMissing: true})
-
-    db.on('error', function error (err) {
-      abort(err, args)
-    })
-
-    db.on('ready', function ready () {
-      console.error('Initialized a new dat at', path.join(args.path, '.dat'))
-      process.exit(0)
-    })
-  }
+  })
 }
