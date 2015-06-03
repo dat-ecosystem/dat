@@ -17,9 +17,9 @@ test('help: dat init -h', function (t) {
   st.end()
 })
 
-test('help: dat cat -h', function (t) {
-  var st = spawn(t, 'node cli.js cat -h')
-  st.stderr.match(fs.readFileSync(path.join('usage', 'cat.txt')).toString() + '\n', 'usage matched')
+test('help: dat read -h', function (t) {
+  var st = spawn(t, 'node cli.js read -h')
+  st.stderr.match(fs.readFileSync(path.join('usage', 'read.txt')).toString() + '\n', 'usage matched')
   st.stdout.empty()
   st.end()
 })

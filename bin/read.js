@@ -1,12 +1,12 @@
 var pump = require('pump')
-var debug = require('debug')('bin/cat')
+var debug = require('debug')('bin/read')
 var openDat = require('../lib/open-dat.js')
 var abort = require('../lib/abort.js')
-var usage = require('../lib/usage.js')('cat.txt')
+var usage = require('../lib/usage.js')('read.txt')
 
 module.exports = {
-  name: 'cat',
-  command: handleCat,
+  name: 'read',
+  command: handleRead,
   options: [
     {
       name: 'dataset',
@@ -16,8 +16,8 @@ module.exports = {
   ]
 }
 
-function handleCat (args) {
-  debug('handleCat', args)
+function handleRead (args) {
+  debug('handleRead', args)
 
   if (args.help || args._.length === 0) {
     usage()
@@ -37,7 +37,7 @@ function handleCat (args) {
     }
 
     pump(db.createFileReadStream(key, opts), process.stdout, function done (err) {
-      if (err) abort(err, args, 'dat: err in cat')
+      if (err) abort(err, args, 'dat: err in read')
     })
   }
 }

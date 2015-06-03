@@ -18,7 +18,7 @@ var config = {
     require('./bin/export.js'),
     require('./bin/diff.js'),
     require('./bin/write.js'),
-    require('./bin/cat.js'),
+    require('./bin/read.js'),
     require('./bin/forks.js'),
     require('./bin/merge.js')
   ],

@@ -17,11 +17,11 @@ function handleStatus (args) {
 
     db.status(function (err, status) {
       if (err) abort(err, args)
-      
+
       // dat-core calls it head, we wanna call it version instead
       status.version = status.head
       delete status.head
-      
+
       if (args.json) {
         console.log(JSON.stringify(status))
       } else {
@@ -32,7 +32,7 @@ function handleStatus (args) {
         output += status.datasets + ' dataset' + (status.datasets > 1 ? 's, ' : ', ')
         output += status.rows + ' keys, ' + status.files + ' files, '
         output += status.versions + ' versions, ' + prettyBytes(status.size) + ' total\n'
-        output += 'Last updated ' + relativeDate(status.modified) + ' (' + status.modified +')'
+        output += 'Last updated ' + relativeDate(status.modified) + ' (' + status.modified + ')'
         console.log(output)
       }
     })

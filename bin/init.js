@@ -12,13 +12,14 @@ function handleInit (args) {
   if (args.help) return usage()
   init(args, function (err, results, db) {
     if (err) return abort(err, args)
+    var msg
     if (results.exists) {
-      var msg = 'Skipping init, there is already a dat at ' + path.join(args.path, '.dat')
+      msg = 'Skipping init, there is already a dat at ' + path.join(args.path, '.dat')
       if (args.json) console.error({message: msg, exists: true})
       else console.error(msg)
       process.exit(0)
     } else if (results.created) {
-      var msg = 'Initialized a new dat at ' + path.join(args.path, '.dat')
+      msg = 'Initialized a new dat at ' + path.join(args.path, '.dat')
       console.error({message: msg, created: true})
       process.exit(0)
     }

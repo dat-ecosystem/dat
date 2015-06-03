@@ -58,6 +58,11 @@ function handleExport (args) {
 
   var format = 'ndjson'
   if (args.format) format = args.format
+  var limit = args.limit
+  if (limit) {
+    if (args.limit) args.limit = parseInt(limit, 10)
+    if (isNaN(args.limit)) abort(new Error('invalid limit: ' + limit), args)
+  }
 
   openDat(args, function ready (err, db) {
     if (err) abort(err, args)
@@ -73,7 +78,6 @@ function handleExport (args) {
         return next(null, row)
       }
     })
-
     pump(db.createReadStream(args), parseOutput, formatData(format), process.stdout, function done (err) {
       if (err) abort(err, args, 'Error exporting data')
     })

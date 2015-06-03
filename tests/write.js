@@ -25,8 +25,8 @@ test('write: dat write to dataset', function (t) {
   st.end()
 })
 
-test('write: dat cat after write to dataset', function (t) {
-  datCatEquals(t, 'test-file.txt', /hello world/, '-d my-dataset')
+test('write: dat read after write to dataset', function (t) {
+  datReadEquals(t, 'test-file.txt', /hello world/, '-d my-dataset')
 })
 
 test('write: dat write to new dataset', function (t) {
@@ -36,8 +36,8 @@ test('write: dat write to new dataset', function (t) {
   st.end()
 })
 
-test('write: dat cat after write to dataset 2', function (t) {
-  datCatEquals(t, 'test-file.txt', /goodbye world/, '-d my-dataset-2')
+test('write: dat read after write to dataset 2', function (t) {
+  datReadEquals(t, 'test-file.txt', /goodbye world/, '-d my-dataset-2')
 })
 
 test('write: dat overwrite to dataset 2', function (t) {
@@ -47,8 +47,8 @@ test('write: dat overwrite to dataset 2', function (t) {
   st.end()
 })
 
-test('write: dat cat after overwrite to dataset 2', function (t) {
-  datCatEquals(t, 'test-file.txt', /goodbye mars/, '-d my-dataset-2')
+test('write: dat read after overwrite to dataset 2', function (t) {
+  datReadEquals(t, 'test-file.txt', /goodbye mars/, '-d my-dataset-2')
 })
 
 /** from file **/
@@ -59,27 +59,27 @@ test('write: dat write from file', function (t) {
   datWrite(t, blobPath, '-d my-dataset-2')
 })
 
-test('write: dat cat after write from file', function (t) {
+test('write: dat read after write from file', function (t) {
   var contents = fs.readFileSync(blobPath).toString()
-  datCatEquals(t, blobPath, contents, '-d my-dataset-2')
+  datReadEquals(t, blobPath, contents, '-d my-dataset-2')
 })
 
 test('write: dat write from file with new name', function (t) {
   datWrite(t, blobPath, '-d my-dataset-2 --name=new-name.txt')
 })
 
-test('write: dat cat after write from file with new name', function (t) {
+test('write: dat read after write from file with new name', function (t) {
   var contents = fs.readFileSync(blobPath).toString()
-  datCatEquals(t, 'new-name.txt', contents, '-d my-dataset-2')
+  datReadEquals(t, 'new-name.txt', contents, '-d my-dataset-2')
 })
 
 test('write: dat write from file with new name with abbr', function (t) {
   datWrite(t, blobPath, '-d my-dataset-2 -n new-name-abbr.txt')
 })
 
-test('write: dat cat after write from file with new name with abbr', function (t) {
+test('write: dat read after write from file with new name with abbr', function (t) {
   var contents = fs.readFileSync(blobPath).toString()
-  datCatEquals(t, 'new-name-abbr.txt', contents, '-d my-dataset-2')
+  datReadEquals(t, 'new-name-abbr.txt', contents, '-d my-dataset-2')
 })
 
 function datWrite (t, blobPath, ext) {
@@ -93,8 +93,8 @@ function datWrite (t, blobPath, ext) {
   st.end()
 }
 
-function datCatEquals (t, key, contents, ext) {
-  var cmd = ' cat ' + key
+function datReadEquals (t, key, contents, ext) {
+  var cmd = ' read ' + key
   if (ext) {
     cmd = cmd + ' ' + ext
   }
