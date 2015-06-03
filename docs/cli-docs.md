@@ -106,9 +106,9 @@ Example output:
 
 ```
 $ dat status
-Current version is now 8eaf3b0739d32849687a544efae8487b5b05df52
-438 keys, 32 files, 3 versions, 143 Mb total
-Last updated 3 seconds ago
+Current version is now 8eaf3b0739d32849687a544efae8487b5b05df52 (latest)
+2 datasets, 438 keys, 32 files, 3 versions, 143 Mb total
+Last updated 3 seconds ago (Tue Jun 02 2015 13:46:54 GMT-0700 (PDT))
 ```
 
 ### dat log
