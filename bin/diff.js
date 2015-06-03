@@ -1,6 +1,7 @@
 var pump = require('pump')
 var through = require('through2')
 var ndjson = require('ndjson')
+var diffToString = require('diffs-to-string').stream
 var openDat = require('../lib/open-dat.js')
 var abort = require('../lib/abort.js')
 var usage = require('../lib/usage.js')('diff.txt')
@@ -26,7 +27,11 @@ function handleDiff (args) {
 
     function diff (headA, headB) {
       var diffs = db.createDiffStream(headA, headB)
-      pump(diffs, datDiffFormatter(), ndjson.serialize(), process.stdout, function done (err) {
+
+      function getRowValue (row) { return row.value }
+      var printer = args.json ? ndjson.serialize() : diffToString(getRowValue)
+
+      pump(diffs, datDiffFormatter(), printer, process.stdout, function done (err) {
         if (err) throw err
       })
 
@@ -49,7 +54,11 @@ function handleDiff (args) {
           } else {
             diff.versions.push(null)
           }
-          next(null, diff)
+          if (args.json) {
+            next(null, diff)
+          } else {
+            next(null, diff.versions)
+          }
         })
       }
     }
