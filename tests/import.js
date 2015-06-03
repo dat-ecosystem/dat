@@ -83,6 +83,13 @@ test('import: dat import with json output', function (t) {
   st.end()
 })
 
+test('import: dat datasets (list datasets)', function (t) {
+  var st = spawn(t, dat + ' datasets', {cwd: dat2})
+  st.stderr.empty()
+  st.stdout.match(/import-test2/)
+  st.end()
+})
+
 function verify (dataset, dir) {
   test('import: dat export', function (t) {
     var st = spawn(t, dat + ' export --dataset=' + dataset, {cwd: dir})

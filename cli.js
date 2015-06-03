@@ -6,6 +6,7 @@ var config = {
   commands: [
     require('./bin/init.js'),
     require('./bin/import.js'),
+    require('./bin/datasets.js'),
     require('./bin/push.js'),
     require('./bin/checkout.js'),
     require('./bin/pull.js'),
