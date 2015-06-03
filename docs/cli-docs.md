@@ -116,12 +116,12 @@ Last updated 3 seconds ago
 Stream versions out in historical order as json
 
 ```bash
-dat log <version hash>
+dat log [<version>]
 ```
 
-By default (no arguments) it will print out a stream of json representing each version of the repository.
+By default (no arguments) it will print out json representing each change to the repository.
 
-If `<version hash>` is specified as the first positional argument then the individual change data for that version will be streamed out.
+If `<version>` is specified as the first positional argument then change data relative to that version will be returned.
 
 Example output:
 
