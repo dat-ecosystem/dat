@@ -17,15 +17,18 @@ function handleStatus (args) {
 
     db.status(function (err, status) {
       if (err) abort(err, args)
+      
+      // dat-core calls it head, we wanna call it version instead
       status.version = status.head
       delete status.head
+      
       if (args.json) {
         console.log(JSON.stringify(status))
       } else {
         var output = ''
         output += 'Current version is ' + status.version
         if (!status.checkout) output += ' (latest)\n'
-        else output += '\n'
+        else output += ' (checkout)\n'
         output += status.rows + ' keys, ' + status.files + ' files, ' + status.versions + ' versions, ' + prettyBytes(status.size) + ' total\n'
         output += 'Last updated ' + relativeDate(status.modified)
         console.log(output)
