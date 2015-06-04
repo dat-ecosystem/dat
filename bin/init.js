@@ -20,7 +20,8 @@ function handleInit (args) {
       process.exit(0)
     } else if (results.created) {
       msg = 'Initialized a new dat at ' + path.join(args.path, '.dat')
-      console.error({message: msg, created: true})
+      if (args.json) console.error({message: msg, created: true})
+      else console.error(msg)
       process.exit(0)
     }
   })
