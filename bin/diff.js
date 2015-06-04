@@ -36,7 +36,11 @@ function handleDiff (args) {
       var diffs = db.createDiffStream(headA, headB)
 
       function getRowValue (row) { return row.value }
-      var printer = args.json ? ndjson.serialize() : diffToString(getRowValue)
+      function getHeaderValue (diff, i) {
+        var onediff = diff && diff[0] || diff[1]
+        return 'row ' + (i + 1) + ' key: ' + onediff['key'] + '\n'
+      }
+      var printer = args.json ? ndjson.serialize() : diffToString(getRowValue, getHeaderValue)
 
       pump(diffs, datDiffFormatter(), printer, process.stdout, function done (err) {
         if (err) throw err
