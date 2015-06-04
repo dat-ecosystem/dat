@@ -1,7 +1,6 @@
 var pump = require('pump')
 var through = require('through2')
 var ndjson = require('ndjson')
-var debug = require('debug')('bin/diff')
 var diffToString = require('diffs-to-string').stream
 var openDat = require('../lib/open-dat.js')
 var abort = require('../lib/abort.js')
@@ -45,7 +44,6 @@ function handleDiff (args) {
 
       function datDiffFormatter () {
         return through.obj(function write (obj, enc, next) {
-
           var a = obj[0]
           var b = obj[1]
           var diff = {}

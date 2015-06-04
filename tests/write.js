@@ -86,7 +86,6 @@ var dat2 = path.join(tmp, 'dat-2')
 
 helpers.onedat(dat2)
 helpers.fileConflict(dat1, dat2, 'files', 'plato-says-hey-yo', function (conflictForks) {
-  forks = conflictForks
 })
 
 test('write: dat write after conflict', function (t) {

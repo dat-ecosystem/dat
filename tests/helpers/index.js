@@ -51,7 +51,7 @@ function conflict (dat1, dat2, dataset, cb) {
   // if cb is supplied will also retrieve forks
 
   test('helpers: dat1 import', function (t) {
-    var st = spawn(t, dat + ' import -d ' + dataset + ' ' + data.a, {cwd: dat2})
+    var st = spawn(t, dat + ' import -d ' + dataset + ' ' + csvs.a, {cwd: dat2})
     st.stderr.match(/Done importing data/)
     st.stdout.empty()
     st.end()
@@ -66,14 +66,14 @@ function conflict (dat1, dat2, dataset, cb) {
   })
 
   test('helpers: dat2 import b', function (t) {
-    var st = spawn(t, dat + ' import -d ' + dataset + ' ' + data.b, {cwd: dat2})
+    var st = spawn(t, dat + ' import -d ' + dataset + ' ' + csvs.b, {cwd: dat2})
     st.stderr.match(/Done importing data/)
     st.stdout.empty()
     st.end()
   })
 
   test('helpers: dat1 import c', function (t) {
-    var st = spawn(t, dat + ' import -d ' + dataset + ' ' + data.c, {cwd: dat1})
+    var st = spawn(t, dat + ' import -d ' + dataset + ' ' + csvs.c, {cwd: dat1})
     st.stderr.match(/Done importing data/)
     st.stdout.empty()
     st.end()
@@ -124,7 +124,6 @@ function conflict (dat1, dat2, dataset, cb) {
     })
   })
 }
-
 
 function fileConflict (dat1, dat2, dataset, filename, cb) {
   // creates conflict where:
