@@ -104,11 +104,11 @@ In our second project, Bruno Vieira of Queen Mary University London worked with 
 
 ### Client libraries
 
-We have two currently officially supported client libraries in [R, developed by ropensci](github.com/ropensci/rdat) and [python](github.com/karissa/datpy). We are actively accepting contributors -- reach out to us!
+We have two currently officially supported client libraries in [R, developed by ropensci](https://github.com/ropensci/rdat) and [python](https://github.com/karissa/datpy). We are actively accepting contributors -- reach out to us!
 
 ### Pipelines
 
-We have written a commandline tool and module called [gasket](github.com/datproject/gasket) that allows users to write preconfigured pipelines. This is useful for building data pipelines, although it is still experimental and has not been tested in production. Contributions welcome.
+We have written a commandline tool and module called [gasket](https://github.com/datproject/gasket) that allows users to write preconfigured pipelines. This is useful for building data pipelines, although it is still experimental and has not been tested in production. Contributions welcome.
 
 ## 5. Architecture
 
@@ -165,7 +165,7 @@ b (key: baz, value: foo) (lookup a's layer, if head insert in that layer, if not
 c (key: foo, value: baz) (...)
 ```
 
-See more on implementation details in the [dat-core](github.com/maxogden/dat-core) documentation.
+See more on implementation details in the [dat-core](https://github.com/maxogden/dat-core) documentation.
 
 ## 6. Conclusion and Final Remarks
 We hope data tools like dat will be key in the evolution towards data pipelines that are open, thus more accessible; documented, thus more reproducible; and challengeable, thus more correct.
