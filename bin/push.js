@@ -1,5 +1,6 @@
 var usage = require('../lib/usage.js')('push.txt')
 var abort = require('../lib/abort.js')
+var progress = require('../lib/progress.js')
 var openDat = require('../lib/open-dat.js')
 var transportStream = require('../lib/transports.js')
 
@@ -22,8 +23,17 @@ function handlePush (args) {
     console.error(data)
   })
 
+  stream.on('prefinish', function () {
+    openDat(args, function ready (err, db) {
+      var forks = 'some number of' //TODO
+      var msg = ''
+      msg += 'Push completed successfully.'
+      console.log(msg)
+    })
+  })
+
   openDat(args, function ready (err, db) {
     if (err) return abort(err, args)
-    stream.pipe(db.push()).pipe(stream)
+    stream.pipe(db.push()).pipe(progress('Pushed')).pipe(stream)
   })
 }

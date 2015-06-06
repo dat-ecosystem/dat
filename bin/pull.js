@@ -1,4 +1,7 @@
+var fs = require('fs')
+var path = require('path')
 var usage = require('../lib/usage.js')('pull.txt')
+var progress = require('../lib/progress.js')
 var abort = require('../lib/abort.js')
 var openDat = require('../lib/open-dat.js')
 var transportStream = require('../lib/transports.js')
@@ -22,8 +25,18 @@ function handlePull (args) {
     console.error(data)
   })
 
+  stream.on('prefinish', function () {
+    openDat(args, function ready (err, db) {
+      var forks = 'some number of' //TODO
+      var msg = ''
+      msg += 'Pull completed successfully. You now have ' + forks + ' forks ;)\n'
+      msg += 'Current version is now ' + db.head
+      console.log(msg)
+    })
+  })
+
   openDat(args, function ready (err, db) {
     if (err) return abort(err, args)
-    stream.pipe(db.pull()).pipe(stream)
+    stream.pipe(db.pull()).pipe(progress('Pulled')).pipe(stream)
   })
 }
