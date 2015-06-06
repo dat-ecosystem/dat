@@ -1,3 +1,4 @@
+var through = require('through2')
 var pump = require('pump')
 var ndjson = require('ndjson')
 var debug = require('debug')('bin/versions')
@@ -24,8 +25,17 @@ function handleLog (args) {
   })
 
   function handleReadStream (db) {
-    pump(db.createChangesStream(args), ndjson.serialize(), process.stdout, function done (err) {
+    if (args.json) formatter = ndjson.serialize()
+    else formatter = through.obj(format)
+    pump(db.createChangesStream(args), formatter, process.stdout, function done (err) {
       if (err) abort(err, args, 'dat: err in versions')
     })
+  }
+  
+  function format (obj, enc, next) {
+    var msg = "Version: " + obj.version + ' [+' + (obj.puts + obj.files) + ', -' + obj.deletes + ']\n'
+    msg += "Date: " + obj.date + '\n'
+    // TODO add message when we have it in the data
+    next(null, msg)
   }
 }
