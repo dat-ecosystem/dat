@@ -25,16 +25,17 @@ function handleLog (args) {
   })
 
   function handleReadStream (db) {
+    var formatter
     if (args.json) formatter = ndjson.serialize()
     else formatter = through.obj(format)
     pump(db.createChangesStream(args), formatter, process.stdout, function done (err) {
       if (err) abort(err, args, 'dat: err in versions')
     })
   }
-  
+
   function format (obj, enc, next) {
-    var msg = "Version: " + obj.version + ' [+' + (obj.puts + obj.files) + ', -' + obj.deletes + ']\n'
-    msg += "Date: " + obj.date + '\n'
+    var msg = 'Version: ' + obj.version + ' [+' + (obj.puts + obj.files) + ', -' + obj.deletes + ']\n'
+    msg += 'Date: ' + obj.date + '\n'
     // TODO add message when we have it in the data
     next(null, msg)
   }
