@@ -5,6 +5,8 @@ var test = require('tape')
 var spawn = require('tape-spawn')
 var helpers = require('./helpers')
 
+var version
+
 var tmp = os.tmpdir()
 var dat = path.resolve(__dirname + '/../cli.js')
 var dat1 = path.join(tmp, 'dat-1')
@@ -52,31 +54,47 @@ test('write: dat read after overwrite to dataset 2', function (t) {
 })
 
 /** with existing key **/
+var dat3 = path.join(tmp, 'dat-3')
+helpers.onedat(dat3)
 
 test('write: dat import csv', function (t) {
-  var csv = path.resolve(__dirname + '/fixtures/all_hour.csv')
-  var st = spawn(t, dat + ' import ' + csv + ' -d write-test-2 --key=id', {cwd: dat1})
+  var st = spawn(t, 'echo "foo,bah\n123,456" | ' + dat + ' import - -d test', {cwd: dat3})
   st.stdout.empty()
   st.stderr.match(/Done importing data/)
   st.end()
 })
 
-test('write: dat write over an existing key with row content', function (t) {
-  var st = spawn(t, 'echo "bah" |' + dat + ' write ak11246293 -d write-test-2 -', {cwd: dat1})
-  st.stdout.empty()
-  st.stderr.match(/Done writing binary data/)
+test('write: dat3 status as json', function (t) {
+  var st = spawn(t, dat + ' status --json', {cwd: dat3})
+  st.stdout.match(function (output) {
+    try {
+      var json = JSON.parse(output)
+      version = json.version
+      return json.version.length === 64 // 32bit hash 2 in hex (64)
+    } catch (e) {
+      return false
+    }
+  })
+  st.stderr.empty()
   st.end()
 })
 
-test('write: checkout then read', function (t) {
-  var st = spawn(t, dat + ' checkout `dat forks`', {cwd: dat1})
+test('write: checkout', function (t) {
+  var st = spawn(t, dat + ' checkout ' + version, {cwd: dat3})
   st.stdout.empty()
   st.stderr.match(/Current version is now/)
   st.end()
 })
 
+test('write: dat write over an existing key with row content', function (t) {
+  var st = spawn(t, 'echo bah | ' + dat + ' write foo -d test -', {cwd: dat3})
+  st.stdout.empty()
+  st.stderr.match(/Done writing binary data/)
+  st.end()
+})
+
 test('write: dat read after checkout', function (t) {
-  datReadEquals(t, 'ak11246293', /bah/, '-d write-test-2')
+  datReadEquals(t, 'foo', /bah/, '-d test', dat3)
 })
 
 /** from file **/
