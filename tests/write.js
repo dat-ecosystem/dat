@@ -62,14 +62,14 @@ test('write: dat import csv', function (t) {
 })
 
 test('write: dat write over an existing key with row content', function (t) {
-  var st = spawn(t, "echo 'bah' |" + dat + " write ak11246293 -d write-test-2 -" , {cwd: dat1})
+  var st = spawn(t, 'echo "bah" |' + dat + ' write ak11246293 -d write-test-2 -', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(/Done writing binary data/)
   st.end()
 })
 
 test('write: checkout then read', function (t) {
-  var st = spawn(t, dat + " checkout `dat forks`" , {cwd: dat1})
+  var st = spawn(t, dat + ' checkout `dat forks`', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(/Current version is now/)
   st.end()
@@ -109,7 +109,6 @@ test('write: dat read after write from file with new name with abbr', function (
   var contents = fs.readFileSync(blobPath).toString()
   datReadEquals(t, 'new-name-abbr.txt', contents, '-d write-test-2')
 })
-
 
 var dat2 = path.join(tmp, 'dat-2')
 
