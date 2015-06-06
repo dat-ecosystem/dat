@@ -25,6 +25,7 @@ function handlePush (args) {
 
   stream.on('prefinish', function () {
     openDat(args, function ready (err, db) {
+      if (err) return abort(err, args)
       console.log('Push completed successfully.')
     })
   })
