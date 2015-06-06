@@ -1,6 +1,6 @@
 # dat
 
-Dat is version control and sync tool for datasets.
+Dat is a version-controlled, decentralized data sync tool designed to improve collaboration between data people and data systems.
 
 [![NPM](https://nodei.co/npm/dat.png?global=true)](https://nodei.co/npm/dat/)
 
@@ -12,10 +12,11 @@ Windows        | Mac/Linux
 
 - For using the CLI `dat` utility see [`docs/cli-docs.md`](docs/cli-docs.md)
 - For using the dat JS API see [dat-core](https://github.com/maxogden/dat-core)
+- For a detailed description see the [whitepaper draft](https://github.com/maxogden/dat/blob/master/docs/whitepaper.md)
 
 ## Installation
 
-##### Step 1: Install node from the [node website](http://nodejs.org/).
+##### Step 1: Install node from the [node website](http://nodejs.org/). (homebrew can cause problems)
 
 We recommend node version 0.12 or above. You can check your node version by running `node -v` on the command line.
 
