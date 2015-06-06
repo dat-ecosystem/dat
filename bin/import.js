@@ -3,6 +3,7 @@ var pump = require('pump')
 var through = require('through2')
 var uuid = require('cuid')
 var debug = require('debug')('bin/import')
+var progress = require('../lib/progress.js')
 var parseInputStream = require('../lib/parse-input-stream.js')
 var openDat = require('../lib/open-dat.js')
 var abort = require('../lib/abort.js')
@@ -59,7 +60,7 @@ function handleImport (args) {
       next(null, {type: 'put', key: key, value: obj})
     })
 
-    pump(inputStream, parseInputStream(args), transform, db.createWriteStream({ dataset: args.dataset }), function done (err) {
+    pump(inputStream, parseInputStream(args), transform, progress('Wrote'), db.createWriteStream({ dataset: args.dataset }), function done (err) {
       if (err) abort(err, args, 'Error importing data')
       if (args.json) {
         var output = {
