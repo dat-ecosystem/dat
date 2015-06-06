@@ -1,3 +1,4 @@
+var config = require('../lib/config.js')()
 var usage = require('../lib/usage.js')('pull.txt')
 var progress = require('../lib/progress.js')
 var abort = require('../lib/abort.js')
@@ -10,11 +11,13 @@ module.exports = {
 }
 
 function handlePull (args) {
-  if (args._.length === 0) return usage()
+  var remote = config.remote || args._[0]
+  if (!remote) return usage()
+
   var transports = transportStream(args.bin)
 
   try {
-    var stream = transports(args._[0])
+    var stream = transports(remote)
   } catch (err) {
     return usage()
   }
