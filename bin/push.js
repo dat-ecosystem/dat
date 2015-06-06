@@ -25,10 +25,7 @@ function handlePush (args) {
 
   stream.on('prefinish', function () {
     openDat(args, function ready (err, db) {
-      var forks = 'some number of' //TODO
-      var msg = ''
-      msg += 'Push completed successfully.'
-      console.log(msg)
+      console.log('Push completed successfully.')
     })
   })
 
