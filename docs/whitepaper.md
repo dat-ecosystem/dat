@@ -57,7 +57,7 @@ Blob data can be written just like tabular data using `dat write`. Blob data and
 
 ### 3.2 Versioning
 
-When dat begins writing to disk, a new `version` is created -- a uniquely identifiable 32-bit hash that represents the changes that were made during the operation. As each write or import operation is performed, dat creates a new version hash that identifies the entire dat, not just the dataset that was changed.
+When dat begins writing to disk, a new `version` is created -- a uniquely identifiable sha256 hash that represents the changes that were made during the operation. As each write or import operation is performed, dat creates a new version hash that identifies the entire dat, not just the dataset that was changed.
 
 ![img](images/import.png)
 
