@@ -56,7 +56,7 @@
     "stream-iterate": "^1.1.1",
     "tap-spec": "^3.0.0",
     "tape": "^4.0.0",
-    "tape-spawn": "^1.2.1"
+    "tape-spawn": "^1.3.3"
   },
   "homepage": "https://github.com/maxogden/dat",
   "directories": {
