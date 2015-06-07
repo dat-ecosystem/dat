@@ -34,7 +34,11 @@ function handleLog (args) {
   }
 
   function format (obj, enc, next) {
-    var msg = 'Version: ' + obj.version + ' [+' + (obj.puts + obj.files) + ', -' + obj.deletes + ']\n'
+    var files = obj.files || 0
+    var puts = obj.puts || 0
+    var deletes = obj.deletes || 0
+
+    var msg = 'Version: ' + obj.version + ' [+' + (puts + files) + ', -' + deletes + ']\n'
     msg += 'Date: ' + obj.date + '\n'
     // TODO add message when we have it in the data
     next(null, msg)
