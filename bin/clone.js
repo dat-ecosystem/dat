@@ -1,4 +1,3 @@
-var path = require('path')
 var abort = require('../lib/abort.js')
 var initDat = require('../lib/init-dat.js')
 var transportStream = require('../lib/transports.js')
@@ -11,7 +10,7 @@ module.exports = {
 
 function handleClone (args) {
   if (args._.length === 0) return usage()
-  var source = path.resolve(args._[0])
+  var source = args._[0]
   if (args._[1]) args.path = args._[1]
   var transport = transportStream(args.bin)
 
