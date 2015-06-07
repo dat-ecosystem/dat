@@ -114,7 +114,7 @@ We have written a commandline tool and module called [gasket](https://github.com
 
 ## 5. Architecture
 
-We architected dat as a variety of open source modules that build upon and integrate with each other, encouraging contribution from an existing community of data engineers. See the full list of modules used in the [packages.json]()
+We architected dat as a variety of open source modules that build upon and integrate with each other, encouraging contribution from an existing community of data engineers. See the full list of modules used in the [package.json](../package.json)
 
 ### 5.1 It's a stream!
 
