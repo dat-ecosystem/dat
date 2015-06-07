@@ -37,7 +37,7 @@ All data is compressed and stored in the hidden `.dat` folder on disk. Values ca
 
 When data is imported into dat, it must be put into a dataset. To support bifurcated schemas, we encourage users to create multiple datasets, so that each schema will be independent. A dataset is analogous to a sql table or a nosql collection; however, we chose not to use the language of 'table' or 'collection' because dat datasets do not support robust querying at this time. Each dataset is compartmentalized so that tabular datasets with different schemas can be stored in the same repository without collision. In other words, rows define the schema for a given dataset, and there can be multiple datasets in a single dat.
 
-Here, we create a new dataset called 'cities' and import some tabular data. To update data later, we must provide a key that identifies each row in the dataset. For example, in this example, the `cityId` column is a unique identifier for each row. Dat will auto-generate keys if the user supplies `--key=false` upon import.
+Here, we create a new dataset called 'cities' and import some tabular data. To update data later, we must provide a key that identifies each row in the dataset. In this example, the `cityId` column is a unique identifier for each row. Dat will auto-generate keys if the user supplies `--key=false` upon import.
 
 ```
 $ cat cities.json
