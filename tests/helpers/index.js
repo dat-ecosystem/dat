@@ -53,7 +53,7 @@ function conflict (dat1, dat2, dataset, cb) {
   test('helpers: dat1 import', function (t) {
     var st = spawn(t, dat + ' import -d ' + dataset + ' ' + csvs.a, {cwd: dat2})
     st.stderr.match(/Done importing data/)
-    st.stdout.empty()
+    st.stdout.match(/Wrote/)
     st.end()
   })
 
@@ -61,28 +61,28 @@ function conflict (dat1, dat2, dataset, cb) {
     // uses --bin since dat is not in the PATH necessarily when running tests
     var st = spawn(t, dat + ' pull ' + dat1 + ' --bin=' + dat, {cwd: dat2})
     st.stderr.empty()
-    st.stdout.empty()
+    st.stdout.match(/Pulled/)
     st.end()
   })
 
   test('helpers: dat2 import b', function (t) {
     var st = spawn(t, dat + ' import -d ' + dataset + ' ' + csvs.b, {cwd: dat2})
     st.stderr.match(/Done importing data/)
-    st.stdout.empty()
+    st.stdout.match(/Wrote/)
     st.end()
   })
 
   test('helpers: dat1 import c', function (t) {
     var st = spawn(t, dat + ' import -d ' + dataset + ' ' + csvs.c, {cwd: dat1})
     st.stderr.match(/Done importing data/)
-    st.stdout.empty()
+    st.stdout.match(/Wrote/)
     st.end()
   })
 
   test('helpers: dat1 pull dat2', function (t) {
     var st = spawn(t, dat + ' pull ' + dat2 + ' --bin=' + dat, {cwd: dat1})
     st.stderr.empty()
-    st.stdout.empty()
+    st.stdout.match(/Pulled/)
     st.end()
   })
 
@@ -143,7 +143,7 @@ function fileConflict (dat1, dat2, dataset, filename, cb) {
     // uses --bin since dat is not in the PATH necessarily when running tests
     var st = spawn(t, dat + ' pull ' + dat1 + ' --bin=' + dat, {cwd: dat2})
     st.stderr.empty()
-    st.stdout.empty()
+    st.stdout.match(/Pulled/)
     st.end()
   })
 
@@ -164,7 +164,7 @@ function fileConflict (dat1, dat2, dataset, filename, cb) {
   test('helpers: dat1 pull dat2', function (t) {
     var st = spawn(t, dat + ' pull ' + dat2 + ' --bin=' + dat, {cwd: dat1})
     st.stderr.empty()
-    st.stdout.empty()
+    st.stdout.match(/Pulled/)
     st.end()
   })
 

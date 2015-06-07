@@ -60,7 +60,7 @@ function handleImport (args) {
       next(null, {type: 'put', key: key, value: obj})
     })
 
-    pump(inputStream, parseInputStream(args), transform, progress('Wrote'), db.createWriteStream({ dataset: args.dataset }), function done (err) {
+    pump(inputStream, progress('Wrote', args), parseInputStream(args), transform, db.createWriteStream({ dataset: args.dataset }), function done (err) {
       if (err) abort(err, args, 'Error importing data')
       if (args.json) {
         var output = {

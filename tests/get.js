@@ -14,7 +14,7 @@ var json = path.resolve(__dirname + '/fixtures/all_hour.json')
 
 test('get: dat import dataset', function (t) {
   var st = spawn(t, dat + ' import ' + json + ' --key=id --dataset=get-test', {cwd: dat1})
-  st.stdout.empty()
+  st.stdout.match(/Wrote/)
   st.stderr.match(/Done importing data/)
   st.end()
 })

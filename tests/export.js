@@ -19,7 +19,7 @@ var exportfile = path.join(dat1, 'out.csv')
 
 test('export: dat import csv', function (t) {
   var st = spawn(t, dat + ' import ' + csvfile + ' -d export-test --key=id', {cwd: dat1})
-  st.stdout.empty()
+  st.stdout.match(/Wrote/)
   st.stderr.match(/Done importing data/)
   st.end()
 })
