@@ -130,8 +130,6 @@ All data in dat is read and written as **streams**. That means that a computer r
 
 All data in dat is immutable. That means that all data is treated like a log of a particular event, and only the view of the data overwritten when new data is added.
 
-When data is added to the log, it is given a
-
 ### 5.3 It's a graph!
 
 Whatever you write to dat is appended to the graph as a new node. Each node knows which version it came from, i.e., its parent node.
