@@ -148,12 +148,12 @@ Clone a new repository from a remote dat to create a new dat.
 dat clone <repo-url> [output-dir]
 ```
 
-Your `repo-url` can use any of the available transports. Default transports are `http`, `https` and `ssh`.
+Your `repo-url` can use any of the available transports. Default transports are `http`, `https`, `ssh` or a relative filesystem path.
 
 Example output:
 
 ```
-$ dat clone ssh://uni.edu/maxogden/flights
+$ dat clone ssh://uni.edu:flights
 Pulled 823 changes (93.88 Mb, 3.4 Mb/s).
 Clone from remote has completed.
 Current version is now b04adb64fdf2203
@@ -175,7 +175,7 @@ dat push <remote>
 Example output:
 
 ```
-$ dat push ssh://192.168.0.5:~/data
+$ dat push ssh://192.168.0.5:data
 Pushed 438 changes (32.03 Mb, 4.4 Mb/s).
 Push completed successfully.
 ```
@@ -196,7 +196,7 @@ dat pull <remote>
 Example output:
 
 ```
-$ dat pull ssh://192.168.0.5:~/data
+$ dat pull ssh://192.168.0.5:data
 Pulled 823 changes (93.88 Mb, 3.4 Mb/s).
 Pull completed successfully, you now have 2 forks.
 Current version is now b04adb64fdf2203
@@ -428,7 +428,7 @@ Import a json file:
 
 ```
 $ dat import flights.json
-Added 302,143 keys (32.03 Mb, 4.4 Mb/s).
+Added 302,143 keys (327.03 Mb, 4.4 Mb/s).
 Data added successfully.
 Current version is now b04adb64fdf2203
 ```
