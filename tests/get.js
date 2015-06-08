@@ -40,7 +40,7 @@ test('get: dat get without key errors', function (t) {
 test('get: dat get without dataset errors', function (t) {
   var st = spawn(t, dat + ' get ak11246293', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(fs.readFileSync(path.join('usage', 'get.txt')).toString() + '\n', 'usage matched')
+  st.stderr.match(/Must specify dataset/)
   st.end()
 })
 

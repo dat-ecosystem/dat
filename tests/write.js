@@ -5,8 +5,6 @@ var test = require('tape')
 var spawn = require('tape-spawn')
 var helpers = require('./helpers')
 
-var version
-
 var tmp = os.tmpdir()
 var dat = path.resolve(__dirname + '/../cli.js')
 var dat1 = path.join(tmp, 'dat-write-1')
@@ -18,7 +16,7 @@ helpers.onedat(dat1)
 test('write: dat write errors without dataset', function (t) {
   var st = spawn(t, "echo 'hello world' | " + dat + ' write test-file.txt -', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(fs.readFileSync(path.join('usage', 'write.txt')).toString() + '\n', 'usage matched')
+  st.stderr.match(/Must specify dataset/)
   st.end()
 })
 
@@ -62,21 +60,6 @@ test('write: dat import csv', function (t) {
   var st = spawn(t, 'echo "foo,bah\n123,456" | ' + dat + ' import - -d test --key foo', {cwd: dat3})
   st.stdout.empty()
   st.stderr.match(/Done importing data/)
-  st.end()
-})
-
-test('write: dat3 status as json', function (t) {
-  var st = spawn(t, dat + ' status --json', {cwd: dat3})
-  st.stdout.match(function (output) {
-    try {
-      var json = JSON.parse(output)
-      version = json.version
-      return json.version.length === 64 // 32bit hash 2 in hex (64)
-    } catch (e) {
-      return false
-    }
-  })
-  st.stderr.empty()
   st.end()
 })
 

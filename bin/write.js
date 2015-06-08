@@ -25,10 +25,11 @@ module.exports = {
 function handleWrite (args) {
   debug('handleWrite', args)
 
-  if (args.help || !args.dataset || args._.length === 0) {
-    usage()
-    abort()
+  if (args.help || args._.length === 0) {
+    return usage()
   }
+
+  if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'))
 
   openDat(args, function ready (err, db) {
     if (err) abort(err, args)

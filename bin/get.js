@@ -19,10 +19,11 @@ module.exports = {
 
 function handleRows (args) {
   debug('handleRows', args)
-  if (args.help || !args.dataset || args._.length === 0) {
-    usage()
-    abort()
+  if (args.help || args._.length === 0) {
+    return usage()
   }
+
+  if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'))
 
   openDat(args, function ready (err, db) {
     if (err) abort(err, args)
@@ -30,7 +31,10 @@ function handleRows (args) {
 
     debug(key, args)
     db.get(key, args, function (err, value) {
-      if (err) abort(err, args, 'dat get error')
+      if (err) {
+        var msg = 'Error: Could not find key ' + key + ' in dataset ' + args.dataset + '.'
+        abort(err, args, msg)
+      }
       process.stdout.write(JSON.stringify(value))
     })
   })

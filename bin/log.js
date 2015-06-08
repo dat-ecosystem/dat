@@ -15,8 +15,7 @@ function handleLog (args) {
   debug('handleLog', args)
 
   if (args.help) {
-    usage()
-    abort()
+    return usage()
   }
 
   openDat(args, function ready (err, db) {
@@ -34,6 +33,9 @@ function handleLog (args) {
   }
 
   function format (obj, enc, next) {
+    // its the root node, lets not print it out
+    if (obj.files === 0 && obj.puts === 0 && obj.deletes === 0) return next()
+
     var files = obj.files || 0
     var puts = obj.puts || 0
     var deletes = obj.deletes || 0

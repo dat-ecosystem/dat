@@ -51,10 +51,11 @@ module.exports = {
 function handleExport (args) {
   debug('handleExport', args)
 
-  if (args.help || !args.dataset) {
-    usage()
-    abort()
+  if (args.help) {
+    return usage()
   }
+
+  if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'))
 
   var format = 'ndjson'
   if (args.format) format = args.format

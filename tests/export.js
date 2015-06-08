@@ -92,14 +92,14 @@ test('export: dat export with limit and csv', function (t) {
 test('export: dat export with limit and csv without dataset errors', function (t) {
   var st = spawn(t, dat + ' export --limit=5 --format=csv', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(fs.readFileSync(path.join('usage', 'export.txt')).toString() + '\n', 'usage matched')
+  st.stderr.match(/Must specify dataset/)
   st.end()
 })
 
 test('export: dat export with range options without dataset errors', function (t) {
   var st = spawn(t, dat + ' export --lt=ak11246291', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(fs.readFileSync(path.join('usage', 'export.txt')).toString() + '\n', 'usage matched')
+  st.stderr.match(/Must specify dataset/)
   st.end()
 })
 
@@ -136,7 +136,7 @@ test('export: dat export with lt and limit options', function (t) {
 test('export: dat export without dataset errors', function (t) {
   var st = spawn(t, dat + ' export', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(fs.readFileSync(path.join('usage', 'export.txt')).toString() + '\n', 'usage matched')
+  st.stderr.match(/Must specify dataset/)
   st.end()
 })
 

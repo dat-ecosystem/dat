@@ -93,6 +93,48 @@ test('cli: dat status --verbose', function (t) {
   st.end()
 })
 
+test('cli: dat get nonexistent key', function (t) {
+  var st = spawn(t, dat + ' get bar -d foo --path=' + dat1)
+  st.stderr.match(/Could not find key bar in dataset foo/)
+  st.stdout.empty()
+  st.end()
+})
+
+test('cli: dat get without dataset', function (t) {
+  var st = spawn(t, dat + ' get bar --path=' + dat1)
+  st.stderr.match(/Must specify dataset/)
+  st.stdout.empty()
+  st.end()
+})
+
+test('cli: dat write without dataset', function (t) {
+  var st = spawn(t, dat + ' write bar --path=' + dat1)
+  st.stderr.match(/Must specify dataset/)
+  st.stdout.empty()
+  st.end()
+})
+
+test('cli: dat read without dataset', function (t) {
+  var st = spawn(t, dat + ' read bar --path=' + dat1)
+  st.stderr.match(/Must specify dataset/)
+  st.stdout.empty()
+  st.end()
+})
+
+test('cli: dat import without dataset', function (t) {
+  var st = spawn(t, dat + ' read bar --path=' + dat1)
+  st.stderr.match(/Must specify dataset/)
+  st.stdout.empty()
+  st.end()
+})
+
+test('cli: dat export without dataset', function (t) {
+  var st = spawn(t, dat + ' read bar --path=' + dat1)
+  st.stderr.match(/Must specify dataset/)
+  st.stdout.empty()
+  st.end()
+})
+
 test('cli: cleanup', function (t) {
   cleanup()
   t.end()

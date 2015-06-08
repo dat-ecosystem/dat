@@ -83,6 +83,13 @@ test('import: dat import with json output', function (t) {
   st.end()
 })
 
+test('import: dat status after import', function (t) {
+  var st = spawn(t, dat + ' status --json', {cwd: dat2})
+  st.stderr.empty()
+  st.stdout.match('{"error":true,"message":"This dat is empty"}\n')
+  st.end()
+})
+
 test('import: dat datasets (list datasets)', function (t) {
   var st = spawn(t, dat + ' datasets', {cwd: dat2})
   st.stderr.empty()

@@ -20,9 +20,10 @@ function handleRead (args) {
   debug('handleRead', args)
 
   if (args.help || args._.length === 0) {
-    usage()
-    abort()
+    return usage()
   }
+
+  if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'))
 
   openDat(args, function ready (err, db) {
     if (err) abort(err, args)
@@ -35,7 +36,7 @@ function handleRead (args) {
     var opts = {
       dataset: args.d
     }
-    
+
     debug(key, opts)
 
     pump(db.createFileReadStream(key, opts), process.stdout, function done (err) {
