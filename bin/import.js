@@ -1,4 +1,5 @@
 var fs = require('fs')
+var pumpify = require('pumpify')
 var pump = require('pump')
 var through = require('through2')
 var uuid = require('cuid')
@@ -53,6 +54,7 @@ function handleImport (args) {
     var inputStream
     if (args._[0] === '-') inputStream = process.stdin
     else inputStream = fs.createReadStream(args._[0])
+    if (!args.json) inputStream = pumpify(inputStream, progress('Wrote'))
 
     var transform = through.obj(function (obj, enc, next) {
       debug('heres my obj!', obj)
@@ -60,7 +62,7 @@ function handleImport (args) {
       next(null, {type: 'put', key: key, value: obj})
     })
 
-    pump(inputStream, progress('Wrote', args), parseInputStream(args), transform, db.createWriteStream({ dataset: args.dataset }), function done (err) {
+    pump(inputStream, parseInputStream(args), transform, db.createWriteStream({ dataset: args.dataset }), function done (err) {
       if (err) abort(err, args, 'Error importing data')
       if (args.json) {
         var output = {
