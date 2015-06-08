@@ -13,15 +13,10 @@ function handleCheckout (args) {
   openDat(args, function ready (err, db) {
     if (err) abort(err, args)
     var head = args._[0]
-    var checkout = db.checkout(head === 'latest' ? null : head)
+    var checkout = db.checkout(head === 'latest' ? null : head, {persistent: true})
 
     checkout.on('error', done)
-
-    checkout.open(function (err) {
-      if (err) return done(err)
-      if (head === 'latest') db.meta.del('checkout', done)
-      else db.meta.put('checkout', head, done)
-    })
+    checkout.on('ready', done)
 
     function done (err) {
       if (err) return abort(err, args, 'Could not find checkout with hash ', head)
