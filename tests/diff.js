@@ -24,7 +24,7 @@ test('diff: dat1 diff without version', function (t) {
 test('diff: dat import csv', function (t) {
   var csv = path.resolve(__dirname + '/fixtures/a.csv')
   var st = spawn(t, dat + ' import ' + csv + ' --key=id --dataset=diff-test', {cwd: dat1})
-  st.stdout.match(/Wrote/)
+  st.stdout.empty()
   st.stderr.match(/Done importing data/)
   st.end()
 })
@@ -47,7 +47,7 @@ test('diff: dat1 status as json', function (t) {
 test('diff: dat import csv 2', function (t) {
   var csv = path.resolve(__dirname + '/fixtures/b.csv')
   var st = spawn(t, dat + ' import ' + csv + ' --key=id --dataset=diff-test', {cwd: dat1})
-  st.stdout.match(/Wrote/)
+  st.stdout.empty()
   st.stderr.match(/Done importing data/)
   st.end()
 })

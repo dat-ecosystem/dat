@@ -29,16 +29,17 @@ function handlePull (args) {
   stream.on('prefinish', function () {
     openDat(args, function ready (err, db) {
       if (err) return abort(err, args)
+      if (args.json) return console.log(JSON.stringify({version: db.head}))
       var forks = 'some number of' // TODO
       var msg = ''
       msg += 'Pull completed successfully. You now have ' + forks + ' forks ;)\n'
       msg += 'Current version is now ' + db.head
-      console.log(msg)
+      console.error(msg)
     })
   })
 
   openDat(args, function ready (err, db) {
     if (err) return abort(err, args)
-    stream.pipe(db.pull()).pipe(progress('Pulled')).pipe(stream)
+    stream.pipe(db.pull()).pipe(progress('Pulled', args)).pipe(stream)
   })
 }

@@ -26,12 +26,13 @@ function handlePush (args) {
   stream.on('prefinish', function () {
     openDat(args, function ready (err, db) {
       if (err) return abort(err, args)
-      console.log('Push completed successfully.')
+      if (args.json) return console.log(JSON.stringify({version: db.head}))
+      console.error('Push completed successfully.')
     })
   })
 
   openDat(args, function ready (err, db) {
     if (err) return abort(err, args)
-    stream.pipe(db.push()).pipe(progress('Pushed')).pipe(stream)
+    stream.pipe(db.push()).pipe(progress('Pushed', args)).pipe(stream)
   })
 }

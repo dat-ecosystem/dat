@@ -59,7 +59,7 @@ helpers.onedat(dat3)
 
 test('write: dat import csv', function (t) {
   var st = spawn(t, 'echo "foo,bah\n123,456" | ' + dat + ' import - -d test', {cwd: dat3})
-  st.stdout.match(/Wrote/)
+  st.stdout.empty()
   st.stderr.match(/Done importing data/)
   st.end()
 })
