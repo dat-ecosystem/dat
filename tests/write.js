@@ -9,7 +9,9 @@ var version
 
 var tmp = os.tmpdir()
 var dat = path.resolve(__dirname + '/../cli.js')
-var dat1 = path.join(tmp, 'dat-1')
+var dat1 = path.join(tmp, 'dat-write-1')
+var dat2 = path.join(tmp, 'dat-write-2')
+var dat3 = path.join(tmp, 'dat-write-3')
 
 helpers.onedat(dat1)
 
@@ -54,11 +56,10 @@ test('write: dat read after overwrite to dataset 2', function (t) {
 })
 
 /** with existing key **/
-var dat3 = path.join(tmp, 'dat-3')
 helpers.onedat(dat3)
 
 test('write: dat import csv', function (t) {
-  var st = spawn(t, 'echo "foo,bah\n123,456" | ' + dat + ' import - -d test', {cwd: dat3})
+  var st = spawn(t, 'echo "foo,bah\n123,456" | ' + dat + ' import - -d test --key foo', {cwd: dat3})
   st.stdout.empty()
   st.stderr.match(/Done importing data/)
   st.end()
@@ -79,13 +80,6 @@ test('write: dat3 status as json', function (t) {
   st.end()
 })
 
-test('write: checkout', function (t) {
-  var st = spawn(t, dat + ' checkout ' + version, {cwd: dat3})
-  st.stdout.empty()
-  st.stderr.match(/Current version is now/)
-  st.end()
-})
-
 test('write: dat write over an existing key with row content', function (t) {
   var st = spawn(t, 'echo bah | ' + dat + ' write foo -d test -', {cwd: dat3})
   st.stdout.empty()
@@ -93,7 +87,7 @@ test('write: dat write over an existing key with row content', function (t) {
   st.end()
 })
 
-test('write: dat read after checkout', function (t) {
+test('write: dat read foo should get file contents', function (t) {
   datReadEquals(t, 'foo', /bah/, '-d test', dat3)
 })
 
@@ -128,8 +122,6 @@ test('write: dat read after write from file with new name with abbr', function (
   datReadEquals(t, 'new-name-abbr.txt', contents, '-d write-test-2')
 })
 
-var dat2 = path.join(tmp, 'dat-2')
-
 helpers.onedat(dat2)
 helpers.fileConflict(dat1, dat2, 'write-test', 'plato-says-hey-yo', function (conflictForks) {
 })
@@ -137,6 +129,7 @@ helpers.fileConflict(dat1, dat2, 'write-test', 'plato-says-hey-yo', function (co
 test('write: dat write after conflict', function (t) {
   datWrite(t, blobPath, '-d write-test --name=file.txt', dat1)
 })
+
 test('write: dat write after conflict', function (t) {
   var contents = fs.readFileSync(blobPath).toString()
   datReadEquals(t, 'file.txt', contents, '-d write-test', dat1)

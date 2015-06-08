@@ -28,6 +28,7 @@ function handleRows (args) {
     if (err) abort(err, args)
     var key = args._[0]
 
+    debug(key, args)
     db.get(key, args, function (err, value) {
       if (err) abort(err, args, 'dat get error')
       process.stdout.write(JSON.stringify(value))

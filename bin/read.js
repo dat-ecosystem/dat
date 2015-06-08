@@ -35,6 +35,8 @@ function handleRead (args) {
     var opts = {
       dataset: args.d
     }
+    
+    debug(key, opts)
 
     pump(db.createFileReadStream(key, opts), process.stdout, function done (err) {
       if (err) abort(err, args, 'dat: err in read')
