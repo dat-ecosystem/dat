@@ -62,6 +62,13 @@ test('import: dat import all_hour to test3', function (t) {
 
 verify('import-test3', dat3)
 
+test('import: dat status after first import', function (t) {
+  var st = spawn(t, dat + ' status --json', {cwd: dat3})
+  st.stderr.empty()
+  st.stdout.match(/\"versions\":1\,/)
+  st.end()
+})
+
 test('import: dat import all_hour to separate dataset', function (t) {
   var json = path.resolve(__dirname + '/fixtures/all_hour.json')
   var st = spawn(t, dat + ' import ' + json + ' --key=id --dataset=import-test4', {cwd: dat3})
@@ -72,6 +79,13 @@ test('import: dat import all_hour to separate dataset', function (t) {
 
 verify('import-test4', dat3)
 
+test('import: dat status after second import', function (t) {
+  var st = spawn(t, dat + ' status --json', {cwd: dat3})
+  st.stderr.empty()
+  st.stdout.match(/\"versions\":2\,/)
+  st.end()
+})
+
 test('import: dat import with json output', function (t) {
   var json = path.resolve(__dirname + '/fixtures/all_hour.json')
   var st = spawn(t, dat + ' import ' + json + ' --json --key=id --dataset=import-test5', {cwd: dat3})
@@ -80,13 +94,6 @@ test('import: dat import with json output', function (t) {
     return json.version.length === 64 // 32bit hash 2 in hex (64)
   })
   st.stderr.empty()
-  st.end()
-})
-
-test('import: dat status after import', function (t) {
-  var st = spawn(t, dat + ' status --json', {cwd: dat2})
-  st.stderr.empty()
-  st.stdout.match('{"error":true,"message":"This dat is empty"}\n')
   st.end()
 })
 
@@ -103,7 +110,6 @@ function verify (dataset, dir) {
     st.stderr.empty()
     st.stdout.match(function (output) {
       var lines = output.split('\n')
-      t.ok(lines.length <= 10, 'less than 10 lines')
       if (lines.length === 10) {
         if (JSON.parse(lines[0]).key === 'ak11246285') return true
         return false
