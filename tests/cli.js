@@ -48,37 +48,39 @@ test('cli: invalid command', function (t) {
 
 var cleanup = helpers.onedat(dat1)
 
+var tmp = os.tmpdir()
+
 // sanity: make sure cwd isn't in a repo
 test('cli: dat status (cwd)', function (t) {
-  var st = spawn(t, dat + ' status')
+  var st = spawn(t, dat + ' status', {cwd: tmp})
   st.stderr.match(/This is not a dat repository/)
   st.stdout.empty()
   st.end()
 })
 
 test('cli: dat -p (path)', function (t) {
-  var st = spawn(t, dat + ' status -p ' + dat1)
+  var st = spawn(t, dat + ' status -p ' + dat1, {cwd: tmp})
   st.stderr.match(/This dat is empty/)
   st.stdout.empty()
   st.end()
 })
 
 test('cli: dat --path (path)', function (t) {
-  var st = spawn(t, dat + ' status --path=' + dat1)
+  var st = spawn(t, dat + ' status --path=' + dat1, {cwd: tmp})
   st.stderr.match(/This dat is empty/)
   st.stdout.empty()
   st.end()
 })
 
 test('cli: dat status --json', function (t) {
-  var st = spawn(t, dat + ' status --json --path=' + dat1)
+  var st = spawn(t, dat + ' status --json --path=' + dat1, {cwd: tmp})
   st.stdout.match('{"error":true,"message":"This dat is empty"}\n')
   st.stderr.empty()
   st.end()
 })
 
 test('cli: dat status --json --verbose', function (t) {
-  var st = spawn(t, dat + ' status --json --verbose --path=' + dat1)
+  var st = spawn(t, dat + ' status --json --verbose --path=' + dat1, {cwd: tmp})
   st.stdout.match(new RegExp('"error":true,"message":"This dat is empty","stack":"Error:'))
   st.stderr.empty()
   st.end()
