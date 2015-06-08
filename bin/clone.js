@@ -25,6 +25,10 @@ function handleClone (args) {
   stream.on('warn', function (data) {
     console.error(data)
   })
+  
+  stream.on('finish', function () {
+    console.error('Clone from remote has completed.')
+  })
 
   initDat(args, function (err, results, db) {
     if (err) return abort(err, args)
