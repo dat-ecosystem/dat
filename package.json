@@ -14,7 +14,8 @@
     "dat": "cli.js"
   },
   "scripts": {
-    "test": "standard && npm run tape | tap-spec",
+    "test": "standard && npm run tape",
+    "pretty-test": "npm run tape | tap-spec",
     "tape": "tape tests/*.js"
   },
   "repository": {
