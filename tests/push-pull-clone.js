@@ -71,7 +71,7 @@ function compareStatuses (t, dat1, dat2) {
     st2.stdout.match(function (output) {
       try {
         JSON.parse(output)
-        t.equal(status1, output)
+        t.equal(status1, output, dat2 + ' status should match ' + dat1 + '. ' + JSON.stringify({dat1: status1, dat2: output}))
         return status1 === output
       } catch (e) {}
     }, 'status1 matches status2')
