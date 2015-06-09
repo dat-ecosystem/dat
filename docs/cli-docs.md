@@ -297,7 +297,7 @@ $ dat diff --pretty --json 64843f272df
 Merges two forks
 
 ```
-dat merge <fork> [<filename>]
+dat merge <fork> [-]
 ```
 
 `<fork>` should be the hash of the fork you want to merge into the fork you are currently on
@@ -312,7 +312,7 @@ Use `dat status` and `dat forks` to determine these values.
 
 #### Options
 
-- `-` as `<filename>`: receive resolved changes on stdin
+- `-`: receive resolved changes on stdin
 - `left`: pick the left side as the winner
 - `right`: pick the right side as the winner
 - `random`: pick random side for each key
@@ -326,7 +326,7 @@ $ dat merge
 Merging from a file:
 
 ```
-$ dat merge ab3234dfe5 resolutions.json
+$ cat resolutions.json | dat merge ab3234dfe5
 Changes merged successfully.
 Current version is now b04adb64fdf2203
 ```
