@@ -18,6 +18,11 @@ module.exports = {
       name: 'name',
       boolean: false,
       abbr: 'n'
+    },
+    {
+      name: 'message',
+      boolean: false,
+      abbr: 'm'
     }
   ]
 }
@@ -53,7 +58,8 @@ function handleWrite (args) {
     }
 
     var opts = {
-      dataset: args.d
+      dataset: args.dataset,
+      message: args.message
     }
 
     pump(inputStream, db.createFileWriteStream(key, opts), function done (err) {

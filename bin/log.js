@@ -41,8 +41,11 @@ function handleLog (args) {
     var deletes = obj.deletes || 0
 
     var msg = 'Version: ' + obj.version + ' [+' + (puts + files) + ', -' + deletes + ']\n'
-    msg += 'Date: ' + obj.date + '\n'
-    // TODO add message when we have it in the data
+    msg += 'Date: ' + obj.date
+    if (obj.message) {
+      msg += '\n\n   ' + obj.message
+    }
+    msg += '\n\n'
     next(null, msg)
   }
 }
