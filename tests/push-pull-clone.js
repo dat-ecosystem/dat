@@ -1,3 +1,4 @@
+var os = require('os')
 var fs = require('fs')
 var path = require('path')
 var test = require('tape')
@@ -5,11 +6,28 @@ var spawn = require('tape-spawn')
 var helpers = require('./helpers')
 
 var dat = path.resolve(__dirname + '/../cli.js')
+var tmpdir = require('os').tmpdir()
 var dat1 = helpers.randomTmpDir()
 var dat2 = helpers.randomTmpDir()
 var csv = path.resolve(__dirname + '/fixtures/all_hour.csv')
 
 helpers.onedat(dat1)
+
+test('push-pull-clone: fs clone with bad folder should error', function (t) {
+  var st = spawn(t, dat + ' clone ./does-not-exist should-not-exist-after --bin=' + dat, {cwd: tmpdir})
+  st.stderr.match(/should-not-exist-after is not a valid directory/)
+  st.stdout.empty()
+  t.equal(fs.existsSync('./should-not-exist-after'), false, 'clone does not exist')
+  st.end()
+})
+
+test('push-pull-clone: fs clone with bad bin should error', function (t) {
+  var st = spawn(t, dat + ' clone ' + dat1 + ' should-not-exist-after --bin=/iamnotarealprogram', {cwd: tmpdir})
+  st.stderr.match(/Did not find a dat executable/)
+  st.stdout.empty()
+  t.equal(fs.existsSync('./should-not-exist-after'), false, 'clone does not exist')
+  st.end()
+})
 
 // test clone
 test('push-pull-clone: dat import csv', function (t) {
