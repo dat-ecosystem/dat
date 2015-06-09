@@ -9,6 +9,7 @@ var dat = path.resolve(__dirname + '/../cli.js')
 var dat1 = path.join(tmp, 'dat-import-1')
 var dat2 = path.join(tmp, 'dat-import-2')
 var dat3 = path.join(tmp, 'dat-import-3')
+var dat4 = path.join(tmp, 'dat-import-4')
 
 helpers.onedat(dat1)
 
@@ -103,6 +104,25 @@ test('import: dat datasets (list datasets)', function (t) {
   st.stdout.match(/import-test2/)
   st.end()
 })
+
+helpers.onedat(dat4)
+
+test('import: dat import with a message', function (t) {
+  var json = path.resolve(__dirname + '/fixtures/all_hour.json')
+  var st = spawn(t, dat + ' import ' + json + ' --key=id --dataset=import-test3 -m "im a message"', {cwd: dat4})
+  st.stdout.empty()
+  st.stderr.match(/Done importing data/)
+  st.end()
+})
+
+test('import: dat import with a message', function (t) {
+  var st = spawn(t, dat + ' log', {cwd: dat4})
+  st.stdout.match(/im a message/)
+  st.stderr.empty()
+  st.end()
+})
+
+// helper
 
 function verify (dataset, dir) {
   test('import: dat export', function (t) {

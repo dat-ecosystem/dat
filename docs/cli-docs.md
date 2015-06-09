@@ -413,13 +413,12 @@ Currently you **must** specify the dataset when doing any dataset commands.
 Import key/value data into dat
 
 ```bash
-dat import <filename>
+dat import <filename> --dataset=<name>
 ```
 
 ### Options
 
-- `key`/`k` - specify which field to use as the primary key
-- `no-key` - generate a random unique key
+- `key`/`k` - specify which field to use as the primary key (false for no key)
 - `message`/`m` - a short description of this import
 
 Examples:

@@ -170,6 +170,17 @@ test('write: dat read after conflict', function (t) {
   datReadEquals(t, 'plato-says-hey-yo', /hello mars/, '-d write-test', dat2)
 })
 
+test('write: dat write with message', function (t) {
+  datWrite(t, blobPath, '-d write-test-2 -n new-name-abbr.txt -m "im a test message"', dat2)
+})
+
+test('write: dat log has binary write message', function (t) {
+  var st = spawn(t, dat + ' log', {cwd: dat2})
+  st.stdout.match(/im a test message/)
+  st.stderr.empty()
+  st.end()
+})
+
 function datWrite (t, blobPath, ext, myDat) {
   if (!myDat) myDat = dat1
   var cmd = ' write ' + blobPath

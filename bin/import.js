@@ -25,6 +25,11 @@ module.exports = {
       abbr: 'f'
     },
     {
+      name: 'message',
+      boolean: false,
+      abbr: 'm'
+    },
+    {
       name: 'key',
       boolean: true,
       abbr: 'k'
@@ -58,7 +63,13 @@ function handleImport (args) {
       next(null, {type: 'put', key: key, value: obj})
     })
 
-    pump(inputStream, parseInputStream(args), transform, db.createWriteStream({ dataset: args.dataset, transaction: true }), function done (err) {
+    var writeStream = db.createWriteStream({
+      message: args.message,
+      dataset: args.dataset,
+      transaction: true
+    })
+
+    pump(inputStream, parseInputStream(args), transform, writeStream, function done (err) {
       if (err) abort(err, args, 'Error importing data')
       if (args.json) {
         var output = {
