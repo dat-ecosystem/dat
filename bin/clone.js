@@ -25,13 +25,13 @@ function handleClone (args) {
   stream.on('warn', function (data) {
     if (args.verbose) console.error(data)
   })
-  
+
   stream.on('error', function (err) {
-    var msg = "Error: "
+    var msg = 'Error: '
     if (err.code === 'ENOENT') {
-      msg += args.path + " is not a valid directory."
+      msg += args.path + ' is not a valid directory.'
     } else if (err.code === 127) {
-      msg += "Did not find a dat executable. Set it with --bin or add dat to your PATH."
+      msg += 'Did not find a dat executable. Set it with --bin or add dat to your PATH.'
     } else {
       msg += err.message
     }
