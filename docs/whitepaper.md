@@ -30,7 +30,7 @@ Researchers are using VCS for data; however, most of these tools were designed t
 
 ## 3. Design of dat
 
-Dat was designed with the help of our advisors and pilot projects in academia. We prototyped two key case studies to see what it would look like to use Dat in a complex data processing pipeline. See these case studies in Section 4.
+Dat was designed with the help of our advisors and pilot projects in academia. We prototyped two key case studies to see what it would look like to use dat in a complex data processing pipeline. See these case studies in Section 4.
 
 ### 3.1 Importing Datasets
 All data is compressed and stored in the hidden `.dat` folder on disk. Values can be defined as binary (i.e., protobufs via `write`) or tabular (csv, tsv, newline-delimited json formats via `import`).
@@ -47,7 +47,7 @@ cityId, name, region, country
 35682579, Copenhagen, Hovedstaden, Denmark
 ...
 
-$ dat import cities.json --dataset=cities --key=cityId
+$ dat import cities.json --dataset=cities --key=cityId -m "Added cities dataset"
 Added 302,143 keys (32.03 Mb, 4.4 Mb/s).
 Data imported successfully.
 Current version is now 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
@@ -82,7 +82,7 @@ To go back in time, a user can `dat checkout` for a non-destructive rollback to 
 
 A user can replicate data from another user using typical transport protocols such as http or ssh. Dat is transport agnostic, so it is well suited for deployment on various kinds of systems with little IT overhead. When the repository is pulled from another user, all metadata and changes are replicated exactly as they appear on the peer's disk. Versions are transmitted exactly as represented locally over the transport protocol, and the history never changes. This means that once a version is created, it can be referenced to refer to the same data across all peers (unless purged).
 
-When a peer makes a change (write/import), a new version is created which is then immediately available for peers to pull. When using dat pull, dat will only fetch the newest changes in the repository for fast replication.
+When a peer makes a change (write/import), a new version is created which is then immediately available for peers to pull. When using `dat pull`, dat will only fetch the newest changes in the repository for fast replication.
 
 ![img](images/pull.png)
 
@@ -90,9 +90,10 @@ When a peer makes a change (write/import), a new version is created which is the
 
 After checking out a dataset to a previous point in the past, a user can still add more data. However, adding to a version that is not the latest creates a new fork in the dataset.
 
+Although forks could be represented as conflicts to be merged immediately (as one might expect in a version control system such as Git), dat's philosophy is the opposite. We think that data tools should embrace forks as key support for experimentation during the scientific process. When a user pulls from a peer, forks will also be pulled so that each user has a complete picture of the graph.
+
 ![img](images/fork.png)
 
-Although forks could be represented as conflicts to be merged immediately (as one might expect in a version control system such as Git), dat's philosophy is the opposite. We think that data tools should embrace forks as key support for experimentation during the scientific process. When a user pulls from a peer, forks will also be pulled so that each user has a complete picture of the graph.
 
 Forks can be merged into a single, new commit to create a new version hash. The `dat merge <version>` operation accepts a stream of resolved values in the same format they are emitted in `dat diff`. See the dat repository for more examples on merging.
 
@@ -100,7 +101,7 @@ Forks can be merged into a single, new commit to create a new version hash. The 
 
 ## 4. Ecosystem
 
-To test Dat’s capability to work with large datasets, we worked with Demitri Muna of Ohio State University, and data analyst and programmer Yuhong Wang, to build a system for importing and indexing the 400 GB Wide-field Infrared Survey Explorer (WISE) dataset from NASA/Caltech, which includes data on over 600 million stars [10]. The major goal for us was to use dat to build a single catalog of raw data files for multiple data sources—one metadata catalog for multiple sky-scan datasets. A secondary goal was to help automate the data import pipeline to make it easy to get installed for users who might want to load data into Trillian. In its raw form, much of the data is scattered across different websites and offer several download procedures.  With Dat's large file capabilities, we were able to perform lazy aggregation on disparate chunks of links, effectively shielding the end user of the database from the complexities of source management and organization.
+To test dat’s capability to work with large datasets, we worked with Demitri Muna of Ohio State University, and data analyst and programmer Yuhong Wang, to build a system for importing and indexing the 400 GB Wide-field Infrared Survey Explorer (WISE) dataset from NASA/Caltech, which includes data on over 600 million stars [10]. The major goal for us was to use dat to build a single catalog of raw data files for multiple data sources—one metadata catalog for multiple sky-scan datasets. A secondary goal was to help automate the data import pipeline to make it easy to get installed for users who might want to load data into Trillian. In its raw form, much of the data is scattered across different websites and offer several download procedures.  With Dat's large file capabilities, we were able to perform lazy aggregation on disparate chunks of links, effectively shielding the end user of the database from the complexities of source management and organization.
 
 In our second project, Bruno Vieira of Queen Mary University London worked with us directly to build versioning and data acquisition into Bionode. Bionode is a collection of open source, command-line tools for creating streaming bioinformatics pipelines with Node.js. Vieira has written about how brittle that bioinformatics APIs can be [11], which makes reproducibility very difficult. The main thing the Dat team took away from this project was the importance of not only offering a data versioning and acquisition system, but also making sure we integrate tightly with existing tools that researchers are using to analyze and process their data.
 
