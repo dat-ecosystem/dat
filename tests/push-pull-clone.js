@@ -4,10 +4,9 @@ var test = require('tape')
 var spawn = require('tape-spawn')
 var helpers = require('./helpers')
 
-var tmp = os.tmpdir()
 var dat = path.resolve(__dirname + '/../cli.js')
-var dat1 = path.join(tmp, 'dat-clone-1')
-var dat2 = path.join(tmp, 'dat-clone-2')
+var dat1 = helpers.randomTmpDir()
+var dat2 = helpers.randomTmpDir()
 var csv = path.resolve(__dirname + '/fixtures/all_hour.csv')
 
 helpers.onedat(dat1)
@@ -20,7 +19,7 @@ test('push-pull-clone: dat import csv', function (t) {
 })
 
 test('push-pull-clone: clone dat1', function (t) {
-  var st = spawn(t, dat + ' clone ' + dat1 + ' ' + dat2, {cwd: tmp})
+  var st = spawn(t, dat + ' clone ' + dat1 + ' ' + dat2, {cwd: path.join(dat2, '..') })
   st.stderr.match(/Clone from remote has completed/)
   st.stdout.empty()
   st.end()
