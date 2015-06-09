@@ -14,7 +14,7 @@ helpers.onedat(dat1)
 
 test('push-pull-clone: fs clone with bad folder should error', function (t) {
   var st = spawn(t, dat + ' clone ./does-not-exist should-not-exist-after --bin=' + dat, {cwd: tmpdir})
-  st.stderr.match(/should-not-exist-after is not a valid directory/)
+  st.stderr.match(/does-not-exist is not a valid directory/)
   st.stdout.empty()
   t.equal(fs.existsSync('./should-not-exist-after'), false, 'clone does not exist')
   st.end()
