@@ -1,3 +1,4 @@
+var peek = require('peek-stream')
 var abort = require('../lib/abort.js')
 var initDat = require('../lib/init-dat.js')
 var transportStream = require('../lib/transports.js')
@@ -17,8 +18,7 @@ function handleClone (args) {
   try {
     var stream = transport(source)
   } catch (err) {
-    usage()
-    console.error('Error: Could not figure out transport type for', source)
+    abort(new Error('Error: Could not figure out transport type for ' + source))
     return
   }
 
@@ -35,15 +35,26 @@ function handleClone (args) {
     } else {
       msg += err.message
     }
-    console.error(msg)
+
+    abort(new Error(msg))
   })
 
   stream.on('finish', function () {
     console.error('Clone from remote has completed.')
   })
 
-  initDat(args, function (err, results, db) {
-    if (err) return abort(err, args)
-    stream.pipe(db.pull()).pipe(stream)
+  // wait until transport actually emits data before creating target dat
+  var peeker = peek({newline: false, maxBuffer: 1}, function (data, swap) {
+    initDat(args, function (err, results, db) {
+      if (err) return swap(err)
+      var puller = db.pull()
+      swap(null, puller)
+    })
+  })
+
+  peeker.pipe(stream).pipe(peeker)
+
+  peeker.on('error', function (err) {
+    abort(err)
   })
 }

@@ -28,6 +28,14 @@ test('push-pull-clone: fs clone with bad bin should error', function (t) {
   st.end()
 })
 
+test('push-pull-clone: fs clone with bad transport should error', function (t) {
+  var st = spawn(t, dat + ' clone tacos://pizza should-not-exist-after', {cwd: tmpdir})
+  st.stderr.match(/Could not figure out transport type for tacos/)
+  st.stdout.empty()
+  t.equal(fs.existsSync('./should-not-exist-after'), false, 'clone does not exist')
+  st.end()
+})
+
 // test clone
 test('push-pull-clone: dat import csv', function (t) {
   var st = spawn(t, dat + ' import ' + csv + ' -d quakes', {cwd: dat1})
