@@ -71,3 +71,7 @@ Dat.prototype.forks = function (onFork) {
       throw err
   })
 }
+
+Dat.prototype.checkout = function (head) {
+  return this.db.checkout(head === 'latest' ? null : head, {persistent: true})
+}
