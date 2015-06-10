@@ -1,6 +1,6 @@
 var pump = require('pump')
 var debug = require('debug')('bin/read')
-var openDat = require('../lib/open-dat.js')
+var Dat = require('../')
 var abort = require('../lib/abort.js')
 var usage = require('../lib/usage.js')('read.txt')
 
@@ -23,24 +23,16 @@ function handleRead (args) {
     return usage()
   }
 
-  if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'))
+  var dat = Dat(args)
+  var key = args._[0]
 
-  openDat(args, function ready (err, db) {
-    if (err) abort(err, args)
-    handleReadStream(db)
-  })
-
-  function handleReadStream (db) {
-    var key = args._[0]
-
-    var opts = {
-      dataset: args.d
-    }
-
-    debug(key, opts)
-
-    pump(db.createFileReadStream(key, opts), process.stdout, function done (err) {
-      if (err) abort(err, args, 'dat: err in read')
-    })
+  var opts = {
+    dataset: args.d
   }
+
+  debug(key, opts)
+
+  pump(dat.createFileReadStream(key, opts), process.stdout, function done (err) {
+    if (err) abort(err, args, 'dat: err in read')
+  })
 }

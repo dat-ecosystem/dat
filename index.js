@@ -29,28 +29,45 @@ function Dat (args) {
 
 util.inherits(Dat, events.EventEmitter)
 
-Dat.prototype.createImportStream = function (args) {
+Dat.prototype.createImportStream = function (opts) {
+  if (!opts.dataset) throw new Error('Error: Must specify dataset (-d)')
   var self = this
 
   var transform = through.obj(function (obj, enc, next) {
     debug('heres my obj!', obj)
-    var key = obj[args.key] || obj.key || uuid()
+    var key = obj[opts.key] || obj.key || uuid()
     next(null, {type: 'put', key: key, value: obj})
   })
 
   var writeStream = self.db.createWriteStream({
-    message: args.message,
-    dataset: args.dataset,
+    message: opts.message,
+    dataset: opts.dataset,
     transaction: true
   })
 
-  return pumpify(parseInputStream(args), transform, writeStream)
+  return pumpify(parseInputStream(opts), transform, writeStream)
 }
 
-Dat.prototype.createWriteStream = function (key, opts) {
+Dat.prototype.createFileWriteStream = function (key, opts) {
+  if (!opts.dataset) throw new Error('Error: Must specify dataset (-d)')
   return this.db.createFileWriteStream(key, opts)
+}
+
+Dat.prototype.createFileReadStream = function (key, opts) {
+  if (!opts.dataset) throw new Error('Error: Must specify dataset (-d)')
+  return this.db.createFileReadStream(key, opts)
 }
 
 Dat.prototype.datasets = function (cb) {
   return this.db.listDatasets(cb)
+}
+
+Dat.prototype.forks = function (onFork) {
+  this.db.heads()
+    .on('data', function (data) {
+      onFork(data)
+    })
+    .on('error', function (err) {
+      throw err
+  })
 }

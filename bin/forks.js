@@ -1,5 +1,5 @@
 var usage = require('../lib/usage.js')('forks.txt')
-var openDat = require('../lib/open-dat.js')
+var Dat = require('../')
 var abort = require('../lib/abort.js')
 
 module.exports = {
@@ -9,15 +9,9 @@ module.exports = {
 
 function handleForks (args) {
   if (args.help) return usage()
-  openDat(args, function ready (err, db) {
-    if (err) abort(err, args)
+  var dat = Dat(args)
 
-    db.heads()
-      .on('data', function head (obj) {
-        console.log(obj)
-      })
-      .on('error', function (err) {
-        abort(err, args)
-      })
+  dat.forks(function (fork) {
+    console.log(fork)
   })
 }

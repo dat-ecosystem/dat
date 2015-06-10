@@ -59,7 +59,7 @@ function handleWrite (args) {
     message: args.message
   }
 
-  pump(inputStream, dat.createWriteStream(key, opts), function done (err) {
+  pump(inputStream, dat.createFileWriteStream(key, opts), function done (err) {
     if (err) abort(err, args, 'dat: err in write')
 
     if (args.json) {
