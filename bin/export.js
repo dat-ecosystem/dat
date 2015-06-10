@@ -78,6 +78,7 @@ function handleExport (args) {
         row.key = data.key
         return next(null, row)
       }
+      next()
     })
     pump(db.createReadStream(args), parseOutput, formatData(format), process.stdout, function done (err) {
       if (err) abort(err, args, 'Error exporting data')
