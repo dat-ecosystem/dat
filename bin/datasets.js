@@ -1,5 +1,5 @@
+var Dat = require('..')
 var abort = require('../lib/abort.js')
-var openDat = require('../lib/open-dat.js')
 var usage = require('../lib/usage.js')('datasets.txt')
 
 module.exports = {
@@ -10,13 +10,11 @@ module.exports = {
 function handleDatasets (args) {
   if (args.help) return usage()
 
-  openDat(args, function ready (err, db) {
-    if (err) abort(err, args)
+  var dat = Dat(args)
 
-    db.listDatasets(function (err, datasets) {
-      if (err) abort(err, args)
-      if (args.json) console.log(JSON.stringify({datasets: datasets}))
-      else console.log(datasets.join('\n'))
-    })
+  dat.datasets(function (err, datasets) {
+    if (err) abort(err, args)
+    if (args.json) console.log(JSON.stringify({datasets: datasets}))
+    else console.log(datasets.join('\n'))
   })
 }
