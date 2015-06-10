@@ -1,3 +1,4 @@
+var uuid = require('cuid')
 var pumpify = require('pumpify')
 var through = require('through2')
 var debug = require('debug')('src/import')

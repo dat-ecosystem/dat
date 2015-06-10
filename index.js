@@ -2,7 +2,6 @@ var pumpify = require('pumpify')
 var through = require('through2')
 var events = require('events')
 var util = require('util')
-var uuid = require('cuid')
 var dat = require('dat-core')
 var debug = require('debug')('dat')
 
@@ -11,11 +10,10 @@ module.exports = Dat
 function Dat (args) {
   if (!(this instanceof Dat)) return new Dat(args)
   var self = this
-
   events.EventEmitter.call(this)
 
   if (!args) args = {path: process.cwd()}
-  self.db = dat(args.path, {valueEncoding: 'json'})
+  self.db = dat(args.path, {valueEncoding: 'json', createIfMissing: args.createIfMissing})
   if (args.checkout) self.db = self.db.checkout(args.checkout)
 
   self.db.on('error', function error (err) {
@@ -31,6 +29,8 @@ util.inherits(Dat, events.EventEmitter)
 Dat.prototype.createImportStream = require('./src/import.js')
 Dat.prototype.createExportStream = require('./src/export.js')
 Dat.prototype.createDiffStream = require('./src/diff.js')
+Dat.clone = require('./src/clone.js')
+Dat.init = require('./lib/init-dat.js')
 
 Dat.prototype.createFileWriteStream = function (key, opts) {
   if (!opts.dataset) throw new Error('Error: opts.dataset required.')
