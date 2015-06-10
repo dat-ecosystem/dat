@@ -49,12 +49,12 @@ Dat.prototype.createImportStream = function (opts) {
 }
 
 Dat.prototype.createFileWriteStream = function (key, opts) {
-  if (!opts.dataset) throw new Error('Error: Must specify dataset (-d)')
+  if (!opts.dataset) throw new Error('Error: opts.dataset required.')
   return this.db.createFileWriteStream(key, opts)
 }
 
 Dat.prototype.createFileReadStream = function (key, opts) {
-  if (!opts.dataset) throw new Error('Error: Must specify dataset (-d)')
+  if (!opts.dataset) throw new Error('Error: opts.dataset required')
   return this.db.createFileReadStream(key, opts)
 }
 
@@ -62,16 +62,60 @@ Dat.prototype.datasets = function (cb) {
   return this.db.listDatasets(cb)
 }
 
-Dat.prototype.forks = function (onFork) {
+Dat.prototype.forks = function (cb) {
   this.db.heads()
     .on('data', function (data) {
-      onFork(data)
+      cb(null, data)
     })
     .on('error', function (err) {
-      throw err
-  })
+      cb(err)
+    })
 }
 
 Dat.prototype.checkout = function (head) {
   return this.db.checkout(head === 'latest' ? null : head, {persistent: true})
+}
+
+Dat.prototype.status = function (cb) {
+  this.db.status(function (err, status) {
+    if (err) return cb(err)
+    // dat-core calls it head, we wanna call it version instead
+    status.version = status.head
+    delete status.head
+    cb(null, status)
+  })
+}
+
+Dat.prototype.createDiffStream = function (headA, headB, opts) {
+  var diffStream = this.db.createDiffStream(headA, headB)
+
+  function datDiffFormatter () {
+    return through.obj(function write (obj, enc, next) {
+      var a = obj[0]
+      var b = obj[1]
+      var diff = {}
+      if (a) diff.key = a.key
+      if (b) diff.key = b.key
+
+      if (opts.dataset) {
+        if (a && a.dataset !== opts.dataset) return next(null, null)
+        if (b && b.dataset !== opts.dataset) return next(null, null)
+      }
+
+      diff.forks = [headA, headB]
+      diff.versions = []
+      if (a) {
+        diff.versions.push(a)
+      } else {
+        diff.versions.push(null)
+      }
+      if (b) {
+        diff.versions.push(b)
+      } else {
+        diff.versions.push(null)
+      }
+      next(null, diff)
+    })
+  }
+  return pumpify.obj(diffStream, datDiffFormatter())
 }

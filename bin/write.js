@@ -35,7 +35,7 @@ function handleWrite (args) {
     return usage()
   }
 
-  if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'))
+  if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'), args)
 
   var dat = Dat(args)
 

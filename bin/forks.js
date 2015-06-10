@@ -11,7 +11,8 @@ function handleForks (args) {
   if (args.help) return usage()
   var dat = Dat(args)
 
-  dat.forks(function (fork) {
+  dat.forks(function (err, fork) {
+    if (err) abort(err, args)
     console.log(fork)
   })
 }
