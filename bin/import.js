@@ -1,12 +1,9 @@
 var fs = require('fs')
-var pumpify = require('pumpify')
 var pump = require('pump')
-var through = require('through2')
-var uuid = require('cuid')
+var pumpify = require('pumpify')
 var debug = require('debug')('bin/import')
+var Dat = require('../')
 var progress = require('../lib/progress.js')
-var parseInputStream = require('../lib/parse-input-stream.js')
-var openDat = require('../lib/open-dat.js')
 var abort = require('../lib/abort.js')
 var usage = require('../lib/usage.js')('import.txt')
 
@@ -44,39 +41,22 @@ function handleImport (args) {
     return usage()
   }
 
-  if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'))
+  if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'), args)
 
-  openDat(args, function ready (err, db) {
-    if (err) abort(err, args)
-    handleInputStream(db)
+  var dat = Dat(args)
+
+  var inputStream
+  if (args._[0] === '-') inputStream = process.stdin
+  else inputStream = fs.createReadStream(args._[0])
+  if (!args.json) inputStream = pumpify(inputStream, progress('Wrote'))
+
+  pump(inputStream, dat.createImportStream(args), function done (err) {
+    if (err) abort(err, args, 'Error importing data')
+    if (args.json) {
+      var output = {
+        version: dat.db.head
+      }
+      console.log(JSON.stringify(output))
+    } else console.error('Done importing data')
   })
-
-  function handleInputStream (db) {
-    var inputStream
-    if (args._[0] === '-') inputStream = process.stdin
-    else inputStream = fs.createReadStream(args._[0])
-    if (!args.json) inputStream = pumpify(inputStream, progress('Wrote'))
-
-    var transform = through.obj(function (obj, enc, next) {
-      debug('heres my obj!', obj)
-      var key = obj[args.key] || obj.key || uuid()
-      next(null, {type: 'put', key: key, value: obj})
-    })
-
-    var writeStream = db.createWriteStream({
-      message: args.message,
-      dataset: args.dataset,
-      transaction: true
-    })
-
-    pump(inputStream, parseInputStream(args), transform, writeStream, function done (err) {
-      if (err) abort(err, args, 'Error importing data')
-      if (args.json) {
-        var output = {
-          version: db.head
-        }
-        console.log(JSON.stringify(output))
-      } else console.error('Done importing data')
-    })
-  }
 }

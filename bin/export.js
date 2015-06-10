@@ -1,8 +1,6 @@
 var pump = require('pump')
-var through = require('through2')
-var formatData = require('format-data')
 var debug = require('debug')('bin/export')
-var openDat = require('../lib/open-dat.js')
+var Dat = require('../')
 var abort = require('../lib/abort.js')
 var usage = require('../lib/usage.js')('export.txt')
 
@@ -57,30 +55,16 @@ function handleExport (args) {
 
   if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'))
 
-  var format = 'ndjson'
-  if (args.format) format = args.format
+  args.format = args.format || 'ndjson'
   var limit = args.limit
   if (limit) {
     if (args.limit) args.limit = parseInt(limit, 10)
     if (isNaN(args.limit)) abort(new Error('invalid limit: ' + limit), args)
   }
 
-  openDat(args, function ready (err, db) {
-    if (err) abort(err, args)
-    handleOuputStream(db)
-  })
+  var dat = Dat(args)
 
-  function handleOuputStream (db) {
-    var parseOutput = through.obj(function (data, enc, next) {
-      debug('exporting through data', data)
-      if (data.content === 'row') {
-        var row = data.value
-        row.key = data.key
-        return next(null, row)
-      }
-    })
-    pump(db.createReadStream(args), parseOutput, formatData(format), process.stdout, function done (err) {
-      if (err) abort(err, args, 'Error exporting data')
-    })
-  }
+  pump(dat.createExportStream(args), process.stdout, function done (err) {
+    if (err) abort(err, args, 'Error exporting data')
+  })
 }
