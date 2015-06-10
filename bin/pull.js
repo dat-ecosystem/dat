@@ -1,9 +1,9 @@
-var config = require('../lib/config.js')()
-var usage = require('../lib/usage.js')('pull.txt')
-var progress = require('../lib/progress.js')
-var abort = require('../lib/abort.js')
-var openDat = require('../lib/open-dat.js')
-var transportStream = require('../lib/transports.js')
+var config = require('../lib/util/config.js')()
+var usage = require('../lib/util/usage.js')('pull.txt')
+var progress = require('../lib/util/progress.js')
+var abort = require('../lib/util/abort.js')
+var openDat = require('../lib/util/open-dat.js')
+var transportStream = require('../lib/util/transports.js')
 
 module.exports = {
   name: 'pull',

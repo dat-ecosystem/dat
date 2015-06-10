@@ -1,8 +1,8 @@
-var usage = require('../lib/usage.js')('push.txt')
-var abort = require('../lib/abort.js')
-var progress = require('../lib/progress.js')
-var openDat = require('../lib/open-dat.js')
-var transportStream = require('../lib/transports.js')
+var usage = require('../lib/util/usage.js')('push.txt')
+var abort = require('../lib/util/abort.js')
+var progress = require('../lib/util/progress.js')
+var openDat = require('../lib/util/open-dat.js')
+var transportStream = require('../lib/util/transports.js')
 
 module.exports = {
   name: 'push',

@@ -1,7 +1,7 @@
-var openDat = require('../lib/open-dat.js')
-var abort = require('../lib/abort.js')
-var usage = require('../lib/usage.js')('replicate.txt')
-var transportStream = require('../lib/transports.js')
+var openDat = require('../lib/util/open-dat.js')
+var abort = require('../lib/util/abort.js')
+var usage = require('../lib/util/usage.js')('replicate.txt')
+var transportStream = require('../lib/util/transports.js')
 
 module.exports = {
   name: 'replicate',

@@ -9,7 +9,6 @@
     "dataset",
     "data package"
   ],
-  "main": "index.js",
   "bin": {
     "dat": "cli.js"
   },

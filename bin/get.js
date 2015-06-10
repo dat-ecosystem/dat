@@ -1,9 +1,9 @@
 var debug = require('debug')('bin/get')
 
-var abort = require('../lib/abort.js')
-var openDat = require('../lib/open-dat.js')
-var usage = require('../lib/usage.js')('get.txt')
-var abort = require('../lib/abort.js')
+var abort = require('../lib/util/abort.js')
+var openDat = require('../lib/util/open-dat.js')
+var usage = require('../lib/util/usage.js')('get.txt')
+var abort = require('../lib/util/abort.js')
 
 module.exports = {
   name: 'get',
