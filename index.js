@@ -1,12 +1,10 @@
 var pumpify = require('pumpify')
 var through = require('through2')
-var formatData = require('format-data')
 var events = require('events')
 var util = require('util')
 var uuid = require('cuid')
 var dat = require('dat-core')
 var debug = require('debug')('dat')
-var parseInputStream = require('./lib/parse-input-stream.js')
 
 module.exports = Dat
 
@@ -30,39 +28,9 @@ function Dat (args) {
 
 util.inherits(Dat, events.EventEmitter)
 
-Dat.prototype.createImportStream = function (opts) {
-  if (!opts.dataset) throw new Error('Error: Must specify dataset (-d)')
-  var self = this
-
-  var transform = through.obj(function (obj, enc, next) {
-    debug('heres my obj!', obj)
-    var key = obj[opts.key] || obj.key || uuid()
-    next(null, {type: 'put', key: key, value: obj})
-  })
-
-  var writeStream = self.db.createWriteStream({
-    message: opts.message,
-    dataset: opts.dataset,
-    transaction: true
-  })
-
-  return pumpify(parseInputStream(opts), transform, writeStream)
-}
-
-
-Dat.prototype.createExportStream = function (opts) {
-  var parseOutput = through.obj(function (data, enc, next) {
-    debug('exporting through data', data)
-    if (data.content === 'row') {
-      var row = data.value
-      row.key = data.key
-      return next(null, row)
-    }
-  })
-
-  return pumpify(this.db.createReadStream(opts), parseOutput, formatData(opts.format))
-}
-
+Dat.prototype.createImportStream = require('./src/import.js')
+Dat.prototype.createExportStream = require('./src/export.js')
+Dat.prototype.createDiffStream = require('./src/diff.js')
 
 Dat.prototype.createFileWriteStream = function (key, opts) {
   if (!opts.dataset) throw new Error('Error: opts.dataset required.')
@@ -95,43 +63,6 @@ Dat.prototype.checkout = function (head) {
 Dat.prototype.status = function (cb) {
   this.db.status(function (err, status) {
     if (err) return cb(err)
-    // dat-core calls it head, we wanna call it version instead
-    status.version = status.head
-    delete status.head
     cb(null, status)
   })
-}
-
-Dat.prototype.createDiffStream = function (headA, headB, opts) {
-  var diffStream = this.db.createDiffStream(headA, headB)
-
-  function datDiffFormatter () {
-    return through.obj(function write (obj, enc, next) {
-      var a = obj[0]
-      var b = obj[1]
-      var diff = {}
-      if (a) diff.key = a.key
-      if (b) diff.key = b.key
-
-      if (opts.dataset) {
-        if (a && a.dataset !== opts.dataset) return next(null, null)
-        if (b && b.dataset !== opts.dataset) return next(null, null)
-      }
-
-      diff.forks = [headA, headB]
-      diff.versions = []
-      if (a) {
-        diff.versions.push(a)
-      } else {
-        diff.versions.push(null)
-      }
-      if (b) {
-        diff.versions.push(b)
-      } else {
-        diff.versions.push(null)
-      }
-      next(null, diff)
-    })
-  }
-  return pumpify.obj(diffStream, datDiffFormatter())
 }

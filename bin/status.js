@@ -17,6 +17,10 @@ function handleStatus (args) {
   dat.status(function (err, status) {
     if (err) abort(err, args)
 
+    // dat-core calls it head, we wanna call it version instead
+    status.version = status.head
+    delete status.head
+
     if (args.json) {
       console.log(JSON.stringify(status))
     } else {

@@ -29,7 +29,7 @@ function handleDiff (args) {
 
   dat.status(function (err, status) {
     if (err) abort(err, args)
-    diff(status.version, args._[0])
+    diff(status.head, args._[0])
   })
 
   function diff (headA, headB) {
