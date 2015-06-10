@@ -1,4 +1,4 @@
-var usage = require('../lib/usage.js')('root.txt')
+var usage = require('../lib/util/usage.js')('root.txt')
 
 module.exports = {
   name: '', // tells subcommand to use this to match e.g. `dat` w/ no subcommand

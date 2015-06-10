@@ -1,7 +1,7 @@
 var path = require('path')
-var abort = require('../lib/abort.js')
-var init = require('../lib/init-dat.js')
-var usage = require('../lib/usage.js')('init.txt')
+var abort = require('../lib/util/abort.js')
+var init = require('../lib/util/init-dat.js')
+var usage = require('../lib/util/usage.js')('init.txt')
 
 module.exports = {
   name: 'init',

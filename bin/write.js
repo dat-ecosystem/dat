@@ -1,9 +1,9 @@
 var pump = require('pump')
 var fs = require('fs')
 var debug = require('debug')('bin/write')
-var openDat = require('../lib/open-dat.js')
-var abort = require('../lib/abort.js')
-var usage = require('../lib/usage.js')('write.txt')
+var openDat = require('../lib/util/open-dat.js')
+var abort = require('../lib/util/abort.js')
+var usage = require('../lib/util/usage.js')('write.txt')
 
 module.exports = {
   name: 'write',
@@ -34,14 +34,10 @@ function handleWrite (args) {
     return usage()
   }
 
-  if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'))
+  if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'), args)
 
-  openDat(args, function ready (err, db) {
+  openDat(args, function (err, db) {
     if (err) abort(err, args)
-    handleInputStream(db)
-  })
-
-  function handleInputStream (db) {
     var path = args._[0]
     var stream = args._[1]
     var key = args.n || path
@@ -73,5 +69,5 @@ function handleWrite (args) {
       } else console.error('Done writing binary data.')
 
     })
-  }
+  })
 }

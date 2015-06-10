@@ -1,8 +1,8 @@
 var pump = require('pump')
 var ndjson = require('ndjson')
-var usage = require('../lib/usage.js')('merge.txt')
-var abort = require('../lib/abort.js')
-var openDat = require('../lib/open-dat.js')
+var usage = require('../lib/util/usage.js')('merge.txt')
+var abort = require('../lib/util/abort.js')
+var openDat = require('../lib/util/open-dat.js')
 
 module.exports = {
   name: 'merge',

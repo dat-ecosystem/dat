@@ -1,8 +1,8 @@
 var prettyBytes = require('pretty-bytes')
 var relativeDate = require('relative-date')
-var abort = require('../lib/abort.js')
-var openDat = require('../lib/open-dat.js')
-var usage = require('../lib/usage.js')('checkout.txt')
+var abort = require('../lib/util/abort.js')
+var openDat = require('../lib/util/open-dat.js')
+var usage = require('../lib/util/usage.js')('checkout.txt')
 
 module.exports = {
   name: 'status',
@@ -12,7 +12,7 @@ module.exports = {
 function handleStatus (args) {
   if (args.help) return usage()
 
-  openDat(args, function ready (err, db) {
+  openDat(args, function (err, db) {
     if (err) abort(err, args)
 
     db.status(function (err, status) {
