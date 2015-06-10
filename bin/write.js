@@ -2,7 +2,6 @@ var pump = require('pump')
 var fs = require('fs')
 var debug = require('debug')('bin/write')
 var Dat = require('../')
-var openDat = require('../lib/open-dat.js')
 var abort = require('../lib/abort.js')
 var usage = require('../lib/usage.js')('write.txt')
 
@@ -64,7 +63,7 @@ function handleWrite (args) {
 
     if (args.json) {
       var output = {
-        version: db.head
+        version: dat.db.head
       }
       console.log(JSON.stringify(output))
     } else console.error('Done writing binary data.')
