@@ -71,7 +71,7 @@ function handleMerge (args) {
       function done (err) {
         if (err) return abort(err, args)
         if (args.json) console.log(JSON.stringify({version: db.head}))
-        else console.error('Current version is', db.head)
+        else console.error('Merged successfully.\nCurrent version is', db.head)
       }
     }
   })

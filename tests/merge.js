@@ -54,7 +54,7 @@ test('merge: dat1 diff | merge', function (t) {
 
   diff.stderr.empty()
   merge.stdout.empty()
-  merge.stderr.match(/Merged/)
+  merge.stderr.match(/Merged successfully./)
 
   parallel([merge.end.bind(merge), diff.end.bind(diff)], function () {
     t.end()
