@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "7.0.0-pre",
+  "version": "7.0.0-pre-2",
   "description": "versioning and sync tool for data sets",
   "keywords": [
     "synchronization",
