@@ -3,6 +3,7 @@ var pumpify = require('pumpify')
 var through = require('through2')
 var ndjson = require('ndjson')
 var openDat = require('../lib/util/open-dat.js')
+var vizOpts = require('../lib/util/diff-viz-opts.js')
 var diffToString = require('diffs-to-string').stream
 var createDiffStream = require('../lib/diff.js')
 var abort = require('../lib/util/abort.js')
@@ -42,15 +43,7 @@ function handleDiff (args) {
       }))
     }
 
-    var diffOpts = {
-      getRowValue: function (row) { return row.value },
-      getHeaderValue: function (diff, i) {
-        var onediff = diff && diff[0] || diff[1]
-        return 'row ' + (i + 1) + ' key: ' + onediff['key'] + '\n'
-      }
-    }
-
-    var printer = args.json ? ndjson.serialize() : diffToString(diffOpts)
+    var printer = args.json ? ndjson.serialize() : diffToString(vizOpts)
 
     pump(diffs, printer, process.stdout, function done (err) {
       if (err) abort(err, args)
