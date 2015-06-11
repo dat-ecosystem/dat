@@ -66,7 +66,7 @@ function handleWrite (args) {
           version: db.head
         }
         console.log(JSON.stringify(output))
-      } else console.error('Done writing binary data.')
+      } else console.error('Done writing binary data. \nVersion: ' + db.head)
 
     })
   })
