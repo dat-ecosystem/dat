@@ -56,6 +56,7 @@ test('merge: dat1 diff | merge', function (t) {
   merge.stdout.empty()
   merge.stderr.match(/Merged/)
 
+  // wait for both to finish
   parallel([merge.end.bind(merge), diff.end.bind(diff)], function () {
     t.end()
   })
@@ -69,6 +70,30 @@ test('merge: verify merge version', function (t) {
     try {
       output = JSON.parse(output)
       return output.name === 'MAX'
+    } catch (e) {
+      return false
+    }
+  })
+
+  st.end()
+})
+
+test('dat merge --right', function (t) {
+  var cmd = 'dat merge '  + forks.mine + ' ' +  forks.remotes[0] + ' --right'
+  var st = spawn(t, cmd, {cwd: dat1})
+  st.stderr.match(/Merged/)
+  st.stdout.empty()
+  st.end()
+})
+
+test('merge: verify merge version', function (t) {
+  var st = spawn(t, dat + ' export -d merge-test', {cwd: dat1})
+
+  st.stderr.empty()
+  st.stdout.match(function match (output) {
+    try {
+      output = JSON.parse(output)
+      return output.name === 'Max'
     } catch (e) {
       return false
     }
