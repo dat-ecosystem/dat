@@ -23,9 +23,9 @@ function startDatServer (args) {
 
     db.status(function (err, status) {
       if (err) abort(err, args)
-      var port = parseInt(args.port)
-      if(!port) abort(new Error('Invalid port specified: ' + port), args)
-      console.log("Starting httpd on port: " + port)
+      var port = parseInt(args.port, 10)
+      if (!port) abort(new Error('Invalid port specified: ' + port), args)
+      console.log('Starting httpd on port: ' + port)
       var server = http.createServer(function (req, res) {
         req.pipe(db.replicate()).pipe(res)
       })
