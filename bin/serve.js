@@ -1,9 +1,7 @@
 var abort = require('../lib/util/abort.js')
 var openDat = require('../lib/util/open-dat.js')
 var usage = require('../lib/util/usage.js')('serve.txt')
-
 var http = require('http')
-var dat = require('dat-core')
 
 module.exports = {
   name: 'serve',
