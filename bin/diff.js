@@ -25,10 +25,14 @@ function handleDiff (args) {
   if (args.help) return usage()
   if (args._.length < 1) return usage()
 
-  if (args._.length === 2) return diff(args._[0], args._[1])
+  var headA = args._[0]
+  var headB = args._[1]
 
   openDat(args, function (err, db) {
     if (err) abort(err, args)
+    if (args._.length === 2) {
+      return diff(db, headA, headB)
+    }
     db.status(function (err, status) {
       if (err) abort(err, args)
       diff(db, status.head, args._[0])
