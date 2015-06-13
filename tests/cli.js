@@ -52,7 +52,7 @@ var tmp = os.tmpdir()
 
 // sanity: make sure cwd isn't in a repo
 test('cli: dat status (cwd)', function (t) {
-  var st = spawn(t, dat + ' status', {cwd: tmp})
+  var st = spawn(t, dat + ' status')
   st.stderr.match(/This is not a dat repository/)
   st.stdout.empty()
   st.end()
