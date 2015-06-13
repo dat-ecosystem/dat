@@ -32,15 +32,15 @@ module.exports = {
     },
     {
       name: 'left',
-      boolean: true,
+      boolean: true
     },
     {
       name: 'right',
-      boolean: true,
+      boolean: true
     },
     {
       name: 'random',
-      boolean: true,
+      boolean: true
     }
   ]
 }
@@ -93,10 +93,7 @@ function handleMerge (args) {
           debug('winner', winner)
           next(null, winner)
         }))
-      } else { //manual
-        function vizFn (changes) {
-          return diffs2string(changes, diffOpts)
-        }
+      } else { // manual
         pipeline.push(batcher(args.limit))
         pipeline.push(manualMergeStream({vizFn: vizFn}))
       }
@@ -104,3 +101,8 @@ function handleMerge (args) {
     }
   })
 }
+
+function vizFn (changes) {
+  return diffs2string(changes, diffOpts)
+}
+
