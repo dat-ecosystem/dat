@@ -70,7 +70,7 @@ function handleMerge (args) {
       var resStream = resolutionStream(headA, headB)
       pump(resStream, mergeStream, function done (err) {
         if (err) return abort(err, args)
-        db = checkout(db, mergeStream.head)
+        if (args._.indexOf(status.head) > -1) db = checkout(db, mergeStream.head)
         if (args.json) console.log(JSON.stringify({version: db.head}))
         else console.error('Merged successfully.\nCurrent version is', db.head)
       })
