@@ -97,7 +97,7 @@ function handleMerge (args) {
         pipeline.push(batcher(args.limit))
         pipeline.push(manualMergeStream({vizFn: vizFn}))
       }
-      return pipeline
+      return pumpify.obj(pipeline)
     }
   })
 }
