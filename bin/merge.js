@@ -34,9 +34,9 @@ function handleMerge (args) {
       merge(status.head, args._[0])
     })
 
-    function merge (headA, headB) {      
+    function merge (headA, headB) {
       var pipeline = []
-      
+
       if (args.left || args.right || args.random) {
         pipeline.push(db.diff(headA, headB))
         pipeline.push(through.obj(function autoMerge (versions, enc, next) {
@@ -51,13 +51,14 @@ function handleMerge (args) {
         pipeline.push(process.stdin)
         pipeline.push(ndjson.parse())
       }
-      
+
       var mergeStream = db.merge(headA, headB)
       pipeline.push(mergeStream)
-      
+
       pump(pipeline, function done (err) {
         if (err) return abort(err, args)
-        console.error('Merged', headA, headB, 'into', db.head)
+        if (args.json) console.error(JSON.stringify({heads: [headA, headB], fork: mergeStream.head}))
+        else console.error('Merged', headA, headB, 'into', db.head)
       })
     }
   })
