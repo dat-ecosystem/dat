@@ -1,10 +1,17 @@
 var pump = require('pump')
+var pumpify = require('pumpify')
 var ndjson = require('ndjson')
+var diffs2string = require('diffs-to-string')
 var through = require('through2')
+var batcher = require('byte-stream')
+var manualMergeStream = require('manual-merge-stream')
+
+var checkout = require('../lib/checkout.js')
+var diffOpts = require('../lib/util/diff-viz-opts.js')
 var usage = require('../lib/util/usage.js')('merge.txt')
 var abort = require('../lib/util/abort.js')
 var openDat = require('../lib/util/open-dat.js')
-var debug = require('debug')('dat-merge')
+var debug = require('debug')('bin/merge')
 
 module.exports = {
   name: 'merge',
@@ -13,6 +20,27 @@ module.exports = {
     {
       name: 'stdin',
       boolean: false
+    },
+    {
+      name: 'message',
+      boolean: false
+    },
+    {
+      name: 'limit',
+      boolean: false,
+      default: 5
+    },
+    {
+      name: 'left',
+      boolean: true
+    },
+    {
+      name: 'right',
+      boolean: true
+    },
+    {
+      name: 'random',
+      boolean: true
     }
   ]
 }
@@ -35,31 +63,45 @@ function handleMerge (args) {
     })
 
     function merge (headA, headB) {
+      if (headA === headB) {
+        abort(new Error('These forks are the same. No merge performed.'))
+      }
+      var mergeStream = db.merge(headA, headB, {message: args.message})
+      var resStream = resolutionStream(headA, headB)
+      pump(resStream, mergeStream, function done (err) {
+        if (err) return abort(err, args)
+        if (args._.indexOf(db.head) > -1) db = checkout(db, mergeStream.head)
+        if (args.json) console.error(JSON.stringify({heads: [headA, headB], fork: mergeStream.head}))
+        else console.error('Merged successfully.\nCurrent version is', db.head)
+      })
+    }
+
+    function resolutionStream (headA, headB) {
+      if (args.stdin) return pumpify.obj(process.stdin, ndjson.parse())
+
       var pipeline = []
 
+      pipeline.push(db.diff(headA, headB))
+
       if (args.left || args.right || args.random) {
-        pipeline.push(db.diff(headA, headB))
-        pipeline.push(through.obj(function autoMerge (versions, enc, next) {
-          var winner
-          if (args.left) winner = versions[0]
-          else if (args.right) winner = versions[1]
-          else if (args.random) winner = versions[+(Math.random() < 0.5)]
+        var choice = 0 // left
+        if (args.right) choice = 1
+        if (args.random) choice = +(Math.random() < 0.5)
+        pipeline.push(through.obj(function (versions, enc, next) {
+          var winner = versions[choice]
+          debug('versions', versions)
           debug('winner', winner)
           next(null, winner)
         }))
-      } else {
-        pipeline.push(process.stdin)
-        pipeline.push(ndjson.parse())
+      } else { // manual
+        pipeline.push(batcher(args.limit))
+        pipeline.push(manualMergeStream({vizFn: vizFn}))
       }
-
-      var mergeStream = db.merge(headA, headB)
-      pipeline.push(mergeStream)
-
-      pump(pipeline, function done (err) {
-        if (err) return abort(err, args)
-        if (args.json) console.error(JSON.stringify({heads: [headA, headB], fork: mergeStream.head}))
-        else console.error('Merged', headA, headB, 'into', db.head)
-      })
+      return pumpify.obj(pipeline)
     }
   })
+}
+
+function vizFn (changes) {
+  return diffs2string(changes, diffOpts)
 }

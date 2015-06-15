@@ -54,7 +54,7 @@ test('merge: dat1 diff | merge', function (t) {
 
   diff.stderr.empty()
   merge.stdout.empty()
-  merge.stderr.match(/Merged/)
+  merge.stderr.match(/Merged successfully./)
 
   // wait for both to finish
   parallel([merge.end.bind(merge), diff.end.bind(diff)], function () {
@@ -79,7 +79,7 @@ test('merge: verify merge version', function (t) {
 })
 
 test('dat merge --right', function (t) {
-  var cmd = 'dat merge ' + forks.mine + ' ' + forks.remotes[0] + ' --right --json'
+  var cmd = dat + ' merge ' + forks.mine + ' ' + forks.remotes[0] + ' --right --json'
   var st = spawn(t, cmd, {cwd: dat1})
   st.stderr.match(function match (output) {
     try {
