@@ -105,4 +105,3 @@ function handleMerge (args) {
 function vizFn (changes) {
   return diffs2string(changes, diffOpts)
 }
-
