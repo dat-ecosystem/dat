@@ -63,7 +63,6 @@ function handleMerge (args) {
     })
 
     function merge (headA, headB) {
-<<<<<<< HEAD
       if (headA === headB) {
         abort(new Error('These forks are the same. No merge performed.'))
       }
