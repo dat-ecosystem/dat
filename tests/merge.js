@@ -79,7 +79,7 @@ test('merge: verify merge version', function (t) {
 })
 
 test('dat merge --right', function (t) {
-  var cmd = 'dat merge ' + forks.mine + ' ' + forks.remotes[0] + ' --right --json'
+  var cmd = dat + ' merge ' + forks.mine + ' ' + forks.remotes[0] + ' --right --json'
   var st = spawn(t, cmd, {cwd: dat1})
   st.stderr.match(function match (output) {
     try {
