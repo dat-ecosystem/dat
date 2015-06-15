@@ -9,7 +9,7 @@ var helpers = require('./helpers')
 
 var tmp = os.tmpdir()
 var dat = path.resolve(__dirname + '/../cli.js')
-var forks, diff
+var forks, diff, fork
 
 var dat1 = path.join(tmp, 'dat-merge-1')
 var dat2 = path.join(tmp, 'dat-merge-2')
@@ -79,15 +79,23 @@ test('merge: verify merge version', function (t) {
 })
 
 test('dat merge --right', function (t) {
-  var cmd = 'dat merge ' + forks.mine + ' ' + forks.remotes[0] + ' --right'
+  var cmd = 'dat merge ' + forks.mine + ' ' + forks.remotes[0] + ' --right --json'
   var st = spawn(t, cmd, {cwd: dat1})
-  st.stderr.match(/Merged/)
+  st.stderr.match(function match (output) {
+    try {
+      output = JSON.parse(output)
+      fork = output.fork
+      return !!fork
+    } catch (e) {
+      return false
+    }
+  })
   st.stdout.empty()
   st.end()
 })
 
 test('merge: verify merge version', function (t) {
-  var st = spawn(t, dat + ' export -d merge-test', {cwd: dat1})
+  var st = spawn(t, dat + ' export -d merge-test -c ' + fork, {cwd: dat1})
 
   st.stderr.empty()
   st.stdout.match(function match (output) {
