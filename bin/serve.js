@@ -28,11 +28,11 @@ function startDatServer (args) {
   function serve (port) {
     openDat(args, function (err, db) {
       if (err) abort(err, args)
-      if (!port) abort(new Error('Invalid port specified: ' + port), args)
+      if (!port) abort(new Error('Invalid port: ' + port), args)
 
-      console.error('Starting httpd on port: ' + port)
+      console.error('Listening on port ' + port)
       var server = http.createServer(function (req, res) {
-        req.pipe(db.replicate()).pipe(res)
+        pump(req, db.replicate(), res)
       })
       server.listen(port)
     })
