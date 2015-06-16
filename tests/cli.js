@@ -129,10 +129,20 @@ test('cli: dat import without dataset', function (t) {
 })
 
 test('cli: dat export without dataset', function (t) {
-  var st = spawn(t, dat + ' read bar --path=' + dat1)
+  var st = spawn(t, dat + ' export bar --path=' + dat1)
   st.stderr.match(/Must specify dataset/)
   st.stdout.empty()
   st.end()
+})
+
+test('cli: dat serve', function (t) {
+  var st = spawn(t, dat + ' serve --path=' + dat1)
+  setTimeout(function () {
+    st.kill()
+    st.stderr.match(/Listening on port 6442/)
+    st.stdout.empty()
+    st.end()
+  }, 1000)
 })
 
 test('cli: cleanup', function (t) {
