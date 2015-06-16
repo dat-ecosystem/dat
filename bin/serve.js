@@ -1,3 +1,4 @@
+var pump = requre('pump')
 var abort = require('../lib/util/abort.js')
 var openDat = require('../lib/util/open-dat.js')
 var usage = require('../lib/util/usage.js')('serve.txt')
@@ -21,7 +22,7 @@ function startDatServer (args) {
   if (args.port) return serve(parseInt(args.port, 10))
 
   getport(6442, function (err, port) {
-    if (err) abort (err, args)
+    if (err) abort(err, args)
     return serve(port)
   })
 
