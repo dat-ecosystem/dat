@@ -23,11 +23,5 @@ module.exports = [
     name: 'verbose',
     boolean: true,
     default: false
-  },
-  {
-    name: 'port',
-    boolean: false,
-    default: 8080,
-    abbr: 'p'
   }
 ]

@@ -2,6 +2,7 @@ var abort = require('../lib/util/abort.js')
 var openDat = require('../lib/util/open-dat.js')
 var usage = require('../lib/util/usage.js')('serve.txt')
 var http = require('http')
+var getport = require('getport')
 
 module.exports = {
   name: 'serve',
@@ -18,18 +19,22 @@ module.exports = {
 function startDatServer (args) {
   if (args.help) return usage()
 
-  openDat(args, function (err, db) {
-    if (err) abort(err, args)
+  if (args.port) return serve(parseInt(args.port, 10))
 
-    db.status(function (err, status) {
+  getport(6442, function(err, port) {
+    serve(port)
+  })
+
+  function serve (port) {
+    openDat(args, function (err, db) {
       if (err) abort(err, args)
-      var port = parseInt(args.port, 10)
       if (!port) abort(new Error('Invalid port specified: ' + port), args)
-      console.log('Starting httpd on port: ' + port)
+
+      console.error('Starting httpd on port: ' + port)
       var server = http.createServer(function (req, res) {
         req.pipe(db.replicate()).pipe(res)
       })
       server.listen(port)
     })
-  })
+  }
 }
