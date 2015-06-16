@@ -18,11 +18,11 @@ module.exports = {
 
 function startDatServer (args) {
   if (args.help) return usage()
-
   if (args.port) return serve(parseInt(args.port, 10))
 
-  getport(6442, function(err, port) {
-    serve(port)
+  getport(6442, function (err, port) {
+    if (err) abort (err, args)
+    return serve(port)
   })
 
   function serve (port) {
