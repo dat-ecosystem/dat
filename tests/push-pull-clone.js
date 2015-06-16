@@ -44,7 +44,7 @@ test('push-pull-clone: dat import csv', function (t) {
   st.end()
 })
 
-test('push-pull-clone: clone dat1', function (t) {
+test('push-pull-clone: clone dat1 into dat2', function (t) {
   var st = spawn(t, dat + ' clone ' + dat1 + ' ' + dat2 + ' --bin=' + dat, {cwd: path.join(dat2, '..') })
   st.stderr.match(/Clone from remote has completed/)
   st.stdout.empty()
@@ -63,7 +63,7 @@ test('push-pull-clone: dat import dataset #2 to dat1', function (t) {
   st.end()
 })
 
-test('push-pull-clone: pull from dat1 to dat2 with remote set in dat.json', function (t) {
+test('push-pull-clone: pull with remote set in dat.json', function (t) {
   var config = {remote: dat1}
   fs.writeFileSync(path.join(dat2, 'dat.json'), JSON.stringify(config), 'utf8')
   var st = spawn(t, dat + ' pull ' + ' --bin=' + dat, {cwd: dat2})
@@ -103,3 +103,31 @@ function compareStatuses (t, dat1, dat2) {
     st2.end()
   })
 }
+
+test('push-pull-clone: pull with json output', function (t) {
+  var st = spawn(t, dat + ' pull ' + ' --json --bin=' + dat, {cwd: dat2})
+  st.stderr.empty()
+  st.stdout.match(function (output) {
+    try {
+      var json = JSON.parse(output)
+      return json.version.length === 64
+    } catch (e) {
+      return false
+    }
+  })
+  st.end()
+})
+
+test('push-pull-clone: push with json output', function (t) {
+  var st = spawn(t, dat + ' push ' + ' --json --bin=' + dat, {cwd: dat2})
+  st.stderr.empty()
+  st.stdout.match(function (output) {
+    try {
+      var json = JSON.parse(output)
+      return json.version.length === 64
+    } catch (e) {
+      return false
+    }
+  })
+  st.end()
+})

@@ -4,15 +4,33 @@ var progress = require('../lib/util/progress.js')
 var abort = require('../lib/util/abort.js')
 var openDat = require('../lib/util/open-dat.js')
 var transportStream = require('../lib/util/transports.js')
+var authPrompt = require('../lib/util/auth-prompt.js')
+var auth = require('../lib/util/url-auth.js')
 
 module.exports = {
   name: 'pull',
-  command: handlePull
+  command: handlePull,
+  options: [
+    {
+      name: 'username',
+      boolean: false,
+      abbr: 'u'
+    },
+    {
+      name: 'password',
+      boolean: false,
+      abbr: 'p'
+    }
+  ]
 }
 
 function handlePull (args) {
   var remote = config.remote || args._[0]
   if (!remote) return usage()
+
+  if (args.username && args.password) {
+    remote = auth(remote, args.username, args.password)
+  }
 
   var transports = transportStream(args.bin)
 
@@ -24,6 +42,13 @@ function handlePull (args) {
 
   stream.on('warn', function (data) {
     console.error(data)
+  })
+
+  stream.on('error', function (err) {
+    if (err.level === 'client-authentication' && !args.json) {
+      return authPrompt(args, handlePull)
+    }
+    else abort(err, args)
   })
 
   stream.on('prefinish', function () {
