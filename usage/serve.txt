@@ -1,0 +1,3 @@
+dat serve [--port=8080]
+
+Start a httpd to host a dat remote.

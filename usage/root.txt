@@ -15,5 +15,6 @@ commands:
   export      export tabular data from a dataset
   read        read a binary file out of a dataset
   write       write a binary file into a dataset
+  serve       start httpd to host store as http remote
 
 type `dat <command> --help` to view specific command help
