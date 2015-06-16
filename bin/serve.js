@@ -1,4 +1,4 @@
-var pump = requre('pump')
+var pump = require('pump')
 var abort = require('../lib/util/abort.js')
 var openDat = require('../lib/util/open-dat.js')
 var usage = require('../lib/util/usage.js')('serve.txt')
