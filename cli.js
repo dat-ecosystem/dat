@@ -20,7 +20,8 @@ var config = {
     require('./bin/write.js'),
     require('./bin/read.js'),
     require('./bin/forks.js'),
-    require('./bin/merge.js')
+    require('./bin/merge.js'),
+    require('./bin/serve.js')
   ],
   defaults: require('./bin/defaults.js'),
   none: noMatch
