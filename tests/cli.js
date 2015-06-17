@@ -129,7 +129,7 @@ test('cli: dat import without dataset', function (t) {
 })
 
 test('cli: dat export without dataset', function (t) {
-  var st = spawn(t, dat + ' read bar --path=' + dat1)
+  var st = spawn(t, dat + ' export bar --path=' + dat1)
   st.stderr.match(/Must specify dataset/)
   st.stdout.empty()
   st.end()
