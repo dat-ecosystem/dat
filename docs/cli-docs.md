@@ -16,6 +16,7 @@ This is the `dat` command line API as of the Beta release.
   - [dat merge](#dat-merge)
   - [dat forks](#dat-forks)
   - [dat replicate](#dat-replicate)
+  - [dat serve](#dat-serve)
 - [dataset commands](#dataset-commands)
   - [dat import](#dat-import)
   - [dat export](#dat-export)
@@ -509,3 +510,17 @@ Storing cat.jpg (8.3 Mb, 38 Mb/s).
 Stored cat.jpg successfully.
 Current version is now b04adb64fdf2203
 ```
+
+### dat serve
+
+Create an http endpoint so others can `clone`, `push`, or `pull` data. Default port is 6442.
+
+```
+$ dat serve [--port=<number>]
+Listening on port 6442
+```
+
+
+
+
+
