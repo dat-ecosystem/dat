@@ -10,8 +10,9 @@ Windows        | Mac/Linux
 
 ## Documentation
 
-- For using the CLI `dat` utility see [`docs/cli-docs.md`](docs/cli-docs.md)
-- For using the dat JS API see [dat-core](https://github.com/maxogden/dat-core)
+- [Commandline `dat` utility documentation](docs/cli-docs.md)
+- [JavaScript API](https://github.com/maxogden/dat-core)
+- [The COOKBOOK!](docs/cookbook.md)
 - For a detailed description see the [whitepaper draft](https://github.com/maxogden/dat/blob/master/docs/whitepaper.md)
 
 ## Installation
