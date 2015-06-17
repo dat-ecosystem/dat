@@ -1,4 +1,7 @@
-# How do I set up my dat so other people can `dat clone`?
+# COOKBOOK!
+
+
+## How do I set up my dat so other people can `dat clone`?
 
 Dat is transport agnostic. Here, we will go over two ways to set up an endpoint for your dat -- ssh, and http.
 
@@ -44,11 +47,11 @@ $ taco-nginx --name <servicename> dat serve --port=$PORT
 
 You then might want to use process monitoring so that if the process fails for some reason, it will get automatically restarted by the system. There are a variety of ways to do this.
 
-# How do I set up authentication on my dat?
+## How do I set up authentication on my dat?
 
 We recommend SSH keys for access control. Here is a [good tutorial on setting up ssh authentication to allow ssh access only to certain individuals](https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys--2).
 
 
-# How do I allow read-only access to the dat?
+## How do I allow read-only access to the dat?
 
 There currently is no support for read-only mode, although it is on the roadmap and would welcome PRs!
