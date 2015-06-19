@@ -17,3 +17,9 @@ before_script:
 script:
  - npm test
 
+notifications:
+  irc:
+    channels:
+      - "chat.freenode.net#dat"
+    on_success: change
+    on_failure: change
