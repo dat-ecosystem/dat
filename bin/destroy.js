@@ -2,7 +2,6 @@ var path = require('path')
 var fs = require('fs')
 var cliprompt = require('cli-prompt')
 var rimraf = require('rimraf')
-var openDat = require('../lib/util/open-dat.js')
 var abort = require('../lib/util/abort.js')
 var usage = require('../lib/util/usage.js')('destroy.txt')
 
@@ -22,7 +21,7 @@ function handleDestroy (args) {
       if (answer !== 'y') return abort(new Error('Answer was not "y", skipping destroy.'), args)
       destroy()
     })
-    
+
     function destroy () {
       rimraf(datDir, function (err) {
         if (err) return abort(err, args)

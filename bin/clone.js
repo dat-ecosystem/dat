@@ -44,7 +44,7 @@ function handleClone (args) {
     if (args.json) console.log(JSON.stringify({version: db.head}))
     else console.error('Clone from remote has completed.')
   })
-  
+
   cloneStream.on('pull', function () {
     log('Pulled ' + (++pullCount) + ' items')
   })
