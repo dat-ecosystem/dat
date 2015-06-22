@@ -17,6 +17,7 @@ This is the `dat` command line API as of the Beta release.
   - [dat forks](#dat-forks)
   - [dat replicate](#dat-replicate)
   - [dat serve](#dat-serve)
+  - [dat destroy](#dat-destroy)
 - [dataset commands](#dataset-commands)
   - [dat import](#dat-import)
   - [dat export](#dat-export)
@@ -401,6 +402,29 @@ Average speed: 4.3 Mb/s.
 Replication completed successfully.
 ```
 
+### dat serve
+
+Create an http endpoint so others can `clone`, `push`, or `pull` data. Default port is 6442.
+
+```
+$ dat serve [--port=<number>]
+Listening on port 6442
+```
+
+### dat destroy
+
+Destroy a repository and all data inside it. Cannot be undone
+
+```
+$ dat destroy [--no-prompt]
+About to destroy /data/.dat. This cannot be undone. Are you sure? (y/n): y
+Destroyed /data/.dat
+```
+
+#### Options
+
+- `no-prompt` - add this flag to skip the prompt and force the destroy
+
 ## dataset commands
 
 These are meant to affect a specific dataset inside a repository.
@@ -510,17 +534,3 @@ Storing cat.jpg (8.3 Mb, 38 Mb/s).
 Stored cat.jpg successfully.
 Current version is now b04adb64fdf2203
 ```
-
-### dat serve
-
-Create an http endpoint so others can `clone`, `push`, or `pull` data. Default port is 6442.
-
-```
-$ dat serve [--port=<number>]
-Listening on port 6442
-```
-
-
-
-
-

@@ -7,6 +7,7 @@ var config = {
     require('./bin/init.js'),
     require('./bin/import.js'),
     require('./bin/datasets.js'),
+    require('./bin/destroy.js'),
     require('./bin/clone.js'),
     require('./bin/log.js'),
     require('./bin/push.js'),
