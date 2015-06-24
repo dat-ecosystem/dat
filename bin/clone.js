@@ -46,6 +46,6 @@ function handleClone (args) {
   })
 
   cloneStream.on('pull', function () {
-    log('Pulled ' + (++pullCount) + ' items')
+    log('Pulled ' + (++pullCount) + ' items\n')
   })
 }
