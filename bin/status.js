@@ -33,7 +33,7 @@ function handleStatus (args) {
         output += status.rows + ' keys, ' + status.files + ' files, '
         output += status.versions + ' versions, ' + prettyBytes(status.size) + ' total\n'
         output += 'Last updated ' + relativeDate(status.modified) + ' (' + status.modified + ')'
-        console.log(output)
+        console.error(output)
       }
     })
   })
