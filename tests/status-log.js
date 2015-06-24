@@ -22,8 +22,8 @@ helpers.conflict(dat1, dat2, 'status-test')
 
 test('status-log: dat1 status with multiple forks', function (t) {
   var st = spawn(t, dat + ' status', {cwd: dat1})
-  st.stderr.empty()
-  st.stdout.match(/Current version is/)
+  st.stdout.empty()
+  st.stderr.match(/Current version is/)
   st.end()
 })
 
