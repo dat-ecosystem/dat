@@ -13,6 +13,10 @@ module.exports = {
       name: 'port',
       boolean: false,
       abbr: 'p'
+    }, {
+      name: 'readonly',
+      boolean: true,
+      abbr: 'r'
     }
   ]
 }
@@ -31,9 +35,9 @@ function startDatServer (args) {
       if (err) abort(err, args)
       if (!port) abort(new Error('Invalid port: ' + port), args)
 
-      console.error('Listening on port ' + port)
+      console.error('Listening on port ' + port + (args.readonly ? ' (readonly)' : ''))
       var server = http.createServer(function (req, res) {
-        pump(req, db.replicate(), res)
+        pump(req, args.readonly ? db.push() : db.replicate(), res)
       })
       server.listen(port)
     })
