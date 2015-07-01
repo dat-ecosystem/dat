@@ -47,8 +47,7 @@ function handleWrite (args) {
       inputStream = process.stdin
     } else {
       if (!fs.existsSync(path)) {
-        usage()
-        abort(new Error('File at ' + path + ' does not exist'), args)
+        abort(new Error('Error: File at ' + path + ' does not exist'), args)
       }
       inputStream = fs.createReadStream(path)
     }
@@ -59,7 +58,7 @@ function handleWrite (args) {
     }
 
     pump(inputStream, db.createFileWriteStream(key, opts), function done (err) {
-      if (err) abort(err, args, 'dat: err in write')
+      if (err) abort(err, args, 'Error: Write failed')
 
       if (args.json) {
         var output = {
