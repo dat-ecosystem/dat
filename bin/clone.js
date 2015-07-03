@@ -1,8 +1,8 @@
-var log = require('single-line-log').stderr
 var abort = require('../lib/util/abort.js')
 var usage = require('../lib/util/usage.js')('clone.txt')
 var authPrompt = require('../lib/util/auth-prompt.js')
 var auth = require('../lib/util/url-auth.js')
+var progress = require('../lib/util/progress.js')
 
 var clone = require('../lib/clone.js')
 
@@ -32,7 +32,6 @@ function handleClone (args) {
     source = auth(source, args.username, args.password)
   }
 
-  var pullCount = 0
   var cloneStream = clone(source, path, args, function finished (err, db) {
     if (err) {
       if (err.level === 'client-authentication' && !args.json) {
@@ -45,7 +44,5 @@ function handleClone (args) {
     else console.error('Clone from remote to %s has completed.', path)
   })
 
-  cloneStream.on('pull', function () {
-    log('Pulled ' + (++pullCount) + ' items\n')
-  })
+  progress(cloneStream, {verb: 'Cloned', replicate: true})
 }

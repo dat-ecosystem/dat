@@ -1,6 +1,5 @@
 var fs = require('fs')
 var pump = require('pump')
-var pumpify = require('pumpify')
 var debug = require('debug')('bin/import')
 var createImportStream = require('../lib/import.js')
 var openDat = require('../lib/util/open-dat.js')
@@ -53,9 +52,11 @@ function handleImport (args) {
     var inputStream
     if (args._[0] === '-') inputStream = process.stdin
     else inputStream = fs.createReadStream(args._[0])
-    if (!args.json) inputStream = pumpify(inputStream, progress('Wrote'))
 
-    pump(inputStream, createImportStream(db, args), function done (err) {
+    var importer = createImportStream(db, args)
+    if (!args.json) progress(importer, {verb: 'Wrote', subject: 'keys'})
+
+    pump(inputStream, importer, function done (err) {
       if (err) abort(err, args, 'Error importing data')
       if (args.json) {
         var output = {

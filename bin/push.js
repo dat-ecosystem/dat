@@ -63,7 +63,7 @@ function handlePush (args) {
   openDat(args, function ready (err, db) {
     if (err) return abort(err, args)
     var push = stream.pipe(db.push())
-    if (!args.json) push = push.pipe(progress('Pushed', args))
+    if (!args.json) progress(push, {verb: 'Pushed', replicate: true})
     push.pipe(stream)
   })
 }
