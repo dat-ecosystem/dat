@@ -63,7 +63,13 @@ function handleImport (args) {
           version: db.head
         }
         console.log(JSON.stringify(output))
-      } else console.error('Done importing data. \nVersion: ' + db.head)
+      } else {
+        if (importer.progress.puts === 0 && importer.progress.deletes === 0) {
+          console.error('No changes were made.')
+        } else {
+          console.error('Done importing data. \nVersion: ' + db.head)
+        }
+      }
     })
   }
 }
