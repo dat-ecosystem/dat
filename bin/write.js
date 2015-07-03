@@ -4,6 +4,7 @@ var debug = require('debug')('bin/write')
 var openDat = require('../lib/util/open-dat.js')
 var abort = require('../lib/util/abort.js')
 var usage = require('../lib/util/usage.js')('write.txt')
+var progress = require('../lib/util/progress.js')
 
 module.exports = {
   name: 'write',
@@ -57,7 +58,9 @@ function handleWrite (args) {
       message: args.message
     }
 
-    pump(inputStream, db.createFileWriteStream(key, opts), function done (err) {
+    var writer = db.createFileWriteStream(key, opts)
+    progress(writer, {bytes: true, verb: 'Storing ' + key})
+    pump(inputStream, writer, function done (err) {
       if (err) abort(err, args, 'Error: Write failed')
 
       if (args.json) {
@@ -65,7 +68,7 @@ function handleWrite (args) {
           version: db.head
         }
         console.log(JSON.stringify(output))
-      } else console.error('Done writing binary data. \nVersion: ' + db.head)
+      } else console.error('Stored ' + key + ' successfully. \nCurrent version is now: ' + db.head)
 
     })
   })
