@@ -4,7 +4,7 @@ Write a file to dat:
 
  dat write <path-to-file>
   -d <dataset-name> # the name of the dataset to create. required
-  -n <filename> # the name of the file. if not supplied, uses the path
+  -k <filename> # the key to store the file. if not supplied, uses the filename
 
 Stream data from stdin:
 
