@@ -1,5 +1,6 @@
 var pump = require('pump')
 var fs = require('fs')
+var basename = require('path').basename
 var debug = require('debug')('bin/write')
 var openDat = require('../lib/util/open-dat.js')
 var abort = require('../lib/util/abort.js')
@@ -16,9 +17,9 @@ module.exports = {
       abbr: 'd'
     },
     {
-      name: 'name',
+      name: 'key',
       boolean: false,
-      abbr: 'n'
+      abbr: 'k'
     },
     {
       name: 'message',
@@ -41,7 +42,7 @@ function handleWrite (args) {
     if (err) abort(err, args)
     var path = args._[0]
     var stream = args._[1]
-    var key = args.n || path
+    var key = args.key || basename(path)
 
     var inputStream
     if (stream === '-') {
