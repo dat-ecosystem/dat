@@ -26,7 +26,7 @@ module.exports = {
 function handleClone (args) {
   if (args._.length === 0) return usage()
   var source = args._[0]
-  var path = args._[1] || source.replace(/\.dat$/i, '').split(/[^\-_a-z0-9]/i).pop() || 'dat-' + Date.now()
+  var path = args._[1] || source.replace(/\.dat$/i, '').split(/[^\-._a-z0-9]/i).pop() || 'dat-' + Date.now()
 
   if (args.username && args.password) {
     source = auth(source, args.username, args.password)
