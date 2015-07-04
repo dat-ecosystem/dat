@@ -1,9 +1,12 @@
+var http = require('http')
+var getport = require('getport')
 var pump = require('pump')
 var abort = require('../lib/util/abort.js')
 var openDat = require('../lib/util/open-dat.js')
 var usage = require('../lib/util/usage.js')('serve.txt')
-var http = require('http')
-var getport = require('getport')
+var debug = require('debug')('dat-serve')
+
+var version = require('../package.json').version
 
 module.exports = {
   name: 'serve',
@@ -38,7 +41,19 @@ function startDatServer (args) {
 
       console.error('Listening on port ' + port + (args.readonly ? ' (readonly)' : ''))
       var server = http.createServer(function (req, res) {
-        pump(req, args.readonly ? db.push() : db.replicate(), res)
+        debug(req.method, req.url, req.connection.remoteAddress)
+
+        if (req.method === 'GET') {
+          res.setHeader('content-type', 'application/json')
+          return res.end(JSON.stringify({dat: true, version: version}))
+        }
+        if (req.method === 'POST') {
+          pump(req, args.readonly ? db.push() : db.replicate(), res)
+        }
+
+        // if not GET or POST
+        res.statusCode = 405
+        res.end()
       })
       server.listen(port)
     })
