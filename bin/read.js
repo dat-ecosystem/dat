@@ -36,7 +36,7 @@ function handleRead (args) {
     debug(key, opts)
 
     pump(db.createFileReadStream(key, opts), process.stdout, function done (err) {
-      if (err) abort(err, args, 'dat: err in read')
+      if (err) abort(err, args, 'dat: Error reading ' + key)
     })
   })
 

@@ -131,7 +131,7 @@ function verify (dataset, dir) {
     st.stdout.match(function (output) {
       var lines = output.split('\n')
       if (lines.length === 10) {
-        if (JSON.parse(lines[0]).key === 'ak11246285') return true
+        if (JSON.parse(lines[0]).id === 'ak11246285') return true
         return false
       }
     })

@@ -24,7 +24,7 @@ test('get: dat get a key from dataset', function (t) {
   st.stderr.empty()
   st.stdout.match(function (output) {
     output = JSON.parse(output)
-    if (output.key === 'ak11246293' && output.value.latitude === '60.0366') return true
+    if (output.value.id === 'ak11246293' && output.value.latitude === '60.0366') return true
     return false
   })
   st.end()

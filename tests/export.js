@@ -66,7 +66,7 @@ test('export: dat export with limit', function (t) {
     if (lines.length > 6) return false
     if (lines.length === 6) {
       var line = JSON.parse(lines[4]) // 5th line is empty string due to splittage
-      if (line.key === 'ak11246293') {
+      if (line.id === 'ak11246293') {
         return line.latitude === '60.0366'
       }
       return false
@@ -197,7 +197,7 @@ test('export: dat export with checkout remote fork abbr', function (t) {
 test('export: dat write', function (t) {
   var st = spawn(t, "echo 'hello world' | " + dat + ' write test-file.txt -d max -', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(/Done writing binary data/)
+  st.stderr.match(/Storing test-file\.txt/)
   st.end()
 })
 

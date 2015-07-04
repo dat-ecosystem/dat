@@ -516,14 +516,14 @@ dat write <filename> --dataset=<dataset-name>
 
 #### Options
 
-`name`/`n`: the name, or lookup key, for the binary file inside dat. If no name is supplied, dat will use the first argument (filename) as the lookup key.
+`key`/`k`: the name, or lookup key, for the binary file inside dat. If no name is supplied, dat will use the filename as the lookup key.
 
 Example output:
 
 Stream data from stdin, save as 'photo.jpg' (must specify name when using STDIN) in the dataset 'photos' (required):
 
 ```bash
-cat photo.jpg | dat write - --name=photo.jpg --dataset=photos
+cat photo.jpg | dat write - --key=photo.jpg --dataset=photos
 ```
 
 Write a file by filename (uses `cat.jpg` as the name automatically):

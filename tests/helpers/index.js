@@ -134,7 +134,7 @@ function fileConflict (dat1, dat2, dataset, filename, cb) {
 
   test('helpers: dat1 import', function (t) {
     var st = spawn(t, "echo 'hello world' | " + dat + ' write -d ' + dataset + ' ' + filename + ' -', {cwd: dat1})
-    st.stderr.match(/Done writing binary data/)
+    st.stderr.match(new RegExp('Stored ' + path.basename(filename) + ' successfully'))
     st.stdout.empty()
     st.end()
   })
@@ -149,14 +149,14 @@ function fileConflict (dat1, dat2, dataset, filename, cb) {
 
   test('helpers: dat2 import b', function (t) {
     var st = spawn(t, "echo 'hello mars' | " + dat + ' write -d ' + dataset + ' ' + filename + ' -', {cwd: dat2})
-    st.stderr.match(/Done writing binary data/)
+    st.stderr.match(new RegExp('Stored ' + path.basename(filename) + ' successfully'))
     st.stdout.empty()
     st.end()
   })
 
   test('helpers: dat1 import c', function (t) {
     var st = spawn(t, "echo 'goodbye mars' | " + dat + ' write -d ' + dataset + ' ' + filename + ' -', {cwd: dat1})
-    st.stderr.match(/Done writing binary data/)
+    st.stderr.match(new RegExp('Stored ' + path.basename(filename) + ' successfully'))
     st.stdout.empty()
     st.end()
   })

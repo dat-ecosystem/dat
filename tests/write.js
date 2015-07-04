@@ -25,7 +25,7 @@ test('write: dat write errors without dataset', function (t) {
 test('write: dat write to dataset', function (t) {
   var st = spawn(t, "echo 'hello world' | " + dat + ' write -d write-test test-file.txt -', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(/Done writing binary data/)
+  st.stderr.match(/Stored test-file\.txt successfully/)
   st.end()
 })
 
@@ -36,7 +36,7 @@ test('write: dat read after write to dataset', function (t) {
 test('write: dat write to new dataset', function (t) {
   var st = spawn(t, "echo 'goodbye world' | " + dat + ' write -d write-test-2 test-file.txt -', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(/Done writing binary data/)
+  st.stderr.match(/Stored test-file\.txt successfully/)
   st.end()
 })
 
@@ -47,7 +47,7 @@ test('write: dat read after write to dataset 2', function (t) {
 test('write: dat overwrite to dataset 2', function (t) {
   var st = spawn(t, "echo 'goodbye mars' | " + dat + ' write -d write-test-2 test-file.txt -', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(/Done writing binary data/)
+  st.stderr.match(/Stored test-file\.txt successfully/)
   st.end()
 })
 
@@ -68,7 +68,7 @@ test('write: dat import csv', function (t) {
 test('write: dat write over an existing key with row content', function (t) {
   var st = spawn(t, 'echo bah | ' + dat + ' write foo -d test -', {cwd: dat3})
   st.stdout.empty()
-  st.stderr.match(/Done writing binary data/)
+  st.stderr.match(/Stored foo successfully/)
   st.end()
 })
 
@@ -110,7 +110,7 @@ test('write: checkout', function (t) {
 test('write: dat write on a checkout', function (t) {
   var st = spawn(t, 'echo bah | ' + dat + ' write foo -d test-checkout -', {cwd: dat3})
   st.stdout.empty()
-  st.stderr.match(/Done writing binary data/)
+  st.stderr.match(/Stored foo successfully/)
   st.end()
 })
 
@@ -128,33 +128,32 @@ test('write: dat write from file', function (t) {
 
 test('write: dat read after write from file', function (t) {
   var contents = fs.readFileSync(blobPath).toString()
-  datReadEquals(t, blobPath, contents, '-d write-test-2')
+  datReadEquals(t, path.basename(blobPath), contents, '-d write-test-2')
 })
 
-test('write: dat write from file with new name', function (t) {
-  datWrite(t, blobPath, '-d write-test-2 --name=new-name.txt')
+test('write: dat write from file with new key', function (t) {
+  datWrite(t, blobPath, '-d write-test-2 --key=new-name.txt')
 })
 
-test('write: dat read after write from file with new name', function (t) {
+test('write: dat read after write from file with new key', function (t) {
   var contents = fs.readFileSync(blobPath).toString()
   datReadEquals(t, 'new-name.txt', contents, '-d write-test-2')
 })
 
-test('write: dat write from file with new name with abbr', function (t) {
-  datWrite(t, blobPath, '-d write-test-2 -n new-name-abbr.txt')
+test('write: dat write from file with new key with abbr', function (t) {
+  datWrite(t, blobPath, '-d write-test-2 -k new-name-abbr.txt')
 })
 
-test('write: dat read after write from file with new name with abbr', function (t) {
+test('write: dat read after write from file with new key with abbr', function (t) {
   var contents = fs.readFileSync(blobPath).toString()
   datReadEquals(t, 'new-name-abbr.txt', contents, '-d write-test-2')
 })
 
 helpers.onedat(dat2)
-helpers.fileConflict(dat1, dat2, 'write-test', 'plato-says-hey-yo', function (conflictForks) {
-})
+helpers.fileConflict(dat1, dat2, 'write-test', 'plato-says-hey-yo', function (conflictForks) { })
 
 test('write: dat write after conflict', function (t) {
-  datWrite(t, blobPath, '-d write-test --name=file.txt', dat1)
+  datWrite(t, blobPath, '-d write-test --key=file.txt', dat1)
 })
 
 test('write: dat write after conflict', function (t) {
@@ -171,7 +170,7 @@ test('write: dat read after conflict', function (t) {
 })
 
 test('write: dat write with message', function (t) {
-  datWrite(t, blobPath, '-d write-test-2 -n new-name-abbr.txt -m "im a test message"', dat2)
+  datWrite(t, blobPath, '-d write-test-2 -k new-name-abbr.txt -m "im a test message"', dat2)
 })
 
 test('write: dat log has binary write message', function (t) {
@@ -189,7 +188,7 @@ function datWrite (t, blobPath, ext, myDat) {
   }
   var st = spawn(t, dat + cmd, {cwd: myDat})
   st.stdout.empty()
-  st.stderr.match(/Done writing binary data/)
+  st.stderr.match(/Stored .+ successfully/)
   st.end()
 }
 
