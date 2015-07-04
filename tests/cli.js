@@ -107,22 +107,8 @@ test('cli: dat get without dataset', function (t) {
   st.end()
 })
 
-test('cli: dat write without dataset', function (t) {
-  var st = spawn(t, dat + ' write bar --path=' + dat1)
-  st.stderr.match(/Must specify dataset/)
-  st.stdout.empty()
-  st.end()
-})
-
-test('cli: dat read without dataset', function (t) {
-  var st = spawn(t, dat + ' read bar --path=' + dat1)
-  st.stderr.match(/Must specify dataset/)
-  st.stdout.empty()
-  st.end()
-})
-
 test('cli: dat import without dataset', function (t) {
-  var st = spawn(t, dat + ' read bar --path=' + dat1)
+  var st = spawn(t, dat + ' import bar --path=' + dat1)
   st.stderr.match(/Must specify dataset/)
   st.stdout.empty()
   st.end()

@@ -55,7 +55,7 @@ function handleWrite (args) {
     }
 
     var opts = {
-      dataset: args.dataset,
+      dataset: 'files',
       message: args.message
     }
 
