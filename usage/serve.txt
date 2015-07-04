@@ -1,3 +1,5 @@
 dat serve [--port=6442]
 
 Start an http listener for a dat remote. Supports push/pull/clone.
+
+  --readonly  -  run with read only permission, so e.g. people can only clone/pull but not push

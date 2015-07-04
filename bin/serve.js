@@ -12,7 +12,8 @@ module.exports = {
     {
       name: 'port',
       boolean: false,
-      abbr: 'p'
+      abbr: 'p',
+      default: process.env.PORT
     }, {
       name: 'readonly',
       boolean: true,

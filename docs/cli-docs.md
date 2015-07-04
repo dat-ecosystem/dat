@@ -404,12 +404,17 @@ Replication completed successfully.
 
 ### dat serve
 
-Create an http endpoint so others can `clone`, `push`, or `pull` data. Default port is 6442.
+Create an http endpoint so others can `clone`, `push`, or `pull` data. Default port is 6442, or uses the `PORT` env variable if set.
 
 ```
 $ dat serve [--port=<number>]
 Listening on port 6442
 ```
+
+#### Options
+
+- `readonly` - run with read only permission, so e.g. people can only clone/pull but not push
+
 
 ### dat destroy
 
