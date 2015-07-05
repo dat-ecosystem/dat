@@ -50,7 +50,14 @@ function startDatServer (args) {
         }
         
         if (req.method === 'POST') {
-          pump(req, args.readonly ? db.push() : db.replicate(), res)
+          var replicate = args.readonly ? db.push() : db.replicate()
+
+          var start = Date.now()
+          replicate.on('finish', function () {
+            debug('replication finished in', (Date.now() - start) + 'ms')
+          })
+
+          pump(req, replicate, res)
           return
         }
 

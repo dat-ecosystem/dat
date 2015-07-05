@@ -44,5 +44,5 @@ function handleClone (args) {
     else console.error('Clone from remote to %s has completed.', path)
   })
 
-  progress(cloneStream, {verb: 'Cloning', replicate: true})
+  progress(cloneStream, {verb: 'Cloning ' + source + ' into ' + path + '...\nProgress: ', replicate: true})
 }
