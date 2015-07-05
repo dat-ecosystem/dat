@@ -45,10 +45,13 @@ function startDatServer (args) {
 
         if (req.method === 'GET') {
           res.setHeader('content-type', 'application/json')
-          return res.end(JSON.stringify({dat: true, version: version}))
+          res.end(JSON.stringify({dat: true, version: version}))
+          return
         }
+        
         if (req.method === 'POST') {
           pump(req, args.readonly ? db.push() : db.replicate(), res)
+          return
         }
 
         // if not GET or POST
