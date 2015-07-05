@@ -15,7 +15,8 @@
   "scripts": {
     "test": "standard && npm run tape",
     "pretty-test": "npm run tape | tap-spec",
-    "tape": "tape tests/*.js"
+    "tape": "tape tests/*.js",
+    "install-precommit": "echo standard > .git/hooks/pre-commit"
   },
   "repository": {
     "type": "git",
