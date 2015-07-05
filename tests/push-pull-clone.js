@@ -37,6 +37,7 @@ test('push-pull-clone: fs clone with bad transport should error', function (t) {
 })
 
 // test clone
+
 test('push-pull-clone: dat import csv', function (t) {
   var st = spawn(t, dat + ' import ' + csv + ' -d quakes', {cwd: dat1})
   st.stderr.match(/Done importing data/)
@@ -47,6 +48,13 @@ test('push-pull-clone: dat import csv', function (t) {
 test('push-pull-clone: clone dat1 into dat2', function (t) {
   var st = spawn(t, dat + ' clone ' + dat1 + ' ' + dat2 + ' --bin=' + dat, {cwd: path.join(dat2, '..') })
   st.stderr.match(/has completed/)
+  st.stdout.empty()
+  st.end()
+})
+
+test('push-pull-clone: fs clone with existing dat should error', function (t) {
+  var st = spawn(t, dat + ' clone ' + dat2 + ' ' + dat1 + ' --bin=' + dat, {cwd: path.join(dat1, '..')})
+  st.stderr.match(/already exists/)
   st.stdout.empty()
   st.end()
 })
