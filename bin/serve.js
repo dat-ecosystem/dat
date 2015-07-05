@@ -48,7 +48,7 @@ function startDatServer (args) {
           res.end(JSON.stringify({dat: true, version: version}))
           return
         }
-        
+
         if (req.method === 'POST') {
           var replicate = args.readonly ? db.push() : db.replicate()
 
