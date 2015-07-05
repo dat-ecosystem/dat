@@ -14,9 +14,10 @@
   },
   "scripts": {
     "test": "standard && npm run tape",
+    "standard": "standard",
     "pretty-test": "npm run tape | tap-spec",
     "tape": "tape tests/*.js",
-    "install-precommit": "echo standard > .git/hooks/pre-commit"
+    "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit"
   },
   "repository": {
     "type": "git",
