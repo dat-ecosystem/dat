@@ -36,6 +36,7 @@ function handleRows (args) {
         abort(err, args, msg)
       }
       process.stdout.write(JSON.stringify(value))
+      db.close()
     })
   })
 }

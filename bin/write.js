@@ -69,6 +69,7 @@ function handleWrite (args) {
         console.log(JSON.stringify(output))
       } else console.error('Stored ' + key + ' successfully. \nCurrent version is now: ' + db.head)
 
+      db.close()
     })
   })
 }

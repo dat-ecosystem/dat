@@ -17,6 +17,7 @@ function handleDatasets (args) {
       if (err) abort(err, args)
       if (args.json) console.log(JSON.stringify({datasets: datasets}))
       else console.log(datasets.join('\n'))
+      db.close()
     })
   })
 }

@@ -42,6 +42,7 @@ function handleClone (args) {
 
     if (args.json) console.log(JSON.stringify({version: db.head}))
     else console.error('Clone from remote to %s has completed.', path)
+    db.close()
   })
 
   progress(cloneStream, {verb: 'Cloning ' + source + ' into ' + path + '...\nProgress: ', replicate: true})

@@ -80,6 +80,8 @@ function handleImport (args) {
           console.error('Done importing data. \nVersion: ' + db.head)
         }
       }
+
+      db.close()
     })
   }
 }

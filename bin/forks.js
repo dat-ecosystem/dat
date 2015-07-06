@@ -14,10 +14,9 @@ function handleForks (args) {
   openDat(args, function (err, db) {
     if (err) abort(err, args)
 
-    forks(db, function (err, fork) {
+    forks(db, function onFork (err, fork) {
       if (err) abort(err, args)
       console.log(fork)
     })
-
   })
 }

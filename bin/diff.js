@@ -51,6 +51,7 @@ function handleDiff (args) {
 
     pump(diffs, printer, process.stdout, function done (err) {
       if (err) abort(err, args)
+      db.close()
     })
   }
 }
