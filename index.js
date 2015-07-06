@@ -8,8 +8,11 @@ function Dat (path, opts) {
   if (!opts.valueEncoding) opts.valueEncoding = 'json'
 
   if (config.addons && config.addons.backend) {
-    opts.backend = require(config.addons.backend.module)
-    path = process.env[config.addons.backend.env]
+    var module = require(config.addons.backend.module)
+    var env = process.env[config.addons.backend.env]
+    opts.backend = function () {
+      return module(env)
+    }
   }
 
   var db = dat(path, opts)
