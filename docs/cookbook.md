@@ -1,6 +1,5 @@
 # COOKBOOK!
 
-
 ## How do I set up my dat so other people can `dat clone`?
 
 Dat is transport agnostic. Here, we will go over two ways to set up an endpoint for your dat -- ssh, and http.
@@ -54,4 +53,37 @@ We recommend SSH keys for access control. Here is a [good tutorial on setting up
 
 ## How do I allow read-only access to the dat?
 
-There currently is no support for read-only mode, although it is on the roadmap and would welcome PRs!
+You can do this via https using the `--read-only` flag:
+
+```
+dat serve --read-only
+```
+
+## How do I connect a different backend to dat?
+
+In your `dat.json` file, add an entry to `addons`. Example for `SQL` variants:
+
+```
+{
+  "name": "mydat",
+  "addons": {
+    "backend": {
+      "module": "sqldown",
+      "env": "DAT_TABULAR_DATABASE"
+    }
+  }
+}
+```
+
+### Options
+
+Every addon has two available configuration arguments right now:
+
+`module`: The name of an npm module. Any module that implements the AbstractLevelDOWN api will be compatible with dat. You'll need to install this module by typing `npm install <module>`.
+`env`: The environment variable that represents the `path` or `url` argument to the backend.
+
+
+### Supported Addon Types
+
+`backend`: where tabular data is stored.
+`blobs`: *coming soon*
