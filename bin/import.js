@@ -35,6 +35,11 @@ module.exports = {
       name: 'batch',
       boolean: false,
       abbr: 'b'
+    },
+    {
+      name: 'deduplicate',
+      boolean: true,
+      default: true
     }
   ]
 }
