@@ -30,6 +30,11 @@ module.exports = {
       name: 'key',
       boolean: true,
       abbr: 'k'
+    },
+    {
+      name: 'batch',
+      boolean: false,
+      abbr: 'b'
     }
   ]
 }
