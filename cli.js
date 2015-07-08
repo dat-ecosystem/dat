@@ -18,6 +18,7 @@ var config = {
     require('./bin/status.js'),
     require('./bin/export.js'),
     require('./bin/diff.js'),
+    require('./bin/delete.js'),
     require('./bin/write.js'),
     require('./bin/read.js'),
     require('./bin/forks.js'),
