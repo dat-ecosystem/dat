@@ -71,6 +71,6 @@ function handleExport (args) {
       if (err) abort(err, args, 'Error exporting data')
     })
 
-    exportStream.on('end', function () { db.close() })
+    exportStream.on('finish', function () { db.close() })
   })
 }
