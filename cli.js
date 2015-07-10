@@ -12,6 +12,7 @@ var config = {
     require('./bin/log.js'),
     require('./bin/push.js'),
     require('./bin/checkout.js'),
+    require('./bin/keys.js'),
     require('./bin/pull.js'),
     require('./bin/get.js'),
     require('./bin/replicate.js'),

@@ -1,0 +1,3 @@
+dat keys --dataset=<dataset-name> [--limit=<num>]
+
+Stream a range of keys out of a dataset. Dataset name required.

@@ -15,6 +15,7 @@ This is the `dat` command line API as of the Beta release.
   - [dat diff](#dat-diff)
   - [dat merge](#dat-merge)
   - [dat forks](#dat-forks)
+  - [dat keys](#dat-keys)
   - [dat replicate](#dat-replicate)
   - [dat serve](#dat-serve)
   - [dat destroy](#dat-destroy)
@@ -383,6 +384,23 @@ $ dat forks --json
 {version: "64843f272df9526fb04adb64fdf220330c9a29a8104c9ae4dead6b0aab5748e3", message: "Imported csv"}
 {version: "163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502", message: "Updated names"}
 ```
+
+### dat keys
+
+List the keys from a dataset.
+
+```
+$ dat keys -d people
+maxogden
+mafintosh
+karissa
+```
+
+### Options
+
+- `lt`, `lte`, `gt`, `gte` - specify start/end key range values using less than, less than equals, greater than, greater than equals
+- `limit` - default unlimited. specify how many results to receive
+- `format` - default `json`. you can also specify `csv`.
 
 ### dat replicate
 
