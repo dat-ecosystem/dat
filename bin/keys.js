@@ -1,4 +1,3 @@
-var pump = require('pump')
 var debug = require('debug')('bin/keys')
 var openDat = require('../lib/util/open-dat.js')
 var abort = require('../lib/util/abort.js')
