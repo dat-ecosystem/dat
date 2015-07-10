@@ -10,10 +10,10 @@ function Dat (path, opts) {
 
   if (config.addons && config.addons.backend) {
     var res = resolve.sync(config.addons.backend.module, { basedir: process.cwd() })
-    var module = require(res)
+    var addon = require(res)
     var env = process.env[config.addons.backend.env]
     opts.backend = function () {
-      return module(env)
+      return addon(env)
     }
   }
 
