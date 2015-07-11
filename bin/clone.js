@@ -26,7 +26,7 @@ module.exports = {
 function handleClone (args) {
   if (args._.length === 0) return usage()
   var source = args._[0]
-  var path = args._[1] || source.replace(/\.dat$/i, '').replace(/[^\-._a-z0-9]+$/i, '').split(/[^\-._a-z0-9]/i).pop() || 'dat-' + Date.now()
+  var path = args._[1] || getName(source)
 
   if (args.username && args.password) {
     source = auth(source, args.username, args.password)
@@ -45,4 +45,10 @@ function handleClone (args) {
   })
 
   progress(cloneStream, {verb: 'Cloning ' + source + ' into ' + path + '...\nProgress: ', replicate: true})
+}
+
+function getName (source) {
+  return source
+    .replace(/\.dat$/i, '').replace(/[^\-._a-z0-9]+$/i, '')
+    .split(/[^\-._a-z0-9]/i).pop() || 'dat-' + Date.now()
 }
