@@ -12,7 +12,7 @@ branches:
 sudo: false
 
 before_script:
- - npm install npm
+ - npm install -g npm
 
 script:
  - npm test
