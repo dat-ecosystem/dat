@@ -15,13 +15,6 @@ var dat3 = path.join(tmp, 'dat-write-3')
 
 helpers.onedat(dat1)
 
-test('write: dat write errors without dataset', function (t) {
-  var st = spawn(t, "echo 'hello world' | " + dat + ' write test-file.txt -', {cwd: dat1})
-  st.stdout.empty()
-  st.stderr.match(/Must specify dataset/)
-  st.end()
-})
-
 test('write: dat write to dataset', function (t) {
   var st = spawn(t, "echo 'hello world' | " + dat + ' write -d write-test test-file.txt -', {cwd: dat1})
   st.stdout.empty()
