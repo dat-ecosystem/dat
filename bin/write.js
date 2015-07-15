@@ -36,8 +36,6 @@ function handleWrite (args) {
     return usage()
   }
 
-  if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'), args)
-
   openDat(args, function (err, db) {
     if (err) abort(err, args)
     var path = args._[0]
