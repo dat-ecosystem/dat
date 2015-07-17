@@ -12,3 +12,7 @@ function onCommand (args) {
   if (args.version) return console.log(require('../package.json').version)
   return usage()
 }
+
+process.stdout.on('error', function (err) {
+  if (err.code === 'EPIPE') { process.exit(0) }
+})
