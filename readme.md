@@ -2,6 +2,8 @@
 
 Dat is a version-controlled, decentralized data sync tool designed to improve collaboration between data people and data systems.
 
+*Have questions?* Join `#dat` on [freenode](https://webchat.freenode.net). Chat logs are [available here](https://botbot.me/freenode/dat/)
+
 [![NPM](https://nodei.co/npm/dat.png?global=true)](https://nodei.co/npm/dat/)
 
 Windows        | Mac/Linux
@@ -78,6 +80,5 @@ npm link
 ## Get Involved
 
 * Follow [@dat_project](https://twitter.com/dat_project) on twitter!
-* Want to ask questions in IRC? Join `#dat` on freenode. Chat logs are [available here](https://botbot.me/freenode/dat/)
 * Have any other questions/concerns? [Open an issue](https://github.com/maxogden/dat/issues)
 * Suggest an organization that should be using `dat` to distribute their data -- we will help!
