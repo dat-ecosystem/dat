@@ -1,4 +1,5 @@
 #!/usr/bin/env node
+require('epipebomb')()
 var subcommand = require('subcommand')
 
 var config = {
