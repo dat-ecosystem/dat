@@ -26,6 +26,7 @@ function handleLog (args) {
     else formatter = through.obj(format)
     pump(db.createChangesStream(args), formatter, process.stdout, function done (err) {
       if (err) abort(err, args, 'dat: err in versions')
+      db.close()
     })
 
     function format (obj, enc, next) {

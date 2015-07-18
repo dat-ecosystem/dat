@@ -23,6 +23,7 @@ function handleCheckout (args) {
     function done (err) {
       if (err) return abort(err, args, 'Could not find checkout with hash ' + head)
       console.error('Current version is now', db.head)
+      db.close()
     }
   })
 }

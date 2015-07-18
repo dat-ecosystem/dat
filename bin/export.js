@@ -65,9 +65,12 @@ function handleExport (args) {
 
   openDat(args, function (err, db) {
     if (err) abort(err, args)
+    var exportStream = createExportStream(db, args)
 
-    pump(createExportStream(db, args), process.stdout, function done (err) {
+    pump(exportStream, process.stdout, function done (err) {
       if (err) abort(err, args, 'Error exporting data')
     })
+
+    exportStream.on('end', function () { db.close() })
   })
 }

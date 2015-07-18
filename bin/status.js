@@ -34,6 +34,7 @@ function handleStatus (args) {
         output += status.versions + ' versions, ' + prettyBytes(status.size) + ' total\n'
         output += 'Last updated ' + relativeDate(status.modified) + ' (' + status.modified + ')'
         console.error(output)
+        db.close()
       }
     })
   })

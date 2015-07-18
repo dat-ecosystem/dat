@@ -57,6 +57,7 @@ function handlePush (args) {
       if (err) return abort(err, args)
       if (args.json) return console.log(JSON.stringify({version: db.head}))
       console.error('Push completed successfully.')
+      db.close()
     })
   })
 
