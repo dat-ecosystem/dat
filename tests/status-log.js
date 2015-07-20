@@ -14,7 +14,7 @@ helpers.twodats(dat1, dat2)
 test('status-log: dat1 status', function (t) {
   var st = spawn(t, dat + ' status', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(/This dat is empty/)
+  st.stderr.match(/There is a dat here but it is empty/)
   st.end()
 })
 

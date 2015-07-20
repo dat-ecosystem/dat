@@ -22,9 +22,9 @@ module.exports = {
 }
 
 function onedat (datPath) {
-  test('helpers: init a dat', function (t) {
+  test('helpers: init a dat (--no-prompt)', function (t) {
     cleanup()
-    var st = spawn(t, dat + ' init', {cwd: datPath})
+    var st = spawn(t, dat + ' init --no-prompt', {cwd: datPath})
     st.stderr.match(/Initialized a new dat/, datPath)
     st.stdout.empty()
     st.end()

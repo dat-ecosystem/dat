@@ -14,7 +14,7 @@ function handleInit (args) {
     var msg
     var datPath = args.path
     if (results.exists) {
-      msg = 'Skipping init, there is already a dat at ' + datPath
+      msg = 'Re-initialized the dat at ' + datPath
       if (args.json) console.error({message: msg, exists: true})
       else console.error(msg)
       process.exit(0)

@@ -61,12 +61,12 @@ dat serve --read-only
 
 ## How do I connect a different backend to dat?
 
-In your `dat.json` file, add an entry to `addons`. Example for `SQL` variants:
+In your `package.json` file, under `dat`, add a `backend` entry. Example for `SQL` variants:
 
 ```
 {
   "name": "mydat",
-  "addons": {
+  "dat": {
     "backend": {
       "module": "sqldown",
       "env": "DAT_TABULAR_DATABASE"

@@ -25,7 +25,7 @@ module.exports = {
 }
 
 function handlePush (args) {
-  var remote = config.remote || args._[0]
+  var remote = config.dat.remote || args._[0]
   if (!remote) return usage()
 
   if (args.username && args.password) {
