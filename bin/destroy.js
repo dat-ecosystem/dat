@@ -12,7 +12,7 @@ module.exports = {
 
 function handleDestroy (args) {
   if (args.help) return usage()
-  var datDir = path.join(args.path, '.dat')
+  var datDir = path.join(args.path, 'data.dat')
   fs.exists(datDir, function (exists) {
     if (!exists) return abort(new Error('Cannot destroy, this is not a dat repository'), args)
     if (args.prompt === false) return destroy()
