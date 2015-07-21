@@ -44,9 +44,8 @@ test('status-log: dat1 status as json', function (t) {
 test('status-log: dat1 log', function (t) {
   var st = spawn(t, dat + ' log', {cwd: dat1})
   st.stdout.match(function (output) {
-    if (output.split('Version:').length !== 4) return false
-    if (output.split('[+1, -0]').length !== 4) return false
-    if (output.split('Date:').length !== 4) return false
+    if (output.split('Version:').length !== 5) return false
+    if (output.split('Date:').length !== 5) return false
     return true
   })
   st.stderr.empty()
