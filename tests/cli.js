@@ -60,36 +60,22 @@ test('cli: dat status (cwd)', function (t) {
 
 test('cli: dat -p (path)', function (t) {
   var st = spawn(t, dat + ' status -p ' + dat1, {cwd: tmp})
-  st.stderr.match(/There is a dat here but it is empty/)
+  st.stderr.match(/1 file/)
   st.stdout.empty()
   st.end()
 })
 
 test('cli: dat --path (path)', function (t) {
   var st = spawn(t, dat + ' status --path=' + dat1, {cwd: tmp})
-  st.stderr.match(/There is a dat here but it is empty/)
+  st.stderr.match(/1 file/)
   st.stdout.empty()
   st.end()
 })
 
 test('cli: dat status --json', function (t) {
   var st = spawn(t, dat + ' status --json --path=' + dat1, {cwd: tmp})
-  st.stdout.match('{"error":true,"message":"There is a dat here but it is empty"}\n')
+  st.stdout.match(/\"files\"\:1/)
   st.stderr.empty()
-  st.end()
-})
-
-test('cli: dat status --json --verbose', function (t) {
-  var st = spawn(t, dat + ' status --json --verbose --path=' + dat1, {cwd: tmp})
-  st.stdout.match(new RegExp('"error":true,"message":"There is a dat here but it is empty","stack":"Error:'))
-  st.stderr.empty()
-  st.end()
-})
-
-test('cli: dat status --verbose', function (t) {
-  var st = spawn(t, dat + ' status --verbose --path=' + dat1)
-  st.stderr.match(/There is a dat here but it is empty\nError/)
-  st.stdout.empty()
   st.end()
 })
 

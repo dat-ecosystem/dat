@@ -66,7 +66,7 @@ verify('import-test3', dat3)
 test('import: dat status after first import', function (t) {
   var st = spawn(t, dat + ' status --json', {cwd: dat3})
   st.stderr.empty()
-  st.stdout.match(/\"versions\":1\,/)
+  st.stdout.match(/\"versions\":2\,/)
   st.end()
 })
 
@@ -83,7 +83,7 @@ verify('import-test4', dat3)
 test('import: dat status after second import', function (t) {
   var st = spawn(t, dat + ' status --json', {cwd: dat3})
   st.stderr.empty()
-  st.stdout.match(/\"versions\":2\,/)
+  st.stdout.match(/\"versions\":3\,/)
   st.end()
 })
 
