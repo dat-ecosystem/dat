@@ -14,7 +14,7 @@ helpers.twodats(dat1, dat2)
 test('status-log: dat1 status', function (t) {
   var st = spawn(t, dat + ' status', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(/1 files/)
+  st.stderr.match(/1 file/)
   st.end()
 })
 
