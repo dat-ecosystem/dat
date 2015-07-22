@@ -11,6 +11,8 @@ commands:
   diff        see differences between two forks
   merge       merge two forks into one
   forks       list forks of the current dat
+  datasets    list all datasets in a repository
+  files       list all files in a repository
   import      import a tabular file into a dataset
   export      export tabular data from a dataset
   read        read a binary file out of a dataset

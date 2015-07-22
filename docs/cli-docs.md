@@ -16,6 +16,7 @@ This is the `dat` command line API as of the Beta release.
   - [dat merge](#dat-merge)
   - [dat forks](#dat-forks)
   - [dat keys](#dat-keys)
+  - [dat files](#dat-files)
   - [dat replicate](#dat-replicate)
   - [dat serve](#dat-serve)
   - [dat destroy](#dat-destroy)
@@ -401,6 +402,19 @@ karissa
 - `lt`, `lte`, `gt`, `gte` - specify start/end key range values using less than, less than equals, greater than, greater than equals
 - `limit` - default unlimited. specify how many results to receive
 - `format` - default `json`. you can also specify `csv`.
+
+### dat files
+
+List the files in the current repository.
+
+```
+$ dat files
+package.json
+```
+
+### Options
+
+`dat files` supports all of the options as `dat keys`
 
 ### dat replicate
 
