@@ -1,23 +1,23 @@
 {
   "name": "dat",
-  "version": "7.0.0-pre-7",
+  "version": "7.0.0-pre-8",
   "description": "versioning and sync tool for data sets",
   "keywords": [
-    "synchronization",
-    "replication",
-    "versioning",
+    "data package",
     "dataset",
-    "data package"
+    "replication",
+    "synchronization",
+    "versioning"
   ],
   "bin": {
     "dat": "cli.js"
   },
   "scripts": {
-    "test": "standard && npm run tape",
-    "standard": "standard",
+    "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "pretty-test": "npm run tape | tap-spec",
+    "standard": "standard",
     "tape": "tape tests/*.js",
-    "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit"
+    "test": "standard && npm run tape"
   },
   "repository": {
     "type": "git",
@@ -41,6 +41,7 @@
     "getport": "^0.1.0",
     "manual-merge-stream": "^3.2.2",
     "ndjson": "^1.3.0",
+    "node-pre-gyp": "^0.6.8",
     "peek-stream": "^1.1.1",
     "pretty-bytes": "^2.0.1",
     "pump": "^1.0.0",

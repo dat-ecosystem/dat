@@ -1,6 +1,6 @@
 {
   "name": "dat",
-  "version": "7.0.0-pre-6",
+  "version": "7.0.0-pre-8",
   "dependencies": {
     "JSONStream": {
       "version": "0.10.0",
@@ -1049,7 +1049,7 @@
     },
     "node-pre-gyp": {
       "version": "0.6.8",
-      "from": "node-pre-gyp@>=0.6.2 <0.7.0",
+      "from": "node-pre-gyp@>=0.6.8 <0.7.0",
       "resolved": "https://registry.npmjs.org/node-pre-gyp/-/node-pre-gyp-0.6.8.tgz",
       "dependencies": {
         "mkdirp": {
