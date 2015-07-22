@@ -18,8 +18,8 @@ helpers.conflict(dat1, dat2, dataset, function (conflictForks) {
 
 test('checkout: dat1 gets proper export', function (t) {
   var checkout = spawn(t, dat + ' checkout ' + forks.remotes[0], {cwd: dat1, end: false})
-  checkout.stderr.match(new RegExp('Current version is now ' + forks.remotes[0]))
-  checkout.stdout.empty()
+  checkout.stdout.match(new RegExp('Current version is now ' + forks.remotes[0]))
+  checkout.stderr.empty()
   checkout.end(function () {
     var exp = spawn(t, dat + ' export -d ' + dataset, {cwd: dat1})
     exp.stdout.match(/Max/)

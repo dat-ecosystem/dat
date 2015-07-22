@@ -33,7 +33,7 @@ function handleDelete (args) {
         abort(err, args, msg)
       }
       if (!args.json) console.error('Deleted successfully. At version ' + db.head)
-      else console.log(JSON.stringify({version: db.head}))
+      else console.log(JSON.stringify({deleted: key, dataset: args.dataset, version: db.head}))
     })
   })
 }

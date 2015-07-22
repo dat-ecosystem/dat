@@ -1,9 +1,11 @@
 var path = require('path')
 var test = require('tape')
 var spawn = require('tape-spawn')
-var tmp = require('os').tmpdir()
+var execspawn = require('npm-execspawn')
 var rimraf = require('rimraf')
 var mkdirp = require('mkdirp')
+var concat = require('concat-stream')
+var tmp = require('os').tmpdir()
 
 var dat = path.resolve(__dirname + '/../../cli.js')
 
@@ -18,7 +20,8 @@ module.exports = {
   twodats: twodats,
   conflict: conflict,
   fileConflict: fileConflict,
-  randomTmpDir: randomTmpDir
+  randomTmpDir: randomTmpDir,
+  exec: exec
 }
 
 function onedat (datPath) {
@@ -213,4 +216,24 @@ function randomTmpDir () {
   rimraf.sync(dat)
   mkdirp.sync(dat)
   return dat
+}
+
+function exec (cmd, opts, cb) {
+  var proc = execspawn(cmd, opts)
+  var pending = 2
+  var results = {}
+  var aborted = false
+  proc.stdout.pipe(concat(function (stdout) {
+    if (aborted) return
+    pending--
+    results.stdout = stdout
+    if (pending === 0) cb(null, results)
+  }))
+  proc.stderr.pipe(concat(function (stderr) {
+    if (aborted) return
+    pending--
+    results.stderr = stderr
+    if (pending === 0) cb(null, results)
+  }))
+  proc.on('error', cb)
 }

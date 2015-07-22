@@ -36,16 +36,17 @@ function handleClone (args) {
     if (err) {
       if (err.level === 'client-authentication' && !args.json) {
         return authPrompt(args, handleClone)
+      } else {
+        return abort(err, args)
       }
-      else abort(err, args)
     }
 
-    if (args.json) console.log(JSON.stringify({version: db.head}))
+    if (args.json) console.log(JSON.stringify({cloned: true}))
     else console.error('Clone from remote to %s has completed.', path)
     db.close()
   })
 
-  progress(cloneStream, {verb: 'Cloning ' + source + ' into ' + path + '...\nProgress: ', replicate: true})
+  if (!args.json) progress(cloneStream, {verb: 'Cloning ' + source + ' into ' + path + '...\nProgress: ', replicate: true})
 }
 
 function getName (source) {

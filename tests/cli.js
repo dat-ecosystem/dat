@@ -48,8 +48,6 @@ test('cli: invalid command', function (t) {
 
 var cleanup = helpers.onedat(dat1)
 
-var tmp = os.tmpdir()
-
 // sanity: make sure cwd isn't in a repo
 test('cli: dat status (cwd)', function (t) {
   var st = spawn(t, dat + ' status')

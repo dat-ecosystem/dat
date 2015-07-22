@@ -22,7 +22,9 @@ function handleCheckout (args) {
 
     function done (err) {
       if (err) return abort(err, args, 'Could not find checkout with hash ' + head)
-      console.error('Current version is now', db.head)
+      var msg = 'Current version is now ' + db.head
+      if (args.json) console.log(JSON.stringify({version: db.head, message: msg}))
+      else console.log(msg)
       db.close()
     }
   })

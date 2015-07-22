@@ -95,8 +95,8 @@ test('write: dat3 status as json', function (t) {
 
 test('write: checkout', function (t) {
   var st = spawn(t, dat + ' checkout ' + version, {cwd: dat3})
-  st.stdout.empty()
-  st.stderr.match(/Current version is now/)
+  st.stderr.empty()
+  st.stdout.match(/Current version is now/)
   st.end()
 })
 
