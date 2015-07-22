@@ -33,11 +33,10 @@ function handleLog (args) {
       // its the root node, lets not print it out
       if (obj.files === 0 && obj.puts === 0 && obj.deletes === 0) return next()
 
-      var files = obj.files || 0
       var puts = obj.puts || 0
       var deletes = obj.deletes || 0
 
-      var msg = 'Version: ' + obj.version + ' [+' + (puts + files) + ', -' + deletes + ']\n'
+      var msg = 'Version: ' + obj.version + ' [+' + puts + ', -' + deletes + ']\n'
       msg += 'Date: ' + obj.date
       if (obj.message) {
         msg += '\n\n   ' + obj.message
