@@ -22,6 +22,14 @@ function handleStatus (args) {
       status.version = status.head
       delete status.head
 
+      var datasets = status.datasets
+      // we subtract 1 since we don't want to count the 'files' dataset
+      // and there always is a files dataset because of package.json
+      if (datasets) datasets--
+
+      var rows = status.rows
+      if (status.files) rows -= status.files
+
       if (args.json) {
         console.log(JSON.stringify(status))
       } else {
@@ -29,13 +37,17 @@ function handleStatus (args) {
         output += 'Current version is ' + status.version
         if (!status.checkout) output += ' (latest)\n'
         else output += ' (checkout)\n'
-        output += status.datasets + ' dataset' + (status.datasets > 1 ? 's, ' : ', ')
-        output += status.rows + ' keys, ' + status.files + ' files, '
-        output += status.versions + ' versions, ' + prettyBytes(status.size) + ' total\n'
+        output += datasets + ' ' + pluralize('dataset', datasets) + ', '
+        output += rows + ' ' + pluralize('key', rows) + ', ' + status.files + ' ' + pluralize('file', status.files) + ', '
+        output += status.versions + ' ' + pluralize('version', status.versions) + ', ' + prettyBytes(status.size) + ' total\n'
         output += 'Last updated ' + relativeDate(status.modified) + ' (' + status.modified + ')'
         console.error(output)
         db.close()
       }
     })
   })
+}
+
+function pluralize (name, cnt) {
+  return cnt === 1 ? name : name + 's'
 }
