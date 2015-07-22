@@ -109,7 +109,7 @@ test('cli: dat export without dataset', function (t) {
 
 test('cli: dat files', function (t) {
   var st = spawn(t, dat + ' files --path=' + dat1)
-  st.stdout.match("package.json\n")
+  st.stdout.match('package.json\n')
   st.stderr.empty()
   st.end()
 })

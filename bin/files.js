@@ -47,14 +47,14 @@ function handleFiles (args) {
       if (args.limit) args.limit = parseInt(limit, 10)
       if (isNaN(args.limit)) abort(new Error('invalid limit: ' + limit), args)
     }
-    
+
     args.dataset = 'files'
-    
+
     var stream = db.createKeyStream(args)
     var formatter = through.obj(function (obj, enc, next) {
       next(null, obj + '\n')
     })
-    
+
     pump(stream, formatter, process.stdout, function (err) {
       if (err) abort(err, args, 'Error getting file list')
       db.close()
