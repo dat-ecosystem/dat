@@ -55,12 +55,15 @@ function handlePull (args) {
     openDat(args, function ready (err, db) {
       if (err) return abort(err, args)
       if (args.json) return console.log(JSON.stringify({version: db.head}))
-      var forks = 'some number of' // TODO
-      var msg = ''
-      msg += 'Pull completed successfully. You now have ' + forks + ' forks ;)\n'
-      msg += 'Current version is now ' + db.head
-      console.error(msg)
-      db.close()
+      db.heads(function (err, heads) {
+        if (err) return abort(err, args)
+        var forks = heads.length
+        var msg = ''
+        msg += 'Pull completed successfully.' + (forks > 1 ? ' You now have ' + forks + ' forks\n' : '\n')
+        msg += 'Current version is now ' + db.head
+        console.error(msg)
+        db.close()
+      })
     })
   })
 
