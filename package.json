@@ -41,7 +41,6 @@
     "getport": "^0.1.0",
     "manual-merge-stream": "^3.2.2",
     "ndjson": "^1.3.0",
-    "node-pre-gyp": "^0.6.8",
     "peek-stream": "^1.1.1",
     "pretty-bytes": "^2.0.1",
     "pump": "^1.0.0",
