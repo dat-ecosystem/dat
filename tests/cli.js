@@ -70,13 +70,6 @@ test('cli: dat --path (path)', function (t) {
   st.end()
 })
 
-test('cli: dat status --json', function (t) {
-  var st = spawn(t, dat + ' status --json --path=' + dat1, {cwd: tmp})
-  st.stdout.match(/\"files\"\:1/)
-  st.stderr.empty()
-  st.end()
-})
-
 test('cli: dat get nonexistent key', function (t) {
   var st = spawn(t, dat + ' get bar -d foo --path=' + dat1)
   st.stderr.match(/Could not find key bar in dataset foo/)

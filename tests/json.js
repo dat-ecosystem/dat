@@ -30,7 +30,7 @@ var cleanup = helpers.onedat(dat1)
 // serve
 // write
 
-test('cli: dat checkout --json', function (t) {
+test('json: dat checkout --json', function (t) {
   helpers.exec(dat + ' log --json --path=' + dat1, {cwd: tmp}, function (err, out) {
     if (err) return t.ifErr(err)
     var first = JSON.parse(out.stdout.toString().split('\n')[0]).version
@@ -46,14 +46,14 @@ test('cli: dat checkout --json', function (t) {
   })
 })
 
-test('cli: dat clone --json', function (t) {
-  var st = spawn(t, dat + ' clone ' + dat1 + ' ' + dat2 + ' --json --bin=' + dat, {cwd: tmp})
+test('json: dat clone --json', function (t) {
+  var st = spawn(t, dat + ' clone ' + dat1 + ' ' + dat2 + ' --json --bin=' + dat, {cwd: path.join(dat2, '..')})
   st.stdout.match(new RegExp('"cloned":true'))
   st.stderr.empty()
   st.end()
 })
 
-test('cli: dat datasets --json', function (t) {
+test('json: dat datasets --json', function (t) {
   var st = spawn(t, dat + ' datasets --json --path=' + dat1, {cwd: tmp})
   st.stdout.match('{"datasets":["files"]}\n')
   st.stderr.empty()
@@ -61,7 +61,7 @@ test('cli: dat datasets --json', function (t) {
 })
 
 // currently broken
-// test('cli: dat delete --json', function (t) {
+// test('json: dat delete --json', function (t) {
 //   helpers.exec(dat + ' import -d foo --key=key ' + csvA + ' --path=' + dat1, {cwd: tmp}, function (err, out) {
 //     if (err) return t.ifErr(err)
 //     var st = spawn(t, dat + ' delete 1 -d foo --json --path=' + dat1, {cwd: tmp})
@@ -71,7 +71,7 @@ test('cli: dat datasets --json', function (t) {
 //   })
 // })
 
-test('cli: dat destroy --json', function (t) {
+test('json: dat destroy --json', function (t) {
   var st = spawn(t, dat + ' destroy --no-prompt --json --path=' + dat1, {cwd: tmp, end: false})
   st.stdout.match(new RegExp('"destroyed":true'))
   st.stderr.empty()
@@ -83,7 +83,7 @@ test('cli: dat destroy --json', function (t) {
   })
 })
 
-test('cli: dat diff --json', function (t) {
+test('json: dat diff --json', function (t) {
   helpers.exec(dat + ' import -d foo --key=key ' + csvA + ' --path=' + dat1, {cwd: tmp}, function (err, out) {
     if (err) return t.ifErr(err)
     helpers.exec(dat + ' log --json --path=' + dat1, {cwd: tmp}, function (err, out) {
@@ -97,7 +97,7 @@ test('cli: dat diff --json', function (t) {
   })
 })
 
-test('cli: dat status --json', function (t) {
+test('json: dat status --json', function (t) {
   var st = spawn(t, dat + ' status --json --path=' + dat1, {cwd: tmp})
   st.stdout.match(new RegExp('"files"'))
   st.stdout.match(new RegExp('"rows"'))
@@ -105,7 +105,7 @@ test('cli: dat status --json', function (t) {
   st.end()
 })
 
-test('cli: cleanup', function (t) {
+test('json: cleanup', function (t) {
   cleanup()
   t.end()
 })
