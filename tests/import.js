@@ -125,7 +125,7 @@ test('import: dat import with a message', function (t) {
 // helper
 
 function verify (dataset, dir) {
-  test('import: dat export', function (t) {
+  test('import: dat export ' + dataset, function (t) {
     var st = spawn(t, dat + ' export --dataset=' + dataset, {cwd: dir})
     st.stderr.empty()
     st.stdout.match(function (output) {
