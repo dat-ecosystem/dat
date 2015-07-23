@@ -47,7 +47,7 @@ test('cli: dat checkout --json', function (t) {
 })
 
 test('cli: dat clone --json', function (t) {
-  var st = spawn(t, dat + ' clone ' + dat1 + ' ' + dat2 + ' --json', {cwd: tmp})
+  var st = spawn(t, dat + ' clone ' + dat1 + ' ' + dat2 + ' --json --bin=' + dat, {cwd: tmp})
   st.stdout.match(new RegExp('"cloned":true'))
   st.stderr.empty()
   st.end()
