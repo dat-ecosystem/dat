@@ -23,7 +23,12 @@ test('get: dat get a key from dataset', function (t) {
   var st = spawn(t, dat + ' get ak11246293 --dataset=get-test', {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function (output) {
-    output = JSON.parse(output)
+    try {
+      output = JSON.parse(output)
+    } catch (e) {
+      t.ifErr(e)
+      return false
+    }
     if (output.value.id === 'ak11246293' && output.value.latitude === '60.0366') return true
     return false
   })
