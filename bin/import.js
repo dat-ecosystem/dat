@@ -28,7 +28,7 @@ module.exports = {
     },
     {
       name: 'key',
-      boolean: true,
+      boolean: false,
       abbr: 'k'
     },
     {
