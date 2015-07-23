@@ -1,5 +1,7 @@
 var fs = require('fs')
+var url = require('url')
 var pump = require('pump')
+var got = require('got')
 var debug = require('debug')('bin/import')
 var createImportStream = require('../lib/import.js')
 var openDat = require('../lib/util/open-dat.js')
@@ -55,14 +57,25 @@ function handleImport (args) {
 
   openDat(args, function (err, db) {
     if (err) abort(err, args)
-    doImport(db)
+    if (args._[0] === '-') doImport(process.stdin, db)
+    else {
+      getReadStream(args._[0], function (err, inputStream) {
+        if (err) abort(err, args, err.message)
+        doImport(inputStream, db)
+      })
+    }
   })
 
-  function doImport (db) {
-    var inputStream
-    if (args._[0] === '-') inputStream = process.stdin
-    else inputStream = fs.createReadStream(args._[0])
+  function getReadStream (location, cb) {
+    fs.exists(location, function (exists) {
+      if (exists) return cb(null, fs.createReadStream(location))
+      var u = url.parse(location)
+      if (u.protocol && u.protocol.match(/http/)) return cb(null, got(location))
+      return cb(new Error('Could not find file.'))
+    })
+  }
 
+  function doImport (inputStream, db) {
     var importer = createImportStream(db, args)
     if (!args.json) progress(importer, {verb: 'Wrote', subject: 'keys'})
 
