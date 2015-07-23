@@ -25,7 +25,8 @@ function handleDestroy (args) {
     function destroy () {
       rimraf(datDir, function (err) {
         if (err) return abort(err, args)
-        console.error('Destroyed', datDir)
+        if (args.json) console.log(JSON.stringify({destroyed: true}))
+        else console.log('Destroyed', datDir)
       })
     }
   })
