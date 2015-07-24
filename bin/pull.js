@@ -62,7 +62,9 @@ function handlePull (args) {
         msg += 'Pull completed successfully.' + (forks > 1 ? ' You now have ' + forks + ' forks\n' : '\n')
         msg += 'Current version is now ' + db.head
         console.error(msg)
-        db.close()
+        db.flush(function () {
+          db.close()
+        })
       })
     })
   })
