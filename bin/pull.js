@@ -51,7 +51,7 @@ function handlePull (args) {
     else abort(err, args)
   })
 
-  stream.on('end', function () {
+  stream.on('finish', function () {
     openDat(args, function ready (err, db) {
       if (err) return abort(err, args)
       if (args.json) return console.log(JSON.stringify({version: db.head}))
