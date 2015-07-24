@@ -52,7 +52,7 @@ function handlePush (args) {
     else abort(err, args)
   })
 
-  stream.on('finish', function () {
+  stream.on('end', function () {
     openDat(args, function ready (err, db) {
       if (err) return abort(err, args)
       if (args.json) return console.log(JSON.stringify({version: db.head}))

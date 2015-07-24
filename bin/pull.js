@@ -51,7 +51,7 @@ function handlePull (args) {
     else abort(err, args)
   })
 
-  stream.on('finish', function () {
+  stream.on('end', function () {
     openDat(args, function ready (err, db) {
       if (err) return abort(err, args)
       if (args.json) return console.log(JSON.stringify({version: db.head}))
@@ -62,7 +62,9 @@ function handlePull (args) {
         msg += 'Pull completed successfully.' + (forks > 1 ? ' You now have ' + forks + ' forks\n' : '\n')
         msg += 'Current version is now ' + db.head
         console.error(msg)
-        db.close()
+        db.flush(function () {
+          db.close()
+        })
       })
     })
   })
