@@ -24,7 +24,7 @@ Clone from remote has completed.
 
 On OSX, it is easy to set up an ssh endpoint: [see this tutorial](https://support.apple.com/kb/PH18726?locale=en_US).
 
-However, we recommend that you set up your dat on a dedicated server so that people can clone from you even when your computer is off. If using linux, you'll need to [make sure you have an ssh port open](http://www.cyberciti.biz/faq/linux-open-iptables-firewall-port-22-23/).
+However, we recommend that you set up your dat on a dedicated server so that people can clone from you reliably. If using linux, you'll need to [make sure you have an ssh port open](http://www.cyberciti.biz/faq/linux-open-iptables-firewall-port-22-23/).
 
 ### Using HTTP to set up a dat host
 

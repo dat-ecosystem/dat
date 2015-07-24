@@ -47,7 +47,7 @@ cityId, name, region, country
 35682579, Copenhagen, Hovedstaden, Denmark
 ...
 
-$ dat import cities.json --dataset=cities --key=cityId -m "Added cities dataset"
+$ dat import cities.json -d cities -m "Added cities dataset" -k cityId
 Added 302,143 keys (32.03 Mb, 4.4 Mb/s).
 Data imported successfully.
 Current version is now 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
