@@ -27,7 +27,7 @@ function handleRows (args) {
 
   openDat(args, function ready (err, db) {
     if (err) abort(err, args)
-    var key = args._[0]
+    var key = args._[0].toString()
 
     debug(key, args)
     db.get(key, args, function (err, value) {

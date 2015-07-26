@@ -60,16 +60,15 @@ test('json: dat datasets --json', function (t) {
   st.end()
 })
 
-// currently broken
-// test('json: dat delete --json', function (t) {
-//   helpers.exec(dat + ' import -d foo --key=key ' + csvA + ' --path=' + dat1, {cwd: tmp}, function (err, out) {
-//     if (err) return t.ifErr(err)
-//     var st = spawn(t, dat + ' delete 1 -d foo --json --path=' + dat1, {cwd: tmp})
-//     st.stdout.match(new RegExp('"deleted":"1"'))
-//     st.stderr.empty()
-//     st.end()
-//   })
-// })
+test('json: dat delete --json', function (t) {
+  helpers.exec(dat + ' import -d foo --key=key ' + csvA + ' --path=' + dat1, {cwd: tmp}, function (err, out) {
+    if (err) return t.ifErr(err)
+    var st = spawn(t, dat + ' delete 1 -d foo --json --path=' + dat1, {cwd: tmp})
+    st.stdout.match(new RegExp('"deleted":"1"'))
+    st.stderr.empty()
+    st.end()
+  })
+})
 
 test('json: dat destroy --json', function (t) {
   var st = spawn(t, dat + ' destroy --no-prompt --json --path=' + dat1, {cwd: tmp, end: false})

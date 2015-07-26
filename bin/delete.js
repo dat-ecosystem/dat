@@ -25,7 +25,7 @@ function handleDelete (args) {
 
   openDat(args, function ready (err, db) {
     if (err) abort(err, args)
-    var key = args._[0]
+    var key = args._[0].toString()
 
     db.del(key, args, function (err) {
       if (err) {
