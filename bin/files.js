@@ -1,5 +1,6 @@
 var through = require('through2')
 var pump = require('pump')
+var formatData = require('format-data')
 var openDat = require('../lib/util/open-dat.js')
 var abort = require('../lib/util/abort.js')
 var usage = require('../lib/util/usage.js')('files.txt')
@@ -51,9 +52,19 @@ function handleFiles (args) {
     args.dataset = 'files'
 
     var stream = db.createKeyStream(args)
-    var formatter = through.obj(function (obj, enc, next) {
-      next(null, obj + '\n')
-    })
+    var formatter
+    if (args.json) {
+      formatter = formatData({
+        format: 'json',
+        style: 'object',
+        key: 'files',
+        suffix: '}\n'
+      })
+    } else {
+      formatter = through.obj(function (obj, enc, next) {
+        next(null, obj + '\n')
+      })
+    }
 
     pump(stream, formatter, process.stdout, function (err) {
       if (err) abort(err, args, 'Error getting file list')

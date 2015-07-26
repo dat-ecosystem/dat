@@ -13,7 +13,6 @@ var cleanup = helpers.onedat(dat1)
 
 // purpose of this file is to test every command with --json to ensure consistent json output
 // TODO
-// export
 // files
 // forks
 // get
@@ -100,6 +99,13 @@ test('json: dat status --json', function (t) {
   var st = spawn(t, dat + ' status --json --path=' + dat1, {cwd: tmp})
   st.stdout.match(new RegExp('"files"'))
   st.stdout.match(new RegExp('"rows"'))
+  st.stderr.empty()
+  st.end()
+})
+
+test('json: dat files --json', function (t) {
+  var st = spawn(t, dat + ' files --json --path=' + dat1, {cwd: tmp})
+  st.stdout.match('{"files":["package.json"]}\n')
   st.stderr.empty()
   st.end()
 })
