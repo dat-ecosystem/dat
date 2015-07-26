@@ -1,3 +1,6 @@
+var pump = require('pump')
+var through = require('through2')
+var formatData = require('format-data')
 var debug = require('debug')('bin/keys')
 var openDat = require('../lib/util/open-dat.js')
 var abort = require('../lib/util/abort.js')
@@ -60,12 +63,23 @@ function handleKeys (args) {
 
     var stream = db.createKeyStream(args)
 
-    stream.on('data', function (key) {
-      console.log(key)
-    })
+    var formatter
+    if (args.json) {
+      formatter = formatData({
+        format: 'json',
+        style: 'object',
+        key: 'keys',
+        suffix: '}\n'
+      })
+    } else {
+      formatter = through.obj(function (obj, enc, next) {
+        next(null, obj + '\n')
+      })
+    }
 
-    stream.on('error', function (err) {
-      if (err) abort(err, args, 'Error exporting data')
+    pump(stream, formatter, process.stdout, function (err) {
+      if (err) abort(err, args, 'Error getting keys')
+      db.close()
     })
   })
 }

@@ -15,13 +15,13 @@ function handleInit (args) {
     var datPath = args.path
     if (results.exists) {
       msg = 'Re-initialized the dat at ' + datPath
-      if (args.json) console.error({message: msg, exists: true})
-      else console.error(msg)
+      if (args.json) console.log(JSON.stringify({message: msg, exists: true}))
+      else console.log(msg)
       process.exit(0)
     } else if (results.created) {
       msg = 'Initialized a new dat at ' + datPath
-      if (args.json) console.error({message: msg, created: true})
-      else console.error(msg)
+      if (args.json) console.log(JSON.stringify({message: msg, created: true}))
+      else console.log(msg)
       process.exit(0)
     }
   })

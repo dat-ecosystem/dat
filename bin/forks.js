@@ -1,5 +1,7 @@
+var formatData = require('format-data')
+var through = require('through2')
+var pump = require('pump')
 var usage = require('../lib/util/usage.js')('forks.txt')
-var forks = require('../lib/forks.js')
 var openDat = require('../lib/util/open-dat.js')
 var abort = require('../lib/util/abort.js')
 
@@ -14,9 +16,25 @@ function handleForks (args) {
   openDat(args, function (err, db) {
     if (err) abort(err, args)
 
-    forks(db, function onFork (err, fork) {
-      if (err) abort(err, args)
-      console.log(fork)
+    var stream = db.heads()
+
+    var formatter
+    if (args.json) {
+      formatter = formatData({
+        format: 'json',
+        style: 'object',
+        key: 'forks',
+        suffix: '}\n'
+      })
+    } else {
+      formatter = through.obj(function (obj, enc, next) {
+        next(null, obj + '\n')
+      })
+    }
+
+    pump(stream, formatter, process.stdout, function (err) {
+      if (err) abort(err, args, 'Error getting fork list')
+      db.close()
     })
   })
 }
