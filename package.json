@@ -54,7 +54,7 @@
     "single-line-log": "^1.0.0",
     "subcommand": "^2.0.1",
     "through2": "^0.6.3",
-    "transport-stream": "^1.4.0"
+    "transport-stream": "^1.4.2"
   },
   "bugs": {
     "url": "https://github.com/maxogden/dat/issues"
