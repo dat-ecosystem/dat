@@ -1,7 +1,7 @@
 dat init [--path=/foo/bar -p /foo/bar]
 
 Creates a new dat repository in the current folder, or the folder specified
-by --path. The new dat repository will be in a folder called .dat
+by --path. The new dat repository will be in a folder called data.dat
 
 Options
 

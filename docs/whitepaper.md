@@ -33,7 +33,7 @@ Researchers are using VCS for data; however, most of these tools were designed t
 Dat was designed with the help of our advisors and pilot projects in academia. We prototyped two key case studies to see what it would look like to use dat in a complex data processing pipeline. See these case studies in Section 4.
 
 ### 3.1 Importing Datasets
-All data is compressed and stored in the hidden `.dat` folder on disk. Values can be defined as binary (i.e., protobufs via `write`) or tabular (csv, tsv, newline-delimited json formats via `import`).
+All data is compressed and stored in the `data.dat` folder on disk. Values can be defined as binary (i.e., protobufs via `write`) or tabular (csv, tsv, newline-delimited json formats via `import`).
 
 When data is imported into dat, it must be put into a dataset. To support bifurcated schemas, we encourage users to create multiple datasets, so that each schema will be independent. A dataset is analogous to a sql table or a nosql collection; however, we chose not to use the language of 'table' or 'collection' because dat datasets do not support robust querying at this time. Each dataset is compartmentalized so that tabular datasets with different schemas can be stored in the same repository without collision. In other words, rows define the schema for a given dataset, and there can be multiple datasets in a single dat.
 

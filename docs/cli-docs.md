@@ -95,7 +95,7 @@ Example output:
 ```
 $ cd /test
 $ dat init
-Initialized a new dat at /test/.dat
+Initialized a new dat at /path/to/test
 ```
 
 ### dat status
@@ -454,8 +454,8 @@ Destroy a repository and all data inside it. Cannot be undone
 
 ```
 $ dat destroy [--no-prompt]
-About to destroy /data/.dat. This cannot be undone. Are you sure? (y/n): y
-Destroyed /data/.dat
+About to destroy data.dat. This cannot be undone. Are you sure? (y/n): y
+Destroyed data.dat
 ```
 
 #### Options
