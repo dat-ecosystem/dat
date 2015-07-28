@@ -17,3 +17,5 @@ before_script:
 script:
  - npm test
 
+notifications:
+  irc: "chat.freenode.net#dat"
