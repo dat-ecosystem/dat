@@ -19,3 +19,7 @@ script:
 
 notifications:
   irc: "chat.freenode.net#dat"
+    on_success: change
+    on_failure: always
+    template:
+      - "%{repository} (%{commit}): %{message} %{build_url}"
