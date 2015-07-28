@@ -79,7 +79,8 @@ In your `package.json` file, under `dat`, add a `backend` entry. Example for `SQ
 
 Every addon has two available configuration arguments right now:
 
-`module`: The name of an npm module. Any module that implements the AbstractLevelDOWN api will be compatible with dat. You'll need to install this module by typing `npm install <module>`.
+`module`: Any npm module that implements the [AbstractLevelDOWN api](https://github.com/Level/abstract-leveldown) will be compatible with dat. You'll need to install this module by typing `npm install <module> [--save]`.
+
 `env`: The environment variable that represents the `path` or `url` argument to the backend.
 
 
