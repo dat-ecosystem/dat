@@ -2,7 +2,7 @@ var prettyBytes = require('pretty-bytes')
 var relativeDate = require('relative-date')
 var abort = require('../lib/util/abort.js')
 var openDat = require('../lib/util/open-dat.js')
-var usage = require('../lib/util/usage.js')('checkout.txt')
+var usage = require('../lib/util/usage.js')('status.txt')
 
 module.exports = {
   name: 'status',
