@@ -16,10 +16,14 @@ before_script:
 
 script:
  - npm test
-
+ 
 notifications:
-  irc: "chat.freenode.net#dat"
+  irc:
+    channels:
+      - "chat.freenode.net#dat"
+    template:
+      - "%{repository_slug} - %{commit_subject} - %{result} - %{build_url}"
+    skip_join: true
     on_success: change
     on_failure: always
-    template:
-      - "%{repository} (%{commit}): %{message} %{build_url}"
+    
