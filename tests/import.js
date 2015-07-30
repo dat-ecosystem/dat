@@ -41,6 +41,21 @@ test('import: dat import json', function (t) {
   st.end()
 })
 
+test('import: dat import json with integer id', function (t) {
+  var json = path.resolve(__dirname + '/fixtures/all_hour.json')
+  var st = spawn(t, dat + ' import ' + json + ' --key=int --dataset=int-id', {cwd: dat2})
+  st.stdout.empty()
+  st.stderr.match(/Done importing data/)
+  st.end()
+})
+
+test('import: dat keys get integer id', function (t) {
+  var st = spawn(t, dat + ' keys --dataset=int-id', {cwd: dat2})
+  st.stdout.match(/1/)
+  st.stderr.empty()
+  st.end()
+})
+
 test('import: dat import csv with json flag', function (t) {
   var json = path.resolve(__dirname + '/fixtures/all_hour.csv')
   var st = spawn(t, dat + ' import ' + json + ' --json --key=id --dataset=import-test2', {cwd: dat2})
