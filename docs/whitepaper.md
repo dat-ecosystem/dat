@@ -40,14 +40,14 @@ When data is imported into dat, it must be put into a dataset. To support bifurc
 Here, we create a new dataset called 'cities' and import some tabular data. To update data later, we must provide a key that identifies each row in the dataset. In this example, the `cityId` column is a unique identifier for each row. Dat will auto-generate keys if the user supplies `--key=false` upon import.
 
 ```
-$ cat cities.json
+$ cat cities.csv
 cityId, name, region, country
 12389720, Portland, Oregon, USA
 41031233, San Francisco, California, USA
 35682579, Copenhagen, Hovedstaden, Denmark
 ...
 
-$ dat import cities.json -d cities -m "Added cities dataset" -k cityId
+$ dat import cities.csv -d cities -m "Added cities dataset" -k cityId
 Added 302,143 keys (32.03 Mb, 4.4 Mb/s).
 Data imported successfully.
 Current version is now 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
