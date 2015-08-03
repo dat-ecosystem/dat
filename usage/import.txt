@@ -1,4 +1,3 @@
 dat import <filename or - for stdin> (required)
-  -d <dataset-name> (required) # the name of the dataset to create
-  -f <data-format> # how to parse the file to add
-  --help # show help
+  -d <dataset-name> (required) # the name of the dataset to import
+  -f [ndjson, csv, json] # how to parse the file. guessed if not supplied.
