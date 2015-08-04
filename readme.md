@@ -51,7 +51,7 @@ commands:
 ```
 ## Using dat
 
-Create a new directory (e.g., `mkdir dat-test`) and open that directory (e.g., `cd dat-test`). Make this directory into a dat repository by running `dat init`. Add a new file to the directory, formatted as CSV or newline-delimited JSON (for example, [an exoplanet orbit CSV file](http://exoplanets.org/csv-files/exoplanets.csv)), and import it into dat by running `dat import exoplanets.csv -d exoplanets`.
+Create a new directory (e.g., `mkdir dat-test`) and open that directory (e.g., `cd dat-test`). Make this directory into a dat repository by running `dat init`. Now you can import a CSV or newline-delimited JSON file to the dat repository (for example, [an exoplanet orbit CSV file](http://exoplanets.org/csv-files/exoplanets.csv)) by running `dat import http://exoplanets.org/csv-files/exoplanets.csv -d exoplanets`.
 
 Once imported, the data can be forked, diffed, merged, replicated, destroyed, etc.—[see a list of all dat commands](https://github.com/maxogden/dat/blob/master/docs/cli-docs.md) for more. For example, you can retrieve the stored data as JSON and pipe it to a file by running `dat export > exoplanets.json`.
 
