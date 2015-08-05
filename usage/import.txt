@@ -1,3 +1,5 @@
 dat import <filename or - for stdin> (required)
   -d <dataset-name> (required) # the name of the dataset to import
   -f [ndjson, csv, json] # how to parse the file. guessed if not supplied.
+  --key <column name># the primary key to use. defaults to auto-generated keys
+  --keys <column,names,separated> # a comma-separated list of column names for a compound key

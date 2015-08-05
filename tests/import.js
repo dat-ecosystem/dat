@@ -41,6 +41,25 @@ test('import: dat import json', function (t) {
   st.end()
 })
 
+test('import: dat import json with compound key', function (t) {
+  var json = path.resolve(__dirname + '/fixtures/all_hour.json')
+  var st = spawn(t, dat + ' import ' + json + ' --keys=latitude,longitude -d compound', {cwd: dat2})
+  st.stdout.empty()
+  st.stderr.match(/Done importing data/)
+  st.end()
+})
+
+test('import: dat keys get integer id', function (t) {
+  var st = spawn(t, dat + ' keys -d compound', {cwd: dat2})
+  st.stdout.match(function (output) {
+    var keys = output.split('\n')
+    t.same(keys[0], '33.9233322+-117.9376678')
+    return true
+  })
+  st.stderr.empty()
+  st.end()
+})
+
 test('import: dat import json with integer id', function (t) {
   var json = path.resolve(__dirname + '/fixtures/all_hour.json')
   var st = spawn(t, dat + ' import ' + json + ' --key=int --dataset=int-id', {cwd: dat2})
