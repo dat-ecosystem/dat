@@ -64,7 +64,7 @@
     "npm-execspawn": "^1.2.0",
     "run-parallel": "^1.1.1",
     "sort-stream": "^1.0.1",
-    "standard": "^3.3.2",
+    "standard": "^5.0.0",
     "stream-iterate": "^1.1.1",
     "tap-spec": "^3.0.0",
     "tape": "^4.0.0",
