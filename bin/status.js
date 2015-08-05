@@ -22,10 +22,10 @@ function handleStatus (args) {
       status.version = status.head
       delete status.head
 
-      var datasets = status.datasets
       // we subtract 1 since we don't want to count the 'files' dataset
       // and there always is a files dataset because of package.json
-      if (datasets) datasets--
+      if (status.datasets) status.datasets--
+      var datasets = status.datasets
 
       var rows = status.rows
       if (status.files) rows -= status.files

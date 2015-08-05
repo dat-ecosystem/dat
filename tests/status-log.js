@@ -32,7 +32,9 @@ test('status-log: dat1 status as json', function (t) {
   st.stdout.match(function (output) {
     try {
       var json = JSON.parse(output)
-      return json.version.length === 64 // 32bit hash 2 in hex (64)
+      t.same(json.version.length, 64) // 32bit hash 2 in hex (64)
+      t.same(json.datasets, 1) // files dataset doesn't count!
+      return true
     } catch (e) {
       return false
     }
