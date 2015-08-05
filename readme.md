@@ -2,6 +2,8 @@
 
 Dat is a version-controlled, decentralized data sync tool designed to improve collaboration between data people and data systems.
 
+[Try the dat interactive tutorial here: http://try-dat.com](http://try-dat.com)
+
 **Have questions?** Join `#dat` on [freenode](https://webchat.freenode.net). Chat logs are [available here](https://botbot.me/freenode/dat/)
 
 [![NPM](https://nodei.co/npm/dat.png?global=true)](https://nodei.co/npm/dat/)
@@ -12,9 +14,9 @@ Windows        | Mac/Linux
 
 ## Documentation
 
-- [Commandline `dat` utility documentation](docs/cli-docs.md)
+- [Commandline API](docs/cli-docs.md)
 - [JavaScript API](https://github.com/maxogden/dat-core)
-- [The COOKBOOK!](docs/cookbook.md)
+- [The Cookbook!](docs/cookbook.md)
 - [Whitepaper](https://github.com/maxogden/dat/blob/master/docs/whitepaper.md)
 - [Internal design](https://github.com/maxogden/dat-core/blob/master/DESIGN.md)
 
