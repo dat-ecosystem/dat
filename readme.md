@@ -1,6 +1,6 @@
 # dat
 
-Dat is a version-controlled, decentralized data sync tool designed to improve collaboration between data people and data systems.
+Dat is a version-controlled, decentralized data sync tool for collaboration between data people and data systems.
 
 [Try the dat interactive tutorial here: http://try-dat.com](http://try-dat.com)
 
