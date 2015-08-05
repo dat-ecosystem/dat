@@ -80,7 +80,7 @@ function handleImport (args) {
     if (!args.json) progress(importer, {verb: 'Wrote', subject: 'keys'})
 
     pump(inputStream, importer, function done (err) {
-      if (err) abort(err, args, 'Error importing data')
+      if (err) abort(err, args)
       if (args.json) {
         var output = {
           version: db.head
