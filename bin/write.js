@@ -1,8 +1,8 @@
 var pump = require('pump')
-var fs = require('fs')
 var basename = require('path').basename
 var debug = require('debug')('bin/write')
 var openDat = require('../lib/util/open-dat.js')
+var createFileStream = require('../lib/util/create-file-stream.js')
 var abort = require('../lib/util/abort.js')
 var usage = require('../lib/util/usage.js')('write.txt')
 var progress = require('../lib/util/progress.js')
@@ -36,22 +36,22 @@ function handleWrite (args) {
     return usage()
   }
 
+  var path = args._[0]
+  var stream = args._[1]
+  var key = args.key || basename(path)
+
   openDat(args, function (err, db) {
     if (err) abort(err, args)
-    var path = args._[0]
-    var stream = args._[1]
-    var key = args.key || basename(path)
-
-    var inputStream
-    if (stream === '-') {
-      inputStream = process.stdin
-    } else {
-      if (!fs.existsSync(path)) {
-        abort(new Error('Error: File at ' + path + ' does not exist'), args)
-      }
-      inputStream = fs.createReadStream(path)
+    if (stream === '-') doWrite(process.stdin, db)
+    else {
+      createFileStream(path, function (err, inputStream) {
+        if (err) abort(err, args)
+        doWrite(inputStream, db)
+      })
     }
+  })
 
+  function doWrite (inputStream, db) {
     var opts = {
       dataset: 'files',
       message: args.message
@@ -71,5 +71,5 @@ function handleWrite (args) {
 
       db.close()
     })
-  })
+  }
 }
