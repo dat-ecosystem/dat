@@ -2,9 +2,7 @@
 
 ## How do I set up my dat so other people can `dat clone`?
 
-Dat is transport agnostic. Here, we will go over two ways to set up an endpoint for your dat -- ssh, and http.
-
-### Using SSH to set up a dat host
+### dat over SSH
 
 SSH has a lot of benefits -- it doesn't require a running process, and you can easily use highly-secure authentication.
 
@@ -26,7 +24,7 @@ On OSX, it is easy to set up an ssh endpoint: [see this tutorial](https://suppor
 
 However, we recommend that you set up your dat on a dedicated server so that people can clone from you reliably. If using linux, you'll need to [make sure you have an ssh port open](http://www.cyberciti.biz/faq/linux-open-iptables-firewall-port-22-23/).
 
-### Using HTTP to set up a dat host
+### dat over HTTP
 
 A dat can also be hosted through http. We include a command, `dat serve`, which begins an http listener that supports clone, pull, and push.
 
@@ -50,14 +48,25 @@ You then might want to use process monitoring so that if the process fails for s
 
 We recommend SSH keys for access control. Here is a [good tutorial on setting up ssh authentication to allow ssh access only to certain individuals](https://www.digitalocean.com/community/tutorials/how-to-set-up-ssh-keys--2).
 
-
 ## How do I allow read-only access to the dat?
 
-You can do this via https using the `--read-only` flag:
+If you aren't using SSH, you can do this via https using the `--read-only` flag:
 
 ```
 dat serve --read-only
 ```
+
+## How do I use a compound key in dat?
+
+A compound key might be something like 'city', 'state', and 'zip code'. This is where any on its own isn't uniquely identifiable to a row, but all together will create a unique key.
+
+Here, we will create a compound key using these three:
+
+```
+dat import cities.csv -d cities -k city -k state -k zipcode
+```
+
+Dat will sort these keys and use them with a `+` delimiter, so a row with 'oakland', 'ca', '94607' might be 'oakland+ca+94607'.
 
 ## How do I connect a different backend to dat?
 

@@ -32,11 +32,6 @@ module.exports = {
       abbr: 'k'
     },
     {
-      name: 'keys',
-      boolean: false,
-      abbr: 'ks'
-    },
-    {
       name: 'batch',
       boolean: false,
       abbr: 'b'
@@ -54,7 +49,6 @@ function handleImport (args) {
 
   if (args.help || args._.length === 0) return usage()
   if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'), args)
-  if (args.keys) args.keys = args.keys.split(',')
 
   openDat(args, function (err, db) {
     if (err) abort(err, args)

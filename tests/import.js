@@ -43,13 +43,13 @@ test('import: dat import json', function (t) {
 
 test('import: dat import json with compound key', function (t) {
   var json = path.resolve(__dirname + '/fixtures/all_hour.json')
-  var st = spawn(t, dat + ' import ' + json + ' --keys=latitude,longitude -d compound', {cwd: dat2})
+  var st = spawn(t, dat + ' import ' + json + ' -k latitude -k longitude -d compound', {cwd: dat2})
   st.stdout.empty()
   st.stderr.match(/Done importing data/)
   st.end()
 })
 
-test('import: dat keys get integer id', function (t) {
+test('import: dat keys get with compound key', function (t) {
   var st = spawn(t, dat + ' keys -d compound', {cwd: dat2})
   st.stdout.match(function (output) {
     var keys = output.split('\n')
