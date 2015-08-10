@@ -82,7 +82,13 @@ test('json: dat diff --json', function (t) {
       if (err) return t.ifErr(err)
       var first = JSON.parse(out.stdout.toString().split('\n')[1]).version
       var st = spawn(t, dat + ' diff ' + first + ' --json --path=' + dat1, {cwd: tmp})
-      st.stdout.match(new RegExp('"change":3,"key":"1","value":{"key":"1","name":"max"},"dataset":"foo"'))
+      st.stdout.match(function (output) {
+        var json = JSON.parse(output)
+        t.same(json.key, '1')
+        t.same(json.forks.length, 2)
+        t.same(json.versions[0].dataset, 'foo')
+        return true
+      })
       st.stderr.empty()
       st.end()
     })
