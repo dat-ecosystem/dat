@@ -63,6 +63,13 @@ Run the tutorial at http://try-dat.com for a quick start to the basic collaborat
 
 ## Troubleshooting
 
+###  I'm getting a problem with 'leveldown' when trying to install.
+Try adding `--unsafe-perm` to the installation command. See https://github.com/maxogden/dat/issues/374
+
+```
+npm install -g dat --unsafe-perm
+```
+
 Dat is still in beta. If you have any trouble, it's probably because we did something wrong!
 
 Please tell us by [opening an issue here](http://github.com/maxogden/dat/issues/new) or asking us a question in #dat on IRC in Freenode.
