@@ -3,7 +3,6 @@ var pump = require('pump')
 var abort = require('../lib/util/abort.js')
 var openDat = require('../lib/util/open-dat.js')
 var usage = require('../lib/util/usage.js')('changes.txt')
-var debug = require('debug')('dat-changes')
 
 module.exports = {
   name: 'changes',
