@@ -23,6 +23,7 @@ var config = {
     require('./bin/push.js'),
     require('./bin/read.js'),
     require('./bin/replicate.js'),
+    require('./bin/changes.js'),
     require('./bin/serve.js'),
     require('./bin/status.js'),
     require('./bin/write.js')

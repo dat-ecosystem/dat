@@ -1,0 +1,3 @@
+dat changes
+
+Return a stream of changes as the are emitted by dat-core's createChangesStream
