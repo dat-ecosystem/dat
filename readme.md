@@ -63,15 +63,13 @@ Run the tutorial at http://try-dat.com for a quick start to the basic collaborat
 
 ## Troubleshooting
 
-####  I'm getting a problem with 'leveldown' when trying to install.
-Try adding `--unsafe-perm` to the installation command. See [#374](https://github.com/maxogden/dat/issues/374).
+*I'm getting a problem with 'leveldown' when trying to install.*: Try adding `--unsafe-perm` to the installation command. See [#374](https://github.com/maxogden/dat/issues/374).
 
 ```
 npm install dat -g --unsafe-perm
 ```
 
-#### dat init fails with "Error: Module did not self-register"
-Try reinstalling dat. This is caused by a leveldown-prebuilt leftover from a previous version of dat. See [#370](https://github.com/maxogden/dat/issues/370).
+*dat init fails with "Error: Module did not self-register"*: Try reinstalling dat. This is caused by a leveldown-prebuilt leftover from a previous version of dat. See [#370](https://github.com/maxogden/dat/issues/370).
 
 ```
 npm uninstall dat -g
