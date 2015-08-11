@@ -480,7 +480,7 @@ dat import <filename> --dataset=<name>
 
 ### Options
 
-- `key`/`k` - specify which field to use as the primary key (false for no key)
+- `key`/`k` - specify which column to use as the primary key (defaults to auto-generated keys). You can add multiple keys to craft a compound key. sorted ascending by default
 - `message`/`m` - a short description of this import
 
 Examples:

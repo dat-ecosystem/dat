@@ -47,10 +47,7 @@ module.exports = {
 function handleImport (args) {
   debug('handleImport', args)
 
-  if (args.help || args._.length === 0) {
-    return usage()
-  }
-
+  if (args.help || args._.length === 0) return usage()
   if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'), args)
 
   openDat(args, function (err, db) {
