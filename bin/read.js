@@ -38,5 +38,4 @@ function handleRead (args) {
       db.close()
     })
   })
-
 }
