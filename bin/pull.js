@@ -20,6 +20,11 @@ module.exports = {
       name: 'password',
       boolean: false,
       abbr: 'p'
+    },
+    {
+      name: 'live',
+      boolean: true,
+      abbr: 'l'
     }
   ]
 }
@@ -71,7 +76,7 @@ function handlePull (args) {
 
   openDat(args, function ready (err, db) {
     if (err) return abort(err, args)
-    var pull = stream.pipe(db.pull())
+    var pull = stream.pipe(db.pull({live: args.live}))
     if (!args.json) progress(pull, {verb: 'Pulled', replicate: true})
     pull.pipe(stream)
   })

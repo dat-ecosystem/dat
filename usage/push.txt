@@ -1,3 +1,4 @@
 dat push <ssh://url>
+  --live # keep pushing in realtime
 
 Pushes the current checkout to the given url. Must be an ssh:// destination.

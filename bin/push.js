@@ -20,6 +20,11 @@ module.exports = {
       name: 'password',
       boolean: false,
       abbr: 'p'
+    },
+    {
+      name: 'live',
+      boolean: true,
+      abbr: 'l'
     }
   ]
 }
@@ -63,7 +68,7 @@ function handlePush (args) {
 
   openDat(args, function ready (err, db) {
     if (err) return abort(err, args)
-    var push = stream.pipe(db.push())
+    var push = stream.pipe(db.push({live: args.live}))
     if (!args.json) progress(push, {verb: 'Pushed', replicate: true})
     push.pipe(stream)
   })

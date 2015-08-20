@@ -1,3 +1,4 @@
 dat pull <url>
+  --live # keep pulling in realtime
 
 Pulls the checkout at the given url to the current dat.
