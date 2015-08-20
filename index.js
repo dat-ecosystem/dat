@@ -7,6 +7,10 @@ module.exports = Dat
 function Dat (path, opts) {
   if (!opts) opts = {}
   if (!opts.valueEncoding) opts.valueEncoding = 'json'
+
+  // prevent new repos from being created if someone runs a read-only dat command in a folder
+  if (typeof opts.createIfMissing === 'undefined') opts.createIfMissing = false
+
   var config = readConfig(path)
 
   if (config.dat && config.dat.backend) {
