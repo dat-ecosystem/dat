@@ -5,6 +5,7 @@ var abort = require('../lib/util/abort.js')
 var openDat = require('../lib/util/open-dat.js')
 var usage = require('../lib/util/usage.js')('serve.txt')
 var debug = require('debug')('dat-serve')
+var debugStream = require('debug-stream')
 
 var version = require('../package.json').version
 
@@ -57,7 +58,13 @@ function startDatServer (args) {
             debug('replication finished in', (Date.now() - start) + 'ms')
           })
 
-          pump(req, replicate, res)
+          var loggers = {
+            out: debugStream(debugLogger('out')),
+            in: debugStream(debugLogger('in'))
+          }
+
+          if (!loggers.out.enabled) pump(req, replicate, res)
+          else pump(req, loggers.in(), replicate, loggers.out(), res)
           return
         }
 
@@ -67,5 +74,11 @@ function startDatServer (args) {
       })
       server.listen(port)
     })
+  }
+}
+
+function debugLogger (prefix) {
+  return function (buf) {
+    debug(prefix, {length: buf.length})
   }
 }

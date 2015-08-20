@@ -34,7 +34,7 @@
     "cuid": "^1.2.4",
     "dat-core": "^5.0.0",
     "debug": "^2.1.3",
-    "debug-stream": "^2.1.0",
+    "debug-stream": "^3.0.0",
     "detect-csv": "^1.0.1",
     "detect-json-style": "^1.0.2",
     "diffs-to-string": "^4.1.0",
