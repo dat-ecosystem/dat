@@ -39,8 +39,8 @@ function startDatServer (args) {
     openDat(args, function (err, db) {
       if (err) abort(err, args)
       if (!port) abort(new Error('Invalid port: ' + port), args)
-
       console.error('Listening on port ' + port + (args.readonly ? ' (readonly)' : ''))
+
       var server = http.createServer(function (req, res) {
         debug(req.method, req.url, req.connection.remoteAddress)
 
@@ -72,6 +72,11 @@ function startDatServer (args) {
         res.statusCode = 405
         res.end()
       })
+
+      server.on('connection', function (socket) {
+        socket.setNoDelay(true) // http://neophob.com/2013/09/rpc-calls-and-mysterious-40ms-delay/
+      })
+
       server.listen(port)
     })
   }
