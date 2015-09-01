@@ -45,12 +45,22 @@ function startDatServer (args) {
         debug(req.method, req.url, req.connection.remoteAddress)
 
         if (req.method === 'GET') {
-          res.setHeader('content-type', 'application/json')
-          res.end(JSON.stringify({dat: true, version: version}))
-          return
-        }
-
-        if (req.method === 'POST') {
+          db.status(function (err, status) {
+            if (err) abort(err, args)
+            db.listDatasets(function (err, datasets) {
+              if (err) abort(err, args)
+              res.setHeader('content-type', 'application/json')
+              var result = {
+                dat: true,
+                version: version,
+                status: status,
+                datasets: datasets
+              }
+              res.end(JSON.stringify(result))
+              return
+            })
+          })
+        } else if (req.method === 'POST') {
           var replicate = args.readonly ? db.push() : db.replicate()
 
           var start = Date.now()
@@ -66,11 +76,11 @@ function startDatServer (args) {
           if (!loggers.out.enabled) pump(req, replicate, res)
           else pump(req, loggers.in(), replicate, loggers.out(), res)
           return
+        } else {
+          // if not GET or POST
+          res.statusCode = 405
+          res.end()
         }
-
-        // if not GET or POST
-        res.statusCode = 405
-        res.end()
       })
 
       server.on('connection', function (socket) {
