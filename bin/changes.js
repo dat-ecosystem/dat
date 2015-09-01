@@ -8,6 +8,12 @@ module.exports = {
   name: 'changes',
   command: doChanges,
   options: [
+    {
+      name: 'live',
+      boolean: true,
+      abbr: 'l',
+      default: false
+    }
   ]
 }
 
