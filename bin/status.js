@@ -39,6 +39,7 @@ function handleStatus (args) {
         else output += ' (checkout)\n'
         output += datasets + ' ' + pluralize('dataset', datasets) + ', '
         output += rows + ' ' + pluralize('key', rows) + ', ' + status.files + ' ' + pluralize('file', status.files) + ', '
+        output += status.heads + ' ' + pluralize('fork', status.heads) + ', '
         output += status.versions + ' ' + pluralize('version', status.versions) + ', ' + prettyBytes(status.size) + ' total\n'
         output += 'Last updated ' + relativeDate(status.modified) + ' (' + status.modified + ')'
         console.error(output)
