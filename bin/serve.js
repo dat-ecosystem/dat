@@ -49,7 +49,7 @@ function startDatServer (args) {
             res.end(data)
           })
         } else if (req.method === 'POST') {
-          return pump(req, route.replicate(db, args), res)
+          return pump(req, route.replication(db, args), res)
         } else {
           res.statuscode = 405
           res.end()
