@@ -46,7 +46,11 @@ function handleClone (args) {
     db.close()
   })
 
-  if (!args.json) progress(cloneStream, {verb: 'Cloning ' + source + ' into ' + path + '...\nProgress: ', replicate: true})
+  if (!args.json) {
+    cloneStream.once('progress', function () {
+      progress(cloneStream, {verb: 'Cloning ' + source + ' into ' + path + '...\nProgress: ', replicate: true})
+    })
+  }
 }
 
 function getName (source) {
