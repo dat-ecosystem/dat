@@ -1,11 +1,13 @@
+var eos = require('end-of-stream')
+var transportStream = require('transport-stream')
 var config = require('../lib/util/config.js')()
 var usage = require('../lib/util/usage.js')('pull.txt')
 var progress = require('../lib/util/progress.js')
 var abort = require('../lib/util/abort.js')
 var openDat = require('../lib/util/open-dat.js')
-var transportStream = require('../lib/util/transports.js')
 var authPrompt = require('../lib/util/auth-prompt.js')
 var auth = require('../lib/util/url-auth.js')
+var debug = require('debug')('dat-pull')
 
 module.exports = {
   name: 'pull',
@@ -37,23 +39,35 @@ function handlePull (args) {
     remote = auth(remote, args.username, args.password)
   }
 
-  var transports = transportStream(args.bin)
+  var transportOpts = {
+    command: (args.bin || 'dat') + ' replicate -'
+  }
+
+  var transport = transportStream(transportOpts)
 
   try {
-    var stream = transports(remote)
+    var stream = transport(remote)
   } catch (err) {
     return usage()
   }
 
-  stream.on('warn', function (data) {
-    console.error(data)
-  })
-
-  stream.on('error', function (err) {
+  eos(stream, function (err) {
+    if (!err) return debug('stream end')
     if (err.level === 'client-authentication' && !args.json) {
       return authPrompt(args, handlePull)
     }
     else abort(err, args)
+  })
+
+  openDat(args, function ready (err, db) {
+    if (err) return abort(err, args)
+    var pull = db.pull({live: args.live})
+    if (!args.json) progress(pull, {verb: 'Pulled', replicate: true})
+    pull.pipe(stream).pipe(pull)
+  })
+
+  stream.on('warn', function (data) {
+    console.error(data)
   })
 
   stream.on('finish', function () {
@@ -72,12 +86,5 @@ function handlePull (args) {
         })
       })
     })
-  })
-
-  openDat(args, function ready (err, db) {
-    if (err) return abort(err, args)
-    var pull = stream.pipe(db.pull({live: args.live}))
-    if (!args.json) progress(pull, {verb: 'Pulled', replicate: true})
-    pull.pipe(stream)
   })
 }

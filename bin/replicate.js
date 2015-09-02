@@ -1,7 +1,7 @@
+var transportStream = require('transport-stream')
 var openDat = require('../lib/util/open-dat.js')
 var abort = require('../lib/util/abort.js')
 var usage = require('../lib/util/usage.js')('replicate.txt')
-var transportStream = require('../lib/util/transports.js')
 
 module.exports = {
   name: 'replicate',
@@ -10,10 +10,14 @@ module.exports = {
 
 function handleReplicate (args) {
   if (args._.length === 0) return usage()
-  var transports = transportStream(args.bin)
+  var transportOpts = {
+    command: (args.bin || 'dat') + ' replicate -'
+  }
+
+  var transport = transportStream(transportOpts)
 
   try {
-    var stream = transports(args._[0])
+    var stream = transport(args._[0])
   } catch (err) {
     return usage()
   }

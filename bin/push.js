@@ -1,11 +1,13 @@
+var eos = require('end-of-stream')
+var transportStream = require('transport-stream')
 var config = require('../lib/util/config.js')()
 var usage = require('../lib/util/usage.js')('push.txt')
 var abort = require('../lib/util/abort.js')
 var progress = require('../lib/util/progress.js')
 var openDat = require('../lib/util/open-dat.js')
-var transportStream = require('../lib/util/transports.js')
 var authPrompt = require('../lib/util/auth-prompt.js')
 var auth = require('../lib/util/url-auth.js')
+var debug = require('debug')('dat-push')
 
 module.exports = {
   name: 'push',
@@ -37,10 +39,14 @@ function handlePush (args) {
     remote = auth(remote, args.username, args.password)
   }
 
-  var transports = transportStream(args.bin)
+  var transportOpts = {
+    command: (args.bin || 'dat') + ' replicate -'
+  }
+
+  var transport = transportStream(transportOpts)
 
   try {
-    var stream = transports(remote)
+    var stream = transport(remote)
   } catch (err) {
     abort(err, args)
     return usage()
@@ -50,8 +56,9 @@ function handlePush (args) {
     console.error(data)
   })
 
-  stream.on('error', function (err) {
-    if (err.level === 'client-authentication') {
+  eos(stream, function (err) {
+    if (!err) return debug('stream end')
+    if (err.level === 'client-authentication' && !args.json) {
       return authPrompt(args, handlePush)
     }
     else abort(err, args)
