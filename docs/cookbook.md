@@ -4,7 +4,7 @@
 
 ### dat over SSH
 
-SSH has a lot of benefits -- it doesn't require a running process, and you can easily use highly-secure authentication.
+SSH has a lot of benefits -- it doesn't require running a persistent dat daemon process, and you can easily use highly-secure authentication.
 
 ```
 $ pwd
@@ -32,17 +32,71 @@ A dat can also be hosted through http. We include a command, `dat serve`, which 
 $ dat init
 $ dat serve
 Listening on port 6442
-
 ```
 
-When this is typed, the process will be running and the terminal will hang. If you cancel the command, the endpoint will close. To have the endpoint running all of the time, you'll need to set up routes. We recommend `taco` with nginx:
+When this is typed, the process will be running and the terminal will hang. If you cancel the command, the endpoint will close. To have the endpoint running all of the time, you'll need to use additional tools to daemonize the process (it varies depending on your operating system)
+
+##### ubuntu init script
+
+See `dat.conf` in this directory for an example ubuntu init script that you can use to easily control a dat from Ubuntu.
+
+You just need to edit it (customize it with your settings), save it as `/etc/init/dat.conf` and then you will be able to run `sudo start dat` to start a dat serve process.
+
+##### nginx
+
+Nginx is a commonly used reverse proxy that you can use to host multiple services from one machine, and to do things like add https support to normally http-only services.
+
+The easiest way to use dat with nginx is to use our module [`taco-nginx`](https://www.npmjs.com/package/taco-nginx).
+
+`taco-nginx` is a bash script that runs a server and forwards a subdomain to it using nginx when it listens to $PORT.
+
+So when you run this command:
 
 ```
-$ npm install -g taco-nginx
-$ taco-nginx --name <servicename> dat serve --port=$PORT
+taco-nginx --name mydatserver dat serve --readonly
 ```
 
-You then might want to use process monitoring so that if the process fails for some reason, it will get automatically restarted by the system. There are a variety of ways to do this.
+`taco-nginx` will generate this nginx configuration file and automatically load it into nginx immediately:
+
+```
+upstream mydatserver {
+  server 127.0.0.1:44034;
+}
+server {
+  listen 443;
+  listen 80;
+  server_name mydatserver.*;
+  location / {
+    proxy_pass http://mydatserver;
+    proxy_set_header X-Forwarded-For $remote_addr;
+    proxy_buffering off;
+    proxy_request_buffering off;
+    proxy_http_version 1.1;
+    client_max_body_size 0;
+  }
+}
+```
+
+The port will be random every time, and `taco-nginx` will spawn `dat serve --readonly` with the `PORT` environment variable set to the correct port.
+
+You can combine `taco-nginx` and `dat.conf` to make dat automatically deploy to nginx.
+
+##### psy
+
+If you don't want to use the built in process monitoring supplied by Ubuntu init scripts, check out the [`psy`](https://www.npmjs.com/package/psy) lightweight process monitor.
+
+Here's an example command that runs a dat server using `taco-nginx` and `psy` (with debug logging enabled):
+
+```
+psy start -n mydatserver --env.DEBUG=dat-serve --cwd=/home/admin/src/sleep-irc/data -l /home/admin/logs/mydatserver.logs -- taco-nginx --name mydatserver dat serve --readonly
+```
+
+`psy` lets you view status of and start/stop/restart processes:
+
+```
+admin:~$ psy ls
+mydatserver  running  22654  about 22 hours ago  taco-nginx --name mydatserver dat serve --readonly
+```
 
 ## How do I set up authentication on my dat?
 
