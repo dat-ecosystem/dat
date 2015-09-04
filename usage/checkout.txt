@@ -1,3 +1,15 @@
-dat checkout <head>
+dat checkout <version>
 
-the dat will become the same it was at the given head
+  The dat will change its data view to appear as it was at the given version.
+
+Parameters:
+
+  <version> (required)
+
+    The version to rollback to. Can provide 'latest' to return to the most recent version.
+
+Options:
+
+  --json
+
+    Return the result as a json string with properties `version` and `message`.

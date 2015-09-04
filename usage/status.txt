@@ -1,3 +1,29 @@
-dat status [--log=text,json]
+dat status
 
-Show current status, including row count, file count, last updated.
+  Show current status, including row count, file count, and last updated.
+
+Example:
+
+  Current version is a2c77bedfb59f223782... (latest)
+  2 datasets, 2684 keys, 2 files, 1 fork, 4 versions, 1.7 MB total
+  Last updated 3 days ago (Tue Sep 01 2015 18:53:17 GMT-0400 (EDT))
+
+Options:
+
+  --json
+
+    Returns value as a json-parsable string. Example:
+
+    {
+      "checkout" : false,
+      "version" : "a2c77bedfb59f223782...",
+      "datasets" : 2,
+      "versions" : 4,
+      "modified" : "2015-09-01T22:53:17.775Z",
+      "size" : 1704743,
+      "heads" : 1,
+      "files" : 2,
+      "transaction" : false,
+      "rows" : 2686
+    }
+

@@ -1,12 +1,42 @@
-dat merge <fork(s)> [<filename>]
+dat merge <fork(s)> [filename]
 
-Merges two forks
+  Merges two forked versions into one single version. If you specify 1 fork, your current fork will be used as the 2nd. You can also pass 2 specific forks in.
 
-  <fork>     (required)  the hash of the fork you want to merge
-  <filename> (optional)  merge resolution JSON data from this file
-  --left     pick the left side as the winner
-  --right    pick the right side as the winner
-  --random   pick random side for each key
+Parameters:
 
-If you specify 1 fork, your current fork will be used as the 2nd.
-You can also pass 2 specific forks in.
+  <fork> required:
+
+    The version hash of the fork you want to merge.
+
+  [filename] optional:
+
+    Merge resolution JSON data from a given file. See http://github.com/maxogden/dat for more details.
+
+Options:
+
+  --message
+
+    A message to provide for the new version that will be created as a result of the merge operation.
+
+  --limit
+
+    The number of rows to view per page while merging.
+
+  --stdin
+
+    To receive the resolution stream from stdin.
+
+
+Optional built-in merge strategies are defined as follows:
+
+  --left
+
+    Pick the left side, or the first fork for each key that conflicts.
+
+  --right
+
+    Pick the right side, or the second fork for each key that conflicts.
+
+  --random
+
+    Pick random side for each key, because YOLO.

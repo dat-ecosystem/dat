@@ -1,4 +1,17 @@
 dat pull <url>
-  --live # keep pulling in realtime
 
-Pulls the checkout at the given url to the current dat.
+  Pulls the checkout at the given url to the current dat.
+
+Options:
+
+  --live
+
+    Keeps connection to dat source open, pulling changes into the local repository as they are pushed from the maintainer at the given url.
+
+  --username (-u) / --password (-p)
+
+    Give a username and/or password for ssh or http basic auth connections.
+
+  --json
+
+    Upon pull completion, return new version as a JSON-parsable string with property `version`.
