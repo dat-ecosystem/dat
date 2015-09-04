@@ -26,6 +26,9 @@ function handleStatus (args) {
       // and there always is a files dataset because of package.json
       if (status.datasets) status.datasets--
       var datasets = status.datasets
+      status.dat = {
+        version: require('../package.json').version
+      }
 
       var rows = status.rows
       if (status.files) rows -= status.files
