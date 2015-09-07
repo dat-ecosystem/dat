@@ -19,6 +19,7 @@ This is the `dat` command line API as of the Beta release.
   - [dat files](#dat-files)
   - [dat replicate](#dat-replicate)
   - [dat serve](#dat-serve)
+  - [dat changes](#dat-changes)
   - [dat destroy](#dat-destroy)
 - [dataset commands](#dataset-commands)
   - [dat import](#dat-import)
@@ -144,6 +145,25 @@ $ dat log --limit=1 --json
 
 `Links` is a list of older versions that are referenced from this current version (forms a directed acyclic graph if drawn).
 
+
+### dat changes
+
+Return a stream of the individual changes in a dat, including puts and deletes. A **change** is the bulding block of a **version**, that is, a version consists of 1 or more changes.
+
+Example output:
+
+```
+$ dat changes
+{"content":"file","type":"put","key":"package.json","dataset":"files","value":{"key":"e77584907396f1e8c899788732d54cf3141ddf1d646e1ed50d35e507e42dd2ba","size":34}}
+{"content":"row","type":"put","key":"cid628kzd00006rxmi5q30gok","dataset":"hello","value":{"hello":"world"}}
+{"content":"row","type":"put","key":"cid628qqb00006uxmnneci14r","dataset":"hello","value":{"hello":"mars"}}
+{"content":"row","type":"put","key":"cid628vi800006wxm2xfv86xa","dataset":"hello","value":{"goodbye":"mars"}}
+```
+
+#### Options
+
+- `live` - Keep returning changes until process is killed
+
 ### dat clone
 
 Clone a new repository from a remote dat to create a new dat.
@@ -173,7 +193,6 @@ dat push <remote>
 
 #### Options
 
-- `live` - Keep pushing even after the initial pushing finishes
 - `bin` - specify path to the `dat` executable if `dat` is not in your path
 
 Example output:

@@ -54,6 +54,29 @@ test('status-log: dat1 log', function (t) {
   st.end()
 })
 
+test('status-log: dat1 changes', function (t) {
+  var st = spawn(t, dat + ' changes', {cwd: dat1})
+  var lines = 0
+  st.stdout.match(function (output) {
+    var data = JSON.parse(output)
+    if (lines === 0) {
+      t.same(data.content, 'file')
+      t.same(data.dataset, 'files')
+      t.same(data.type, 'put')
+      t.ok(data.key)
+    } else {
+      t.same(data.content, 'row')
+      t.same(data.dataset, 'status-test')
+      t.same(data.type, 'put')
+      t.ok(data.key)
+    }
+    lines++
+    return true
+  })
+  st.stderr.empty()
+  st.end()
+})
+
 test('status-log: dat1 log json', function (t) {
   var st = spawn(t, dat + ' log --json', {cwd: dat1})
   st.stdout.match(function (output) {
