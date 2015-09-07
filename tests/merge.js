@@ -28,7 +28,7 @@ test('merge: dat1 diff', function (t) {
     } catch (e) {
       return false
     }
-    if (diff.versions[0].value.name === 'MAX' && diff.versions[1].value.name === 'Max') return true
+    if (diff.versions[1].value.name === 'MAX' && diff.versions[0].value.name === 'Max') return true
   })
   st.end()
 })
@@ -36,7 +36,7 @@ test('merge: dat1 diff', function (t) {
 test('merge: dat1 diff pretty printed', function (t) {
   var st = spawn(t, dat + ' diff ' + forks.remotes[0], {cwd: dat1})
   st.stderr.empty()
-  st.stdout.match(/MAX -> Max/)
+  st.stdout.match(/Max -> MAX/)
   st.end()
 })
 
@@ -69,7 +69,7 @@ test('merge: verify merge version', function (t) {
   st.stdout.match(function match (output) {
     try {
       output = JSON.parse(output)
-      return output.name === 'MAX'
+      return output.name === 'Max'
     } catch (e) {
       return false
     }
