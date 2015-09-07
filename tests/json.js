@@ -86,7 +86,7 @@ test('json: dat diff --json', function (t) {
         var json = JSON.parse(output)
         t.same(json.key, '1')
         t.same(json.forks.length, 2)
-        t.same(json.versions[0].dataset, 'foo')
+        t.same(json.versions[1].dataset, 'foo')
         return true
       })
       st.stderr.empty()

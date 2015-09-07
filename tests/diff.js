@@ -55,7 +55,7 @@ test('diff: dat import csv 2', function (t) {
 test('merge: dat1 diff pretty printed', function (t) {
   var st = spawn(t, dat + ' diff ' + version, {cwd: dat1})
   st.stderr.empty()
-  st.stdout.match(/Max -> max/)
+  st.stdout.match(/max -> Max/)
   st.end()
 })
 
