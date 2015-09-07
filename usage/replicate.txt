@@ -1,3 +1,9 @@
-dat replicate <ssh://url>
+dat replicate <location>
 
-Replicates (pushes and pulls) the current checkout to the given url. Must be an ssh:// destination.
+  Replicates (pushes and pulls) the current checkout to the given location.
+
+Parameters:
+
+  <location> (required)
+
+    Can be an http or ssh remote, or the character - for stdin/stdout.

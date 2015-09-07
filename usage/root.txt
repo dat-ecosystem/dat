@@ -1,24 +1,28 @@
 usage: dat <command(s)> [--flag] [--key=value]
 
-commands:
-  init        initialize a new dat store in a directory
-  status      show current status
-  log         view a list of recent changes
-  clone       download and make a full copy of a remote dat
-  push        push data to a remote dat
-  pull        pull data from a remote dat
-  checkout    dat will operate at a particular head
-  diff        see differences between two forks
-  merge       merge two forks into one
-  forks       list forks of the current dat
-  datasets    list all datasets in a repository
-  files       list all files in a repository
-  import      import a tabular file into a dataset
-  export      export tabular data from a dataset
-  read        read a binary file out of a dataset
-  write       write a binary file into a dataset
-  keys        list existing keys in a dataset
-  delete      delete a key in a dataset
-  serve       start httpd to host store as http remote
+repository commands:
+  init        Create a new dat.
+  clone       Copy a dat to the local filesystem via http or ssh.
+  push        Push data to a remote dat.
+  pull        Pull data from a remote dat.
+  checkout    Change view to a given version.
+  serve       Start an http server.
+
+descriptive commands:
+  status      Show current status.
+  log         List of changes.
+  files       List all files.
+  datasets    List all datasets.
+  forks       List current forks.
+  diff        See differences between the data in two forks.
+
+data commands:
+  import      Add tabular data to a dataset.
+  export      View tabular data from a dataset.
+  read        Read a binary file.
+  write       Write a binary file.
+  keys        List existing keys in a dataset.
+  delete      Delete a key in a dataset.
+  merge       Merge two forks into one.
 
 type `dat <command> --help` to view specific command help
