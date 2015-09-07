@@ -1,6 +1,6 @@
 var eos = require('end-of-stream')
 var transportStream = require('transport-stream')
-var config = require('../lib/util/config.js')()
+var config = require('../lib/util/config.js')
 var usage = require('../lib/util/usage.js')('push.txt')
 var abort = require('../lib/util/abort.js')
 var progress = require('../lib/util/progress.js')
@@ -32,7 +32,7 @@ module.exports = {
 }
 
 function handlePush (args) {
-  var remote = config.dat.remote || args._[0]
+  var remote = config(args).dat.remote || args._[0]
   if (!remote) return usage()
 
   if (args.username && args.password) {

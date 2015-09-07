@@ -11,7 +11,7 @@ function Dat (path, opts) {
   // prevent new repos from being created if someone runs a read-only dat command in a folder
   if (typeof opts.createIfMissing === 'undefined') opts.createIfMissing = false
 
-  var config = readConfig(path)
+  var config = readConfig({path: path})
 
   if (config.dat && config.dat.backend) {
     var res = resolve.sync(config.dat.backend.module, { basedir: process.cwd() })
