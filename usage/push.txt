@@ -1,4 +1,20 @@
-dat push <ssh://url>
-  --live # keep pushing in realtime
+dat push <url>
 
-Pushes the current checkout to the given url. Must be an ssh:// destination.
+  Pushes the current checkout to the given url.
+
+Paramters:
+
+  <url> (required)
+
+    Push to the given URL, which must give access to a dat repository.
+
+Options:
+
+  --username (-u) / --password (-p)
+
+    Give a username and/or password for ssh or http basic auth connections.
+
+  --live
+
+    Keep pushing streamnig changes in real-time as newline-delimited JSON.
+

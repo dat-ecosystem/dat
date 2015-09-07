@@ -1,8 +1,13 @@
-dat init [--path=/foo/bar -p /foo/bar]
+dat init
 
-Creates a new dat repository in the current folder, or the folder specified
-by --path. The new dat repository will be in a folder called data.dat
+  Create a new dat repository. The database will be in a folder called data.dat.
 
 Options
 
---no-prompt      init without prompting
+  --path=</foo/bar> (-p)
+
+    Provide a path to execute the given command (applicable to all commands).
+
+  --no-prompt
+
+    Execute without prompting for name, description, and publisher.
