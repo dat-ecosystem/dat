@@ -109,7 +109,7 @@ function conflict (dat1, dat2, dataset, cb) {
     stat.stderr.empty()
     stat.stdout.match(function match (output) {
       try {
-        statusJson = JSON.parse(output)
+        statusJson = JSON.parse(output).status
       } catch (e) {
         statusJson = false
       }
@@ -191,7 +191,7 @@ function fileConflict (dat1, dat2, dataset, filename, cb) {
     stat.stderr.empty()
     stat.stdout.match(function match (output) {
       try {
-        statusJson = JSON.parse(output)
+        statusJson = JSON.parse(output).status
       } catch (e) {
         statusJson = false
       }

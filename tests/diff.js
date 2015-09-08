@@ -33,7 +33,7 @@ test('diff: dat1 status as json', function (t) {
   var st = spawn(t, dat + ' status --json', {cwd: dat1})
   st.stdout.match(function (output) {
     try {
-      var json = JSON.parse(output)
+      var json = JSON.parse(output).status
       version = json.version
       return json.version.length === 64 // 32bit hash 2 in hex (64)
     } catch (e) {

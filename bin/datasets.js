@@ -15,7 +15,7 @@ function handleDatasets (args) {
 
     db.listDatasets(function (err, datasets) {
       if (err) abort(err, args)
-      if (args.json) console.log(JSON.stringify({datasets: datasets}))
+      if (args.json) console.log(JSON.stringify({datasets: datasets}, 2))
       else console.log(datasets.join('\n'))
       db.close()
     })
