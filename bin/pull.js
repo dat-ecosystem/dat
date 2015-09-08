@@ -62,7 +62,11 @@ function handlePull (args) {
   openDat(args, function ready (err, db) {
     if (err) return abort(err, args)
     var pull = db.pull({live: args.live})
-    if (!args.json) progress(pull, {verb: 'Pulled', replicate: true})
+    if (!args.json) {
+      pull.once('progress', function () {
+        progress(pull, {verb: 'Pulled', replicate: true})
+      })
+    }
     pull.pipe(stream).pipe(pull)
   })
 
