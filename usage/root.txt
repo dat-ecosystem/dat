@@ -15,13 +15,13 @@ descriptive commands:
   datasets    List all datasets.
   forks       List current forks.
   diff        See differences between the data in two forks.
+  keys        List existing keys in a dataset.
 
 data commands:
   import      Add tabular data to a dataset.
   export      View tabular data from a dataset.
   read        Read a binary file.
   write       Write a binary file.
-  keys        List existing keys in a dataset.
   delete      Delete a key in a dataset.
   merge       Merge two forks into one.
 
