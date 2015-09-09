@@ -48,7 +48,7 @@ test('json: dat clone --json', function (t) {
 
 test('json: dat datasets --json', function (t) {
   var st = spawn(t, dat + ' datasets --json --path=' + dat1, {cwd: tmp})
-  st.stdout.match('{"datasets":["files"]}\n')
+  st.stdout.match('{"datasets":[]}\n')
   st.stderr.empty()
   st.end()
 })

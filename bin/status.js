@@ -3,6 +3,7 @@ var relativeDate = require('relative-date')
 var abort = require('../lib/util/abort.js')
 var openDat = require('../lib/util/open-dat.js')
 var usage = require('../lib/util/usage.js')('status.txt')
+var information = require('../lib/information.js')
 
 module.exports = {
   name: 'status',
@@ -15,30 +16,19 @@ function handleStatus (args) {
   openDat(args, function (err, db) {
     if (err) abort(err, args)
 
-    db.status(function (err, status) {
+    information(db, function (err, data) {
       if (err) abort(err, args)
 
-      // dat-core calls it head, we wanna call it version instead
-      status.version = status.head
-      delete status.head
-
-      // we subtract 1 since we don't want to count the 'files' dataset
-      // and there always is a files dataset because of package.json
-      if (status.datasets) status.datasets--
-      var datasets = status.datasets
-
-      var rows = status.rows
-      if (status.files) rows -= status.files
-
       if (args.json) {
-        console.log(JSON.stringify(status))
+        console.log(JSON.stringify(data))
       } else {
+        var status = data.status
         var output = ''
         output += 'Current version is ' + status.version
         if (!status.checkout) output += ' (latest)\n'
         else output += ' (checkout)\n'
-        output += datasets + ' ' + pluralize('dataset', datasets) + ', '
-        output += rows + ' ' + pluralize('key', rows) + ', ' + status.files + ' ' + pluralize('file', status.files) + ', '
+        output += status.datasets.length + ' ' + pluralize('dataset', status.datasets.length) + ', '
+        output += status.rows + ' ' + pluralize('key', status.rows) + ', ' + status.files + ' ' + pluralize('file', status.files) + ', '
         output += status.heads + ' ' + pluralize('fork', status.heads) + ', '
         output += status.versions + ' ' + pluralize('version', status.versions) + ', ' + prettyBytes(status.size) + ' total\n'
         output += 'Last updated ' + relativeDate(status.modified) + ' (' + status.modified + ')'
