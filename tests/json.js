@@ -147,10 +147,10 @@ test('json: dat log --json', function (t) {
   st.stdout.match(function (buf) {
     var lines = buf.split('\n')
     if (lines.length === 4) {
-      for (var i = 0; i < lines.length; i++) {
+      lines.forEach(function (oneLine) {
         var line
         try {
-          line = JSON.parse(lines[i])
+          line = JSON.parse(oneLine)
         } catch (e) {
           // do nothing
         }
@@ -158,7 +158,7 @@ test('json: dat log --json', function (t) {
         var keys = Object.keys(line)
         if (keys.indexOf('version') === -1) return false
         if (keys.indexOf('date') === -1) return false
-      }
+      })
       return true
     }
   }, 'had 4 lines of json output with expected keys')
