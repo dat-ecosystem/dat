@@ -16,13 +16,12 @@ function handleStatus (args) {
   openDat(args, function (err, db) {
     if (err) abort(err, args)
 
-    information(db, function (err, data) {
+    information(db, function (err, status) {
       if (err) abort(err, args)
 
       if (args.json) {
-        console.log(JSON.stringify(data))
+        console.log(JSON.stringify(status))
       } else {
-        var status = data.status
         var output = ''
         output += 'Current version is ' + status.version
         if (!status.checkout) output += ' (latest)\n'

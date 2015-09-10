@@ -82,7 +82,7 @@ test('write: dat3 status as json', function (t) {
   var st = spawn(t, dat + ' status --json', {cwd: dat3})
   st.stdout.match(function (output) {
     try {
-      var json = JSON.parse(output).status
+      var json = JSON.parse(output)
       version = json.version
       return json.version.length === 64 // 32bit hash 2 in hex (64)
     } catch (e) {

@@ -31,8 +31,7 @@ test('status-log: dat1 status as json', function (t) {
   var st = spawn(t, dat + ' status --json', {cwd: dat1})
   st.stdout.match(function (output) {
     try {
-      var json = JSON.parse(output)
-      var status = json.status
+      var status = JSON.parse(output)
       t.same(status.version.length, 64) // 32bit hash 2 in hex (64)
       t.same(status.datasets.length, 1) // files dataset doesn't count!
       return true
