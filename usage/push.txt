@@ -16,5 +16,5 @@ Options:
 
   --live
 
-    Keep pushing streamnig changes in real-time as newline-delimited JSON.
+    Keep pushing streaming changes in real-time as newline-delimited JSON.
 
