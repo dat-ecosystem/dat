@@ -1,12 +1,6 @@
-# dat
+# Reproducing datasets and environments for machine-learning with dat
 
-From a variety of contributors.
-
-http://dat-data.com
-
-http://github.com/maxogden/dat
-
-**DRAFT DRAFT this is a DRAFT DRAFT**
+Karissa McKelvey
 
 ## Abstract
 
@@ -36,7 +30,7 @@ Dat was designed with the help of our advisors and pilot projects in academia. W
 
 All data is compressed and stored in the `data.dat` folder on disk. Values can be defined as binary (i.e., protobufs via `write`) or tabular (csv, tsv, newline-delimited json formats via `import`).
 
-When data is imported into dat, it must be put into a dataset. To support bifurcated schemas, we encourage users to create multiple datasets, so that each schema will be independent. A dataset is analogous to a sql table or a nosql collection; however, we chose not to use the language of 'table' or 'collection' because Dat datasets do not support robust querying at this time. Each dataset is compartmentalized so that tabular datasets with different schemas can be stored in the same repository without collision. In other words, rows define the schema for a given dataset, and there can be multiple datasets in a single dat.
+When data is imported into dat, it must be put into a dataset. A dataset is analogous to a sql table or a nosql collection; however, we chose not to use the language of 'table' or 'collection' because Dat datasets do not support robust querying at this time. Each dataset is compartmentalized so that tabular datasets with different schemas can be stored in the same repository without collision. In other words, rows define the schema for a given dataset, and there can be multiple datasets in a single dat.
 
 Here, we create a new dataset called 'cities' and import some tabular data. To update data later, we must provide a key that identifies each row in the dataset. In this example, the `cityId` column is a unique identifier for each row. Dat will auto-generate keys if the user supplies `--key=false` upon import.
 
@@ -54,7 +48,7 @@ Data imported successfully.
 Current version is now 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
 ```
 
-Blob data can be written just like tabular data using `dat write`. Blob data and tabular data are kept separate inside of each dataset -- tabular data is written to leveldb while binary data is written to a content addressable blob object store. Each of these are modular and can be replaced with S3, SQL-variants, and other backends.
+Blob data can be written just like tabular data using `dat write`. Blob data and tabular data are kept separate -- tabular data is written to leveldb while binary data is written to a content addressable blob store. Each of these are modular and can be replaced with S3, SQL-variants, and other backends.
 
 ### 3.2 Indexing and updating
 
