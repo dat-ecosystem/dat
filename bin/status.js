@@ -16,7 +16,7 @@ function handleStatus (args) {
   openDat(args, function (err, db) {
     if (err) abort(err, args)
 
-    information(db, function (err, status) {
+    information(db, args, function (err, status) {
       if (err) abort(err, args)
 
       if (args.json) {

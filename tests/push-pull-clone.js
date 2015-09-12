@@ -72,7 +72,7 @@ test('push-pull-clone: dat import dataset #2 to dat1', function (t) {
 })
 
 test('push-pull-clone: pull with remote set in package.json', function (t) {
-  var config = {name: 'test-dat', version: '1.0.0', dat: {remote: dat1}}
+  var config = {version: '1.0.0', dat: {remote: dat1}}
   fs.writeFileSync(path.join(dat2, 'package.json'), JSON.stringify(config), 'utf8')
   var st = spawn(t, dat + ' pull ' + ' --bin=' + dat, {cwd: dat2})
   st.stderr.match(/Pulled/)
