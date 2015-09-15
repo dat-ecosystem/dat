@@ -1,4 +1,4 @@
-dat get --key=<key> --dataset=<name>
+dat get <filename or key>
 
   Streams data from dat to stdout. If a dataset is supplied, will stream out rows. Otherwise, will stream raw binary data from the blob store. You can supply a combination of key and dataset to get a particular
 
@@ -6,8 +6,4 @@ Options:
 
   --dataset=<name> (-d)
 
-    The dataset to stream out rows.
-
-  --key=<key> (-k)
-
-    The key to lookup inside of a dataset (requires dataset param).
+    The dataset name if data is parsed.

@@ -20,7 +20,7 @@ test('get: dat import dataset', function (t) {
 })
 
 test('get: dat get a key from dataset', function (t) {
-  var st = spawn(t, dat + ' get ak11246293 --dataset=get-test', {cwd: dat1})
+  var st = spawn(t, dat + ' get --key=ak11246293 --dataset=get-test', {cwd: dat1})
   st.stderr.empty()
   st.stdout.match(function (output) {
     try {
@@ -35,21 +35,14 @@ test('get: dat get a key from dataset', function (t) {
   st.end()
 })
 
-test('get: dat get without key errors', function (t) {
-  var st = spawn(t, dat + ' get --dataset=get-test', {cwd: dat1})
+test('get: dat get file with row key', function (t) {
+  var st = spawn(t, dat + ' get --key=ak11246293', {cwd: dat1})
   st.stdout.empty()
-  st.stderr.match(fs.readFileSync(path.join('usage', 'get.txt')).toString() + '\n', 'usage matched')
+  st.stderr.match(/Could not find file with key ak11246293/)
   st.end()
 })
 
-test('get: dat get without dataset errors', function (t) {
-  var st = spawn(t, dat + ' get ak11246293', {cwd: dat1})
-  st.stdout.empty()
-  st.stderr.match(/Must specify dataset/)
-  st.end()
-})
-
-test('get: dat get without key and dataset errors', function (t) {
+test('get: dat get without key and dataset returns usage', function (t) {
   var st = spawn(t, dat + ' get', {cwd: dat1})
   st.stdout.empty()
   st.stderr.match(fs.readFileSync(path.join('usage', 'get.txt')).toString() + '\n', 'usage matched')
