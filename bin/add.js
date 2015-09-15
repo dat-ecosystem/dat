@@ -1,4 +1,4 @@
-var basename = require('path').basename
+var path = require('path')
 var pump = require('pump')
 var debug = require('debug')('bin/add')
 
@@ -39,15 +39,17 @@ function handleAdd (args) {
   debug('handleAdd', args)
   if (args.help || args._.length === 0) return usage()
 
-  var path = args._[0]
+  var location = args._[0]
   var stream = args._[1]
-  var key = args.key || basename(path)
+  var key = args.key || path.normalize(location)
+
+  if (path.isAbsolute(location)) key = path.basename(location)
 
   openDat(args, function (err, db) {
     if (err) abort(err, args)
     if (stream === '-') doWrite(process.stdin, db)
     else {
-      createFileStream(path, function (err, inputStream) {
+      createFileStream(location, function (err, inputStream) {
         if (err) abort(err, args)
         doWrite(inputStream, db)
       })
