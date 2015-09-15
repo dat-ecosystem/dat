@@ -18,8 +18,10 @@ descriptive commands:
   keys        List existing keys in a dataset.
 
 data commands:
-  import      Add tabular data to a dataset.
-  export      View tabular data from a dataset.
+  add         Add data to a dat. Uses import or write underneath.
+  get         Get data from a dat. Uses export or read underneath.
+  import      Put new rows into a dataset.
+  export      Get rows from a dataset.
   read        Read a binary file.
   write       Write a binary file.
   delete      Delete a key in a dataset.
