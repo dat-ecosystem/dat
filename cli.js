@@ -6,6 +6,7 @@ var config = {
   commands: [
     require('./bin/checkout.js'),
     require('./bin/clone.js'),
+    require('./bin/add.js'),
     require('./bin/datasets.js'),
     require('./bin/delete.js'),
     require('./bin/destroy.js'),
