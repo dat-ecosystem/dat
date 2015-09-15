@@ -1,0 +1,27 @@
+dat schema <location or - for stdin>
+
+  Get or put a schema into dat. If no location given, pipes the schema for that dataset to stdout.
+
+Parameters:
+
+  <location>
+
+    The local filename or URL of the resource to stream into the dat blob store. If location is '-', dat will accept data on stdin.
+
+  --dataset=<name> (-d) (required)
+
+    The name of the dataset schema to set or get.
+
+Options:
+
+  --format=[protobuf, jsonschema, sql] (-f)
+
+    Format for parsing the schema file (experimental)
+
+  --key=<name>
+
+    The key by which to reference the schema later. If not supplied, uses dataset_<filename>. (e.g., /Users/karissa/docs/schema.proto -> 'organizations_schema.proto')
+
+  --message=<text> (-m)
+
+    Provide a message for the new version upon result of the operation.

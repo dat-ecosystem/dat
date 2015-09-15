@@ -16,6 +16,7 @@ descriptive commands:
   forks       List current forks.
   diff        See differences between the data in two forks.
   keys        List existing keys in a dataset.
+  schema      Get or add schemas to a dataset.
 
 data commands:
   import      Add tabular data to a dataset.

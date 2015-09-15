@@ -25,6 +25,7 @@ This is the `dat` command line API as of the Beta release.
   - [dat export](#dat-export)
   - [dat read](#dat-read)
   - [dat write](#dat-write)
+  - [dat schema](#dat-schema)
 
 ## repository commands
 
@@ -571,3 +572,54 @@ Storing cat.jpg (8.3 Mb, 38 Mb/s).
 Stored cat.jpg successfully.
 Current version is now b04adb64fdf2203
 ```
+
+### dat schema
+
+Get or put a schema into dat. If no location given, pipes the schema for that dataset to stdout. The schema is added as a blob file to the dat, and an entry is created in the package.json for that dataset.
+
+Write a schema to dat:
+
+```
+$ dat schema -d fishing schemas/1.0a/fishing.json --format=jsonschema
+Storing fishing.json (2.09 kB).
+Stored fishing.json successfully.
+Current version is now: 57e3ea63a8c50dda52a6aad5ac3429cc5e22f3c27b1b5c2a44dcf505ffd40d69
+```
+
+package.json:
+```
+{
+  "dat": {
+    "datasets": {
+      "fishing": {
+        "schema": "fishing.json",
+        "format": "jsonschema"
+      }
+    }
+  },
+  "name": "Hunting-and-Fishing",
+  "publisher": "waldoj",
+  "description": "Hunting-and-Fishing"
+}
+```
+
+Read a schema from dat:
+
+```
+$ dat schema -d fishing
+...
+```
+
+Read a schema for a dataset that doesn't have one:
+
+```
+$ dat schema -d notadataset
+No schema defined for that dataset.
+```
+
+### Options
+
+`--key=<name>`: The key by which to reference the schema later. If not supplied, uses dataset_<filename>. (e.g., /Users/karissa/docs/schema.proto -> 'schema.proto')
+
+`--message=<text> (-m)`: Provide a message for the new version upon result of the operation. Defaults to "Added <filename> schema for dataset <dataset-name>."
+
