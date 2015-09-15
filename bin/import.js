@@ -39,7 +39,7 @@ module.exports = {
     {
       name: 'deduplicate',
       boolean: true,
-      default: true
+      default: false
     }
   ]
 }
