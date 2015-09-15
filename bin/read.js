@@ -7,13 +7,7 @@ var usage = require('../lib/util/usage.js')('read.txt')
 module.exports = {
   name: 'read',
   command: handleRead,
-  options: [
-    {
-      name: 'dataset',
-      boolean: false,
-      abbr: 'd'
-    }
-  ]
+  options: []
 }
 
 function handleRead (args) {

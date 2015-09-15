@@ -1,28 +1,37 @@
 var debug = require('debug')('bin/get')
 
+var datRead = require('../bin/read.js').command
+var datExport = require('../bin/export.js').command
+
 var abort = require('../lib/util/abort.js')
 var openDat = require('../lib/util/open-dat.js')
 var usage = require('../lib/util/usage.js')('get.txt')
 
 module.exports = {
   name: 'get',
-  command: handleRows,
+  command: handleGet,
   options: [
     {
       name: 'dataset',
       boolean: false,
       abbr: 'd'
+    },
+    {
+      name: 'key',
+      boolean: false,
+      abbr: 'k'
     }
   ]
 }
 
-function handleRows (args) {
-  debug('handleRows', args)
+function handleGet (args) {
+  debug('handleGet', args)
   if (args.help || args._.length === 0) {
     return usage()
   }
 
-  if (!args.dataset) abort(new Error('Error: Must specify dataset (-d)'))
+  if (!args.dataset) return datRead(args)
+  if (!args.key) return datExport(args)
 
   openDat(args, function ready (err, db) {
     if (err) abort(err, args)
