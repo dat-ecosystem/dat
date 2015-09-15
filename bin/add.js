@@ -39,11 +39,10 @@ function handleAdd (args) {
   debug('handleAdd', args)
   if (args.help || args._.length === 0) return usage()
 
-  var location = args._[0]
+  var location = path.normalize(args._[0])
   var stream = args._[1]
-  var key = args.key || path.normalize(location)
-
-  if (path.isAbsolute(location)) key = path.basename(location)
+  var key = args.key
+  if (!key) key = path.isAbsolute(location) ? path.basename(location) : location
 
   openDat(args, function (err, db) {
     if (err) abort(err, args)
