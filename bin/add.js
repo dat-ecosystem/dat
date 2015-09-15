@@ -1,7 +1,12 @@
-var debug = require('debug')('bin/import')
+var basename = require('path').basename
+var pump = require('pump')
+var debug = require('debug')('bin/add')
+
 var usage = require('../lib/util/usage.js')('add.txt')
-var datImport = require('../bin/import.js').command
-var datWrite = require('../bin/write.js').command
+var abort = require('../lib/util/abort.js')
+var progress = require('../lib/util/progress.js')
+var createFileStream = require('../lib/util/create-file-stream.js')
+var openDat = require('../lib/util/open-dat.js')
 
 module.exports = {
   name: 'add',
@@ -33,7 +38,36 @@ module.exports = {
 function handleAdd (args) {
   debug('handleAdd', args)
   if (args.help || args._.length === 0) return usage()
-  args.flag = true // for importing data with implicit deletes
-  if (args.dataset) datImport(args)
-  else datWrite(args)
+
+  var path = args._[0]
+  var stream = args._[1]
+  var key = args.key || basename(path)
+
+  openDat(args, function (err, db) {
+    if (err) abort(err, args)
+    if (stream === '-') doWrite(process.stdin, db)
+    else {
+      createFileStream(path, function (err, inputStream) {
+        if (err) abort(err, args)
+        doWrite(inputStream, db)
+      })
+    }
+  })
+
+  function doWrite (inputStream, db) {
+    var writer = db.createFileWriteStream(key, {message: args.message})
+    progress(writer, {bytes: true, verb: 'Storing ' + key})
+    pump(inputStream, writer, function done (err) {
+      if (err) abort(err, args, 'Error: Write failed to ' + key)
+
+      if (args.json) {
+        var output = {
+          version: db.head
+        }
+        console.log(JSON.stringify(output))
+      } else console.error('Stored ' + key + ' successfully. \nCurrent version is now: ' + db.head)
+
+      db.close()
+    })
+  }
 }

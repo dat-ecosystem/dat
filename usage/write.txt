@@ -1,5 +1,8 @@
 dat write <location>
 
+  DEPRECATED. Use `dat add` instead
+
+Usage:
   Write binary data into dat. This differs from `import` in that it doesn't parse the file, it just stores it as a binary attachment. `import` is designed for tabular data or key/value data. `write` is meant for large files, blobs, or attachments that you can't parse into rows. Files will appear as links in the same directory as `data.dat`.
 
 Paramters:
