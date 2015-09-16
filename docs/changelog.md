@@ -1,5 +1,8 @@
 ## Change Log
 
+### 7.1.1 (2015/09/15 20:13 +00:00)
+- [96f80c6](https://github.com/maxogden/dat/commit/96f80c6c077     b99630076db74af72f0aec7791a6b) set deduplicate to false by default in cli (@karissa)
+- [cb8e7da](https://github.com/maxogden/dat/commit/cb8e7da4f82     48aa0633936f6f03aa79eb0fdf56e) add 'dat' key with metadata to serve (@karissa)
 ### 7.1.0 (2015/09/11 20:13 +00:00)
 - [7a2adf3](https://github.com/maxogden/dat/commit/7a2adf3976d0b71acfb0b8e8ed86553650c63f5a) Fix double prompt bug  on push pull and clone (@karissa)
 - [11c4dfe](https://github.com/maxogden/dat/commit/11c4dfe280137c1deae234d14480d833b5d8f717) don't change status api before 1.0 (@karissa)
