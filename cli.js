@@ -19,6 +19,7 @@ var config = {
     require('./bin/keys.js'),
     require('./bin/log.js'),
     require('./bin/merge.js'),
+    require('./bin/schema.js'),
     require('./bin/pull.js'),
     require('./bin/push.js'),
     require('./bin/read.js'),

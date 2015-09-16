@@ -28,7 +28,7 @@ function handleRead (args) {
 
     var key = args._[0]
     var opts = {
-      dataset: 'files'
+      dataset: args.dataset || 'files'
     }
 
     debug(key, opts)

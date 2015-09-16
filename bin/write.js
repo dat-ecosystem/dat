@@ -53,7 +53,7 @@ function handleWrite (args) {
 
   function doWrite (inputStream, db) {
     var opts = {
-      dataset: 'files',
+      dataset: args.dataset || 'files',
       message: args.message
     }
 
