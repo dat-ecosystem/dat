@@ -1,0 +1,9 @@
+dat sign
+
+  Uses your ssh key to sign this dat. Uses the root node's version as the message. Can be used to verify ownership remotely.
+
+Options:
+
+  --keyPath=</path/to/id_rdsa>
+
+    Defaults to $HOME/.ssh/id_rsa
