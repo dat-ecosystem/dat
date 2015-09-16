@@ -20,6 +20,7 @@ var config = {
     require('./bin/log.js'),
     require('./bin/merge.js'),
     require('./bin/pull.js'),
+    require('./bin/sign.js'),
     require('./bin/push.js'),
     require('./bin/read.js'),
     require('./bin/replicate.js'),
