@@ -34,6 +34,7 @@ test('status-log: dat1 status as json', function (t) {
       var status = JSON.parse(output)
       t.same(status.version.length, 64) // 32bit hash 2 in hex (64)
       t.same(status.datasets.length, 1) // files dataset doesn't count!
+      t.same(status.dat.readme, '', 'has empty readme')
       return true
     } catch (e) {
       return false
