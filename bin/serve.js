@@ -31,7 +31,7 @@ function startDatServer (args) {
   if (args.port) return serve(parseInt(args.port, 10))
 
   try {
-    var name = config(args).dat.name + '.dat'
+    var name = config(args).name + '.dat'
   } catch (err) {
     // do nothing
   }
