@@ -1,11 +1,10 @@
-# dat command line API
-
 This is the `dat` command line API as of the Beta release.
 
-- [repository commands](#repository-commands)
   - [dat](#dat)
   - [dat init](#dat-init)
   - [dat status](#dat-status)
+  - [dat write](#dat-write)
+  - [dat read](#dat-read)
   - [dat log](#dat-log)
   - [dat clone](#dat-clone)
   - [dat push](#dat-push)
@@ -20,15 +19,10 @@ This is the `dat` command line API as of the Beta release.
   - [dat replicate](#dat-replicate)
   - [dat serve](#dat-serve)
   - [dat destroy](#dat-destroy)
-- [dataset commands](#dataset-commands)
   - [dat import](#dat-import)
   - [dat export](#dat-export)
-  - [dat read](#dat-read)
-  - [dat write](#dat-write)
 
-## repository commands
-
-### dat
+## dat
 
 Lists available commands and shows instructions
 
@@ -36,7 +30,7 @@ Lists available commands and shows instructions
 dat
 ```
 
-### Options
+## options
 
 Options usually have shorthand `-` and long form `--` variations:
 
@@ -55,8 +49,6 @@ dat --version
 # path is not boolean, meaning `init` would be incorrectly parsed here
 dat -p init
 ```
-
-### Global Options
 
 All commands have these options:
 
@@ -82,7 +74,7 @@ commands:
 type `dat <command> --help` to view detailed help
 ```
 
-### dat init
+## dat init
 
 Init a new dat.
 
@@ -98,7 +90,7 @@ $ dat init
 Initialized a new dat at /path/to/test
 ```
 
-### dat status
+## dat status
 
 Show current status, including row count, file count, last updated
 
@@ -115,7 +107,53 @@ Current version is now 8eaf3b0739d32849687a544efae8487b5b05df52 (latest)
 Last updated 3 seconds ago (Tue Jun 02 2015 13:46:54 GMT-0700 (PDT))
 ```
 
-### dat log
+## dat write
+
+Write binary data into dat. This differs from `import` in that it doesn't parse the file, it just stores it as a binary attachment. `import` is designed for key/value row-like, or tabular data. `write` is meant for large files, blobs, or attachments that you can't parse into rows.
+
+Write a file to dat:
+
+```
+dat write <filename> --dataset=<dataset-name>
+```
+
+*Options*
+
+`key`/`k`: the name, or lookup key, for the binary file inside dat. If no name is supplied, dat will use the filename as the lookup key.
+
+Example output:
+
+Stream data from stdin, save as 'photo.jpg' (must specify name when using STDIN) in the dataset 'photos' (required):
+
+```bash
+cat photo.jpg | dat write - --key=photo.jpg --dataset=photos
+```
+
+Write a file by filename (uses `cat.jpg` as the name automatically):
+
+```
+$ dat write images/cat.jpg
+Storing cat.jpg (8.3 Mb, 38 Mb/s).
+Stored cat.jpg successfully.
+Current version is now b04adb64fdf2203
+```
+
+## dat read
+
+Read binary data from a file stored in dat
+
+```
+dat read <filename>
+```
+
+Example:
+
+```
+$ dat read photo.jpg --dataset=photos
+```
+
+
+## dat log
 
 Stream versions out in historical order as json
 
@@ -144,7 +182,7 @@ $ dat log --limit=1 --json
 
 `Links` is a list of older versions that are referenced from this current version (forms a directed acyclic graph if drawn).
 
-### dat clone
+## dat clone
 
 Clone a new repository from a remote dat to create a new dat.
 
@@ -163,7 +201,7 @@ Clone from remote has completed.
 Current version is now b04adb64fdf2203
 ```
 
-### dat push
+## dat push
 
 Push changes from your local dat to a remote dat
 
@@ -171,7 +209,7 @@ Push changes from your local dat to a remote dat
 dat push <remote>
 ```
 
-#### Options
+*Options*
 
 - `live` - Keep pushing even after the initial pushing finishes
 - `bin` - specify path to the `dat` executable if `dat` is not in your path
@@ -184,7 +222,7 @@ Pushed 438 changes (32.03 Mb, 4.4 Mb/s).
 Push completed successfully.
 ```
 
-### dat pull
+## dat pull
 
 Pull new changes from a remote dat into your local dat.
 
@@ -192,7 +230,7 @@ Pull new changes from a remote dat into your local dat.
 dat pull <remote>
 ```
 
-#### Options
+*Options*
 
 - `live` - Keep pulling even after the initial pulling finishes
 - `bin` - specify path to the `dat` executable if `dat` is not in your path
@@ -206,7 +244,7 @@ Pull completed successfully, you now have 2 forks.
 Current version is now b04adb64fdf2203
 ```
 
-### dat checkout
+## dat checkout
 
 Non-destructive rollback state to a version in the past
 
@@ -227,7 +265,7 @@ $ dat checkout 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
 Checked out state of dat to 7b13de1bd942a0cbfc2721d9e0b9a4fa5a076517
 ```
 
-### dat datasets
+## dat datasets
 
 List datasets in the dat
 
@@ -239,7 +277,7 @@ model_data
 pickles
 ```
 
-### dat diff
+## dat diff
 
 Generate a diff between two versions of the repository
 
@@ -296,7 +334,7 @@ $ dat diff --pretty --json 64843f272df
 <... etc for each key in the diff>
 ```
 
-### dat merge
+## dat merge
 
 Merges two forks
 
@@ -314,7 +352,7 @@ If merging a fork, you should specify a strategy option.
 
 Use `dat status` and `dat forks` to determine these values.
 
-#### Options
+*Options*
 
 - `-`: receive resolved changes on stdin
 - `left`: pick the left side as the winner
@@ -351,7 +389,7 @@ Changes merged successfully.
 Current version is now b2bg304823h32h2
 ```
 
-#### JSON format
+*JSON format*
 
 When writing data into a merge operation it should be in the same format as is contained in the individual versions supplied in the `versions` array of `dat diff` output.
 
@@ -364,7 +402,7 @@ Example:
 {"type":"put","version":"b04adb64fdf2203","change":6,"key":"mafintosh","value":{"key":"mafintosh","name":"Mathias"}}
 ```
 
-### dat forks
+## dat forks
 
 List the current forks
 
@@ -386,7 +424,7 @@ $ dat forks --json
 {version: "163c6089c3477eecfa42420b4249f481b61c30b63071079e51cb052451862502", message: "Updated names"}
 ```
 
-### dat keys
+## dat keys
 
 List the keys from a dataset.
 
@@ -397,13 +435,13 @@ mafintosh
 karissa
 ```
 
-### Options
+*Options*
 
 - `lt`, `lte`, `gt`, `gte` - specify start/end key range values using less than, less than equals, greater than, greater than equals
 - `limit` - default unlimited. specify how many results to receive
 - `format` - default `json`. you can also specify `csv`.
 
-### dat files
+## dat files
 
 List the files in the current repository.
 
@@ -412,15 +450,15 @@ $ dat files
 package.json
 ```
 
-### Options
+*Options*
 
 `dat files` supports all of the options as `dat keys`
 
-### dat replicate
+## dat replicate
 
 Same as doing a `dat push` and `dat pull` at the same time. Use it when you are on the other end of a `dat pull` or a `dat push` (e.g. if you are hosting dat on a server).
 
-#### Options
+*Options*
 
 - `bin` - specify path to the `dat` executable if `dat` is not in your path
 
@@ -434,7 +472,7 @@ Average speed: 4.3 Mb/s.
 Replication completed successfully.
 ```
 
-### dat serve
+## dat serve
 
 Create an http endpoint so others can `clone`, `push`, or `pull` data. Default port is 6442, or uses the `PORT` env variable if set.
 
@@ -443,12 +481,12 @@ $ dat serve [--port=<number>]
 Listening on port 6442
 ```
 
-#### Options
+*Options*
 
 - `readonly` - run with read only permission, so e.g. people can only clone/pull but not push
 
 
-### dat destroy
+## dat destroy
 
 Destroy a repository and all data inside it. Cannot be undone
 
@@ -458,11 +496,9 @@ About to destroy data.dat. This cannot be undone. Are you sure? (y/n): y
 Destroyed data.dat
 ```
 
-#### Options
+*Options*
 
 - `no-prompt` - add this flag to skip the prompt and force the destroy
-
-## dataset commands
 
 These are meant to affect a specific dataset inside a repository.
 
@@ -470,7 +506,7 @@ Currently you **must** specify the dataset when doing any dataset commands.
 
 - `dataset`/`d` - specify the dataset to use.
 
-### dat import
+## dat import
 
 Import key/value data into dat
 
@@ -478,7 +514,7 @@ Import key/value data into dat
 dat import <filename> --dataset=<name>
 ```
 
-### Options
+*Options*
 
 - `key`/`k` - specify which column to use as the primary key (defaults to auto-generated keys). You can add multiple keys to craft a compound key. sorted ascending by default
 - `message`/`m` - a short description of this import
@@ -500,7 +536,7 @@ Stream data from stdin:
 cat file.json | dat import -
 ```
 
-### dat export
+## dat export
 
 Stream a range of keys + values out of a dataset.
 
@@ -514,7 +550,7 @@ Stream data to a file:
 dat export > woah-my-data.json
 ```
 
-### Options
+*Options*
 
 - `lt`, `lte`, `gt`, `gte` - specify start/end key range values using less than, less than equals, greater than, greater than equals
 - `limit` - default unlimited. specify how many results to receive
@@ -525,49 +561,4 @@ Example output:
 ```
 $ dat export
 {"key": "maxogden", "firstname": "Max", "lastname": "Ogden"}
-```
-
-### dat read
-
-Read binary data from a file stored in dat
-
-```
-dat read <filename>
-```
-
-Example:
-
-```
-$ dat read photo.jpg --dataset=photos
-```
-
-### dat write
-
-Write binary data into dat. This differs from `import` in that it doesn't parse the file, it just stores it as a binary attachment. `import` is designed for key/value row-like, or tabular data. `write` is meant for large files, blobs, or attachments that you can't parse into rows.
-
-Write a file to dat:
-
-```
-dat write <filename> --dataset=<dataset-name>
-```
-
-#### Options
-
-`key`/`k`: the name, or lookup key, for the binary file inside dat. If no name is supplied, dat will use the filename as the lookup key.
-
-Example output:
-
-Stream data from stdin, save as 'photo.jpg' (must specify name when using STDIN) in the dataset 'photos' (required):
-
-```bash
-cat photo.jpg | dat write - --key=photo.jpg --dataset=photos
-```
-
-Write a file by filename (uses `cat.jpg` as the name automatically):
-
-```
-$ dat write images/cat.jpg
-Storing cat.jpg (8.3 Mb, 38 Mb/s).
-Stored cat.jpg successfully.
-Current version is now b04adb64fdf2203
 ```

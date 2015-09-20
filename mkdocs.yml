@@ -1,0 +1,12 @@
+site_name: Dat project
+theme: readthedocs
+pages:
+- Home: 'index.md'
+- User Guide: 'user-guide.md'
+- Commandline API: 'cli-docs.md'
+- Hosting a Dat: 'hosting.md'
+- Technical Guide: 'technical-guide.md'
+- Misc:
+  - 'Changelog': 'misc/changelog.md'
+  - 'Roadmap': 'misc/roadmap.md'
+  - 'Collaborators': 'misc/collaborators.md'
