@@ -1,13 +1,9 @@
-dat get <key>
+dat get <filename or key>
 
-  Returns the row with the given primary key.
+  Streams data from dat to stdout. If a dataset is supplied, will stream out rows. Otherwise, will stream raw binary data from the blob store. You can supply a combination of key and dataset to get a particular
 
-Parameters
+Options:
 
-  <key>: required
+  --dataset=<name> (-d)
 
-    The key to lookup.
-
-  --dataset (-d): required
-
-    The dataset associated with that key.
+    The dataset name if data is parsed.

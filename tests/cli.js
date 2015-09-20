@@ -79,7 +79,7 @@ test('cli: dat get nonexistent key', function (t) {
 
 test('cli: dat get without dataset', function (t) {
   var st = spawn(t, dat + ' get bar --path=' + dat1)
-  st.stderr.match(/Must specify dataset/)
+  st.stderr.match(/Could not find file with key bar/)
   st.stdout.empty()
   st.end()
 })

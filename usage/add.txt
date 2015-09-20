@@ -1,0 +1,25 @@
+dat add <filename or - for stdin>
+
+  Write data to dat. Will version data by each row's primary key if imported into a dataset. Otherwise, `dat add` will add the data as a blob (binary object).
+
+Parameters:
+
+  <filename> (required)
+
+    Parse the given file into rows and store at the given dataset. Supply - to accept input on standard in.
+
+Options:
+
+  --dataset=<name> (-d)
+
+    If supplied, will parse the rows into a Dat Dataset with the specified name. A dataset is analogous to a SQL Table or Mongo/CouchDB Collection.
+
+  --format=[ndjson, csv, json] (-f)
+
+    Format for parsing the file, if dataset supplied.
+
+  --key=<column> (-k) (recommended)
+
+    The primary key(s) to use, if dataset supplied. Defaults to auto-generating keys for each row. You can create a compound key by supplying multiple values, for example:
+
+      dat import ... -k <column1> -k <column2> ...

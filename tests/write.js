@@ -134,12 +134,12 @@ test('write: dat read after write from file with new key', function (t) {
 })
 
 test('write: dat write from file with new key with abbr', function (t) {
-  datWrite(t, blobPath, '-d write-test-2 -k new-name-abbr.txt')
+  datWrite(t, blobPath, '-k new-name-abbr.txt')
 })
 
 test('write: dat read after write from file with new key with abbr', function (t) {
   var contents = fs.readFileSync(blobPath).toString()
-  datReadEquals(t, 'new-name-abbr.txt', contents, '-d write-test-2')
+  datReadEquals(t, 'new-name-abbr.txt', contents)
 })
 
 helpers.onedat(dat2)
