@@ -2,6 +2,14 @@
 
 You can think of dat as a streaming interface for data on the filesystem.
 
+## Try dat interactively
+
+If you haven't yet, please swing over to our [interactive tutorial to try dat now in your browser](http://try-dat.com).
+
+You can still use the user guide below if you're feeling rushed, but the interactive guide has more information.
+
+## Quick walkthrough
+
 Create a new directory.
 
 ```
@@ -20,17 +28,59 @@ Make this directory into a dat repository
 dat init
 ```
 
-Now you can add a file to the dat repository.
+Now you can add a binary file to the dat repository. You can add a message with `-m` and it will get written to the log.
 
 ```
-dat add
+dat write http://try-dat.com/static/img/wildcat.jpg -m "Added a wildcat because I can."
 ```
 
-import a CSV or newline-delimited JSON file to the dat repository (for example, [an exoplanet orbit CSV file](http://exoplanets.org/csv-files/exoplanets.csv)) by running `dat import http://exoplanets.org/csv-files/exoplanets.csv -d exoplanets`.
+Check the log:
+```
+dat log
+```
+
+And see the status (should be two files!). Save the current version hash. We'll use it later.
+```
+dat status
+```
+
+And you can add some CSV, if you want to version by row. You can add a primary key, let's use ucr_ncic_code.
+```
+dat import http://samplecsvs.s3.amazonaws.com/SacramentocrimeJanuary2006.csv -d sacramento-crime -k ucr_ncic_code
+```
+
+Then, see the change:
+```
+dat log
+dat status
+```
+
+Oops, this was a mistake! If you want to go back in time, just use `checkout` using the version from before:
+```
+dat checkout <version>
+```
+
+## Forking, diffing, merging tables
+
+If you import data after checkout, you'll get a fork, because you added to a version in the past.
+
+```
+dat import http://samplecsvs.s3.amazonaws.com/SacramentocrimeJanuary2006.csv -d sacramento-crime -k ucr_ncic_code
+dat forks
+```
+
+Now, you'll have a forked graph. Check out the diff, here, using the same version from before (experimental):
+
+```
+dat diff <version>
+```
+
+You can then merge them:
+```
+dat merge <version1> <version2>
+```
 
 Once imported, the data can be forked, diffed, merged, replicated, destroyed, etc.—[see a list of all dat commands](https://github.com/maxogden/dat/blob/master/docs/cli-docs.md) for more.
-
-Run the tutorial at http://try-dat.com for a quick start to the basic collaborative command-line use cases.
 
 ## How do I use a compound key in dat?
 
