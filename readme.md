@@ -10,7 +10,7 @@ Key features:
   * **sync incrementally** between machines
   * **encourage forking** of data, rather than forcing merges
 
-If you haven't yet, please swing over to our [interactive tutorial to try dat now in your browser](http://try-dat.com).
+If you haven't yet, please swing over to our [interactive tutorial to try dat now in your browser](http://try-dat.com) and [readthedocs](http://datproject.readthedocs.org/en/latest/).
 
 **Have questions?** Join `#dat` on [freenode](https://webchat.freenode.net) or [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge). Chat logs are [available here](https://botbot.me/freenode/dat/)
 
@@ -64,7 +64,7 @@ Once imported, the data can be forked, diffed, merged, replicated, destroyed, et
 
 [Run the tutorial at http://try-dat.com](http://try-dat.com) for a quick start to the basic collaborative command-line use cases.
 
-[Read the user guide here](docs/user-guide.md)
+[Read the user guide here](http://datproject.readthedocs.org/en/latest/user-guide/)
 
 ## Why not git?
 
