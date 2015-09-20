@@ -1,5 +1,9 @@
 dat serve [--port=6442]
 
-Start an http listener for a dat remote. Supports push/pull/clone.
+  Start an http listener for a dat remote. Supports push/pull/clone. This dat will afterwards be clonable by doing `dat clone http://address-to-this-dat.com` or `dat clone http://{name-of-dat}.dat.local` if you are on the same local network.
 
-  --readonly  -  run with read only permission, so e.g. people can only clone/pull but not push
+Options:
+
+  --readonly
+
+    Run with read only permission, so others can only clone/pull but not push.

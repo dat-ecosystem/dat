@@ -2,6 +2,8 @@ var http = require('http')
 var getport = require('getport')
 var pump = require('pump')
 var route = require('../lib/serve.js')
+var register = require('register-multicast-dns')
+var config = require('../lib/util/config.js')
 var abort = require('../lib/util/abort.js')
 var openDat = require('../lib/util/open-dat.js')
 var usage = require('../lib/util/usage.js')('serve.txt')
@@ -28,12 +30,19 @@ function startDatServer (args) {
   if (args.help) return usage()
   if (args.port) return serve(parseInt(args.port, 10))
 
+  try {
+    var name = config(args).dat.name + '.dat'
+  } catch (err) {
+    // do nothing
+  }
+
   getport(6442, function (err, port) {
     if (err) abort(err, args)
     return serve(port)
   })
 
   function serve (port) {
+    if (name) register(name)
     openDat(args, function (err, db) {
       if (err) abort(err, args)
       if (!port) abort(new Error('Invalid port: ' + port), args)

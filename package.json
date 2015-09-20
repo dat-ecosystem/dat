@@ -50,6 +50,7 @@
     "pump": "^1.0.0",
     "pumpify": "^1.3.3",
     "read": "^1.0.6",
+    "register-multicast-dns": "^1.0.1",
     "relative-date": "^1.1.2",
     "resolve": "^1.1.6",
     "rimraf": "^2.3.2",
