@@ -58,13 +58,13 @@ commands:
 
 ## Using dat
 
-You can think of dat as a streaming interface for data on the filesystem.
-
-Create a new directory (e.g., `mkdir dat-test`) and open that directory (e.g., `cd dat-test`). Make this directory into a dat repository by running `dat init`. Now you can import a CSV or newline-delimited JSON file to the dat repository (for example, [an exoplanet orbit CSV file](http://exoplanets.org/csv-files/exoplanets.csv)) by running `dat import http://exoplanets.org/csv-files/exoplanets.csv -d exoplanets`.
+You can think of dat as a streaming interface for data on the filesystem -- it works like git.
 
 Once imported, the data can be forked, diffed, merged, replicated, destroyed, etc.—[see a list of all dat commands](https://github.com/maxogden/dat/blob/master/docs/cli-docs.md) for more.
 
-Run the tutorial at http://try-dat.com for a quick start to the basic collaborative command-line use cases.
+[Run the tutorial at http://try-dat.com](http://try-dat.com) for a quick start to the basic collaborative command-line use cases.
+
+[Read the user guide here](docs/user-guide.md)
 
 ## Why not git?
 

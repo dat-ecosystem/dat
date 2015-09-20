@@ -6,7 +6,8 @@ pages:
 - Commandline API: 'cli-docs.md'
 - Hosting a Dat: 'hosting.md'
 - Technical Guide: 'technical-guide.md'
-- Misc:
-  - 'Changelog': 'misc/changelog.md'
-  - 'Roadmap': 'misc/roadmap.md'
-  - 'Collaborators': 'misc/collaborators.md'
+- Meta:
+  - 'Changelog': 'meta/changelog.md'
+  - 'Roadmap': 'meta/roadmap.md'
+  - 'Collaborators': 'meta/collaborators.md'
+extra_css: [extra.css]

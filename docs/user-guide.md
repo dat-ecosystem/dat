@@ -96,7 +96,7 @@ Dat will sort these keys and use them with a `+` delimiter, so a row with 'oakla
 
 ## How do I connect a different backend to dat?
 
-In your `package.json` file, under `dat`, add a `backend` entry. Example for `SQL` variants:
+In your `package.json` file, under dat, add a backend entry. Example for SQL variants:
 
 ```
 {
