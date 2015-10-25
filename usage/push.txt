@@ -2,7 +2,7 @@ dat push <url>
 
   Pushes the current checkout to the given url.
 
-Paramters:
+Parameters:
 
   <url> (required)
 
@@ -17,4 +17,3 @@ Options:
   --live
 
     Keep pushing streaming changes in real-time as newline-delimited JSON.
-
