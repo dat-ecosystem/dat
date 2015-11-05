@@ -35,52 +35,5 @@ function handlePush (args) {
   var remote = config(args).dat.remote || args._[0]
   if (!remote) return usage()
 
-  if (args.username && args.password) {
-    remote = auth(remote, args.username, args.password)
-  }
-
-  var transportOpts = {
-    command: (args.bin || 'dat') + ' replicate -'
-  }
-
-  var transport = transportStream(transportOpts)
-
-  try {
-    var stream = transport(remote)
-  } catch (err) {
-    abort(err, args)
-    return usage()
-  }
-
-  stream.on('warn', function (data) {
-    console.error(data)
-  })
-
-  eos(stream, function (err) {
-    if (!err) return debug('stream end')
-    if (err.level === 'client-authentication' && !args.json) {
-      return authPrompt(args, handlePush)
-    }
-    else abort(err, args)
-  })
-
-  stream.on('finish', function () {
-    openDat(args, function ready (err, db) {
-      if (err) return abort(err, args)
-      if (args.json) return console.log(JSON.stringify({version: db.head}))
-      console.error('Push completed successfully.')
-      db.close()
-    })
-  })
-
-  openDat(args, function ready (err, db) {
-    if (err) return abort(err, args)
-    var push = stream.pipe(db.push({live: args.live}))
-    if (!args.json) {
-      push.once('progress', function () {
-        progress(push, {verb: 'Pushed', replicate: true})
-      })
-    }
-    push.pipe(stream)
-  })
+  throw new Error('Unimplemented')
 }
