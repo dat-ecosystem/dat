@@ -13,6 +13,7 @@ function handleStatus (args) {
   var db = dat(args)
   status(db, args, function (err, info) {
     if (err) abort(err, args)
+    if (args.json) return console.log(JSON.stringify(info))
     for (var i in info.heads) {
       console.log(info.heads[i])
     }
