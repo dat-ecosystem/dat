@@ -6,19 +6,7 @@ var abort = require('../lib/util/abort.js')
 
 module.exports = {
   name: 'push',
-  command: handlePush,
-  options: [
-    {
-      name: 'username',
-      boolean: false,
-      abbr: 'u'
-    },
-    {
-      name: 'password',
-      boolean: false,
-      abbr: 'p'
-    }
-  ]
+  command: handlePush
 }
 
 function handlePush (args) {

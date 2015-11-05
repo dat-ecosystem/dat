@@ -1,5 +1,6 @@
 var http = require('http')
 var dat = require('..')
+var getport = require('getport')
 var register = require('register-multicast-dns')
 var replicator = require('dat-http-replicator')
 var status = require('../lib/status.js')
@@ -49,18 +50,14 @@ function startDatServer (args) {
     var server = http.createServer(function (req, res) {
       debug(req.method, req.url, req.connection.remoteAddress)
 
-      if (req.method === 'GET') {
+      if (req.url === '/' && req.method === 'GET') {
         status(db, args, function (err, data) {
           if (err) abort(err, args)
           res.setHeader('content-type', 'application/json')
           res.end(JSON.stringify(data))
         })
-      } else if (req.method === 'POST') {
-        replicator.server(db, req, res)
-      } else {
-        res.statuscode = 405
-        res.end()
       }
+      else replicator.server(db, req, res)
     })
 
     server.on('connection', function (socket) {

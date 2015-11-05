@@ -6,22 +6,10 @@ var abort = require('../lib/util/abort.js')
 
 module.exports = {
   name: 'pull',
-  command: handlepull,
-  options: [
-    {
-      name: 'username',
-      boolean: false,
-      abbr: 'u'
-    },
-    {
-      name: 'password',
-      boolean: false,
-      abbr: 'p'
-    }
-  ]
+  command: handlePull
 }
 
-function handlepull (args) {
+function handlePull (args) {
   var remote = config(args).dat.remote || args._[0]
   if (!remote) return usage()
 
