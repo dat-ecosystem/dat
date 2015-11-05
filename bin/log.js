@@ -1,8 +1,5 @@
-var through = require('through2')
-var pump = require('pump')
-var ndjson = require('ndjson')
 var debug = require('debug')('bin/versions')
-var openDat = require('../lib/util/open-dat.js')
+var dat = require('..')
 var abort = require('../lib/util/abort.js')
 var usage = require('../lib/util/usage.js')('log.txt')
 
@@ -13,9 +10,13 @@ module.exports = {
 
 function handleLog (args) {
   debug('handleLog', args)
+  if (args.help) return usage()
 
-  if (args.help) {
-    return usage()
-  }
-  throw new Error('Unimplemented')
+  var db = dat(args)
+  var reader = db.createReadStream()
+
+  reader.on('data', function (data) {
+    console.log(data.key.toString('hex'))
+  })
+  reader.on('error', abort)
 }

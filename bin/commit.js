@@ -21,16 +21,14 @@ function handleCommit (args) {
 
   var files = []
 
-
   var onfile = function (filepath, stats) {
     stats.filename = filepath
-    console.log('got', stats)
     files.push(stats)
   }
 
   var onfinish = function (err) {
     if (err) abort(err, args)
-    db.append(files.toString())
+    db.append(JSON.stringify(files))
     console.log('Done.')
   }
 
