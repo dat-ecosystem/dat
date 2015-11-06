@@ -1,6 +1,6 @@
 var config = require('../lib/util/config.js')
 var usage = require('../lib/util/usage.js')('push.txt')
-var replicator = require('dat-http-replicator')
+var replicate = require('../lib/replicate.js')
 var dat = require('..')
 var abort = require('../lib/util/abort.js')
 
@@ -15,7 +15,7 @@ function handlePush (args) {
 
   var db = dat(args)
 
-  replicator.client(db, remote, function (err) {
+  replicate(db, remote, {mode: 'push'}, function (err) {
     if (err) abort(err, args)
     console.error('Done!')
   })

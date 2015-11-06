@@ -1,7 +1,7 @@
 var config = require('../lib/util/config.js')
 var usage = require('../lib/util/usage.js')('pull.txt')
-var replicator = require('dat-http-replicator')
 var dat = require('..')
+var replicate = require('../lib/replicate.js')
 var abort = require('../lib/util/abort.js')
 
 module.exports = {
@@ -15,7 +15,7 @@ function handlePull (args) {
 
   var db = dat(args)
 
-  replicator.client(db, remote, function (err) {
+  replicate(db, remote, {mode: 'pull'}, function (err) {
     if (err) abort(err, args)
     console.error('Done!')
   })

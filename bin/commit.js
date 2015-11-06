@@ -1,5 +1,6 @@
 var debug = require('debug')('bin/commit')
 var dat = require('..')
+var fs = require('fs')
 var abort = require('../lib/util/abort.js')
 var fsWalk = require('fswalk')
 var usage = require('../lib/util/usage.js')('commit.txt')
@@ -9,6 +10,8 @@ module.exports = {
   command: handleCommit,
   options: []
 }
+
+var IGNORE = 'data.dat'
 
 function handleCommit (args) {
   debug('handleCommit', args)
@@ -22,6 +25,7 @@ function handleCommit (args) {
   var files = []
 
   var onfile = function (filepath, stats) {
+    if (filepath.indexOf(IGNORE) > 0) return
     stats.filename = filepath
     files.push(stats)
   }

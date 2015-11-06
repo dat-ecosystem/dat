@@ -2,7 +2,7 @@ var abort = require('../lib/util/abort.js')
 var usage = require('../lib/util/usage.js')('clone.txt')
 var dat = require('..')
 var fs = require('fs')
-var replicator = require('dat-http-replicator')
+var replicate = require('../lib/replicate.js')
 
 module.exports = {
   name: 'clone',
@@ -18,7 +18,7 @@ function handleClone (args) {
   fs.exists(args.path, function (exists) {
     if (!exists) fs.mkdirSync(args.path)
     var db = dat(args)
-    replicator.client(db, remote, function (err) {
+    replicate(db, remote, {mode: 'sync'}, function (err) {
       if (err) abort(err, args)
       console.error('Done!')
     })
