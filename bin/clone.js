@@ -2,6 +2,7 @@ var abort = require('../lib/util/abort.js')
 var usage = require('../lib/util/usage.js')('clone.txt')
 var dat = require('..')
 var fs = require('fs')
+var rimraf = require('rimraf')
 var replicate = require('../lib/replicate.js')
 
 module.exports = {
@@ -14,12 +15,19 @@ function handleClone (args) {
   var remote = args._[0]
   var path = args._[1] || getName(remote)
   args.path = path
-  console.log('Creating dat at', args.path)
-  fs.exists(args.path, function (exists) {
-    if (!exists) fs.mkdirSync(args.path)
+  fs.stat(args.path, function (err, stat) {
+    if (err) {
+      if (err.code === 'ENOENT') fs.mkdirSync(args.path)
+      else abort(err, args)
+    }
+    if (!err) abort(new Error('Error: destination path \'' + args.path + '\' already exists.'), args)
+
     var db = dat(args)
     replicate(db, remote, {mode: 'pull'}, function (err) {
-      if (err) abort(err, args)
+      if (err) {
+        if (err.code === 'ECONNREFUSED') return failure(err, args, 'Error: \'' + remote + '\' could not be reached.')
+        return failure(err, args, 'Clone failed.')
+      }
       console.error('Done!')
     })
   })
@@ -29,4 +37,10 @@ function getName (remote) {
   return remote
     .replace(/\.dat$/i, '').replace(/[^\-._a-z0-9]+$/i, '')
     .split(/[^\-._a-z0-9]/i).pop() || 'dat-' + Date.now()
+}
+
+function failure (err, args, msg) {
+  rimraf(args.path, function () {
+    abort(err, args, msg)
+  })
 }

@@ -1,6 +1,5 @@
 var debug = require('debug')('bin/commit')
 var dat = require('..')
-var fs = require('fs')
 var abort = require('../lib/util/abort.js')
 var fsWalk = require('fswalk')
 var usage = require('../lib/util/usage.js')('commit.txt')
@@ -15,13 +14,9 @@ var IGNORE = 'data.dat'
 
 function handleCommit (args) {
   debug('handleCommit', args)
-
-  if (args.help) {
-    return usage()
-  }
+  if (args.help) return usage()
 
   var db = dat(args)
-
   var files = []
 
   var onfile = function (filepath, stats) {
