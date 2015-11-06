@@ -18,7 +18,7 @@ function handleClone (args) {
   fs.exists(args.path, function (exists) {
     if (!exists) fs.mkdirSync(args.path)
     var db = dat(args)
-    replicate(db, remote, {mode: 'sync'}, function (err) {
+    replicate(db, remote, {mode: 'pull'}, function (err) {
       if (err) abort(err, args)
       console.error('Done!')
     })
