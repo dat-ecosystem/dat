@@ -15,7 +15,4 @@ function handleAdd (args) {
   if (args.help || args._.length === 0) {
     return usage()
   }
-
-  
-
 }
