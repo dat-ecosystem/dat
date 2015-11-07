@@ -14,7 +14,7 @@ var config = {
     require('./bin/help.js'),
     require('./bin/serve.js'),
     require('./bin/sync.js'),
-    require('./bin/commit.js'),
+    require('./bin/save.js'),
     require('./bin/status.js')
   ],
   defaults: require('./bin/defaults.js'),
