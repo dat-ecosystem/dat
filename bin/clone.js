@@ -15,19 +15,14 @@ function handleClone (args) {
   var remote = args._[0]
   var path = args._[1] || getName(remote)
   args.path = path
-  fs.stat(args.path, function (err, stat) {
-    if (err) {
-      if (err.code === 'ENOENT') fs.mkdirSync(args.path)
-      else abort(err, args)
-    }
-    if (!err) abort(new Error('Error: destination path \'' + args.path + '\' already exists.'), args)
-
+  mkdir(args, function () {
     var db = dat(args)
-    replicate(db, remote, {mode: 'pull'}, function (err) {
-      if (err) {
-        if (err.code === 'ECONNREFUSED') return failure(err, args, 'Error: \'' + remote + '\' could not be reached.')
-        return failure(err, args, 'Clone failed.')
-      }
+    var replicator = replicate(db, remote, {mode: 'pull'})
+    replicator.on('error', function (err) {
+      if (err.code === 'ECONNREFUSED') return failure(err, args, 'Error: \'' + remote + '\' could not be reached.')
+      return failure(err, args, 'Clone failed.')
+    })
+    replicator.on('end', function () {
       console.error('Done!')
     })
   })
@@ -42,5 +37,15 @@ function getName (remote) {
 function failure (err, args, msg) {
   rimraf(args.path, function () {
     abort(err, args, msg)
+  })
+}
+
+function mkdir (args, cb) {
+  fs.stat(args.path, function (err, stat) {
+    if (err) {
+      if (err.code === 'ENOENT') return fs.mkdir(args.path, cb)
+      else abort(err, args)
+    }
+    abort(new Error('Error: destination path \'' + args.path + '\' already exists.'), args)
   })
 }

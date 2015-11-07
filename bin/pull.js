@@ -15,8 +15,11 @@ function handlePull (args) {
 
   var db = dat(args)
 
-  replicate(db, remote, {mode: 'pull'}, function (err) {
-    if (err) abort(err, args)
+  var replicator = replicate(db, remote, {mode: 'pull'})
+  replicator.on('error', function (err) {
+    abort(err, args)
+  })
+  replicator.on('end', function () {
     console.error('Done!')
   })
 }

@@ -15,8 +15,11 @@ function handlePush (args) {
 
   var db = dat(args)
 
-  replicate(db, remote, {mode: 'push'}, function (err) {
-    if (err) abort(err, args)
+  var replicator = replicate(db, remote, {mode: 'push'})
+  replicator.on('error', function (err) {
+    abort(err, args)
+  })
+  replicator.on('end', function () {
     console.error('Done!')
   })
 }
