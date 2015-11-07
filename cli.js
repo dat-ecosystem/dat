@@ -13,6 +13,7 @@ var config = {
     require('./bin/add.js'),
     require('./bin/help.js'),
     require('./bin/serve.js'),
+    require('./bin/replicate.js'),
     require('./bin/commit.js'),
     require('./bin/status.js')
   ],
