@@ -5,14 +5,14 @@ var abort = require('../lib/util/abort.js')
 var usage = require('../lib/util/usage.js')('replicate.txt')
 
 module.exports = {
-  name: 'replicate',
-  command: handleReplicate
+  name: 'sync',
+  command: handleSync
 }
 
-function handleReplicate (args) {
+function handleSync (args) {
   if (args._.length === 0) return usage()
   var transportOpts = {
-    command: (args.bin || 'dat') + ' replicate -'
+    command: (args.bin || 'dat') + ' sync -'
   }
 
   var transport = transportStream(transportOpts)
@@ -28,6 +28,5 @@ function handleReplicate (args) {
   })
 
   var db = dat(args)
-  var replicationStream = replicator(db, {mode: 'sync'})
-  stream.pipe(replicationStream).pipe(stream)
+  stream.pipe(replicator(db)).pipe(stream)
 }
