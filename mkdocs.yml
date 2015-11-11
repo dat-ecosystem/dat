@@ -10,4 +10,5 @@ pages:
   - 'Changelog': 'meta/changelog.md'
   - 'Roadmap': 'meta/roadmap.md'
   - 'Collaborators': 'meta/collaborators.md'
+  - 'Talks': 'meta/talks.md'
 extra_css: [extra.css]
