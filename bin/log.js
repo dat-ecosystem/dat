@@ -13,10 +13,12 @@ function handleLog (args) {
   if (args.help) return usage()
 
   var db = dat(args)
-  var reader = db.createReadStream()
+  var reader = db.createReadStream({reverse: true})
 
   reader.on('data', function (data) {
-    console.log(data.key.toString('hex'))
+    var node = JSON.parse(data.value.toString())
+    console.log(data.key.toString('hex'), node.message)
+    node.files.map(function (file) { console.log(file.basename) })
   })
   reader.on('error', abort)
 }

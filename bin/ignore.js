@@ -13,7 +13,7 @@ function handleIgnore (args) {
   if (args.help) return usage()
   var config = Config(args)
   config.dat.ignore = config.dat.ignore || []
-  args._.map(function (ignorable) { 
+  args._.map(function (ignorable) {
     if (config.dat.ignore.indexOf(ignorable) < 0) config.dat.ignore.push(ignorable)
   })
   Config.save(args, config)

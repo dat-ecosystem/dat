@@ -1,6 +1,6 @@
 message Commit {
-  optional string message = 2;
+  required string message = 2;
+  required uint64 modified = 4;
   optional string author = 3;
-  optional uint64 modified = 4;
   optional uint64 documents = 5;
 }

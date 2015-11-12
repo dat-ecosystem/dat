@@ -8,12 +8,19 @@ var usage = require('../lib/util/usage.js')('save.txt')
 module.exports = {
   name: 'save',
   command: handleSave,
-  options: []
+  options: [
+    {
+      name: 'message',
+      boolean: false,
+      abbr: 'm'
+    }
+  ]
 }
 
 function handleSave (args) {
   debug('handleSave', args)
   if (args.help) return usage()
+  if (!args.message) return usage()
 
   var IGNORES = config(args).dat.ignore || []
   IGNORES.push('data.dat')
@@ -31,8 +38,12 @@ function handleSave (args) {
   })
 
   walker.on('close', function () {
-    console.log('added', files)
-    db.append(JSON.stringify(files))
+    //console.log('added', files)
+    var node = {
+      message: args.message,
+      files: files
+    }
+    db.append(JSON.stringify(node))
     console.log('Success.')
   })
 
