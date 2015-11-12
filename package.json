@@ -32,7 +32,7 @@
     "concat-stream": "^1.5.0",
     "csv-parser": "^1.5.2",
     "cuid": "^1.2.4",
-    "dat-graph": "^1.0.2",
+    "hypergraph": "^1.0.2",
     "dat-http-replicator": "^1.1.0",
     "debug": "^2.1.3",
     "debug-stream": "^3.0.0",

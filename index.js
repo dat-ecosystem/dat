@@ -1,5 +1,5 @@
 var readConfig = require('./lib/util/config.js')
-var graph = require('dat-graph')
+var graph = require('hypergraph')
 var level = require('level')
 var path = require('path')
 
