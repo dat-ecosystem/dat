@@ -4,6 +4,7 @@ var dat = require('..')
 var abort = require('../lib/util/abort.js')
 var config = require('../lib/util/config.js')
 var usage = require('../lib/util/usage.js')('save.txt')
+var messages = require('../lib/messages.js')
 
 module.exports = {
   name: 'save',
@@ -41,9 +42,11 @@ function handleSave (args) {
     //console.log('added', files)
     var node = {
       message: args.message,
-      files: files
+      value: JSON.stringify(files),
+      modified: Date.now()
     }
-    db.append(JSON.stringify(node))
+    console.log(node)
+    db.append(messages.Commit.encode(node))
     console.log('Success.')
   })
 
