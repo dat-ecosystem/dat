@@ -1,9 +1,8 @@
-var through = require('through2')
-var pump = require('pump')
-var ndjson = require('ndjson')
 var debug = require('debug')('bin/versions')
-var openDat = require('../lib/util/open-dat.js')
+var dat = require('..')
+var relativeDate = require('relative-date')
 var abort = require('../lib/util/abort.js')
+var messages = require('../lib/messages.js')
 var usage = require('../lib/util/usage.js')('log.txt')
 
 module.exports = {
@@ -13,36 +12,17 @@ module.exports = {
 
 function handleLog (args) {
   debug('handleLog', args)
+  if (args.help) return usage()
 
-  if (args.help) {
-    return usage()
-  }
+  var db = dat(args)
+  var reader = db.createReadStream({reverse: true})
 
-  openDat(args, function (err, db) {
-    if (err) abort(err, args)
-
-    var formatter
-    if (args.json) formatter = ndjson.serialize()
-    else formatter = through.obj(format)
-    pump(db.createChangesStream(args), formatter, process.stdout, function done (err) {
-      if (err) abort(err, args, 'dat: err in versions')
-      db.close()
-    })
-
-    function format (obj, enc, next) {
-      // its the root node, lets not print it out
-      if (obj.files === 0 && obj.puts === 0 && obj.deletes === 0) return next()
-
-      var puts = obj.puts || 0
-      var deletes = obj.deletes || 0
-
-      var msg = 'Version: ' + obj.version + ' [+' + puts + ', -' + deletes + ']\n'
-      msg += 'Date: ' + obj.date
-      if (obj.message) {
-        msg += '\n\n   ' + obj.message
-      }
-      msg += '\n\n'
-      next(null, msg)
-    }
+  reader.on('data', function (data) {
+    var node = messages.Commit.decode(data.value)
+    var msg = 'Version: ' + data.key.toString('hex')
+    msg += '\nDate:    ' + relativeDate(node.modified)
+    msg += '\n\n   ' + node.message
+    console.error(msg)
   })
+  reader.on('error', abort)
 }

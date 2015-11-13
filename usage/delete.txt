@@ -1,3 +1,0 @@
-dat delete <key> -d <dataset-name> -m <message>
-
-Delete the given key in the dataset.
