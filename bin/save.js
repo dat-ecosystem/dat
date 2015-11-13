@@ -1,4 +1,4 @@
-var debug = require('debug')('bin/save')
+var debug = require('debug')('dat/save')
 var dirwalker = require('node-dirwalker')
 var dat = require('..')
 var abort = require('../lib/util/abort.js')
@@ -31,7 +31,11 @@ function handleSave (args) {
   var walker = dirwalker({defaultIgnore: IGNORES})
 
   walker.on('entry', function (entry) {
-    files.push(entry)
+    files.push({
+      basename: entry.basename,
+      type: entry.type,
+      stats: entry.stats
+    })
   })
 
   walker.on('error', function (err) {
@@ -39,13 +43,12 @@ function handleSave (args) {
   })
 
   walker.on('close', function () {
-    //console.log('added', files)
+    debug('added', files)
     var node = {
       message: args.message,
-      value: JSON.stringify(files),
+      files: JSON.stringify(files),
       modified: Date.now()
     }
-    console.log(node)
     db.append(messages.Commit.encode(node))
     console.log('Success.')
   })
