@@ -5,8 +5,8 @@ var hyperdrive = require('hyperdrive')
 
 module.exports = Dat
 
-function Dat (opts) {
+function Dat (loc, opts) {
   if (!opts) opts = {}
-  var datPath = path.join(homedir(), '.dat/hyperdrive')
+  var datPath = path.join(homedir(), '.dat/db')
   return hyperdrive(level(datPath), opts)
 }
