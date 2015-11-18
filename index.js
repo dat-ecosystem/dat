@@ -1,6 +1,6 @@
 var level = require('level')
 var path = require('path')
-var homedir = require('os-homdir')
+var homedir = require('os-homedir')
 var hyperdrive = require('hyperdrive')
 
 module.exports = Dat
