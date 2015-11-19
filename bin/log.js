@@ -22,8 +22,12 @@ function handleLog (args) {
     if (err) abort(err, args)
 
     var formatter
-    if (args.json) formatter = ndjson.serialize()
-    else formatter = through.obj(format), args.reverse = true
+    if (args.json) {
+      formatter = ndjson.serialize()
+    } else {
+      formatter = through.obj(format)
+      args.reverse = true
+    }
     pump(db.createChangesStream(args), formatter, process.stdout, function done (err) {
       if (err) abort(err, args, 'dat: err in versions')
       db.close()
