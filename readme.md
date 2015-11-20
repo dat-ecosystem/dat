@@ -2,7 +2,7 @@
 
 Welcome to Dat!
 
-## Unstable
+## Dat on its way to 1.0
 
 We did substantial user testing during the summer, and are now focusing on the 1.0 version of Dat. The current version in this repo will be replaced by a different user experience. Stay tuned for updates by following [@dat_project on Twitter](http://twitter.com/dat_project) and signing up for our [tiny letter](tinyletter.com/datdata)!
 
@@ -14,9 +14,11 @@ Key features:
   * **sync incrementally** between machines
   * **encourage forking** of data, rather than forcing merges
 
-If you haven't yet, please swing over to our [interactive tutorial to try dat now in your browser](http://try-dat.com) and [readthedocs](http://datproject.readthedocs.org/en/latest/).
-
 **Have questions?** Join `#dat` on [freenode](https://webchat.freenode.net) or [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge). Chat logs are [available here](https://botbot.me/freenode/dat/)
+
+## Beta version
+
+If you haven't yet, please swing over to our [interactive tutorial to try dat now in your browser](http://try-dat.com) and [readthedocs](http://datproject.readthedocs.org/en/latest/).
 
 [![NPM](https://nodei.co/npm/dat.png?global=true)](https://nodei.co/npm/dat/)
 
