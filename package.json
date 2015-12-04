@@ -26,6 +26,7 @@
   "author": "max ogden",
   "license": "BSD-3-Clause",
   "dependencies": {
+    "discovery-channel": "^1.2.0",
     "folder-walker": "^1.1.2",
     "level": "^1.3.0",
     "minimist": "^1.2.0",
