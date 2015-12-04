@@ -4,7 +4,7 @@ Welcome to Dat!
 
 ## Dat on its way to 1.0
 
-We did substantial user testing during the summer, and are now focusing on the 1.0 version of Dat. The current version in this repo will be replaced by a different user experience. Stay tuned for updates by following [@dat_project on Twitter](http://twitter.com/dat_project) and signing up for our [tiny letter](tinyletter.com/datdata)!
+We did substantial user testing during the summer, and are now focusing on the 1.0 version of Dat. The current version in this repo will be replaced. Stay tuned for updates by following [@dat_project on Twitter](http://twitter.com/dat_project) and signing up for our [tiny letter](http://tinyletter.com/datdata)!
 
 Key features:
 
