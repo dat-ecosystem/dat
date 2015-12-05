@@ -77,9 +77,10 @@ Dat.prototype.serve = function (link, cb) {
 
     function update () {
       // discovery-channel currently only works with 20 bytes hashes
-      self.discovery.announce(new Buffer(link, 'hex').slice(0, 20), port)
+      var hash = resolveHash(link)
+      self.discovery.announce(hash, port)
 
-      var lookup = self.discovery.lookup(new Buffer(link, 'hex').slice(0, 20))
+      var lookup = self.discovery.lookup(hash)
 
       lookup.on('peer', function (ip, port) {
         var peerid = ip + ':' + port
@@ -147,4 +148,9 @@ Dat.prototype.download = function (link, cb) {
       })
     })
   }
+}
+
+function resolveHash (link) {
+  // TODO: handle 'pretty' or 'named' links
+  return new Buffer(link, 'hex').slice(0, 20)
 }
