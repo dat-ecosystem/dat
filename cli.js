@@ -14,6 +14,7 @@ function run () {
     // share
     db = dat(loc)
     db.share(function (err, link) {
+      if (err) throw err
       console.log(link)
     })
   } else if (cmd) {
