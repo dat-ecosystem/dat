@@ -27,7 +27,7 @@ function Dat (dir, opts) {
   var hyperdriveOpts = {name: 'dat'}
   var drive = hyperdrive(level(datPath, opts), hyperdriveOpts)
   this.drive = drive
-  this.discovery = discoveryChannel({dht: false})
+  this.discovery = discoveryChannel()
 }
 
 Dat.prototype.share = function () {
@@ -74,7 +74,7 @@ Dat.prototype.serve = function (link, cb) {
 
     function ann () {
       // discovery-channel currently only works with 20 bytes hashes
-      self.discovery.announce(link.slice(0, 20), port)
+      self.discovery.announce(new Buffer(link.slice(0, 20)), port)
     }
 
     ann()
