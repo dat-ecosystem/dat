@@ -89,8 +89,9 @@ Dat.prototype.serve = function (link, cb) {
   })
 }
 
-Dat.prototype.download = function (link) {
+Dat.prototype.download = function (link, cb) {
   var self = this
+  if (!cb) cb = function noop () {}
   var lookup = self.discovery.lookup(link.slice(0, 20))
 
   lookup.on('peer', function (ip, port) {
@@ -98,14 +99,17 @@ Dat.prototype.download = function (link) {
     var socket = net.connect(port, ip)
     socket.pipe(self.drive.createPeerStream()).pipe(socket)
   })
+
   var feed = self.drive.get(link) // the link identifies/verifies the content
-  var next = 0
+  var nextFeed = 0
+
   downloadNext()
 
   function downloadNext () {
-    feed.get(next, function (err, entry) {
-      if (err) throw err
-      console.log('entry', entry)
+    if (feed.blocks && nextFeed >= feed.blocks - 1) return cb()
+    feed.get(nextFeed, function (err, entry) {
+      if (err) return cb(err)
+      console.log('downloading', entry.value.name)
       var content = self.drive.get(entry.link)
       var gets = []
       var writeStream = fs.createWriteStream(entry.value.name, {mode: entry.value.mode})
@@ -121,9 +125,9 @@ Dat.prototype.download = function (link) {
         gets.push(download)
       }
       series(gets, function (err) {
-        if (err) throw err
+        if (err) return cb(err)
         writeStream.end()
-        next++
+        nextFeed++
         downloadNext()
       })
     })

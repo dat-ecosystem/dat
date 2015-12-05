@@ -9,16 +9,20 @@ run()
 
 function run () {
   var loc = args._[1] || process.cwd()
+  var db
   if (cmd === 'share') {
     // share
-    var db1 = dat(loc, {datPath: './.dat1'})
-    db1.share()
+    db = dat(loc, {datPath: './.dat'})
+    db.share()
   } else if (cmd) {
     // download
     var hash = args._[0]
     if (!hash) return usage('root.txt')
-    var db2 = dat(loc, {datPath: './.dat2'})
-    db2.download(hash)
+    db = dat(loc, {datPath: './.dat'})
+    db.download(hash, function (err) {
+      if (err) throw err
+      console.log('done downloading')
+    })
   } else {
     return usage('root.txt')
   }
