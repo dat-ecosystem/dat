@@ -9,7 +9,6 @@ var mkdirp = require('mkdirp')
 var through = require('through2')
 var pump = require('pump')
 var discoveryChannel = require('discovery-channel')
-var series = require('run-series')
 
 module.exports = Dat
 
