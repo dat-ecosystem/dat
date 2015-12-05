@@ -64,21 +64,34 @@ Dat.prototype.share = function () {
 
 Dat.prototype.serve = function (link, cb) {
   var self = this
+
   var server = net.createServer(function (socket) {
-    socket.pipe(self.drive.createPeerStream()).pipe(socket)
+    pump(socket, self.drive.createPeerStream(), socket, function (err) {
+      if (err) console.log('peer err', err)
+    })
   })
 
   server.listen(0, function (err) {
     if (err) return cb(err)
     var port = server.address().port
 
-    function ann () {
+    function update () {
       // discovery-channel currently only works with 20 bytes hashes
       self.discovery.announce(new Buffer(link, 'hex').slice(0, 20), port)
+
+      var lookup = self.discovery.lookup(new Buffer(link, 'hex').slice(0, 20))
+
+      lookup.on('peer', function (ip, port) {
+        console.log('found peer')
+        var socket = net.connect(port, ip)
+        pump(socket, self.drive.createPeerStream(), socket, function (err) {
+          if (err) console.log('peer err', err)
+        })
+      })
     }
 
-    ann()
-    var interval = setInterval(ann, 10000)
+    update()
+    var interval = setInterval(update, 1000 * 60)
 
     function close (cb) {
       clearInterval(interval)
@@ -92,12 +105,10 @@ Dat.prototype.serve = function (link, cb) {
 Dat.prototype.download = function (link, cb) {
   var self = this
   if (!cb) cb = function noop () {}
-  var lookup = self.discovery.lookup(new Buffer(link, 'hex').slice(0, 20))
 
-  lookup.on('peer', function (ip, port) {
-    console.log('found peer')
-    var socket = net.connect(port, ip)
-    socket.pipe(self.drive.createPeerStream()).pipe(socket)
+  self.serve(link, function (err, port, close) {
+    if (err) throw err
+    console.log('Sharing on', port)
   })
 
   var feed = self.drive.get(link) // the link identifies/verifies the content
