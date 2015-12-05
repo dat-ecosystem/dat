@@ -122,7 +122,7 @@ Dat.prototype.download = function (link, cb) {
   downloadNext()
 
   function downloadNext () {
-    if (feed.blocks && nextFeed >= feed.blocks - 1) return cb()
+    if (feed.blocks && nextFeed >= feed.blocks) return cb()
     feed.get(nextFeed, function (err, entry) {
       if (err) return cb(err)
       console.log('downloading', entry.value.name)
