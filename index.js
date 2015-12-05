@@ -83,9 +83,9 @@ Dat.prototype.serve = function (link, cb) {
       var lookup = self.discovery.lookup(new Buffer(link, 'hex').slice(0, 20))
 
       lookup.on('peer', function (ip, port) {
-        console.log('found peer')
         var peerid = ip + ':' + port
         if (self.peers[peerid]) return
+        console.log('found new peer', peerid)
         self.peers[peerid] = true
         var socket = net.connect(port, ip)
         pump(socket, self.drive.createPeerStream(), socket, function (err) {
