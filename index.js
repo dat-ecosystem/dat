@@ -27,6 +27,7 @@ function Dat (dir, opts) {
   var hyperdriveOpts = {name: 'dat'}
   var drive = hyperdrive(level(datPath, opts), hyperdriveOpts)
   this.drive = drive
+  this.peers = {}
   this.discovery = discoveryChannel()
 }
 
@@ -83,9 +84,13 @@ Dat.prototype.serve = function (link, cb) {
 
       lookup.on('peer', function (ip, port) {
         console.log('found peer')
+        var peerid = ip + ':' + port
+        if (self.peers[peerid]) return
+        self.peers[peerid] = true
         var socket = net.connect(port, ip)
         pump(socket, self.drive.createPeerStream(), socket, function (err) {
           if (err) console.log('peer err', err)
+          delete self.peers[peerid]
         })
       })
     }
