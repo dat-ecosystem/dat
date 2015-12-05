@@ -22,7 +22,7 @@ function Dat (dir, opts) {
     createIfMissing: true
   }
   opts = xtend(opts, defaults)
-  var datPath = opts.datPath || path.join(homedir(), '.dat/db')
+  var datPath = path.join(this.dir, '.dat', 'db')
   if (opts.createIfMissing) mkdirp.sync(datPath)
   var hyperdriveOpts = {name: 'dat'}
   var drive = hyperdrive(level(datPath, opts), hyperdriveOpts)

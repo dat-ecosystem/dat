@@ -12,13 +12,15 @@ function run () {
   var db
   if (cmd === 'share') {
     // share
-    db = dat(loc, {datPath: './.dat'})
-    db.share()
+    db = dat(loc)
+    db.share(function (err, link) {
+      console.log(link)
+    })
   } else if (cmd) {
     // download
     var hash = args._[0]
     if (!hash) return usage('root.txt')
-    db = dat(loc, {datPath: './.dat'})
+    db = dat(loc)
     db.download(hash, function (err) {
       if (err) throw err
       console.log('done downloading')
