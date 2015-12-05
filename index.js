@@ -117,37 +117,14 @@ Dat.prototype.download = function (link, cb) {
   })
 
   var feed = self.drive.get(link) // the link identifies/verifies the content
-  var nextFeed = 0
+  var feedStream = feed.createStream()
 
-  downloadNext()
-
-  function downloadNext () {
-    if (feed.blocks && nextFeed >= feed.blocks) return cb()
-    feed.get(nextFeed, function (err, entry) {
-      if (err) return cb(err)
-      console.log('downloading', entry.value.name)
-      var content = self.drive.get(entry.link)
-      var gets = []
-      var writeStream = fs.createWriteStream(entry.value.name, {mode: entry.value.mode})
-      for (var i = 0; i < entry.link.blocks; i++) {
-        var download = (function (piece) {
-          return function (cb) {
-            content.get(piece, function (err, data) {
-              writeStream.write(data)
-              cb(err)
-            })
-          }
-        })(i)
-        gets.push(download)
-      }
-      series(gets, function (err) {
-        if (err) return cb(err)
-        writeStream.end()
-        nextFeed++
-        downloadNext()
-      })
-    })
-  }
+  feedStream.on('data', function (entry) {
+    console.log('downloading', entry.value.name)
+    var content = self.drive.get(entry)
+    var writeStream = fs.createWriteStream(entry.value.name, {mode: entry.value.mode})
+    content.createStream().pipe(writeStream)
+  })
 }
 
 function resolveHash (link) {
