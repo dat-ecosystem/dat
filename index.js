@@ -74,7 +74,7 @@ Dat.prototype.serve = function (link, cb) {
 
     function ann () {
       // discovery-channel currently only works with 20 bytes hashes
-      self.discovery.announce(new Buffer(link.slice(0, 20)), port)
+      self.discovery.announce(new Buffer(link, 'hex').slice(0, 20), port)
     }
 
     ann()
@@ -92,7 +92,7 @@ Dat.prototype.serve = function (link, cb) {
 Dat.prototype.download = function (link, cb) {
   var self = this
   if (!cb) cb = function noop () {}
-  var lookup = self.discovery.lookup(link.slice(0, 20))
+  var lookup = self.discovery.lookup(new Buffer(link, 'hex').slice(0, 20))
 
   lookup.on('peer', function (ip, port) {
     console.log('found peer')
