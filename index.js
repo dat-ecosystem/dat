@@ -31,7 +31,7 @@ function Dat (dir, opts) {
   this.discovery = discoveryChannel()
 }
 
-Dat.prototype.share = function () {
+Dat.prototype.share = function (cb) {
   var self = this
   var stream = walker(this.dir, {filter: function (filename) {
     var basename = path.basename(filename)
@@ -54,9 +54,9 @@ Dat.prototype.share = function () {
     if (err) throw err
     pack.finalize(function () {
       var link = pack.id.toString('hex')
-      console.log(link, '<-- this is your hyperdrive link')
       self.serve(link, function (err, port, close) {
         if (err) throw err
+        cb(null, link)
         console.log('Sharing on', port)
       })
     })
