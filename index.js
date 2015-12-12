@@ -52,9 +52,9 @@ Dat.prototype.share = function (cb) {
     if (err) throw err
     pack.finalize(function () {
       var link = pack.id.toString('hex')
-      self.serve(link, function (err, port, close) {
+      self.serve(link, function (err, link, port, close) {
         if (err) throw err
-        cb(null, link)
+        cb(null, link, port, close)
         console.log('Sharing on', port)
       })
     })
@@ -102,7 +102,7 @@ Dat.prototype.serve = function (link, cb) {
       server.close(cb)
     }
 
-    cb(null, port, close)
+    cb(null, link, port, close)
   })
 }
 
