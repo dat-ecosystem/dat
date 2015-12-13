@@ -99,7 +99,9 @@ Dat.prototype.serve = function (link, cb) {
 
     function close (cb) {
       clearInterval(interval)
-      server.close(cb)
+      server.close()
+      self.drive.db.close()
+      self.discovery.close(cb)
     }
 
     cb(null, link, port, close)
