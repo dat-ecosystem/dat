@@ -45,8 +45,7 @@ Dat.prototype.share = function (cb) {
     }
     console.log('reading', data.filepath)
     var entry = pack.entry({name: data.relname, mode: data.stat.mode})
-    fs.createReadStream(data.filepath).pipe(entry)
-    next()
+    fs.createReadStream(data.filepath).pipe(entry).on('finish', next)
   })
   pump(stream, adder, function (err) {
     if (err) throw err
