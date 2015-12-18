@@ -125,6 +125,8 @@ Dat.prototype.download = function (link, cb) {
     var writeStream = fs.createWriteStream(entry.value.name, {mode: entry.value.mode})
     content.createStream().pipe(writeStream)
   })
+
+  feedStream.on('end', cb)
 }
 
 function resolveHash (link) {
