@@ -121,8 +121,10 @@ Dat.prototype.download = function (link, cb) {
 
   feedStream.on('data', function (entry) {
     console.log('downloading', entry.value.name)
+    var that = path.join(self.dir, entry.value.name)
+    mkdirp.sync(path.dirname(that))
     var content = self.drive.get(entry)
-    var writeStream = fs.createWriteStream(entry.value.name, {mode: entry.value.mode})
+    var writeStream = fs.createWriteStream(that, {mode: entry.value.mode})
     content.createStream().pipe(writeStream)
   })
 
