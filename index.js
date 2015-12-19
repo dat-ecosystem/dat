@@ -111,24 +111,28 @@ Dat.prototype.download = function (link, cb) {
   var self = this
   if (!cb) cb = function noop () {}
 
-  self.serve(link, function (err, port, close) {
+  self.serve(link, function (err, link, port, close) {
     if (err) throw err
     console.log('Sharing on', port)
+
+    var feed = self.drive.get(link) // the link identifies/verifies the content
+    var feedStream = feed.createStream()
+
+    var download = through.obj(function (entry, enc, next) {
+      console.log('downloading', entry.value.name)
+      var that = path.join(self.dir, entry.value.name)
+      mkdirp.sync(path.dirname(that))
+      var content = self.drive.get(entry)
+      var writeStream = fs.createWriteStream(that, {mode: entry.value.mode})
+      pump(content.createStream(), writeStream, function (err) {
+        next(err)
+      })
+    })
+
+    pump(feedStream, download, function (err) {
+      cb(err, link, port, close)
+    })
   })
-
-  var feed = self.drive.get(link) // the link identifies/verifies the content
-  var feedStream = feed.createStream()
-
-  feedStream.on('data', function (entry) {
-    console.log('downloading', entry.value.name)
-    var that = path.join(self.dir, entry.value.name)
-    mkdirp.sync(path.dirname(that))
-    var content = self.drive.get(entry)
-    var writeStream = fs.createWriteStream(that, {mode: entry.value.mode})
-    content.createStream().pipe(writeStream)
-  })
-
-  feedStream.on('end', cb)
 }
 
 function resolveHash (link) {
