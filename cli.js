@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var args = require('minimist')(process.argv.splice(2))
 var usage = require('./usage')
+var fs = require('fs')
 var dat = require('./')
 
 var cmd = args._[0]
@@ -12,6 +13,7 @@ function run () {
   var db
   if (cmd === 'share') {
     // share
+    if (!fs.existsSync(loc)) return usage('root.txt')
     db = dat(loc)
     db.share(function (err, link) {
       if (err) throw err
