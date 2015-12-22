@@ -15,18 +15,21 @@ function run () {
     // share
     if (!fs.existsSync(loc)) return usage('root.txt')
     db = dat(loc)
-    db.share(function (err, link) {
+    db.addDirectory(function (err, link) {
       if (err) throw err
-      console.log(link)
+      db.joinTcpSwarm(link, function (_err, link, port, close) {
+        console.log(link)
+      })
     })
   } else if (cmd) {
     // download
     var hash = args._[0]
     if (!hash) return usage('root.txt')
     db = dat(loc)
+    console.log('Downloading...')
     db.download(hash, function (err) {
       if (err) throw err
-      console.log('done downloading')
+      console.log('Done downloading.')
     })
   } else {
     return usage('root.txt')

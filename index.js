@@ -1,14 +1,14 @@
 var net = require('net')
 var fs = require('fs')
 var path = require('path')
-var walker = require('folder-walker')
-var level = require('level')
 var hyperdrive = require('hyperdrive')
-var xtend = require('xtend')
 var mkdirp = require('mkdirp')
 var through = require('through2')
 var pump = require('pump')
 var discoveryChannel = require('discovery-channel')
+var Connections = require('connections')
+var datDb = require('./db.js')
+var datFs = require('./fs.js')
 
 module.exports = Dat
 
@@ -16,58 +16,48 @@ function Dat (dir, opts) {
   if (!(this instanceof Dat)) return new Dat(dir, opts)
   if (!opts) opts = {}
   this.dir = dir
-  var defaults = {
-    createIfMissing: true
-  }
-  opts = xtend(opts, defaults)
+  this.fs = opts.fs || datFs
   var datPath = path.join(this.dir, '.dat', 'db')
-  if (opts.createIfMissing) mkdirp.sync(datPath)
-  var hyperdriveOpts = {name: 'dat'}
-  var drive = hyperdrive(level(datPath, opts), hyperdriveOpts)
+  this.level = opts.db || datDb(datPath, opts)
+  var drive = hyperdrive(this.level)
   this.drive = drive
   this.peers = {}
   this.discovery = discoveryChannel()
 }
 
-Dat.prototype.share = function (cb) {
-  var self = this
-  var stream = walker(this.dir, {filter: function (filename) {
-    var basename = path.basename(filename)
-    if (basename[0] === '.') return false // ignore hidden files and folders
-    return true
-  }})
+Dat.prototype.addDirectory = function (cb) {
   var pack = this.drive.add()
-  var adder = through.obj(function (data, enc, next) {
-    var isFile = data.stat.isFile()
-    if (!isFile) {
-      console.log('skipping non file', data.filepath)
-      return next()
+
+  datFs.listEach({dir: this.dir}, eachItem, eachDone)
+
+  function eachItem (item, next) {
+    var entry = pack.entry(item, next)
+    if (item.createReadStream) {
+      pump(item.createReadStream(), entry)
     }
-    console.log('reading', data.filepath)
-    var entry = pack.entry({name: data.relname, mode: data.stat.mode})
-    fs.createReadStream(data.filepath).pipe(entry).on('finish', next)
-  })
-  pump(stream, adder, function (err) {
-    if (err) throw err
-    pack.finalize(function () {
+  }
+
+  function eachDone (err) {
+    if (err) {
+      return cb(err)
+      // TODO pack cleanup
+    }
+    pack.finalize(function (err) {
+      if (err) return cb(err)
       var link = pack.id.toString('hex')
-      self.serve(link, function (err, link, port, close) {
-        if (err) throw err
-        cb(null, link, port, close)
-        console.log('Sharing on', port)
-      })
+      cb(null, link)
     })
-  })
+  }
 }
 
-Dat.prototype.serve = function (link, cb) {
+Dat.prototype.joinTcpSwarm = function (link, cb) {
   var self = this
 
   var server = net.createServer(function (socket) {
-    pump(socket, self.drive.createPeerStream(), socket, function (err) {
-      if (err) console.log('peer err', err)
-    })
+    pump(socket, self.drive.createPeerStream(), socket)
   })
+
+  var connections = Connections(server)
 
   server.listen(0, function (err) {
     if (err) return cb(err)
@@ -83,11 +73,9 @@ Dat.prototype.serve = function (link, cb) {
       lookup.on('peer', function (ip, port) {
         var peerid = ip + ':' + port
         if (self.peers[peerid]) return
-        console.log('found new peer', peerid)
         self.peers[peerid] = true
         var socket = net.connect(port, ip)
-        pump(socket, self.drive.createPeerStream(), socket, function (err) {
-          if (err) console.log('peer err', err)
+        pump(socket, self.drive.createPeerStream(), socket, function () {
           delete self.peers[peerid]
         })
       })
@@ -99,6 +87,7 @@ Dat.prototype.serve = function (link, cb) {
     function close (cb) {
       clearInterval(interval)
       server.close()
+      connections.destroy()
       self.drive.db.close()
       self.discovery.close(cb)
     }
@@ -107,23 +96,22 @@ Dat.prototype.serve = function (link, cb) {
   })
 }
 
+// TODO remove fs specific code from this method
 Dat.prototype.download = function (link, cb) {
   var self = this
   if (!cb) cb = function noop () {}
 
-  self.serve(link, function (err, link, port, close) {
+  self.joinTcpSwarm(link, function (err, link, port, close) {
     if (err) throw err
-    console.log('Sharing on', port)
 
     var feed = self.drive.get(link) // the link identifies/verifies the content
     var feedStream = feed.createStream()
 
     var download = through.obj(function (entry, enc, next) {
-      console.log('downloading', entry.value.name)
-      var that = path.join(self.dir, entry.value.name)
-      mkdirp.sync(path.dirname(that))
+      var entryPath = path.join(self.dir, entry.value.name)
+      mkdirp.sync(path.dirname(entryPath))
       var content = self.drive.get(entry)
-      var writeStream = fs.createWriteStream(that, {mode: entry.value.mode})
+      var writeStream = fs.createWriteStream(entryPath, {mode: entry.value.mode})
       pump(content.createStream(), writeStream, function (err) {
         next(err)
       })
