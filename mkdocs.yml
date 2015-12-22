@@ -1,0 +1,9 @@
+site_name: Dat project
+theme: readthedocs
+pages:
+- Home: 'index.md'
+- Technical Guide: 'technical.md'
+- Meta:
+  - 'Changelog': 'meta/changelog.md'
+  - 'Collaborators': 'meta/collaborators.md'
+extra_css: [extra.css]

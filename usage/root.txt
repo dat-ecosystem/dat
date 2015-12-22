@@ -1,0 +1,4 @@
+dat <command> [--option <argument>]
+
+  dat share           creates a hash and shares the data
+  dat <hash>          downloads and shares the given data

@@ -1,0 +1,47 @@
+{
+  "name": "dat",
+  "version": "7.1.2",
+  "description": "Share datasets on The Internet",
+  "keywords": [
+    "data package",
+    "dataset",
+    "replication",
+    "synchronization"
+  ],
+  "bin": {
+    "dat": "cli.js"
+  },
+  "scripts": {
+    "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
+    "standard": "standard"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/maxogden/dat.git"
+  },
+  "author": "max ogden",
+  "license": "BSD-3-Clause",
+  "dependencies": {
+    "connections": "^1.0.0",
+    "discovery-channel": "^1.2.1",
+    "folder-walker": "^1.1.2",
+    "hyperdrive": "^1.4.2",
+    "level": "^1.3.0",
+    "minimist": "^1.2.0",
+    "mkdirp": "^0.5.1",
+    "pump": "^1.0.1",
+    "stream-each": "^1.1.0",
+    "through2": "^2.0.0",
+    "xtend": "^4.0.1"
+  },
+  "bugs": {
+    "url": "https://github.com/maxogden/dat/issues"
+  },
+  "homepage": "https://github.com/maxogden/dat",
+  "directories": {
+    "test": "tests"
+  },
+  "devDependencies": {
+    "standard": "^5.4.1"
+  }
+}
