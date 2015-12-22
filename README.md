@@ -1,6 +1,6 @@
 # dat
 
-Share datasets on The Internet
+Share datasets on The Internet. This is the Dat 1.0 Pre-release candidate.
 
 Key features:
 
@@ -11,10 +11,17 @@ Windows        | Mac/Linux
 -------------- | ------------
 [![Build status](https://ci.appveyor.com/api/projects/status/s236036xnglo4v5l)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](http://img.shields.io/travis/maxogden/dat.svg?style=flat)](https://travis-ci.org/maxogden/dat)
 
-
 ## Install
 
-```npm install -g dat```
+**The current work in progress is not on npm yet**
+
+For now, if you are adventurous and want to try the 1.0 Pre-release candidate, clone this repository and in a terminal inside of the folder you cloned run this command:
+
+```
+npm link
+```
+
+This should add a `dat` command line command to your PATH. Now you can run `$ dat` to try it out.
 
 ## Example
 
