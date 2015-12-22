@@ -1,3 +1,0 @@
-dat copy filename [--format csv,json,ndjson] [--dataset dataset-name]
-
-streams data from a dataset to a file or to stdout in a given format. if no dataset name is given, will export from the 'default' dataset

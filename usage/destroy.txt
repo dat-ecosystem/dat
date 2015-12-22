@@ -1,7 +1,0 @@
-dat destroy [options]
-
-Destroys the `data.dat` folder and all data in the current repository. You will be prompted (y/n) to verify the destroy
-
-Options
-
---no-prompt      destroy without prompting

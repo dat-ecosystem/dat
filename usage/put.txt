@@ -1,3 +1,0 @@
-dat put <key> "<value>" --dataset <dataset-name> --format <json,csv>
-
-Put a row in a dataset.

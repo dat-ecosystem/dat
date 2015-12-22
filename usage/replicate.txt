@@ -1,9 +1,0 @@
-dat replicate <location>
-
-  Replicates (pushes and pulls) the current checkout to the given location.
-
-Parameters:
-
-  <location> (required)
-
-    Can be an http or ssh remote, or the character - for stdin/stdout.
