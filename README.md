@@ -4,12 +4,10 @@ Share datasets on The Internet. This is the Dat 1.0 Pre-release candidate.
 
 Key features:
 
-  * **easily share large files** without having to copy them to a server first
+  * **easily share large files** without having to copy them to a central server first
   * **sync incrementally** between machines
-
-Windows        | Mac/Linux
--------------- | ------------
-[![Build status](https://ci.appveyor.com/api/projects/status/s236036xnglo4v5l)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](http://img.shields.io/travis/maxogden/dat.svg?style=flat)](https://travis-ci.org/maxogden/dat)
+  
+**Please note** that previous versions of Dat (alpha, beta) are incompatible with the 1.0 pre-release.
 
 ## Install
 
@@ -22,6 +20,12 @@ npm link
 ```
 
 This should add a `dat` command line command to your PATH. Now you can run `$ dat` to try it out.
+
+## Build Status
+
+Windows        | Mac/Linux
+-------------- | ------------
+[![Build status](https://ci.appveyor.com/api/projects/status/s236036xnglo4v5l)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](http://img.shields.io/travis/maxogden/dat.svg?style=flat)](https://travis-ci.org/maxogden/dat)
 
 ## Example
 
