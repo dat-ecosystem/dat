@@ -18,7 +18,7 @@ function Dat (dir, opts) {
   if (!opts) opts = {}
   this.dir = dir
   this.fs = opts.fs || datFs
-  var dbDir = path.join(homeDir(), '.dat', 'db')
+  var dbDir = path.join(opts.home || homeDir(), '.dat', 'db')
   this.level = opts.db || datDb(dbDir, opts)
   var drive = hyperdrive(this.level)
   this.drive = drive
@@ -82,19 +82,22 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
       })
     }
 
-    update()
-    var interval = setInterval(update, 1000 * 60)
-
     function close (cb) {
       clearInterval(interval)
       server.close()
       connections.destroy()
-      self.drive.db.close()
-      self.discovery.close(cb)
+      self.close()
     }
 
+    update()
+    var interval = setInterval(update, 1000 * 60)
     cb(null, link, port, close)
   })
+}
+
+Dat.prototype.close = function (cb) {
+  this.drive.db.close()
+  this.discovery.close(cb)
 }
 
 // TODO remove fs specific code from this method

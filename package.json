@@ -13,7 +13,8 @@
   },
   "scripts": {
     "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
-    "standard": "standard"
+    "standard": "standard",
+    "test": "tape tests/*.js | tap-spec"
   },
   "repository": {
     "type": "git",
@@ -43,6 +44,9 @@
     "test": "tests"
   },
   "devDependencies": {
-    "standard": "^5.4.1"
+    "rimraf": "^2.5.0",
+    "standard": "^5.4.1",
+    "tape": "^4.4.0",
+    "tape-spawn": "^1.4.0"
   }
 }
