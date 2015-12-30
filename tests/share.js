@@ -1,4 +1,5 @@
 var test = require('tape')
+var after = require('after')
 var rimraf = require('rimraf')
 var os = require('os')
 var spawn = require('tape-spawn')
@@ -11,7 +12,6 @@ var tmp = os.tmpdir()
 test('share gives link', function (t) {
   var st = spawn(t, dat + ' share ' + dat1 + ' --home=' + tmp)
   st.stdout.match(function (output) {
-    console.error(output)
     t.equal(output.length, 65, 'version is 64 char + newline')
     st.kill()
     return true
@@ -22,12 +22,12 @@ test('share gives link', function (t) {
 
 test('share gives link and stays open for download', function (t) {
   var link, download
-  var share = spawn(t, dat + ' share ' + dat1 + ' --home=' + tmp)
+  var share = spawn(t, dat + ' share ' + dat1 + ' --home=' + tmp, {end: false})
   share.stderr.empty()
   share.stdout.match(function (output) {
     t.equal(output.length, 65, 'version is 64 char + newline')
     link = output.trim()
-    download = spawn(t, dat + ' ' + link + ' ' + tmp + ' --home=' + tmp)
+    download = spawn(t, dat + ' ' + link + ' ' + tmp + ' --home=' + tmp, {end: false})
     var line = 0
     download.stderr.empty()
     download.stdout.match(function (output) {
@@ -43,7 +43,9 @@ test('share gives link and stays open for download', function (t) {
     return true
   })
   function cleanup () {
-    share.end()
+    var next = after(2, t.end.bind(t))
+    share.end(next)
+    download.end(next)
   }
 })
 

@@ -44,6 +44,7 @@
     "test": "tests"
   },
   "devDependencies": {
+    "after": "^0.8.1",
     "rimraf": "^2.5.0",
     "standard": "^5.4.1",
     "tap-spec": "^4.1.1",
