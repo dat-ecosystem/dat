@@ -46,6 +46,7 @@
   "devDependencies": {
     "rimraf": "^2.5.0",
     "standard": "^5.4.1",
+    "tap-spec": "^4.1.1",
     "tape": "^4.4.0",
     "tape-spawn": "^1.4.0"
   }
