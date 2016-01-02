@@ -86,7 +86,7 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
       clearInterval(interval)
       server.close()
       connections.destroy()
-      self.close()
+      self.close(cb)
     }
 
     update()
