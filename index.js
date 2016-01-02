@@ -53,6 +53,7 @@ Dat.prototype.addDirectory = function (cb) {
 
 Dat.prototype.joinTcpSwarm = function (link, cb) {
   var self = this
+  link = link.replace('dat://', '').replace('dat:', '') // strip dat protocol
 
   var server = net.createServer(function (socket) {
     pump(socket, self.drive.createPeerStream(), socket)
