@@ -38,11 +38,14 @@ module.exports.listEach = function (opts, onEach, cb) {
 module.exports.createDownloadStream = function (drive, dir) {
   return through.obj(function (entry, enc, next) {
     var entryPath = path.join(dir, entry.value.name)
-    mkdirp.sync(path.dirname(entryPath))
-    var content = drive.get(entry)
-    var writeStream = fs.createWriteStream(entryPath, {mode: entry.value.mode})
-    pump(content.createStream(), writeStream, function (err) {
-      next(err)
+    if (entry.type === 'directory') return mkdirp(entryPath, next)
+    mkdirp(path.dirname(entryPath), function (err) {
+      if (err) return next(err)
+      var content = drive.get(entry)
+      var writeStream = fs.createWriteStream(entryPath, {mode: entry.value.mode})
+      pump(content.createStream(), writeStream, function (err) {
+        next(err)
+      })
     })
   })
 }
