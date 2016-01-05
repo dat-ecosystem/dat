@@ -7,6 +7,6 @@ var hasBash = fs.existsSync('/bin/bash')
 
 module.exports = function (t, cmd, opts) {
   opts = opts || {}
-  if (hasBash) opts.shell = '/bin/bash' // override default of /bin/sh 
+  if (hasBash) opts.shell = '/bin/bash' // override default of /bin/sh
   return spawn(t, cmd, opts)
 }
