@@ -28,3 +28,5 @@ module.exports.listEach = function (opts, onEach, cb) {
     onEach(item, next)
   }, cb)
 }
+
+module.exports.createWriteStream = fs.createWriteStream

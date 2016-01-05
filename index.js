@@ -27,6 +27,7 @@ function Dat (opts) {
 }
 
 Dat.prototype.add = function (dirs, cb) {
+  var self = this
   if (!dirs) throw new Error('must specify directory or directories to add')
   if (!cb) throw new Error('must specify callback')
 
@@ -37,7 +38,7 @@ Dat.prototype.add = function (dirs, cb) {
 
   var tasks = dirs.map(function (dir) {
     return function (cb) {
-      datFs.listEach({dir: dir}, eachItem, cb)
+      self.fs.listEach({dir: dir}, eachItem, cb)
     }
   })
 
@@ -126,7 +127,7 @@ Dat.prototype.download = function (link, dir, cb) {
       var entryPath = path.join(dir, entry.value.name)
       mkdirp.sync(path.dirname(entryPath))
       var content = self.drive.get(entry)
-      var writeStream = fs.createWriteStream(entryPath, {mode: entry.value.mode})
+      var writeStream = self.fs.createWriteStream(entryPath, {mode: entry.value.mode})
       pump(content.createStream(), writeStream, function (err) {
         next(err)
       })
