@@ -1,4 +1,7 @@
 var fs = require('fs')
+var pump = require('pump')
+var mkdirp = require('mkdirp')
+var through = require('through2')
 var path = require('path')
 var walker = require('folder-walker')
 var each = require('stream-each')
@@ -29,4 +32,14 @@ module.exports.listEach = function (opts, onEach, cb) {
   }, cb)
 }
 
-module.exports.createWriteStream = fs.createWriteStream
+module.exports.createDownloadStream = function (drive, dir) {
+  return through.obj(function (entry, enc, next) {
+    var entryPath = path.join(dir, entry.value.name)
+    mkdirp.sync(path.dirname(entryPath))
+    var content = drive.get(entry)
+    var writeStream = fs.createWriteStream(entryPath, {mode: entry.value.mode})
+    pump(content.createStream(), writeStream, function (err) {
+      next(err)
+    })
+  })
+}

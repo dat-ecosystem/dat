@@ -1,9 +1,7 @@
 var net = require('net')
-var fs = require('fs')
+var collect = require('collect-stream')
 var path = require('path')
 var hyperdrive = require('hyperdrive')
-var mkdirp = require('mkdirp')
-var through = require('through2')
 var pump = require('pump')
 var series = require('run-series')
 var homeDir = require('home-dir')
@@ -124,7 +122,6 @@ Dat.prototype.metadata = function (link, cb) {
   })
 }
 
-// TODO remove fs specific code from this method
 Dat.prototype.download = function (link, dir, cb) {
   var self = this
   if (!cb) cb = function noop () {}
@@ -134,17 +131,7 @@ Dat.prototype.download = function (link, dir, cb) {
 
     var feed = self.drive.get(link) // the link identifies/verifies the content
     var feedStream = feed.createStream()
-
-    var download = through.obj(function (entry, enc, next) {
-      var entryPath = path.join(dir, entry.value.name)
-      mkdirp.sync(path.dirname(entryPath))
-      var content = self.drive.get(entry)
-      var writeStream = self.fs.createWriteStream(entryPath, {mode: entry.value.mode})
-      pump(content.createStream(), writeStream, function (err) {
-        next(err)
-      })
-    })
-
+    var download = self.fs.createDownloadStream(self.drive, dir)
     pump(feedStream, download, function (err) {
       cb(err, link, port, close)
     })
