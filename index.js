@@ -5,7 +5,7 @@ var hyperdrive = require('hyperdrive')
 var mkdirp = require('mkdirp')
 var through = require('through2')
 var pump = require('pump')
-var parallel = require('run-parallel')
+var series = require('run-series')
 var homeDir = require('home-dir')
 var discoveryChannel = require('discovery-channel')
 var Connections = require('connections')
@@ -41,7 +41,7 @@ Dat.prototype.add = function (dirs, cb) {
     }
   })
 
-  parallel(tasks, function (err) {
+  series(tasks, function (err) {
     if (err) {
       return cb(err)
       // TODO pack cleanup
