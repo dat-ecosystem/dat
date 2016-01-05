@@ -112,6 +112,18 @@ Dat.prototype.close = function (cb) {
   this.discovery.close(cb)
 }
 
+Dat.prototype.metadata = function (link, cb) {
+  var self = this
+  self.joinTcpSwarm(link, function (_err, link, port, close) {
+    var feed = self.drive.get(link)
+    collect(feed.createStream(), function (err, data) {
+      cb(err, data)
+      // TODO: instead of closing, return the swarm.
+      close()
+    })
+  })
+}
+
 // TODO remove fs specific code from this method
 Dat.prototype.download = function (link, dir, cb) {
   var self = this

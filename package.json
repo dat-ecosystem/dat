@@ -23,6 +23,7 @@
   "author": "max ogden",
   "license": "BSD-3-Clause",
   "dependencies": {
+    "collect-stream": "^1.1.1",
     "connections": "^1.0.0",
     "discovery-channel": "^1.2.1",
     "folder-walker": "^1.1.2",
