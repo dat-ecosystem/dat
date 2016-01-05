@@ -2,7 +2,7 @@ var test = require('tape')
 var after = require('after')
 var rimraf = require('rimraf')
 var os = require('os')
-var spawn = require('tape-spawn')
+var spawn = require('./helpers/spawn.js')
 var path = require('path')
 
 var dat = path.resolve(path.join(__dirname, '..', 'cli.js'))
