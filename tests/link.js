@@ -8,11 +8,25 @@ var path = require('path')
 var dat = path.resolve(path.join(__dirname, '..', 'cli.js'))
 var dat1 = path.join(__dirname, 'fixtures')
 var tmp = os.tmpdir()
+var dat1link
 
 test('prints link', function (t) {
   var st = spawn(t, dat + ' link ' + dat1 + ' --home=' + tmp)
   st.stdout.match(function (output) {
     t.equal(output.length, 71, 'version is length 71: dat:// + 64 char hash + newline')
+    dat1link = output.toString()
+    st.kill()
+    return true
+  })
+  st.stderr.empty()
+  st.end()
+})
+
+test('link with no args defaults to cwd', function (t) {
+  var st = spawn(t, dat + ' link --home=' + tmp, {cwd: dat1})
+  st.stdout.match(function (output) {
+    t.equal(output.length, 71, 'version is length 71: dat:// + 64 char hash + newline')
+    t.equal(output.toString(), dat1link, 'links match')
     st.kill()
     return true
   })
