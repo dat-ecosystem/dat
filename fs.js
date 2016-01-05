@@ -27,7 +27,10 @@ module.exports.listEach = function (opts, onEach, cb) {
       item.createReadStream = function () {
         return fs.createReadStream(data.filepath)
       }
+      item.type = 'file'
     }
+    var isDir = data.stat.isDirectory()
+    if (isDir) item.type = 'directory'
     onEach(item, next)
   }, cb)
 }
