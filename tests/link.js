@@ -9,8 +9,8 @@ var dat = path.resolve(path.join(__dirname, '..', 'cli.js'))
 var dat1 = path.join(__dirname, 'fixtures')
 var tmp = os.tmpdir()
 
-test('share gives link', function (t) {
-  var st = spawn(t, dat + ' share ' + dat1 + ' --home=' + tmp)
+test('prints link', function (t) {
+  var st = spawn(t, dat + ' link ' + dat1 + ' --home=' + tmp)
   st.stdout.match(function (output) {
     t.equal(output.length, 65, 'version is 64 char + newline')
     st.kill()
@@ -20,9 +20,9 @@ test('share gives link', function (t) {
   st.end()
 })
 
-test('share gives link and stays open for download', function (t) {
+test('prints link and stays open for download', function (t) {
   var link, download
-  var share = spawn(t, dat + ' share ' + dat1 + ' --home=' + tmp, {end: false})
+  var share = spawn(t, dat + ' link ' + dat1 + ' --home=' + tmp, {end: false})
   share.stderr.empty()
   share.stdout.match(function (output) {
     t.equal(output.length, 65, 'version is 64 char + newline')

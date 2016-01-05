@@ -5,6 +5,7 @@ var hyperdrive = require('hyperdrive')
 var mkdirp = require('mkdirp')
 var through = require('through2')
 var pump = require('pump')
+var parallel = require('run-parallel')
 var homeDir = require('home-dir')
 var discoveryChannel = require('discovery-channel')
 var Connections = require('connections')
@@ -13,10 +14,9 @@ var datFs = require('./fs.js')
 
 module.exports = Dat
 
-function Dat (dir, opts) {
-  if (!(this instanceof Dat)) return new Dat(dir, opts)
+function Dat (opts) {
+  if (!(this instanceof Dat)) return new Dat(opts)
   if (!opts) opts = {}
-  this.dir = dir
   this.fs = opts.fs || datFs
   var dbDir = path.join(opts.home || homeDir(), '.dat', 'db')
   this.level = opts.db || datDb(dbDir, opts)
@@ -26,19 +26,22 @@ function Dat (dir, opts) {
   this.discovery = discoveryChannel()
 }
 
-Dat.prototype.addDirectory = function (cb) {
+Dat.prototype.add = function (dirs, cb) {
+  if (!dirs) throw new Error('must specify directory or directories to add')
+  if (!cb) throw new Error('must specify callback')
+
   var pack = this.drive.add()
 
-  datFs.listEach({dir: this.dir}, eachItem, eachDone)
+  // make sure its an array of dirs to simplify following code
+  if (!Array.isArray(dirs)) dirs = [dirs]
 
-  function eachItem (item, next) {
-    var entry = pack.entry(item, next)
-    if (item.createReadStream) {
-      pump(item.createReadStream(), entry)
+  var tasks = dirs.map(function (dir) {
+    return function (cb) {
+      datFs.listEach({dir: dir}, eachItem, cb)
     }
-  }
+  })
 
-  function eachDone (err) {
+  parallel(tasks, function (err) {
     if (err) {
       return cb(err)
       // TODO pack cleanup
@@ -48,6 +51,13 @@ Dat.prototype.addDirectory = function (cb) {
       var link = pack.id.toString('hex')
       cb(null, link)
     })
+  })
+
+  function eachItem (item, next) {
+    var entry = pack.entry(item, next)
+    if (item.createReadStream) {
+      pump(item.createReadStream(), entry)
+    }
   }
 }
 
@@ -102,7 +112,7 @@ Dat.prototype.close = function (cb) {
 }
 
 // TODO remove fs specific code from this method
-Dat.prototype.download = function (link, cb) {
+Dat.prototype.download = function (link, dir, cb) {
   var self = this
   if (!cb) cb = function noop () {}
 
@@ -113,7 +123,7 @@ Dat.prototype.download = function (link, cb) {
     var feedStream = feed.createStream()
 
     var download = through.obj(function (entry, enc, next) {
-      var entryPath = path.join(self.dir, entry.value.name)
+      var entryPath = path.join(dir, entry.value.name)
       mkdirp.sync(path.dirname(entryPath))
       var content = self.drive.get(entry)
       var writeStream = fs.createWriteStream(entryPath, {mode: entry.value.mode})
