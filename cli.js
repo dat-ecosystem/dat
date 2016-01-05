@@ -20,7 +20,7 @@ function run () {
     db.add(dirs, function (err, link) {
       if (err) throw err
       db.joinTcpSwarm(link, function (_err, link, port, close) {
-        console.log(link)
+        console.log('dat://' + link)
       })
     })
   } else if (firstArg) {

@@ -12,7 +12,7 @@ var tmp = os.tmpdir()
 test('prints link', function (t) {
   var st = spawn(t, dat + ' link ' + dat1 + ' --home=' + tmp)
   st.stdout.match(function (output) {
-    t.equal(output.length, 65, 'version is 64 char + newline')
+    t.equal(output.length, 71, 'version is length 71: dat:// + 64 char hash + newline')
     st.kill()
     return true
   })
@@ -25,9 +25,9 @@ test('prints link and stays open for download', function (t) {
   var share = spawn(t, dat + ' link ' + dat1 + ' --home=' + tmp, {end: false})
   share.stderr.empty()
   share.stdout.match(function (output) {
-    t.equal(output.length, 65, 'version is 64 char + newline')
+    t.equal(output.length, 71, 'version is length 71: dat:// + 64 char hash + newline')
     link = output.trim()
-    download = spawn(t, dat + ' ' + link + ' ' + tmp + ' --home=' + tmp, {end: false})
+    download = spawn(t, dat + ' ' + link + ' --path=' + tmp + ' --home=' + tmp, {end: false})
     var line = 0
     download.stderr.empty()
     download.stdout.match(function (output) {
