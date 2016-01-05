@@ -1,23 +1,18 @@
 var net = require('net')
 var collect = require('collect-stream')
-var path = require('path')
 var hyperdrive = require('hyperdrive')
 var pump = require('pump')
 var series = require('run-series')
-var homeDir = require('home-dir')
 var discoveryChannel = require('discovery-channel')
 var Connections = require('connections')
-var datDb = require('./db.js')
-var datFs = require('./fs.js')
 
 module.exports = Dat
 
 function Dat (opts) {
   if (!(this instanceof Dat)) return new Dat(opts)
   if (!opts) opts = {}
-  this.fs = opts.fs || datFs
-  var dbDir = path.join(opts.home || homeDir(), '.dat', 'db')
-  this.level = opts.db || datDb(dbDir, opts)
+  this.fs = opts.fs || require('./fs.js')
+  this.level = opts.db || require('./db.js')(opts)
   var drive = hyperdrive(this.level)
   this.drive = drive
   this.peers = {}
