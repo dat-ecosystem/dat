@@ -65,37 +65,27 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
 
   var connections = Connections(server)
 
-  server.listen(0, function (err) {
-    if (err) return cb(err)
+  server.listen(0, function () {
     var port = server.address().port
+    var hash = resolveHash(link)
 
-    function update () {
-      // discovery-channel currently only works with 20 bytes hashes
-      var hash = resolveHash(link)
-      self.discovery.announce(hash, port)
-
-      var lookup = self.discovery.lookup(hash)
-
-      lookup.on('peer', function (ip, port) {
-        var peerid = ip + ':' + port
-        if (self.peers[peerid]) return
-        self.peers[peerid] = true
-        var socket = net.connect(port, ip)
-        pump(socket, self.drive.createPeerStream(), socket, function () {
-          delete self.peers[peerid]
-        })
+    self.discovery.add(hash, port)
+    self.discovery.on('peer', function (hash, peer) {
+      var peerid = peer.host + ':' + peer.port
+      if (self.peers[peerid]) return
+      self.peers[peerid] = true
+      var socket = net.connect(peer.port, peer.host)
+      pump(socket, self.drive.createPeerStream(), socket, function () {
+        delete self.peers[peerid]
       })
-    }
+    })
 
     function close (cb) {
-      clearInterval(interval)
       server.close()
       connections.destroy()
       self.close(cb)
     }
 
-    update()
-    var interval = setInterval(update, 1000 * 60)
     cb(null, link, port, close)
   })
 }
@@ -135,5 +125,5 @@ Dat.prototype.download = function (link, dir, cb) {
 
 function resolveHash (link) {
   // TODO: handle 'pretty' or 'named' links
-  return new Buffer(link, 'hex').slice(0, 20)
+  return new Buffer(link, 'hex')
 }
