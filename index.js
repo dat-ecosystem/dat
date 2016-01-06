@@ -16,7 +16,7 @@ function Dat (opts) {
   var drive = hyperdrive(this.level)
   this.drive = drive
   this.peers = {}
-  this.discovery = discoveryChannel()
+  this.discovery = discoveryChannel({dns: {tracker: 'tracker.publicbits.org'}})
 }
 
 Dat.prototype.add = function (dirs, cb) {
