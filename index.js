@@ -65,7 +65,7 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
 
   var connections = Connections(server)
 
-  server.listen(0, function () {
+  server.on('listening', function () {
     var port = server.address().port
     var hash = resolveHash(link)
 
@@ -88,6 +88,12 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
 
     cb(null, link, port, close)
   })
+
+  server.once('error', function () {
+    server.listen(0)
+  })
+
+  server.listen(3282)
 }
 
 Dat.prototype.close = function (cb) {
