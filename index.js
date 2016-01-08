@@ -98,7 +98,7 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
 
 Dat.prototype.close = function (cb) {
   this.drive.db.close()
-  this.discovery.close(cb)
+  this.discovery.destroy(cb)
 }
 
 Dat.prototype.metadata = function (link, cb) {
