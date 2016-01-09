@@ -29,7 +29,7 @@
     "folder-walker": "^1.1.2",
     "home-dir": "^1.0.0",
     "hyperdrive": "^1.4.2",
-    "level-party": "^2.1.2",
+    "level-party": "^3.0.2",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "pump": "^1.0.1",
