@@ -1,7 +1,6 @@
 var os = require('os')
 var fs = require('fs')
 var path = require('path')
-var child = require('child_process')
 var test = require('tape')
 var after = require('after')
 var rimraf = require('rimraf')
@@ -92,7 +91,7 @@ test('connects if link process starts second', function (t) {
     t.true(linker.proc.killed, 'first link process is killed')
     startClone()
   })
-  
+
   function startClone () {
     var relinked = false
     var relinker
@@ -102,10 +101,10 @@ test('connects if link process starts second', function (t) {
     cloner.stdout.match(function (output) {
       var str = output.toString()
       if (str.indexOf('Downloading') > -1) {
-        t.ok(true, 'cloner is running "dat ' + link + '" in ' + dat2)
+        t.ok(true, 'running "dat ' + link + '" in ' + dat2)
         if (!relinked) {
           relinker = startRelinking()
-          relinked = true            
+          relinked = true
         }
         return false
       } else if (str.indexOf('Done downloading.') > -1) {
@@ -120,12 +119,12 @@ test('connects if link process starts second', function (t) {
       t.end()
     })
   }
-  
+
   function startRelinking () {
     var relinker = spawn(t, dat + ' link --home=' + tmp + ' --path=' + dat1, {end: false})
     relinker.stderr.empty()
     relinker.stdout.match(function (output) {
-      t.equal(output.length, 71, 'relinker ran dat link in ' +  dat1)
+      t.equal(output.length, 71, 'running "dat link" in ' + dat1)
       return true
     })
     relinker.end(function () {
