@@ -1,9 +1,13 @@
+var os = require('os')
+var fs = require('fs')
+var path = require('path')
+var child = require('child_process')
 var test = require('tape')
 var after = require('after')
 var rimraf = require('rimraf')
-var os = require('os')
+var mkdirp = require('mkdirp')
+
 var spawn = require('./helpers/spawn.js')
-var path = require('path')
 
 var dat = path.resolve(path.join(__dirname, '..', 'cli.js'))
 var dat1 = path.join(__dirname, 'fixtures')
@@ -60,6 +64,74 @@ test('prints link and stays open for download', function (t) {
     var next = after(2, t.end.bind(t))
     share.end(next)
     download.end(next)
+  }
+})
+
+test('connects if link process starts second', function (t) {
+  var link
+  var tmpdir = tmp + '/dat-link-restart-test'
+  rimraf.sync(tmpdir)
+  var dat1 = tmpdir + '/dat1'
+  var dat2 = tmpdir + '/dat2'
+  mkdirp.sync(dat1)
+  mkdirp.sync(dat2)
+
+  fs.writeFileSync(dat1 + '/foo.txt', new Buffer('hello world'))
+  var linkCmd = dat + ' link --home=' + tmp + ' --path=' + dat1
+  var linker = spawn(t, linkCmd, {end: false})
+  linker.stderr.empty()
+  linker.stdout.match(function (output) {
+    var matched = output.length === 71
+    t.ok(matched, 'got link from ' + dat1)
+    link = output.toString().trim()
+    linker.kill()
+    if (matched) return true
+    else return false
+  })
+  linker.end(function () {
+    t.true(linker.proc.killed, 'first link process is killed')
+    startClone()
+  })
+  
+  function startClone () {
+    var relinked = false
+    var relinker
+    var cloner = spawn(t, dat + ' ' + link + ' --home=' + tmp + ' --path=' + dat2, {end: false})
+    cloner.timeout(10000, 'waited 10 seconds and download didnt start')
+    cloner.stderr.empty()
+    cloner.stdout.match(function (output) {
+      var str = output.toString()
+      if (str.indexOf('Downloading') > -1) {
+        t.ok(true, 'cloner is running "dat ' + link + '" in ' + dat2)
+        if (!relinked) {
+          relinker = startRelinking()
+          relinked = true            
+        }
+        return false
+      } else if (str.indexOf('Done downloading.') > -1) {
+        cloner.kill()
+        relinker.kill()
+        return true
+      } else {
+        return false
+      }
+    })
+    cloner.end(function () {
+      t.end()
+    })
+  }
+  
+  function startRelinking () {
+    var relinker = spawn(t, dat + ' link --home=' + tmp + ' --path=' + dat1, {end: false})
+    relinker.stderr.empty()
+    relinker.stdout.match(function (output) {
+      t.equal(output.length, 71, 'relinker ran dat link in ' +  dat1)
+      return true
+    })
+    relinker.end(function () {
+      console.log('relinker ended')
+    })
+    return relinker
   }
 })
 

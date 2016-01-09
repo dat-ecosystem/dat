@@ -17,7 +17,7 @@ function run () {
   var db = dat({home: args.home})
   if (firstArg === 'link') {
     var dirs = args._.slice(1)
-    if (dirs.length === 0) dirs = process.cwd()
+    if (dirs.length === 0) dirs = loc
     db.add(dirs, function (err, link) {
       if (err) throw err
       db.joinTcpSwarm(link, function (_err, link, port, close) {
