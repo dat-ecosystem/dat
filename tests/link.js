@@ -127,11 +127,7 @@ test('connects if link process starts second', function (t) {
     var relinker = spawn(t, dat + ' link --home=' + tmp + ' --path=' + dat1, {end: false})
     relinker.stderr.empty()
     relinker.stdout.match(function (output) {
-      t.equal(output.length, 71, 'running "dat link" in ' + dat1)
-      return true
-    })
-    relinker.end(function () {
-      console.log('relinker ended')
+      return true // ignore output
     })
     return relinker
   }
