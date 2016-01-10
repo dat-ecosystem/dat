@@ -100,6 +100,13 @@ test('connects if link process starts second', function (t) {
     cloner.stderr.empty()
     cloner.stdout.match(function (output) {
       var str = output.toString()
+
+      if (relinked && str.indexOf('Done downloading.') > -1) {
+        cloner.kill()
+        relinker.kill()
+        return true
+      }
+
       if (str.indexOf('Downloading') > -1) {
         t.ok(true, 'running "dat ' + link + '" in ' + dat2)
         if (!relinked) {
@@ -107,13 +114,9 @@ test('connects if link process starts second', function (t) {
           relinked = true
         }
         return false
-      } else if (str.indexOf('Done downloading.') > -1) {
-        cloner.kill()
-        relinker.kill()
-        return true
-      } else {
-        return false
       }
+
+      return false
     })
     cloner.end(function () {
       t.end()
