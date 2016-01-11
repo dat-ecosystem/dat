@@ -31,6 +31,7 @@ function run () {
         db.joinTcpSwarm(link, function (_err, link, port, close) {
           singleLineLog.stderr('') // clear previous stderr
           singleLineLog.stdout('dat://' + link)
+          console.error() // final newline
         })
       })
     })

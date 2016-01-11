@@ -2,7 +2,6 @@ var os = require('os')
 var fs = require('fs')
 var path = require('path')
 var test = require('tape')
-var after = require('after')
 var rimraf = require('rimraf')
 var mkdirp = require('mkdirp')
 
@@ -16,56 +15,24 @@ var dat1link
 test('prints link', function (t) {
   var st = spawn(t, dat + ' link ' + dat1 + ' --home=' + tmp)
   st.stdout.match(function (output) {
-    t.equal(output.length, 71, 'version is length 71: dat:// + 64 char hash + newline')
+    t.equal(output.length, 70, 'version is length 70: dat:// + 64 char hash')
     dat1link = output.toString()
     st.kill()
     return true
   })
-  st.stderr.empty()
   st.end()
 })
 
 test('link with no args defaults to cwd', function (t) {
   var st = spawn(t, dat + ' link --home=' + tmp, {cwd: dat1})
   st.stdout.match(function (output) {
-    t.equal(output.length, 71, 'version is length 71: dat:// + 64 char hash + newline')
+    t.equal(output.length, 70, 'version is length 70: dat:// + 64 char hash')
     t.equal(output.toString(), dat1link, 'links match')
     st.kill()
     return true
   })
-  st.stderr.empty()
   st.end()
 })
-
-test('prints link and stays open for download', function (t) {
-  var link, download
-  var share = spawn(t, dat + ' link ' + dat1 + ' --home=' + tmp, {end: false})
-  share.stderr.empty()
-  share.stdout.match(function (output) {
-    t.equal(output.length, 71, 'version is length 71: dat:// + 64 char hash + newline')
-    link = output.trim()
-    download = spawn(t, dat + ' ' + link + ' --path=' + tmp + ' --home=' + tmp, {end: false})
-    var line = 0
-    download.stderr.empty()
-    download.stdout.match(function (output) {
-      output = output.split('\n')[line]
-      line += 1
-      if (output === 'Done downloading.') {
-        download.kill()
-        share.kill()
-        cleanup()
-        return true
-      }
-    })
-    return true
-  })
-  function cleanup () {
-    var next = after(2, t.end.bind(t))
-    share.end(next)
-    download.end(next)
-  }
-})
-
 test('connects if link process starts second', function (t) {
   var link
   var tmpdir = tmp + '/dat-link-restart-test'
@@ -78,9 +45,8 @@ test('connects if link process starts second', function (t) {
   fs.writeFileSync(dat1 + '/foo.txt', new Buffer('hello world'))
   var linkCmd = dat + ' link --home=' + tmp + ' --path=' + dat1
   var linker = spawn(t, linkCmd, {end: false})
-  linker.stderr.empty()
   linker.stdout.match(function (output) {
-    var matched = output.length === 71
+    var matched = output.length === 70
     t.ok(matched, 'got link from ' + dat1)
     link = output.toString().trim()
     linker.kill()
@@ -104,6 +70,7 @@ test('connects if link process starts second', function (t) {
       if (relinked && str.indexOf('Done downloading.') > -1) {
         cloner.kill()
         relinker.kill()
+        relinker.end()
         return true
       }
 
@@ -125,7 +92,6 @@ test('connects if link process starts second', function (t) {
 
   function startRelinking () {
     var relinker = spawn(t, dat + ' link --home=' + tmp + ' --path=' + dat1, {end: false})
-    relinker.stderr.empty()
     relinker.stdout.match(function (output) {
       return true // ignore output
     })
