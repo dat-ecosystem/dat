@@ -41,8 +41,9 @@ module.exports.createDownloadStream = function (drive, dir) {
     if (entry.type === 'directory') return mkdirp(entryPath, next)
     mkdirp(path.dirname(entryPath), function (err) {
       if (err) return next(err)
-      var content = drive.get(entry)
       var writeStream = fs.createWriteStream(entryPath, {mode: entry.value.mode})
+      if (!entry.link) return next()
+      var content = drive.get(entry)
       pump(content.createStream(), writeStream, function (err) {
         next(err)
       })
