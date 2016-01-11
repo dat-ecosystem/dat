@@ -20,7 +20,8 @@ module.exports.listEach = function (opts, onEach, cb) {
       uid: data.stat.uid,
       gid: data.stat.gid,
       mtime: data.stat.mtime.getTime(),
-      ctime: data.stat.ctime.getTime()
+      ctime: data.stat.ctime.getTime(),
+      size: data.stat.size
     }
     var isFile = data.stat.isFile()
     if (isFile) {

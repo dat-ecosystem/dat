@@ -19,33 +19,66 @@ function Dat (opts) {
   this.discovery = discoveryChannel({dns: {tracker: 'tracker.publicbits.org'}})
 }
 
-Dat.prototype.add = function (dirs, cb) {
+Dat.prototype.scan = function (dirs, each, done) {
   var self = this
-  if (!dirs) throw new Error('must specify directory or directories to add')
-  if (!cb) throw new Error('must specify callback')
 
-  var pack = this.drive.add()
-
-  // make sure its an array of dirs to simplify following code
   if (!Array.isArray(dirs)) dirs = [dirs]
 
   var tasks = dirs.map(function (dir) {
     return function (cb) {
-      self.fs.listEach({dir: dir}, eachItem, cb)
+      self.fs.listEach({dir: dir}, each, cb)
     }
   })
 
   series(tasks, function (err) {
     if (err) {
-      return cb(err)
-      // TODO pack cleanup
+      return done(err)
     }
+    done()
+  })
+}
+
+Dat.prototype.fileStats = function (dirs, cb) {
+  this.scan(dirs, eachItem, done)
+
+  var stats = {
+    files: 0,
+    directories: 0,
+    size: 0,
+    latest: null
+  }
+
+  function eachItem (item, next) {
+    if (item.type === 'file') {
+      stats.files++
+      stats.size += item.size
+      if (item.mtime > stats.latest) stats.latest = item.mtime
+    } else if (item.type === 'directory') {
+      stats.directories++
+    }
+    next()
+  }
+
+  function done (err) {
+    if (err) return cb(err)
+    cb(null, stats)
+  }
+
+  return stats
+}
+
+Dat.prototype.addFiles = function (dirs, cb) {
+  var pack = this.drive.add()
+  this.scan(dirs, eachItem, done)
+
+  function done () {
     pack.finalize(function (err) {
       if (err) return cb(err)
       var link = pack.id.toString('hex')
       cb(null, link)
+      // TODO pack cleanup
     })
-  })
+  }
 
   function eachItem (item, next) {
     var entry = pack.entry(item, next)
