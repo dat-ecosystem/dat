@@ -29,14 +29,20 @@ function run () {
         printAddProgress(statsAdd, statsScan.files)
         clearInterval(addInterval)
         if (err) throw err
-        db.joinTcpSwarm(link, function (_err, link, port, close) {
+        db.joinTcpSwarm(link, function (_err, swarm) {
           singleLineLog.stderr('') // clear previous stderr
-          singleLineLog.stdout('dat://' + link)
+          singleLineLog.stdout('dat://' + swarm.link)
           console.error() // final newline
+
+          var swarmInterval = setInterval(function () {
+            printSwarmStats(swarm)
+          }, 500)
+          printSwarmStats(swarm)
 
           // intercept ctrl+c and do graceful exit
           process.on('SIGINT', function () {
-            close(function (err) {
+            clearInterval(swarmInterval)
+            swarm.close(function (err) {
               if (err) throw err
               else process.exit(0)
             })
@@ -77,5 +83,11 @@ function printScanProgress (stats) {
 function printAddProgress (stats, total) {
   singleLineLog.stderr(
     'Fingerprinting files... (' + stats.files + '/' + total + ')'
+  )
+}
+
+function printSwarmStats (swarm) {
+  singleLineLog.stderr(
+    'Serving data (' + swarm.connections.sockets.length + ' connection(s))\n'
   )
 }

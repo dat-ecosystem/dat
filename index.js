@@ -130,13 +130,21 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
   var connections = Connections(server)
 
   server.on('listening', function () {
-    var port = server.address().port
-    var hash = resolveHash(link)
+    var swarm = {
+      port: server.address().port,
+      hash: resolveHash(link),
+      link: link,
+      close: close,
+      server: server,
+      connections: connections,
+      dat: self
+    }
 
-    self.discovery.add(hash, port)
+    self.discovery.add(swarm.hash, swarm.port)
     self.discovery.on('peer', function (hash, peer) {
       debug('found peer for ', link)
       var peerid = peer.host + ':' + peer.port
+      if (peer.host === '127.0.0.1' && peer.port === swarm.port) return // ignore self
       if (self.peers[peerid]) return
       self.peers[peerid] = true
       var socket = net.connect(peer.port, peer.host)
@@ -145,13 +153,13 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
       })
     })
 
+    cb(null, swarm)
+
     function close (cb) {
       server.close()
       connections.destroy()
       self.close(cb)
     }
-
-    cb(null, link, port, close)
   })
 
   server.once('error', function () {
@@ -176,14 +184,14 @@ Dat.prototype.download = function (link, dir, cb) {
   var self = this
   if (!cb) cb = function noop () {}
 
-  self.joinTcpSwarm(link, function (err, link, port, close) {
+  self.joinTcpSwarm(link, function (err, swarm) {
     if (err) throw err
 
-    var feed = self.drive.get(link) // the link identifies/verifies the content
+    var feed = self.drive.get(swarm.link) // the link identifies/verifies the content
     var feedStream = feed.createStream()
     var download = self.fs.createDownloadStream(self.drive, dir)
     pump(feedStream, download, function (err) {
-      cb(err, link, port, close)
+      cb(err, swarm)
     })
   })
 }
