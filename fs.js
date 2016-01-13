@@ -36,18 +36,30 @@ module.exports.listEach = function (opts, onEach, cb) {
   }, cb)
 }
 
-module.exports.createDownloadStream = function (drive, dir) {
-  return through.obj(function (entry, enc, next) {
+module.exports.createDownloadStream = function (drive, dir, stats) {
+  if (!stats) stats = {}
+  stats.files = 0
+  stats.directories = 0
+
+  var downloader = through.obj(function (entry, enc, next) {
+    if (!entry.link) return next()
     var entryPath = path.join(dir, entry.value.name)
-    if (entry.type === 'directory') return mkdirp(entryPath, next)
+    if (entry.type === 'directory') return mkdirp(entryPath, function (err) {
+      if (err) return next(err)
+      stats.directories++
+      next()
+    })
     mkdirp(path.dirname(entryPath), function (err) {
       if (err) return next(err)
       var writeStream = fs.createWriteStream(entryPath, {mode: entry.value.mode})
-      if (!entry.link) return next()
       var content = drive.get(entry)
       pump(content.createStream(), writeStream, function (err) {
-        next(err)
+        if (err) return next(err)
+        stats.files++
+        next()
       })
     })
   })
+  downloader.stats = stats
+  return downloader
 }

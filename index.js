@@ -184,16 +184,19 @@ Dat.prototype.download = function (link, dir, cb) {
   var self = this
   if (!cb) cb = function noop () {}
 
+  var stats = {}
+
   self.joinTcpSwarm(link, function (err, swarm) {
     if (err) throw err
-
     var feed = self.drive.get(swarm.link) // the link identifies/verifies the content
     var feedStream = feed.createStream()
-    var download = self.fs.createDownloadStream(self.drive, dir)
+    var download = self.fs.createDownloadStream(self.drive, dir, stats)
     pump(feedStream, download, function (err) {
       cb(err, swarm)
     })
   })
+
+  return stats
 }
 
 function resolveHash (link) {

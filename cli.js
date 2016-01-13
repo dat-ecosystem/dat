@@ -34,19 +34,7 @@ function run () {
           singleLineLog.stdout('dat://' + swarm.link)
           console.error() // final newline
 
-          var swarmInterval = setInterval(function () {
-            printSwarmStats(swarm)
-          }, 500)
-          printSwarmStats(swarm)
-
-          // intercept ctrl+c and do graceful exit
-          process.on('SIGINT', function () {
-            clearInterval(swarmInterval)
-            swarm.close(function (err) {
-              if (err) throw err
-              else process.exit(0)
-            })
-          })
+          seedSwarm(swarm)
         })
       })
 
@@ -62,11 +50,17 @@ function run () {
     // download/share
     var hash = args._[0]
     if (!hash) return usage('root.txt')
-    console.log('Downloading...')
-    db.download(hash, loc, function (err) {
+    var downloadStats = db.download(hash, loc, function (err, swarm) {
       if (err) throw err
-      console.log('Done downloading.')
+      printDownloadStats(downloadStats)
+      clearInterval(downloadInterval)
+      console.log('Done downloading.\n')
+      seedSwarm(swarm)
     })
+    printDownloadStats(downloadStats)
+    var downloadInterval = setInterval(function () {
+      printDownloadStats(downloadStats)
+    }, 100)
   } else {
     return usage('root.txt')
   }
@@ -90,4 +84,26 @@ function printSwarmStats (swarm) {
   singleLineLog.stderr(
     'Serving data (' + swarm.connections.sockets.length + ' connection(s))\n'
   )
+}
+
+function printDownloadStats (stats) {
+  singleLineLog.stderr(
+    'Downloading' + (stats ? ' file ' + stats.files : '') + '\n'
+  )
+}
+
+function seedSwarm (swarm) {
+  var swarmInterval = setInterval(function () {
+    printSwarmStats(swarm)
+  }, 500)
+  printSwarmStats(swarm)
+
+  // intercept ctrl+c and do graceful exit
+  process.on('SIGINT', function () {
+    clearInterval(swarmInterval)
+    swarm.close(function (err) {
+      if (err) throw err
+      else process.exit(0)
+    })
+  })
 }
