@@ -21,9 +21,9 @@ function run () {
     var dirs = args._.slice(1)
     if (dirs.length === 0) dirs = loc
     var statsScan = db.fileStats(dirs, function (err, stats) {
+      if (err) throw err
       printScanProgress(stats)
       clearInterval(scanInterval)
-      if (err) throw err
       console.error() // newline
       var statsAdd = db.addFiles(dirs, function (err, link) {
         printAddProgress(statsAdd, statsScan.files)
@@ -33,6 +33,14 @@ function run () {
           singleLineLog.stderr('') // clear previous stderr
           singleLineLog.stdout('dat://' + link)
           console.error() // final newline
+
+          // intercept ctrl+c and do graceful exit
+          process.on('SIGINT', function () {
+            close(function (err) {
+              if (err) throw err
+              else process.exit(0)
+            })
+          })
         })
       })
 
@@ -60,7 +68,7 @@ function run () {
 
 function printScanProgress (stats) {
   singleLineLog.stderr(
-    'Scanning folder, found ' + stats.files + ' files, ' +
+    'Scanning folder, found ' + stats.files + ' files in ' +
     stats.directories + ' directories.' +
     (stats.size ? ' ' + prettyBytes(stats.size) + ' total.' : '')
   )
