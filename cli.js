@@ -20,13 +20,14 @@ function run () {
   if (firstArg === 'link') {
     var dirs = args._.slice(1)
     if (dirs.length === 0) dirs = loc
-    var statsProgress = db.fileStats(dirs, function (err, stats) {
-      printProgress(stats)
-      clearInterval(progressInterval)
+    var statsScan = db.fileStats(dirs, function (err, stats) {
+      printScanProgress(stats)
+      clearInterval(scanInterval)
       if (err) throw err
       console.error() // newline
-      singleLineLog.stderr('Adding data and creating share link...')
-      db.addFiles(dirs, function (err, link) {
+      var statsAdd = db.addFiles(dirs, function (err, link) {
+        printAddProgress(statsAdd, statsScan.files)
+        clearInterval(addInterval)
         if (err) throw err
         db.joinTcpSwarm(link, function (_err, link, port, close) {
           singleLineLog.stderr('') // clear previous stderr
@@ -34,11 +35,15 @@ function run () {
           console.error() // final newline
         })
       })
+
+      var addInterval = setInterval(function () {
+        printAddProgress(statsAdd, statsScan.files)
+      }, 100)
     })
 
-    var progressInterval = setInterval(function () {
-      printProgress(statsProgress)
-    }, 10)
+    var scanInterval = setInterval(function () {
+      printScanProgress(statsScan)
+    }, 100)
   } else if (firstArg) {
     // download/share
     var hash = args._[0]
@@ -53,10 +58,16 @@ function run () {
   }
 }
 
-function printProgress (stats) {
+function printScanProgress (stats) {
   singleLineLog.stderr(
     'Scanning folder, found ' + stats.files + ' files, ' +
     stats.directories + ' directories.' +
     (stats.size ? ' ' + prettyBytes(stats.size) + ' total.' : '')
+  )
+}
+
+function printAddProgress (stats, total) {
+  singleLineLog.stderr(
+    'Fingerprinting files... (' + stats.files + '/' + total + ')'
   )
 }

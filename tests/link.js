@@ -33,6 +33,7 @@ test('link with no args defaults to cwd', function (t) {
   })
   st.end()
 })
+
 test('connects if link process starts second', function (t) {
   var link
   var tmpdir = tmp + '/dat-link-restart-test'

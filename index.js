@@ -74,6 +74,23 @@ Dat.prototype.addFiles = function (dirs, cb) {
   var pack = this.drive.add()
   this.scan(dirs, eachItem, done)
 
+  var stats = {
+    files: 0
+  }
+
+  return stats
+
+  function eachItem (item, next) {
+    var entry = pack.entry(item, function (err) {
+      stats.files++
+      if (err) return next(err)
+      next()
+    })
+    if (item.createReadStream) {
+      pump(item.createReadStream(), entry)
+    }
+  }
+
   function done () {
     pack.finalize(function (err) {
       if (err) return cb(err)
@@ -81,13 +98,6 @@ Dat.prototype.addFiles = function (dirs, cb) {
       cb(null, link)
       // TODO pack cleanup
     })
-  }
-
-  function eachItem (item, next) {
-    var entry = pack.entry(item, next)
-    if (item.createReadStream) {
-      pump(item.createReadStream(), entry)
-    }
   }
 }
 
