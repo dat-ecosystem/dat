@@ -7,7 +7,6 @@ var prettyBytes = require('pretty-bytes')
 var dat = require('./index.js')
 
 var firstArg = args._[0]
-
 run()
 
 function run () {
@@ -33,7 +32,6 @@ function run () {
           singleLineLog.stderr('') // clear previous stderr
           singleLineLog.stdout('dat://' + swarm.link)
           console.error() // final newline
-
           seedSwarm(swarm)
         })
       })
@@ -46,6 +44,11 @@ function run () {
     var scanInterval = setInterval(function () {
       printScanProgress(statsScan)
     }, 100)
+  } else if (firstArg === 'list') {
+    var db = dat({home: args.home})
+    db.drive._links.createValueStream().on('data', function (o) {
+      console.log(o)
+    })
   } else if (firstArg) {
     // download/share
     var hash = args._[0]
@@ -66,32 +69,6 @@ function run () {
   }
 }
 
-function printScanProgress (stats) {
-  singleLineLog.stderr(
-    'Scanning folder, found ' + stats.files + ' files in ' +
-    stats.directories + ' directories.' +
-    (stats.size ? ' ' + prettyBytes(stats.size) + ' total.' : '')
-  )
-}
-
-function printAddProgress (stats, total) {
-  singleLineLog.stderr(
-    'Fingerprinting files... (' + stats.files + '/' + total + ')'
-  )
-}
-
-function printSwarmStats (swarm) {
-  singleLineLog.stderr(
-    'Serving data (' + swarm.connections.sockets.length + ' connection(s))\n'
-  )
-}
-
-function printDownloadStats (stats) {
-  singleLineLog.stderr(
-    'Downloading' + (stats ? ' file ' + stats.files : '') + '\n'
-  )
-}
-
 function seedSwarm (swarm) {
   var swarmInterval = setInterval(function () {
     printSwarmStats(swarm)
@@ -106,4 +83,24 @@ function seedSwarm (swarm) {
       else process.exit(0)
     })
   })
+}
+
+function printScanProgress (stats) {
+  singleLineLog.stderr(
+    'Scanning folder, found ' + stats.files + ' files in ' +
+    stats.directories + ' directories.' +
+    (stats.size ? ' ' + prettyBytes(stats.size) + ' total.' : '')
+  )
+}
+
+function printAddProgress (stats, total) {
+  singleLineLog.stderr('Fingerprinting files... (' + stats.files + '/' + total + ')')
+}
+
+function printSwarmStats (swarm) {
+  singleLineLog.stderr('Serving data (' + swarm.connections.sockets.length + ' connection(s))\n')
+}
+
+function printDownloadStats (stats) {
+  singleLineLog.stderr('Downloading' + (stats ? ' file ' + stats.files : '') + '\n')
 }
