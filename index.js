@@ -3,6 +3,7 @@ var collect = require('collect-stream')
 var hyperdrive = require('hyperdrive')
 var pump = require('pump')
 var series = require('run-series')
+var debug = require('debug')('dat')
 var discoveryChannel = require('discovery-channel')
 var Connections = require('connections')
 
@@ -104,6 +105,7 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
 
     self.discovery.add(hash, port)
     self.discovery.on('peer', function (hash, peer) {
+      debug('found peer for ', link)
       var peerid = peer.host + ':' + peer.port
       if (self.peers[peerid]) return
       self.peers[peerid] = true
