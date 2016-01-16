@@ -60,28 +60,16 @@ test('connects if link process starts second', function (t) {
   })
 
   function startClone () {
-    var relinked = false
-    var relinker
     var cloner = spawn(t, dat + ' ' + link + ' --home=' + tmp + ' --path=' + dat2, {end: false})
     cloner.timeout(10000, 'waited 10 seconds and download didnt start')
-    cloner.stderr.empty()
     cloner.stdout.match(function (output) {
       var str = output.toString()
 
-      if (relinked && str.indexOf('Done downloading.') > -1) {
+      if (relinker && str.indexOf('Done downloading.') > -1) {
         cloner.kill()
         relinker.kill()
         relinker.end()
         return true
-      }
-
-      if (str.indexOf('Downloading') > -1) {
-        t.ok(true, 'running "dat ' + link + '" in ' + dat2)
-        if (!relinked) {
-          relinker = startRelinking()
-          relinked = true
-        }
-        return false
       }
 
       return false
@@ -89,6 +77,8 @@ test('connects if link process starts second', function (t) {
     cloner.end(function () {
       t.end()
     })
+
+    var relinker = startRelinking()
   }
 
   function startRelinking () {

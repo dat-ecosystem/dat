@@ -44,11 +44,13 @@ module.exports.createDownloadStream = function (drive, dir, stats) {
   var downloader = through.obj(function (entry, enc, next) {
     if (!entry.link) return next()
     var entryPath = path.join(dir, entry.value.name)
-    if (entry.type === 'directory') return mkdirp(entryPath, function (err) {
-      if (err) return next(err)
-      stats.directories++
-      next()
-    })
+    if (entry.type === 'directory') {
+      return mkdirp(entryPath, function (err) {
+        if (err) return next(err)
+        stats.directories++
+        next()
+      })
+    }
     mkdirp(path.dirname(entryPath), function (err) {
       if (err) return next(err)
       var writeStream = fs.createWriteStream(entryPath, {mode: entry.value.mode})

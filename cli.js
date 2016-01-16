@@ -45,7 +45,7 @@ function run () {
       printScanProgress(statsScan)
     }, 100)
   } else if (firstArg === 'list') {
-    var db = dat({home: args.home})
+    db = dat({home: args.home})
     db.drive._links.createValueStream().on('data', function (o) {
       console.log(o)
     })
