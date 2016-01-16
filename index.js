@@ -102,7 +102,7 @@ Dat.prototype.joinWebrtcSwarm = function (link, opts) {
 
   swarm.on('peer', function (peer) {
     pump(peer, self.drive.createPeerStream(), peer, function () {
-      console.log('got a peer!', peer)
+      debug('found a peer for', link, peer)
     })
   })
 
