@@ -19,7 +19,7 @@ function Dat (opts) {
   var drive = hyperdrive(this.level)
   this.drive = drive
   this.peers = {}
-  this.discovery = discoveryChannel({dns: {tracker: 'tracker.publicbits.org'}})
+  if (opts.discovery === undefined) this.discovery = discoveryChannel({dns: {tracker: 'tracker.publicbits.org'}})
 }
 
 Dat.prototype.scan = function (dirs, each, done) {
@@ -158,14 +158,8 @@ Dat.prototype.close = function (cb) {
 
 Dat.prototype.metadata = function (link, cb) {
   var self = this
-  self.joinTcpSwarm(link, function (_err, link, port, close) {
-    var feed = self.drive.get(link)
-    collect(feed.createStream(), function (err, data) {
-      cb(err, data)
-      // TODO: instead of closing, return the swarm.
-      close()
-    })
-  })
+  var feed = self.drive.get(link)
+  collect(feed.createStream(), cb)
 }
 
 Dat.prototype.download = function (link, dir, cb) {
