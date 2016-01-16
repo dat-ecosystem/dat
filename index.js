@@ -2,6 +2,8 @@ var net = require('net')
 var collect = require('collect-stream')
 var hyperdrive = require('hyperdrive')
 var pump = require('pump')
+var webrtcSwarm = require('webrtc-swarm')
+var signalhub = require('signalhub')
 var series = require('run-series')
 var debug = require('debug')('dat')
 var discoveryChannel = require('discovery-channel')
@@ -87,6 +89,24 @@ Dat.prototype.addFiles = function (dirs, cb) {
       pump(item.createReadStream(), entry)
     }
   }
+}
+
+Dat.prototype.joinWebrtcSwarm = function (link, opts) {
+  if (!opts) opts = {}
+  opts.signalhub = opts.signalhub || 'https://signalhub.mafintosh.com' // change to publicbits.org
+  var self = this
+  link = link.replace('dat://', '').replace('dat:', '')
+  var key = link.toString('hex')
+  var hub = signalhub('hyperdrive/' + key, [opts.signalhub])
+  var swarm = webrtcSwarm(hub)
+
+  swarm.on('peer', function (peer) {
+    pump(peer, self.drive.createPeerStream(), peer, function () {
+      console.log('got a peer!', peer)
+    })
+  })
+
+  return swarm
 }
 
 Dat.prototype.joinTcpSwarm = function (link, cb) {
