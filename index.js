@@ -19,7 +19,7 @@ function Dat (opts) {
   var drive = hyperdrive(this.level)
   this.drive = drive
   this.peers = {}
-  if (opts.discovery === undefined) this.discovery = discoveryChannel({dns: {tracker: 'tracker.publicbits.org'}})
+  if (opts.discovery !== false) this.discovery = discoveryChannel({dns: {tracker: 'tracker.publicbits.org'}})
 }
 
 Dat.prototype.scan = function (dirs, each, done) {
