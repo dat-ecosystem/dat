@@ -108,7 +108,7 @@ Dat.prototype.joinWebrtcSwarm = function (link, opts) {
   link = link.replace('dat://', '').replace('dat:', '')
   var key = link.toString('hex')
   var hub = signalhub('hyperdrive/' + key, [opts.signalhub])
-  var swarm = webrtcSwarm(hub)
+  var swarm = webrtcSwarm(hub, opts)
 
   swarm.on('peer', function (peer) {
     pump(peer, self.drive.createPeerStream(), peer, function () {
