@@ -6,67 +6,78 @@ var singleLineLog = require('single-line-log')
 var prettyBytes = require('pretty-bytes')
 var dat = require('./index.js')
 
-var firstArg = args._[0]
-run()
+var cmd = args._[0]
+runCommand()
 
-function run () {
+function runCommand () {
   var loc = args.path || process.cwd()
-  if (!fs.existsSync(loc)) {
-    console.error('Does not exist:', loc)
-    return usage('root.txt')
-  }
-  var db = dat({home: args.home})
-  if (firstArg === 'link') {
-    var dirs = args._.slice(1)
-    if (dirs.length === 0) dirs = loc
-    var statsScan = db.fileStats(dirs, function (err, stats) {
+  fs.exists(loc, function (exists) {
+    if (!exists) {
+      console.error('Does not exist:', loc)
+      return usage('root.txt')
+    }
+
+    var db = dat({home: args.home})
+
+    if (cmd === 'link') link(loc, db)
+    else if (cmd === 'list') list(loc, db)
+    else if (cmd) download(loc, db)
+    else return usage('root.txt')
+  })
+}
+
+function link (loc, db) {
+  var dirs = args._.slice(1)
+  if (dirs.length === 0) dirs = loc
+  var statsScan = db.fileStats(dirs, function (err, stats) {
+    if (err) throw err
+    printScanProgress(stats)
+    clearInterval(scanInterval)
+    console.error() // newline
+    var statsAdd = db.addFiles(dirs, function (err, link) {
+      printAddProgress(statsAdd, statsScan.files)
+      clearInterval(addInterval)
       if (err) throw err
-      printScanProgress(stats)
-      clearInterval(scanInterval)
-      console.error() // newline
-      var statsAdd = db.addFiles(dirs, function (err, link) {
-        printAddProgress(statsAdd, statsScan.files)
-        clearInterval(addInterval)
-        if (err) throw err
-        db.joinTcpSwarm(link, function (_err, swarm) {
-          singleLineLog.stderr('') // clear previous stderr
-          singleLineLog.stdout('dat://' + swarm.link)
-          console.error() // final newline
-          seedSwarm(swarm)
-        })
+      db.joinTcpSwarm(link, function (_err, swarm) {
+        singleLineLog.stderr('') // clear previous stderr
+        singleLineLog.stdout('dat://' + swarm.link)
+        console.error() // final newline
+        seedSwarm(swarm)
       })
-
-      var addInterval = setInterval(function () {
-        printAddProgress(statsAdd, statsScan.files)
-      }, 100)
     })
 
-    var scanInterval = setInterval(function () {
-      printScanProgress(statsScan)
+    var addInterval = setInterval(function () {
+      printAddProgress(statsAdd, statsScan.files)
     }, 100)
-  } else if (firstArg === 'list') {
-    db = dat({home: args.home})
-    db.drive._links.createValueStream().on('data', function (o) {
-      console.log(o)
-    })
-  } else if (firstArg) {
-    // download/share
-    var hash = args._[0]
-    if (!hash) return usage('root.txt')
-    var downloadStats = db.download(hash, loc, function (err, swarm) {
-      if (err) throw err
-      printDownloadStats(downloadStats)
-      clearInterval(downloadInterval)
-      console.log('Done downloading.\n')
-      seedSwarm(swarm)
-    })
+  })
+
+  var scanInterval = setInterval(function () {
+    printScanProgress(statsScan)
+  }, 100)
+}
+
+function list (loc, db) {
+  db = dat({home: args.home})
+  db.drive._links.createValueStream().on('data', function (o) {
+    console.log(o)
+  })
+}
+
+function download (loc, db) {
+  // download/share
+  var hash = args._[0]
+  if (!hash) return usage('root.txt')
+  var downloadStats = db.download(hash, loc, function (err, swarm) {
+    if (err) throw err
     printDownloadStats(downloadStats)
-    var downloadInterval = setInterval(function () {
-      printDownloadStats(downloadStats)
-    }, 100)
-  } else {
-    return usage('root.txt')
-  }
+    clearInterval(downloadInterval)
+    console.log('Done downloading.\n')
+    seedSwarm(swarm)
+  })
+  printDownloadStats(downloadStats)
+  var downloadInterval = setInterval(function () {
+    printDownloadStats(downloadStats)
+  }, 100)
 }
 
 function seedSwarm (swarm) {
