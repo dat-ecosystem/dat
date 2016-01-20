@@ -113,8 +113,8 @@ function printAddProgress (stats, total) {
 
 function printSwarmStats (swarm) {
   var count = swarm.connections.sockets.length
-  if (args.json || args.j) return logger.log(JSON.stringify({connections: count}))
-  logger.stderr('Serving data (' + count + ' connection(s))\n')
+  if (args.json || args.j) return logger.log(JSON.stringify({connections: count, port: swarm.port}))
+  logger.stderr('Serving data on port ' + swarm.port + ' (' + count + ' connection(s))\n')
 }
 
 function printDownloadStats (stats) {
