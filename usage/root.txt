@@ -1,4 +1,7 @@
 dat <command> [--option <argument>]
-
   dat link            creates a link to share some data
   dat <hash>          downloads and shares data from a link
+
+options
+  --quiet, -q         quiet output mode
+  --json, -j          json output mode

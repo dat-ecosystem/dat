@@ -1,12 +1,15 @@
 #!/usr/bin/env node
-var args = require('minimist')(process.argv.splice(2))
-var usage = require('./usage')
 var fs = require('fs')
 var singleLineLog = require('single-line-log')
 var prettyBytes = require('pretty-bytes')
 var dat = require('./index.js')
+var usage = require('./usage')
+var args = require('minimist')(process.argv.splice(2))
+
+function noop () {}
 
 var cmd = args._[0]
+var logger = getLogger()
 runCommand()
 
 function runCommand () {
@@ -39,8 +42,8 @@ function link (loc, db) {
       clearInterval(addInterval)
       if (err) throw err
       db.joinTcpSwarm(link, function (_err, swarm) {
-        singleLineLog.stderr('') // clear previous stderr
-        singleLineLog.stdout('dat://' + swarm.link)
+        logger.stderr('') // clear previous stderr
+        logger.stdout('dat://' + swarm.link)
         console.error() // final newline
         seedSwarm(swarm)
       })
@@ -97,21 +100,42 @@ function seedSwarm (swarm) {
 }
 
 function printScanProgress (stats) {
-  singleLineLog.stderr(
-    'Scanning folder, found ' + stats.files + ' files in ' +
+  logger.stderr(
+    'Creating share link for ' + stats.files + ' files in ' +
     stats.directories + ' directories.' +
     (stats.size ? ' ' + prettyBytes(stats.size) + ' total.' : '')
   )
 }
 
 function printAddProgress (stats, total) {
-  singleLineLog.stderr('Fingerprinting files... (' + stats.files + '/' + total + ')')
+  logger.stderr('Fingerprinting files... (' + stats.files + '/' + total + ')')
 }
 
 function printSwarmStats (swarm) {
-  singleLineLog.stderr('Serving data (' + swarm.connections.sockets.length + ' connection(s))\n')
+  logger.stderr('Serving data (' + swarm.connections.sockets.length + ' connection(s))\n')
 }
 
 function printDownloadStats (stats) {
-  singleLineLog.stderr('Downloading' + (stats ? ' file ' + stats.files : '') + '\n')
+  console.log(stats)
+  var msg = 'Downloading'
+  if (stats.files && stats.blocks) msg += ' file ' + (stats.files + stats.directories) + '/' + stats.blocks
+  logger.stderr(msg + '\n')
+}
+
+function getLogger () {
+  if (args.quiet || args.q) {
+    return {
+      stderr: noop,
+      stdout: noop
+    }
+  }
+
+  if (args.lognormal) {
+    return {
+      stderr: console.error.bind(console),
+      stdout: console.log.bind(console)
+    }
+  }
+
+  return singleLineLog
 }

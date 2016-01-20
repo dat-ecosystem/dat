@@ -187,12 +187,18 @@ Dat.prototype.download = function (link, dir, cb) {
   var stats = {}
 
   self.joinTcpSwarm(link, function (err, swarm) {
-    if (err) throw err
+    if (err) return cb(err)
     var feed = self.drive.get(swarm.link) // the link identifies/verifies the content
-    var feedStream = feed.createStream()
-    var download = self.fs.createDownloadStream(self.drive, dir, stats)
-    pump(feedStream, download, function (err) {
-      cb(err, swarm)
+
+    // hack for now to get .blocks (for progress bars)
+    feed.get(0, function (err) {
+      if (err) return cb(err)
+      var feedStream = feed.createStream()
+      stats.blocks = feed.blocks
+      var download = self.fs.createDownloadStream(self.drive, dir, stats)
+      pump(feedStream, download, function (err) {
+        cb(err, swarm)
+      })
     })
   })
 

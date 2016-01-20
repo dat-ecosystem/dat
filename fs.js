@@ -37,12 +37,10 @@ module.exports.listEach = function (opts, onEach, cb) {
 }
 
 module.exports.createDownloadStream = function (drive, dir, stats) {
-  if (!stats) stats = {}
   stats.files = 0
   stats.directories = 0
 
   var downloader = through.obj(function (entry, enc, next) {
-    if (!entry.link) return next()
     var entryPath = path.join(dir, entry.value.name)
     if (entry.type === 'directory') {
       return mkdirp(entryPath, function (err) {
