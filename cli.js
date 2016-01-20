@@ -132,7 +132,7 @@ function printDownloadFinish () {
 function printShareLink (swarm) {
   var link = 'dat://' + swarm.link
   if (args.json || args.j) return logger.log(JSON.stringify({link: link}))
-  logger.stderr('') // clear previous stderr    
+  logger.stderr('') // clear previous stderr
   logger.stdout(link)
   logger.error() // final newline
 }
