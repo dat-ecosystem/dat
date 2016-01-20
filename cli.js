@@ -16,7 +16,7 @@ function runCommand () {
   var loc = args.path || process.cwd()
   fs.exists(loc, function (exists) {
     if (!exists) {
-      console.error('Does not exist:', loc)
+      logger.error('Does not exist:', loc)
       return usage('root.txt')
     }
 
@@ -36,15 +36,13 @@ function link (loc, db) {
     if (err) throw err
     printScanProgress(stats)
     clearInterval(scanInterval)
-    console.error() // newline
+    if (!args.json && !args.j) logger.error() // newline
     var statsAdd = db.addFiles(dirs, function (err, link) {
       printAddProgress(statsAdd, statsScan.files)
       clearInterval(addInterval)
       if (err) throw err
       db.joinTcpSwarm(link, function (_err, swarm) {
-        logger.stderr('') // clear previous stderr
-        logger.stdout('dat://' + swarm.link)
-        console.error() // final newline
+        printShareLink(swarm)
         seedSwarm(swarm)
       })
     })
@@ -62,7 +60,7 @@ function link (loc, db) {
 function list (loc, db) {
   db = dat({home: args.home})
   db.drive._links.createValueStream().on('data', function (o) {
-    console.log(o)
+    logger.log(o)
   })
 }
 
@@ -74,7 +72,7 @@ function download (loc, db) {
     if (err) throw err
     printDownloadStats(downloadStats)
     clearInterval(downloadInterval)
-    console.log('Done downloading.\n')
+    printDownloadFinish()
     seedSwarm(swarm)
   })
   printDownloadStats(downloadStats)
@@ -100,6 +98,7 @@ function seedSwarm (swarm) {
 }
 
 function printScanProgress (stats) {
+  if (args.json || args.j) return logger.log(JSON.stringify(stats))
   logger.stderr(
     'Creating share link for ' + stats.files + ' files in ' +
     stats.directories + ' directories.' +
@@ -108,34 +107,59 @@ function printScanProgress (stats) {
 }
 
 function printAddProgress (stats, total) {
+  if (args.json || args.j) return logger.log(JSON.stringify(stats))
   logger.stderr('Fingerprinting files... (' + stats.files + '/' + total + ')')
 }
 
 function printSwarmStats (swarm) {
-  logger.stderr('Serving data (' + swarm.connections.sockets.length + ' connection(s))\n')
+  var count = swarm.connections.sockets.length
+  if (args.json || args.j) return logger.log(JSON.stringify({connections: count}))
+  logger.stderr('Serving data (' + count + ' connection(s))\n')
 }
 
 function printDownloadStats (stats) {
-  console.log(stats)
+  if (args.json || args.j) return logger.log(JSON.stringify(stats))
   var msg = 'Downloading'
   if (stats.files && stats.blocks) msg += ' file ' + (stats.files + stats.directories) + '/' + stats.blocks
   logger.stderr(msg + '\n')
+}
+
+function printDownloadFinish () {
+  if (args.json || args.j) return logger.log(JSON.stringify({done: true}))
+  logger.log('Done downloading.\n')
+}
+
+function printShareLink (swarm) {
+  var link = 'dat://' + swarm.link
+  if (args.json || args.j) return logger.log(JSON.stringify({link: link}))
+  logger.stderr('') // clear previous stderr    
+  logger.stdout(link)
+  logger.error() // final newline
 }
 
 function getLogger () {
   if (args.quiet || args.q) {
     return {
       stderr: noop,
-      stdout: noop
+      stdout: noop,
+      log: noop,
+      error: noop
     }
   }
 
   if (args.lognormal) {
     return {
       stderr: console.error.bind(console),
-      stdout: console.log.bind(console)
+      stdout: console.log.bind(console),
+      log: console.error.bind(console),
+      error: console.log.bind(console)
     }
   }
 
-  return singleLineLog
+  return {
+    stderr: singleLineLog.stderr,
+    stdout: singleLineLog.stdout,
+    log: console.log.bind(console),
+    error: console.error.bind(console)
+  }
 }
