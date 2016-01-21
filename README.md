@@ -6,7 +6,7 @@ Key features:
 
   * **easily share large files** without having to copy them to a central server first
   * **sync incrementally** between machines
-  
+
 **Please note** that previous versions of Dat (alpha, beta) are incompatible with the 1.0 pre-release.
 
 ## Install
@@ -41,17 +41,19 @@ Go into a directory and type
 
 ```
 $ cd mydata/
-$ dat share
-bd3423sdf2342ksdjf238422k3
+$ dat link
+dat://bd3423sdf2342ksdjf238422k3
 ```
 
 You are now publishing that data from your computer and it will be publicly accessible as long as your terminal is open. Your friend can get that data like this:
 
 ```
-$ dat bd3423sdf2342ksdjf238422k3
+$ dat dat://bd3423sdf2342ksdjf238422k3
 ```
 
-It will start downloading the data into the current location. It will also seed that data as long as the terminal is open.
+It will start downloading the data into the current location. It will also seed that data as long as the terminal is open. If you want to share this data with someone else, you'll need to open port 3282 (DATA) on your local network.
+
+For more information, see the [full project documentation here](http://github.com/datproject/docs#readme).
 
 ## Overview
 
