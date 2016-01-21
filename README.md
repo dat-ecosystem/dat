@@ -11,7 +11,15 @@ Key features:
 
 ## Install
 
-**The current work in progress is not on npm yet**
+To install the 1.0 Pre-release from npm:
+
+```
+npm install dat@next -g
+```
+
+If you receive an `EACCES` error read [this guide](https://docs.npmjs.com/getting-started/fixing-npm-permissions).
+
+#### Installing from source
 
 For now, if you are adventurous and want to try the 1.0 Pre-release candidate, clone this repository and in a terminal inside of the folder you cloned run this command:
 

@@ -1,10 +1,18 @@
 #!/usr/bin/env node
+var args = require('minimist')(process.argv.splice(2))
+
+// set debug before requiring other modules
+if (args.debug) {
+  var debug = args.debug
+  if (typeof args.debug === 'boolean') debug = '*' // default
+  process.env.DEBUG = debug
+}
+
 var fs = require('fs')
 var singleLineLog = require('single-line-log')
 var prettyBytes = require('pretty-bytes')
 var dat = require('./index.js')
 var usage = require('./usage')
-var args = require('minimist')(process.argv.splice(2))
 
 function noop () {}
 
@@ -36,7 +44,7 @@ function link (loc, db) {
     if (err) throw err
     printScanProgress(stats)
     clearInterval(scanInterval)
-    if (!args.json && !args.j) logger.error() // newline
+    if (!args.json) logger.error() // newline
     var statsAdd = db.addFiles(dirs, function (err, link) {
       printAddProgress(statsAdd, statsScan.files)
       clearInterval(addInterval)
@@ -98,7 +106,7 @@ function seedSwarm (swarm) {
 }
 
 function printScanProgress (stats) {
-  if (args.json || args.j) return logger.log(JSON.stringify(stats))
+  if (args.json) return logger.log(JSON.stringify(stats))
   logger.stderr(
     'Creating share link for ' + stats.files + ' files in ' +
     stats.directories + ' directories.' +
@@ -107,31 +115,31 @@ function printScanProgress (stats) {
 }
 
 function printAddProgress (stats, total) {
-  if (args.json || args.j) return logger.log(JSON.stringify(stats))
+  if (args.json) return logger.log(JSON.stringify(stats))
   logger.stderr('Fingerprinting files... (' + stats.files + '/' + total + ')')
 }
 
 function printSwarmStats (swarm) {
   var count = swarm.connections.sockets.length
-  if (args.json || args.j) return logger.log(JSON.stringify({connections: count, port: swarm.port}))
+  if (args.json) return logger.log(JSON.stringify({connections: count, port: swarm.port}))
   logger.stderr('Serving data on port ' + swarm.port + ' (' + count + ' connection(s))\n')
 }
 
 function printDownloadStats (stats) {
-  if (args.json || args.j) return logger.log(JSON.stringify(stats))
+  if (args.json) return logger.log(JSON.stringify(stats))
   var msg = 'Downloading'
   if (stats.files && stats.blocks) msg += ' file ' + (stats.files + stats.directories) + '/' + stats.blocks
   logger.stderr(msg + '\n')
 }
 
 function printDownloadFinish () {
-  if (args.json || args.j) return logger.log(JSON.stringify({done: true}))
+  if (args.json) return logger.log(JSON.stringify({done: true}))
   logger.log('Done downloading.\n')
 }
 
 function printShareLink (swarm) {
   var link = 'dat://' + swarm.link
-  if (args.json || args.j) return logger.log(JSON.stringify({link: link}))
+  if (args.json) return logger.log(JSON.stringify({link: link}))
   logger.stderr('') // clear previous stderr
   logger.stdout(link)
   logger.error() // final newline
@@ -147,7 +155,7 @@ function getLogger () {
     }
   }
 
-  if (args.lognormal) {
+  if (args.debug) {
     return {
       stderr: console.error.bind(console),
       stdout: console.log.bind(console),

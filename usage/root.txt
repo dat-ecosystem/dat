@@ -4,4 +4,5 @@ dat <command> [--option <argument>]
 
 options
   --quiet, -q         quiet output mode
-  --json, -j          json output mode
+  --json              json output mode
+  --debug             debug output mode
