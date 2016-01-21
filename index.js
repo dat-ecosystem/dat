@@ -82,7 +82,7 @@ Dat.prototype.addFiles = function (dirs, cb) {
 
   function eachItem (item, next) {
     var entry = pack.entry(item, function (err) {
-      stats.files++
+      if (item.type === 'file') stats.files++
       if (err) return next(err)
       next()
     })
