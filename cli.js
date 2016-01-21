@@ -8,6 +8,12 @@ if (args.debug) {
   process.env.DEBUG = debug
 }
 
+if (args.version || args.v) {
+  var pkg = require(__dirname + '/package.json')
+  console.log(pkg.version)
+  process.exit(0)
+}
+
 var fs = require('fs')
 var singleLineLog = require('single-line-log')
 var prettyBytes = require('pretty-bytes')
