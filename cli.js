@@ -55,7 +55,7 @@ function link (loc, db) {
       printAddProgress(statsAdd, statsScan.files)
       clearInterval(addInterval)
       if (err) throw err
-      db.joinTcpSwarm(link, function (_err, swarm) { 
+      db.joinTcpSwarm(link, function (_err, swarm) {
         // ignore _err
         printShareLink(swarm)
         seedSwarm(swarm)
