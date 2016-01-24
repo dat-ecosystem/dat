@@ -11,6 +11,10 @@ var Connections = require('connections')
 
 module.exports = Dat
 
+var DEFAULT_PORT = 3282
+var DEFAULT_DISCOVERY = 'discovery.publicbits.org'
+var DEFAULT_SIGNALHUB = 'https://signalhub.mafintosh.com' // change to publicbits.org
+
 function Dat (opts) {
   if (!(this instanceof Dat)) return new Dat(opts)
   if (!opts) opts = {}
@@ -19,7 +23,7 @@ function Dat (opts) {
   var drive = hyperdrive(this.level)
   this.drive = drive
   this.peers = {}
-  if (opts.discovery !== false) this.discovery = discoveryChannel({dns: {tracker: 'tracker.publicbits.org'}})
+  if (opts.discovery !== false) this.discovery = discoveryChannel({dns: {server: DEFAULT_DISCOVERY}})
 }
 
 Dat.prototype.scan = function (dirs, each, done) {
@@ -103,7 +107,7 @@ Dat.prototype.addFiles = function (dirs, cb) {
 
 Dat.prototype.joinWebrtcSwarm = function (link, opts) {
   if (!opts) opts = {}
-  opts.signalhub = opts.signalhub || 'https://signalhub.mafintosh.com' // change to publicbits.org
+  opts.signalhub = opts.signalhub || DEFAULT_SIGNALHUB
   var self = this
   link = link.replace('dat://', '').replace('dat:', '')
   var key = link.toString('hex')
@@ -166,7 +170,7 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
     server.listen(0)
   })
 
-  server.listen(3282)
+  server.listen(DEFAULT_PORT)
 }
 
 Dat.prototype.close = function (cb) {
@@ -190,7 +194,7 @@ Dat.prototype.download = function (link, dir, cb) {
     if (err) return cb(err)
     var feed = self.drive.get(swarm.link) // the link identifies/verifies the content
 
-    // hack for now to get .blocks (for progress bars)
+    // hack for now to populate feed.blocks quickly (for progress bars)
     feed.get(0, function (err) {
       if (err) return cb(err)
       var feedStream = feed.createStream()
