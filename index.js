@@ -13,7 +13,7 @@ module.exports = Dat
 
 var DEFAULT_PORT = 3282
 var DEFAULT_DISCOVERY = 'discovery.publicbits.org'
-var DEFAULT_SIGNALHUB = 'https://signalhub.mafintosh.com' // change to publicbits.org
+var DEFAULT_SIGNALHUB = 'https://signalhub.publicbits.org' // change to publicbits.org
 
 function Dat (opts) {
   if (!(this instanceof Dat)) return new Dat(opts)
