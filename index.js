@@ -157,8 +157,12 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
       var socket = net.connect(peer.port, peer.host)
       var peerStream = self.drive.createPeerStream()
       peerStream.on('handshake', function () {
-        if (peerStream.remoteId.equals(peerStream.id)) socket.destroy()
-        self.blacklist[peerid] = true
+        var remoteId = peerStream.remoteId.toString('hex')
+        var id = peerStream.id.toString('hex')
+        if (remoteId === id) { // peer === you
+          socket.destroy()
+          self.blacklist[peerid] = true
+        }
       })
       pump(socket, peerStream, socket, function () {
         delete self.peers[peerid]
