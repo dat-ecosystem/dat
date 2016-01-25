@@ -1,6 +1,5 @@
 #!/usr/bin/env node
 var args = require('minimist')(process.argv.splice(2))
-var xtend = require('xtend')
 
 // set debug before requiring other modules
 if (args.debug) {
@@ -18,6 +17,7 @@ if (args.version || args.v) {
 var fs = require('fs')
 var singleLineLog = require('single-line-log')
 var prettyBytes = require('pretty-bytes')
+var prettySeconds = require('pretty-seconds')
 var dat = require('./index.js')
 var usage = require('./usage')
 
@@ -59,7 +59,7 @@ function link (loc, db) {
       db.joinTcpSwarm(link, function (_err, swarm) {
         // ignore _err
         printShareLink(swarm)
-        seedSwarm(swarm)
+        startProgressLogging({swarm: swarm})
       })
     })
 
@@ -84,34 +84,28 @@ function download (loc, db) {
   // download/share
   var hash = args._[0]
   if (!hash) return usage('root.txt')
-  hash = hash.trim().replace(/^dat\:\/\//, '')
+  hash = hash.trim().replace('dat://', '').replace('dat:', '')
   if (hash.length !== 64) {
     logger.error('Error: Invalid dat link\n')
     return usage('root.txt')
   }
   var downloadStats = db.download(hash, loc, function (err, swarm) {
     if (err) throw err
-    printDownloadStats(downloadStats)
-    clearInterval(downloadInterval)
-    printDownloadFinish()
-    seedSwarm(swarm)
   })
-  printDownloadStats(downloadStats)
-  var downloadInterval = setInterval(function () {
-    printDownloadStats(downloadStats)
-  }, 250)
+  startProgressLogging(downloadStats)
 }
 
-function seedSwarm (swarm) {
+function startProgressLogging (stats) {
   var swarmInterval = setInterval(function () {
-    printSwarmStats(swarm)
+    printSwarmStatus(stats)
   }, 2000)
-  printSwarmStats(swarm)
+  printSwarmStatus(stats)
 
   // intercept ctrl+c and do graceful exit
   process.on('SIGINT', function () {
     clearInterval(swarmInterval)
-    swarm.close(function (err) {
+    if (!stats.swarm) return process.exit(0)
+    stats.swarm.close(function (err) {
       if (err) throw err
       else process.exit(0)
     })
@@ -132,31 +126,32 @@ function printAddProgress (stats, total) {
   logger.stderr('Fingerprinting files... (' + stats.files + '/' + total + ')')
 }
 
-function printSwarmStats (swarm) {
-  var count = swarm.connections.sockets.length
-  if (args.json) {
-    return logger.log(JSON.stringify({connections: count, port: swarm.port}))
-  }
-  var msg = 'Serving data on port ' + swarm.port
-  if (count === 0) msg += ' (0 connections)'
-  if (count === 1) msg += ' (1 connection)'
-  else if (count > 1) msg += ' (' + count + ' connections)'
-  logger.stderr(msg + '\n')
-}
-
-function printDownloadStats (stats) {
-  stats = xtend(stats)
-  stats.status = 'downloading'
-  if (args.json) return logger.log(JSON.stringify(stats))
-  var msg = 'Downloading'
-  if (stats.files && stats.blocks) msg += ' file ' + (stats.files + stats.directories) + '/' + stats.blocks
-  logger.stderr(msg + '\n')
-}
-
-function printDownloadFinish () {
-  if (args.json) return logger.log(JSON.stringify({status: 'uploading'}))
-  logger.log('Done downloading.\n')
-}
+// function printSwarmStats (swarm) {
+//   var count = swarm.connections.sockets.length
+//   if (args.json) {
+//     return logger.log(JSON.stringify({connections: count, port: swarm.port}))
+//   }
+//   var msg = 'Serving data on port ' + swarm.port
+//   if (count === 0) msg += ' (0 connections)'
+//   if (count === 1) msg += ' (1 connection)'
+//   else if (count > 1) msg += ' (' + count + ' connections)'
+//   logger.stderr(msg + '\n')
+// }
+//
+// function printDownloadStats (stats) {
+//
+//   // stats = xtend(stats)
+//   // stats.status = 'downloading'
+//   // if (args.json) return logger.log(JSON.stringify(stats))
+//   // var msg = 'Downloading'
+//   // if (stats.files && stats.blocks) msg += ' file ' + (stats.files + stats.directories) + '/' + stats.blocks
+//   // logger.stderr(msg + '\n')
+// }
+//
+// function printDownloadFinish () {
+//   if (args.json) return logger.log(JSON.stringify({status: 'uploading'}))
+//   logger.log('Done downloading.\n')
+// }
 
 function printShareLink (swarm) {
   var link = 'dat://' + swarm.link
@@ -191,4 +186,59 @@ function getLogger () {
     log: console.log.bind(console),
     error: console.error.bind(console)
   }
+}
+
+function printSwarmStatus (stats) {
+  var swarm = stats.swarm
+  if (!swarm) return logger.stderr('Initializing swarm...')
+  console.log('STATUS', [swarm.transferred])
+  var totalCount = swarm.blocks
+  var downloadCount
+  if (stats) downloadCount = stats.files + stats.directories
+  var sockets = swarm.connections.sockets.length
+
+  var down = prettyBytes(swarm.transferred.down)
+  var downSpeed = prettyBytes(swarm.downloadSpeed()) + '/s'
+  var up = prettyBytes(swarm.transferred.up)
+  var upSpeed = prettyBytes(swarm.uploadSpeed()) + '/s'
+
+  if (downloadCount) {
+    var percentage = downloadCount / totalCount
+    var progressBar = ''
+    var bars = ~~((percentage) / 5)
+
+    if (swarm.transferred.down > 0) {
+      if (swarm.downloadSpeed() > 0) {
+        var seconds = 1000
+        var timeNow = new Date().getTime()
+        var elapsed = timeNow - +swarm.started
+        var timeRemaining = (((elapsed / downloadCount) * totalCount) / seconds).toPrecision(6)
+        timeRemaining = 'Estimated ' + prettySeconds(~~timeRemaining) + ' remaining'
+      } else {
+        timeRemaining = 'Unknown time remaining'
+      }
+    } else {
+      timeRemaining = 'Calculating'
+    }
+
+    if (percentage > 100) percentage = 100
+
+    for (var i = 0; i < bars; i++) {
+      progressBar = progressBar + '='
+    }
+
+    progressBar = progressBar + Array(20 + 1 - progressBar.length).join(' ')
+  }
+
+  var msg = 'Connected to ' + sockets + '/' + swarm.peerCount + ' peers\n' +
+            'Downloaded ' + down + ' (' + downSpeed + ')\n' +
+            'Uploaded ' + up + ' (' + upSpeed + ')\n'
+
+  if (downloadCount) {
+    msg += 'Complete: ' + percentage + '%\n' +
+           '[' + progressBar + ']\n' +
+           '0%    25   50   75   100%\n\n' + timeRemaining + '\n'
+  }
+
+  logger.stderr(msg)
 }

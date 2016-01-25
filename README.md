@@ -1,11 +1,14 @@
 # dat
 
-Share datasets on The Internet. This is the Dat 1.0 Pre-release candidate.
+Share datasets on the Internet. This is the Dat 1.0 Pre-release candidate.
 
 Key features:
 
-  * **easily share large files** without having to copy them to a central server first
-  * **sync incrementally** between machines
+  * **easily share large files** directly without having to copy them through a central server
+  * **sync incrementally** between machines only the parts of files that change
+  * **share data in a swarm** everyone who downloads data also helps upload to others
+  * **automatic peer discovery** uses peer to peer techniques for finding copies of the data
+  * **verify data integrity** data is verified using strong cryptographic hashes
 
 **Please note** that previous versions of Dat (alpha, beta) are incompatible with the 1.0 pre-release.
 
@@ -21,13 +24,13 @@ If you receive an `EACCES` error read [this guide](https://docs.npmjs.com/gettin
 
 #### Installing from source
 
-For now, if you are adventurous and want to try the 1.0 Pre-release candidate, clone this repository and in a terminal inside of the folder you cloned run this command:
+Clone this repository and in a terminal inside of the folder you cloned run this command:
 
 ```
 npm link
 ```
 
-This should add a `dat` command line command to your PATH. Now you can run `$ dat` to try it out.
+This should add a `dat` command line command to your PATH. Now you can run the `dat` command to try it out.
 
 ## Build Status
 
@@ -35,23 +38,27 @@ Windows        | Mac/Linux
 -------------- | ------------
 [![Build status](https://ci.appveyor.com/api/projects/status/s236036xnglo4v5l)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](http://img.shields.io/travis/maxogden/dat.svg?style=flat)](https://travis-ci.org/maxogden/dat)
 
-## Example
+## Getting started
 
 Go into a directory and type
 
 ```
 $ cd mydata/
 $ dat link
-dat://bd3423sdf2342ksdjf238422k3
+Creating share link for 4 files in 1 directories. 18.54 kB total.
+dat://9d011b6c9de26e53e9961c8d8ea840d33e0d8408318332c9502bad112cad9989
+Serving data on port 3282 (0 connections)
 ```
 
 You are now publishing that data from your computer and it will be publicly accessible as long as your terminal is open. Your friend can get that data like this:
 
 ```
-$ dat dat://bd3423sdf2342ksdjf238422k3
+$ dat dat://9d011b6c9de26e53e9961c8d8ea840d33e0d8408318332c9502bad112cad9989
 ```
 
-It will start downloading the data into the current location. It will also seed that data as long as the terminal is open. If you want to share this data with someone else, you'll need to open port 3282 (DATA) on your local network.
+It will start downloading the data into the current location. It will also upload that data to others as long as the terminal is open.
+
+Dat uses a built in TCP server to share data. This means at least one of the peers trying to share data will need their dat port open (default port is 3282, DATA on a phone keypad).
 
 For more information, see the [full project documentation here](http://github.com/datproject/docs#readme).
 
