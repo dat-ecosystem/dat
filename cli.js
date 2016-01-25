@@ -1,5 +1,6 @@
 #!/usr/bin/env node
 var args = require('minimist')(process.argv.splice(2))
+var xtend = require('xtend')
 
 // set debug before requiring other modules
 if (args.debug) {
@@ -83,6 +84,11 @@ function download (loc, db) {
   // download/share
   var hash = args._[0]
   if (!hash) return usage('root.txt')
+  hash = hash.trim().replace(/^dat\:\/\//, '')
+  if (hash.length !== 64) {
+    logger.error('Error: Invalid dat link\n')
+    return usage('root.txt')
+  }
   var downloadStats = db.download(hash, loc, function (err, swarm) {
     if (err) throw err
     printDownloadStats(downloadStats)
@@ -93,13 +99,13 @@ function download (loc, db) {
   printDownloadStats(downloadStats)
   var downloadInterval = setInterval(function () {
     printDownloadStats(downloadStats)
-  }, 100)
+  }, 250)
 }
 
 function seedSwarm (swarm) {
   var swarmInterval = setInterval(function () {
     printSwarmStats(swarm)
-  }, 500)
+  }, 2000)
   printSwarmStats(swarm)
 
   // intercept ctrl+c and do graceful exit
@@ -139,6 +145,8 @@ function printSwarmStats (swarm) {
 }
 
 function printDownloadStats (stats) {
+  stats = xtend(stats)
+  stats.status = 'downloading'
   if (args.json) return logger.log(JSON.stringify(stats))
   var msg = 'Downloading'
   if (stats.files && stats.blocks) msg += ' file ' + (stats.files + stats.directories) + '/' + stats.blocks
@@ -146,7 +154,7 @@ function printDownloadStats (stats) {
 }
 
 function printDownloadFinish () {
-  if (args.json) return logger.log(JSON.stringify({done: true}))
+  if (args.json) return logger.log(JSON.stringify({status: 'uploading'}))
   logger.log('Done downloading.\n')
 }
 

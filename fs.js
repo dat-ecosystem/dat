@@ -36,7 +36,9 @@ module.exports.listEach = function (opts, onEach, cb) {
   }, cb)
 }
 
+// `stats` is for rendering progress bars
 module.exports.createDownloadStream = function (drive, dir, stats) {
+  if (!stats) stats = {}
   stats.files = 0
   stats.directories = 0
 

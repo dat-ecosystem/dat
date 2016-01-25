@@ -6,9 +6,9 @@ var pump = require('pump')
 var webrtcSwarm = require('webrtc-swarm')
 var signalhub = require('signalhub')
 var series = require('run-series')
-var debug = require('debug')('dat')
 var discoveryChannel = require('discovery-channel')
-var Connections = require('connections')
+var connections = require('connections')
+var debug = require('debug')('dat')
 
 module.exports = Dat
 
@@ -133,7 +133,7 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
     pump(socket, self.drive.createPeerStream(), socket)
   })
 
-  var connections = Connections(server)
+  var swarmConnections = connections(server)
 
   server.on('listening', function () {
     var swarm = {
@@ -142,13 +142,14 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
       link: link,
       close: close,
       server: server,
-      connections: connections,
+      connections: swarmConnections,
       dat: self
     }
 
     self.discovery.add(swarm.hash, swarm.port)
+
     self.discovery.on('peer', function (hash, peer) {
-      debug('found peer for ', link)
+      debug('peer discovery', link, peer)
       var peerid = peer.host + ':' + peer.port
       if (isLocalPeer(peer) && peer.port === swarm.port) return // ignore self
       if (self.blacklist.hasOwnProperty(peerid)) return // ignore blacklist
@@ -160,6 +161,7 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
         var remoteId = peerStream.remoteId.toString('hex')
         var id = peerStream.id.toString('hex')
         if (remoteId === id) { // peer === you
+          debug('peer is self, blacklisting', remoteId)
           socket.destroy()
           self.blacklist[peerid] = true
         }
@@ -173,7 +175,7 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
 
     function close (cb) {
       server.close()
-      connections.destroy()
+      swarmConnections.destroy()
       self.close(cb)
     }
   })
@@ -196,6 +198,7 @@ Dat.prototype.metadata = function (link, cb) {
   collect(feed.createStream(), cb)
 }
 
+// returns object that is used to render progress bars
 Dat.prototype.download = function (link, dir, cb) {
   var self = this
   if (!cb) cb = function noop () {}
@@ -204,7 +207,7 @@ Dat.prototype.download = function (link, dir, cb) {
 
   self.joinTcpSwarm(link, function (err, swarm) {
     if (err) return cb(err)
-    var feed = self.drive.get(swarm.link) // the link identifies/verifies the content
+    var feed = self.drive.get(swarm.link)
 
     // hack for now to populate feed.blocks quickly (for progress bars)
     feed.get(0, function (err) {
