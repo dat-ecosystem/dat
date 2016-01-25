@@ -50,14 +50,14 @@ function link (loc, db) {
     if (err) throw err
     printScanProgress(stats)
     clearInterval(scanInterval)
-    if (!args.json) logger.error() // newline
+    logger.log('') // newline
     var statsAdd = db.addFiles(dirs, function (err, link) {
       printAddProgress(statsAdd, statsScan.files)
       clearInterval(addInterval)
       if (err) throw err
       db.joinTcpSwarm(link, function (_err, swarm) {
         // ignore _err
-        logger.stdout('')
+        logger.log('') // newline
         logger.log('Link: dat://' + swarm.link)
         startProgressLogging({swarm: swarm})
       })
@@ -115,16 +115,15 @@ function startProgressLogging (stats) {
 }
 
 function printScanProgress (stats) {
-  if (args.json) return logger.log(JSON.stringify(stats))
   logger.stdout(
     'Creating share link for ' + stats.files + ' files in ' +
     stats.directories + ' directories,' +
     (stats.size ? ' ' + prettyBytes(stats.size) + ' total' : '')
+
   )
 }
 
 function printAddProgress (stats, total) {
-  if (args.json) return logger.log(JSON.stringify(stats))
   logger.stdout('Fingerprinting file contents (' + stats.files + '/' + total + ')')
 }
 

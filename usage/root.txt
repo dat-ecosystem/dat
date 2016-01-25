@@ -4,6 +4,5 @@ dat <command> [--option <argument>]
 
 options
   --quiet, -q         quiet output mode
-  --json              json output mode
   --debug             debug output mode
   --version, -v       get the installed dat version
