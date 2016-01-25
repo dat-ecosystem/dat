@@ -127,8 +127,10 @@ function printAddProgress (stats, total) {
 }
 
 function printSwarmStats (swarm) {
-  var count = swarm.connections.sockets.length - 1
-  if (args.json) return logger.log(JSON.stringify({connections: count, port: swarm.port}))
+  var count = swarm.connections.sockets.length
+  if (args.json) {
+    return logger.log(JSON.stringify({connections: count, port: swarm.port}))
+  }
   var msg = 'Serving data on port ' + swarm.port
   if (count === 0) msg += ' (0 connections)'
   if (count === 1) msg += ' (1 connection)'

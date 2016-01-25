@@ -1,3 +1,4 @@
+var os = require('os')
 var net = require('net')
 var collect = require('collect-stream')
 var hyperdrive = require('hyperdrive')
@@ -23,6 +24,7 @@ function Dat (opts) {
   var drive = hyperdrive(this.level)
   this.drive = drive
   this.peers = {}
+  this.blacklist = {}
   if (opts.discovery !== false) this.discovery = discoveryChannel({dns: {server: DEFAULT_DISCOVERY}})
 }
 
@@ -148,11 +150,17 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
     self.discovery.on('peer', function (hash, peer) {
       debug('found peer for ', link)
       var peerid = peer.host + ':' + peer.port
-      if (peer.host === '127.0.0.1' && peer.port === swarm.port) return // ignore self
-      if (self.peers[peerid]) return
+      if (isLocalPeer(peer) && peer.port === swarm.port) return // ignore self
+      if (self.blacklist.hasOwnProperty(peerid)) return // ignore blacklist
+      if (self.peers[peerid]) return // ignore already connected
       self.peers[peerid] = true
       var socket = net.connect(peer.port, peer.host)
-      pump(socket, self.drive.createPeerStream(), socket, function () {
+      var peerStream = self.drive.createPeerStream()
+      peerStream.on('handshake', function () {
+        if (peerStream.remoteId.equals(peerStream.id)) socket.destroy()
+        self.blacklist[peerid] = true
+      })
+      pump(socket, peerStream, socket, function () {
         delete self.peers[peerid]
       })
     })
@@ -212,4 +220,17 @@ Dat.prototype.download = function (link, dir, cb) {
 function resolveHash (link) {
   // TODO: handle 'pretty' or 'named' links
   return new Buffer(link, 'hex')
+}
+
+function isLocalPeer (peer) {
+  var localAddresses = {}
+  var interfaces = os.networkInterfaces()
+  Object.keys(interfaces).forEach(function (i) {
+    var entries = interfaces[i]
+    entries.forEach(function (e) {
+      localAddresses[e.address] = true
+    })
+  })
+  if (localAddresses.hasOwnProperty(peer.host)) return true
+  return false
 }
