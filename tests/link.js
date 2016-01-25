@@ -15,8 +15,9 @@ var dat1link
 test('prints link', function (t) {
   var st = spawn(t, dat + ' link ' + dat1 + ' --home=' + tmp)
   st.stdout.match(function (output) {
-    t.equal(output.length, 70, 'version is length 70: dat:// + 64 char hash')
-    dat1link = output.toString()
+    var matches = output.match(/dat\:\/\/[A-Za-z0-9]+/)
+    if (!matches) return false
+    dat1link = matches[0]
     st.kill()
     return true
   })
@@ -26,8 +27,9 @@ test('prints link', function (t) {
 test('link with no args defaults to cwd', function (t) {
   var st = spawn(t, dat + ' link --home=' + tmp, {cwd: dat1})
   st.stdout.match(function (output) {
-    t.equal(output.length, 70, 'version is length 70: dat:// + 64 char hash')
-    t.equal(output.toString(), dat1link, 'links match')
+    var contains = output.indexOf('dat://') > -1
+    if (!contains) return false
+    t.ok(output.toString().indexOf(dat1link) > -1, 'links match')
     st.kill()
     return true
   })
@@ -47,12 +49,11 @@ test('connects if link process starts second', function (t) {
   var linkCmd = dat + ' link --home=' + tmp + ' --path=' + dat1
   var linker = spawn(t, linkCmd, {end: false})
   linker.stdout.match(function (output) {
-    var matched = output.length === 70
-    t.ok(matched, 'got link from ' + dat1)
-    link = output.toString().trim()
+    var matches = output.match(/dat\:\/\/[A-Za-z0-9]+/)
+    if (!matches) return false
+    link = matches[0]
     linker.kill()
-    if (matched) return true
-    else return false
+    return true
   })
   linker.end(function () {
     t.true(linker.proc.killed, 'first link process is killed')
@@ -65,7 +66,7 @@ test('connects if link process starts second', function (t) {
     cloner.stdout.match(function (output) {
       var str = output.toString()
 
-      if (relinker && str.indexOf('Done downloading.') > -1) {
+      if (relinker && str.indexOf('Download complete') > -1) {
         cloner.kill()
         relinker.kill()
         relinker.end()

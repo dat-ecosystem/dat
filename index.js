@@ -8,7 +8,6 @@ var signalhub = require('signalhub')
 var series = require('run-series')
 var discoveryChannel = require('discovery-channel')
 var connections = require('connections')
-var through = require('through2')
 var debug = require('debug')('dat')
 
 module.exports = Dat
@@ -25,6 +24,7 @@ function Dat (opts) {
   var drive = hyperdrive(this.level)
   this.drive = drive
   this.activePeers = {}
+  this.allPeers = {}
   this.blacklist = {}
   if (opts.discovery !== false) this.discovery = discoveryChannel({dns: {server: DEFAULT_DISCOVERY}})
 }
@@ -127,23 +127,9 @@ Dat.prototype.joinWebrtcSwarm = function (link, opts) {
 Dat.prototype.joinTcpSwarm = function (link, cb) {
   var self = this
   link = link.replace('dat://', '').replace('dat:', '')
-  var transferred = {
-    up: 0,
-    down: 0
-  }
 
   var server = net.createServer(function (socket) {
-    var uploadCount = through(function (ch, enc, next) {
-      transferred.up += ch.length
-      this.push(ch)
-      next()
-    })
-    var downloadCount = through(function (ch, enc, next) {
-      transferred.down += ch.length
-      this.push(ch)
-      next()
-    })
-    pump(socket, downloadCount, self.drive.createPeerStream(), uploadCount, socket)
+    pump(socket, self.drive.createPeerStream(), socket)
   })
 
   var swarmConnections = connections(server)
@@ -157,13 +143,10 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
       server: server,
       connections: swarmConnections,
       dat: self,
-      transferred: transferred,
-      uploadSpeed: uploadSpeed,
-      downloadSpeed: downloadSpeed,
-      total: null,
       peerCount: 0,
-      started: new Date(),
-      blocks: null
+      blocks: null,
+      downloading: false,
+      downloadComplete: false
     }
 
     self.discovery.add(swarm.hash, swarm.port)
@@ -174,7 +157,8 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
       if (isLocalPeer(peer) && peer.port === swarm.port) return // ignore self
       if (self.blacklist.hasOwnProperty(peerid)) return // ignore blacklist
       if (self.activePeers[peerid]) return // ignore already connected
-      swarm.peerCount++
+      if (!self.allPeers.hasOwnProperty(peerid)) swarm.peerCount++
+      self.allPeers[peerid] = true
       var socket = net.connect(peer.port, peer.host)
       var peerStream = self.drive.createPeerStream()
       peerStream.on('handshake', function () {
@@ -188,17 +172,7 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
           self.activePeers[peerid] = true
         }
       })
-      var uploadCount = through(function (ch, enc, next) {
-        transferred.up += ch.length
-        this.push(ch)
-        next()
-      })
-      var downloadCount = through(function (ch, enc, next) {
-        transferred.down += ch.length
-        this.push(ch)
-        next()
-      })
-      pump(socket, uploadCount, peerStream, downloadCount, socket, function () {
+      pump(socket, peerStream, socket, function () {
         delete self.activePeers[peerid]
       })
     })
@@ -209,16 +183,6 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
       server.close()
       swarmConnections.destroy()
       self.close(cb)
-    }
-
-    function downloadSpeed () {
-      var elapsed = +new Date() - +swarm.started
-      return (transferred.down / elapsed)
-    }
-
-    function uploadSpeed () {
-      var elapsed = +new Date() - +swarm.started
-      return (transferred.up / elapsed)
     }
   })
 
@@ -250,6 +214,7 @@ Dat.prototype.download = function (link, dir, cb) {
 
   self.joinTcpSwarm(link, function (err, swarm) {
     if (err) return cb(err)
+    swarm.downloading = true
     stats.swarm = swarm
     var feed = self.drive.get(swarm.link)
 
