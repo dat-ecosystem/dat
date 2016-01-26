@@ -76,7 +76,7 @@ Dat.prototype.fileStats = function (dirs, cb) {
 }
 
 Dat.prototype.addFiles = function (dirs, cb) {
-  var pack = this.drive.add()
+  var pack = this.drive.add('.')
   this.scan(dirs, eachItem, done)
 
   var stats = {
@@ -86,14 +86,11 @@ Dat.prototype.addFiles = function (dirs, cb) {
   return stats
 
   function eachItem (item, next) {
-    var entry = pack.entry(item, function (err) {
-      if (item.type === 'file') stats.files++
+    pack.appendFile(item.path, item.name, function (err) {
       if (err) return next(err)
+      if (item.type === 'file') stats.files++
       next()
     })
-    if (item.createReadStream) {
-      pump(item.createReadStream(), entry)
-    }
   }
 
   function done () {
@@ -195,14 +192,14 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
 }
 
 Dat.prototype.close = function (cb) {
-  this.drive.db.close()
+  this.drive.core.db.close()
   this.discovery.destroy(cb)
 }
 
 Dat.prototype.metadata = function (link, cb) {
   var self = this
-  var feed = self.drive.get(link)
-  collect(feed.createStream(), cb)
+  var archive = self.drive.get(link)
+  collect(archive.createEntryStream(), cb)
 }
 
 // returns object that is used to render progress bars
@@ -216,15 +213,13 @@ Dat.prototype.download = function (link, dir, cb) {
     if (err) return cb(err)
     swarm.downloading = true
     stats.swarm = swarm
-    var feed = self.drive.get(swarm.link)
+    var archive = self.drive.get(swarm.link, dir)
 
-    // hack for now to populate feed.blocks quickly (for progress bars)
-    feed.get(0, function (err) {
+    archive.ready(function (err) {
       if (err) return cb(err)
-      var feedStream = feed.createStream()
-      swarm.blocks = feed.blocks
-      var download = self.fs.createDownloadStream(self.drive, dir, stats)
-      pump(feedStream, download, function (err) {
+      swarm.blocks = archive.entries
+      var download = self.fs.createDownloadStream(archive, stats)
+      pump(archive.createEntryStream(), download, function (err) {
         cb(err, swarm)
       })
     })

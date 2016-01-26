@@ -1,6 +1,4 @@
 var fs = require('fs')
-var pump = require('pump')
-var mkdirp = require('mkdirp')
 var through = require('through2')
 var path = require('path')
 var walker = require('folder-walker')
@@ -16,6 +14,7 @@ module.exports.listEach = function (opts, onEach, cb) {
   each(stream, function (data, next) {
     var item = {
       name: data.relname,
+      path: opts.dir === data.filepath ? path.resolve(data.filepath) : path.resolve(opts.dir, data.filepath),
       mode: data.stat.mode,
       uid: data.stat.uid,
       gid: data.stat.gid,
@@ -37,29 +36,17 @@ module.exports.listEach = function (opts, onEach, cb) {
 }
 
 // `stats` is for rendering progress bars
-module.exports.createDownloadStream = function (drive, dir, stats) {
+module.exports.createDownloadStream = function (archive, stats) {
   if (!stats) stats = {}
   stats.files = 0
   stats.directories = 0
 
   var downloader = through.obj(function (entry, enc, next) {
-    var entryPath = path.join(dir, entry.value.name)
-    if (entry.type === 'directory') {
-      return mkdirp(entryPath, function (err) {
-        if (err) return next(err)
-        stats.directories++
-        next()
-      })
-    }
-    mkdirp(path.dirname(entryPath), function (err) {
+    archive.download(entry, function (err) {
       if (err) return next(err)
-      var writeStream = fs.createWriteStream(entryPath, {mode: entry.value.mode})
-      var content = drive.get(entry)
-      pump(content.createStream(), writeStream, function (err) {
-        if (err) return next(err)
-        stats.files++
-        next()
-      })
+      if (entry.type === 'directory') stats.directories++
+      else stats.files++
+      next()
     })
   })
   downloader.stats = stats
