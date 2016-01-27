@@ -48,6 +48,7 @@ test('connects if link process starts second', function (t) {
   fs.writeFileSync(dat1 + '/foo.txt', new Buffer('hello world'))
   var linkCmd = dat + ' link --home=' + tmp + ' --path=' + dat1
   var linker = spawn(t, linkCmd, {end: false})
+  linker.stderr.empty()
   linker.stdout.match(function (output) {
     var matches = output.match(/dat\:\/\/[A-Za-z0-9]+/)
     if (!matches) return false

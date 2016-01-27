@@ -119,7 +119,6 @@ function printScanProgress (stats) {
     'Creating share link for ' + stats.files + ' files in ' +
     stats.directories + ' directories,' +
     (stats.size ? ' ' + prettyBytes(stats.size) + ' total' : '')
-
   )
 }
 
@@ -129,8 +128,7 @@ function printAddProgress (stats, total) {
 
 function printSwarmStatus (stats) {
   var swarm = stats.swarm
-  if (!swarm) return
-  if (swarm.peerCount === 0 && swarm.downloading) return logger.stdout('Finding data sources...\n')
+  if (!swarm || swarm.peerCount === 0 && swarm.downloading) return logger.stdout('Finding data sources...\n')
   var totalCount = swarm.blocks
   var downloadCount
   if (stats) downloadCount = stats.files + stats.directories
