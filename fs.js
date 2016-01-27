@@ -14,7 +14,7 @@ module.exports.listEach = function (opts, onEach, cb) {
   each(stream, function (data, next) {
     var item = {
       name: data.relname,
-      path: opts.dir === data.filepath ? path.resolve(data.filepath) : path.resolve(opts.dir, data.filepath),
+      path: path.resolve(data.filepath),
       mode: data.stat.mode,
       uid: data.stat.uid,
       gid: data.stat.gid,
