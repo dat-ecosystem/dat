@@ -10,8 +10,9 @@ module.exports = function (opts) {
     createIfMissing: true
   }
   opts = xtend(opts, defaults)
-  var id = crypto.createHash('sha256').update(process.cwd()).digest('hex')
-  var dbDir = path.join(opts.home || homeDir(), '.dat', 'db', id.slice(0, 2), id.slice(2))
+  var dir = path.resolve(opts.path || process.cwd())
+  var id = crypto.createHash('sha256').update(dir).digest('base64').replace(/[^0-9a-zA-Z]/g, '')
+  var dbDir = path.join(opts.home || homeDir(), '.dat', 'db', id.slice(0, 2), id.slice(2, 22))
   if (opts.createIfMissing) mkdirp.sync(dbDir) // ensure all parent foldes exist
   var levelup = level(dbDir, opts)
   return levelup

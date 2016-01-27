@@ -64,9 +64,9 @@ test('connects if link process starts second', function (t) {
   function startClone () {
     var cloner = spawn(t, dat + ' ' + link + ' --home=' + tmp + ' --path=' + dat2, {end: false})
     cloner.timeout(10000, 'waited 10 seconds and download didnt start')
+
     cloner.stdout.match(function (output) {
       var str = output.toString()
-
       if (relinker && str.indexOf('Download complete') > -1) {
         cloner.kill()
         relinker.kill()
@@ -85,9 +85,6 @@ test('connects if link process starts second', function (t) {
 
   function startRelinking () {
     var relinker = spawn(t, dat + ' link --home=' + tmp + ' --path=' + dat1, {end: false})
-    relinker.stdout.match(function (output) {
-      return true // ignore output
-    })
     return relinker
   }
 })
