@@ -6,10 +6,12 @@ var each = require('stream-each')
 
 module.exports.listEach = function (opts, onEach, cb) {
   var stream = walker(opts.dir, {filter: opts.filter})
+  var dirname = path.basename(opts.dir)
 
   each(stream, function (data, next) {
+    var prefix = path.resolve(data.filepath) !== path.resolve(opts.dir)
     var item = {
-      name: data.relname,
+      name: prefix ? path.join(dirname, data.relname) : data.relname,
       path: path.resolve(data.filepath),
       mode: data.stat.mode,
       uid: data.stat.uid,
@@ -18,6 +20,7 @@ module.exports.listEach = function (opts, onEach, cb) {
       ctime: data.stat.ctime.getTime(),
       size: data.stat.size
     }
+
     var isFile = data.stat.isFile()
     if (isFile) {
       item.createReadStream = function () {
