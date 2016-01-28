@@ -132,11 +132,13 @@ function printSwarmStatus (stats) {
   var totalCount = swarm.blocks
   var downloadCount
   if (stats) downloadCount = stats.files + stats.directories
-  var sockets = swarm.connections.sockets.length
+  var inbound = swarm.inboundConnections.sockets
+  var outbound = Object.keys(swarm.outboundConnections)
+  var socketCount = inbound.length + outbound.length
 
   var msg = ''
   var count = '0'
-  if (swarm.peerCount > 0) count = sockets + '/' + swarm.peerCount
+  if (swarm.peerCount > 0) count = socketCount + '/' + swarm.peerCount
   if (swarm.downloading || swarm.downloadComplete) {
     msg += 'Downloaded ' + downloadCount + '/' + totalCount + ' files' +
            ' (' + prettyBytes(stats.downloadRate) + '/s, ' + prettyBytes(stats.downloaded) + ' total)\n'

@@ -24,7 +24,6 @@ function Dat (opts) {
   this.level = opts.db || require('./db.js')(opts)
   var drive = hyperdrive(this.level)
   this.drive = drive
-  this.activePeers = {}
   this.allPeers = {}
   this.blacklist = {}
   if (opts.discovery !== false) this.discovery = discoveryChannel({dns: {server: DEFAULT_DISCOVERY}})
@@ -134,7 +133,7 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
     })
   })
 
-  var swarmConnections = connections(server)
+  var inboundConnections = connections(server)
 
   server.on('listening', function () {
     var swarm = {
@@ -143,7 +142,8 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
       link: link,
       close: close,
       server: server,
-      connections: swarmConnections,
+      inboundConnections: inboundConnections,
+      outboundConnections: {},
       dat: self,
       peerCount: 0,
       blocks: null,
@@ -158,7 +158,7 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
       var peerid = peer.host + ':' + peer.port
       if (isLocalPeer(peer) && peer.port === swarm.port) return // ignore self
       if (self.blacklist.hasOwnProperty(peerid)) return // ignore blacklist
-      if (self.activePeers[peerid]) return // ignore already connected
+      if (swarm.outboundConnections[peerid]) return // ignore already connected
       if (!self.allPeers.hasOwnProperty(peerid)) swarm.peerCount++
       self.allPeers[peerid] = true
       var socket = net.connect(peer.port, peer.host)
@@ -172,11 +172,11 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
           self.blacklist[peerid] = true
         } else {
           debug('handshake to remote', remoteId)
-          self.activePeers[peerid] = true
+          swarm.outboundConnections[peerid] = true
         }
       })
       pump(socket, peerStream, socket, function () {
-        delete self.activePeers[peerid]
+        delete swarm.outboundConnections[peerid]
       })
     })
 
@@ -184,7 +184,7 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
 
     function close (cb) {
       server.close()
-      swarmConnections.destroy()
+      inboundConnections.destroy()
       self.close(cb)
     }
   })
