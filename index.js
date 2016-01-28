@@ -124,12 +124,20 @@ Dat.prototype.joinWebrtcSwarm = function (link, opts) {
 Dat.prototype.joinTcpSwarm = function (link, cb) {
   var self = this
   link = link.replace('dat://', '').replace('dat:', '')
+  var activeInboundPeers = {}
 
   var server = net.createServer(function (socket) {
     var peerStream = self.drive.createPeerStream()
-    pump(socket, peerStream, socket)
+    pump(socket, peerStream, socket, function () {
+      var remoteId = peerStream.remoteId
+      if (!remoteId) return
+      remoteId = remoteId.toString('hex')
+      delete activeInboundPeers[remoteId]
+    })
     peerStream.on('handshake', function () {
-      debug('handshake from remote', peerStream.remoteId.toString('hex'))
+      var remoteId = peerStream.remoteId.toString('hex')
+      debug('handshake from remote', remoteId)
+      activeInboundPeers[remoteId] = true
     })
   })
 
@@ -143,7 +151,8 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
       close: close,
       server: server,
       inboundConnections: inboundConnections,
-      outboundConnections: {},
+      activeOutboundPeers: {},
+      activeInboundPeers: activeInboundPeers,
       dat: self,
       peerCount: 0,
       blocks: null,
@@ -158,7 +167,6 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
       var peerid = peer.host + ':' + peer.port
       if (isLocalPeer(peer) && peer.port === swarm.port) return // ignore self
       if (self.blacklist.hasOwnProperty(peerid)) return // ignore blacklist
-      if (swarm.outboundConnections[peerid]) return // ignore already connected
       if (!self.allPeers.hasOwnProperty(peerid)) swarm.peerCount++
       self.allPeers[peerid] = true
       var socket = net.connect(peer.port, peer.host)
@@ -172,11 +180,14 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
           self.blacklist[peerid] = true
         } else {
           debug('handshake to remote', remoteId)
-          swarm.outboundConnections[peerid] = true
+          swarm.activeOutboundPeers[remoteId] = true
         }
       })
       pump(socket, peerStream, socket, function () {
-        delete swarm.outboundConnections[peerid]
+        var remoteId = peerStream.remoteId
+        if (!remoteId) return
+        remoteId = remoteId.toString('hex')
+        delete swarm.activeOutboundPeers[remoteId]
       })
     })
 

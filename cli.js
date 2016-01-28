@@ -17,6 +17,7 @@ if (args.version || args.v) {
 var fs = require('fs')
 var singleLineLog = require('single-line-log')
 var prettyBytes = require('pretty-bytes')
+var xtend = require('xtend')
 var dat = require('./index.js')
 var usage = require('./usage')
 
@@ -132,13 +133,12 @@ function printSwarmStatus (stats) {
   var totalCount = swarm.blocks
   var downloadCount
   if (stats) downloadCount = stats.files + stats.directories
-  var inbound = swarm.inboundConnections.sockets
-  var outbound = Object.keys(swarm.outboundConnections)
-  var socketCount = inbound.length + outbound.length
+  var activePeers = xtend({}, swarm.activeInboundPeers, swarm.activeOutboundPeers)
+  var activeCount = Object.keys(activePeers).length
 
   var msg = ''
   var count = '0'
-  if (swarm.peerCount > 0) count = socketCount + '/' + swarm.peerCount
+  if (swarm.peerCount > 0) count = activeCount + '/' + swarm.peerCount
   if (swarm.downloading || swarm.downloadComplete) {
     msg += 'Downloaded ' + downloadCount + '/' + totalCount + ' files' +
            ' (' + prettyBytes(stats.downloadRate) + '/s, ' + prettyBytes(stats.downloaded) + ' total)\n'
