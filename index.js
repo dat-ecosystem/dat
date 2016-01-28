@@ -243,7 +243,6 @@ Dat.prototype.download = function (link, dir, cb) {
       })
     })
 
-    var speed = speedometer()
     archive.on('file-download', function (entry, data, block) {
       stats.downloaded += data.length
       stats.downloadRate(data.length)
