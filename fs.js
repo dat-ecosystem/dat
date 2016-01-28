@@ -5,11 +5,7 @@ var walker = require('folder-walker')
 var each = require('stream-each')
 
 module.exports.listEach = function (opts, onEach, cb) {
-  var stream = walker(opts.dir, {filter: opts.filter || function (filename) {
-    var basename = path.basename(filename)
-    if (basename[0] === '.') return false // ignore hidden files and folders
-    return true
-  }})
+  var stream = walker(opts.dir, {filter: opts.filter})
 
   each(stream, function (data, next) {
     var item = {
