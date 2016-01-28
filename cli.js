@@ -137,7 +137,10 @@ function printSwarmStatus (stats) {
   var msg = ''
   var count = '0'
   if (swarm.peerCount > 0) count = sockets + '/' + swarm.peerCount
-  if (swarm.downloading || swarm.downloadComplete) msg += 'Downloaded ' + downloadCount + '/' + totalCount + ' files\n'
+  if (swarm.downloading || swarm.downloadComplete) {
+    msg += 'Downloaded ' + downloadCount + '/' + totalCount + ' files' +
+           ' (' + prettyBytes(stats.downloadRate) + '/s, ' + prettyBytes(stats.downloaded) + ' total)\n'
+  }
   if (swarm.downloadComplete) msg += 'Download complete, sharing data. Connected to ' + count + ' peers\n'
   else if (swarm.downloading) msg += 'Connected to ' + count + ' peers\n'
   else msg += 'Sharing data on port ' + swarm.port + ', connected to ' + count + ' peers\n'

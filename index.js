@@ -2,6 +2,7 @@ var os = require('os')
 var net = require('net')
 var collect = require('collect-stream')
 var hyperdrive = require('hyperdrive')
+var speedometer = require('speedometer')
 var pump = require('pump')
 var webrtcSwarm = require('webrtc-swarm')
 var signalhub = require('signalhub')
@@ -126,7 +127,11 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
   link = link.replace('dat://', '').replace('dat:', '')
 
   var server = net.createServer(function (socket) {
-    pump(socket, self.drive.createPeerStream(), socket)
+    var peerStream = self.drive.createPeerStream()
+    pump(socket, peerStream, socket)
+    peerStream.on('handshake', function () {
+      debug('handshake from remote', peerStream.remoteId.toString('hex'))
+    })
   })
 
   var swarmConnections = connections(server)
@@ -166,6 +171,7 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
           socket.destroy()
           self.blacklist[peerid] = true
         } else {
+          debug('handshake to remote', remoteId)
           self.activePeers[peerid] = true
         }
       })
@@ -212,6 +218,8 @@ Dat.prototype.download = function (link, dir, cb) {
   self.joinTcpSwarm(link, function (err, swarm) {
     if (err) return cb(err)
     swarm.downloading = true
+    stats.downloadRate = 0
+    stats.downloaded = 0
     stats.swarm = swarm
     var archive = self.drive.get(swarm.link, dir)
 
@@ -222,6 +230,12 @@ Dat.prototype.download = function (link, dir, cb) {
       pump(archive.createEntryStream(), download, function (err) {
         cb(err, swarm)
       })
+    })
+
+    var speed = speedometer()
+    archive.on('file-download', function (entry, data, block) {
+      stats.downloaded += data.length
+      stats.downloadRate = speed(data.length)
     })
   })
 

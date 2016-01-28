@@ -38,6 +38,7 @@
     "run-series": "^1.1.4",
     "signalhub": "^4.3.1",
     "single-line-log": "^1.0.1",
+    "speedometer": "^1.0.0",
     "stream-each": "^1.1.0",
     "subleveldown": "^2.1.0",
     "through2": "^2.0.0",
