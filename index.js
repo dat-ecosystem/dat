@@ -229,7 +229,7 @@ Dat.prototype.download = function (link, dir, cb) {
   self.joinTcpSwarm(link, function (err, swarm) {
     if (err) return cb(err)
     swarm.downloading = true
-    stats.downloadRate = 0
+    stats.downloadRate = speedometer()
     stats.downloaded = 0
     stats.swarm = swarm
     var archive = self.drive.get(swarm.link, dir)
@@ -246,7 +246,7 @@ Dat.prototype.download = function (link, dir, cb) {
     var speed = speedometer()
     archive.on('file-download', function (entry, data, block) {
       stats.downloaded += data.length
-      stats.downloadRate = speed(data.length)
+      stats.downloadRate(data.length)
     })
   })
 

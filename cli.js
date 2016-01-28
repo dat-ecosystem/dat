@@ -141,7 +141,7 @@ function printSwarmStatus (stats) {
   if (swarm.peerCount > 0) count = activeCount + '/' + swarm.peerCount
   if (swarm.downloading || swarm.downloadComplete) {
     msg += 'Downloaded ' + downloadCount + '/' + totalCount + ' files' +
-           ' (' + prettyBytes(stats.downloadRate) + '/s, ' + prettyBytes(stats.downloaded) + ' total)\n'
+           ' (' + prettyBytes(stats.downloadRate()) + '/s, ' + prettyBytes(stats.downloaded) + ' total)\n'
   }
   if (swarm.downloadComplete) msg += 'Download complete, sharing data. Connected to ' + count + ' peers\n'
   else if (swarm.downloading) msg += 'Connected to ' + count + ' peers\n'
