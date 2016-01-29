@@ -101,20 +101,10 @@ function download (loc, db) {
 }
 
 function startProgressLogging (stats) {
-  var swarmInterval = setInterval(function () {
+  setInterval(function () {
     printSwarmStatus(stats)
   }, 500)
   printSwarmStatus(stats)
-
-  // intercept ctrl+c and do graceful exit
-  process.on('SIGINT', function () {
-    clearInterval(swarmInterval)
-    if (!stats.swarm) return process.exit(0)
-    stats.swarm.close(function (err) {
-      if (err) throw err
-      else process.exit(0)
-    })
-  })
 }
 
 function printScanProgress (stats) {
@@ -132,17 +122,16 @@ function printAddProgress (stats, total) {
 
 function printSwarmStatus (stats) {
   var swarm = stats.swarm
-  if (!swarm || swarm.peerCount === 0 && swarm.downloading) return logger.stdout('Finding data sources...\n')
+  if (!swarm) return logger.stdout('Finding data sources...\n')
   var totalCount = swarm.blocks
-  var downloadCount
-  if (stats) downloadCount = stats.files + stats.directories
+  var downloadCount = stats.files + stats.directories
   var activePeers = xtend({}, swarm.activeInboundPeers, swarm.activeOutboundPeers)
   var activeCount = Object.keys(activePeers).length
 
   var msg = ''
   var count = '0'
   if (swarm.peerCount > 0) count = activeCount + '/' + swarm.peerCount
-  if (swarm.downloading || swarm.downloadComplete) {
+  if ((swarm.downloading || swarm.downloadComplete) && stats.downloaded > 0) {
     msg += 'Downloaded ' + downloadCount + '/' + totalCount + ' files' +
            ' (' + prettyBytes(stats.downloadRate()) + '/s, ' + prettyBytes(stats.downloaded) + ' total)\n'
   }
