@@ -118,9 +118,10 @@ function startProgressLogging (stats) {
 }
 
 function printScanProgress (stats) {
+  var dirCount = stats.directories + 1 // parent folder
   logger.stdout(
-    'Creating share link for ' + stats.files + ' files in ' +
-    stats.directories + ' directories,' +
+    'Creating share link for ' + stats.files + ' files, ' +
+    dirCount + ' folders,' +
     (stats.size ? ' ' + prettyBytes(stats.size) + ' total' : '')
   )
 }
