@@ -105,6 +105,14 @@ function startProgressLogging (stats) {
     printSwarmStatus(stats)
   }, 500)
   printSwarmStatus(stats)
+
+  process.on('SIGINT', function () {
+    process.exit(1)
+    setTimeout(function () {
+      // sigterm if it is still running
+      process.kill(process.pid)
+    }, 2000)
+  })
 }
 
 function printScanProgress (stats) {
