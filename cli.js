@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 var args = require('minimist')(process.argv.splice(2))
 
+process.title = 'dat'
+
 // set debug before requiring other modules
 if (args.debug) {
   var debug = args.debug
