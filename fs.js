@@ -1,4 +1,3 @@
-var fs = require('fs')
 var through = require('through2')
 var path = require('path')
 var walker = require('folder-walker')
@@ -23,9 +22,6 @@ module.exports.listEach = function (opts, onEach, cb) {
 
     var isFile = data.stat.isFile()
     if (isFile) {
-      item.createReadStream = function () {
-        return fs.createReadStream(data.filepath)
-      }
       item.type = 'file'
     }
     var isDir = data.stat.isDirectory()
