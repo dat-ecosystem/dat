@@ -16,6 +16,7 @@ module.exports = Dat
 var DEFAULT_PORT = 3282
 var DEFAULT_DISCOVERY = 'discovery.publicbits.org'
 var DEFAULT_SIGNALHUB = 'https://signalhub.publicbits.org'
+var DAT_DOMAIN = 'dat.local'
 
 function Dat (opts) {
   if (!(this instanceof Dat)) return new Dat(opts)
@@ -26,7 +27,7 @@ function Dat (opts) {
   this.drive = drive
   this.allPeers = {}
   this.blacklist = {}
-  if (opts.discovery !== false) this.discovery = discoveryChannel({dns: {server: DEFAULT_DISCOVERY}})
+  if (opts.discovery !== false) this.discovery = discoveryChannel({dns: {server: DEFAULT_DISCOVERY, domain: DAT_DOMAIN}})
 }
 
 Dat.prototype.scan = function (dirs, each, done) {
