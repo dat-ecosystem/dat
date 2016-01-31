@@ -162,6 +162,7 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
     }
 
     self.discovery.add(swarm.hash, swarm.port)
+    var connected = {}
 
     self.discovery.on('peer', function (hash, peer) {
       debug('peer discovery', link, peer)
@@ -169,27 +170,44 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
       if (isLocalPeer(peer) && peer.port === swarm.port) return // ignore self
       if (self.blacklist.hasOwnProperty(peerid)) return // ignore blacklist
       if (!self.allPeers.hasOwnProperty(peerid)) swarm.peerCount++
+      if (connected.hasOwnProperty(peerid)) return
+
       self.allPeers[peerid] = true
       var socket = net.connect(peer.port, peer.host)
-      var peerStream = self.drive.createPeerStream()
-      peerStream.on('handshake', function () {
-        var remoteId = peerStream.remoteId.toString('hex')
-        var id = peerStream.id.toString('hex')
-        if (remoteId === id) { // peer === you
-          debug('peer is self, blacklisting', remoteId)
-          socket.destroy()
-          self.blacklist[peerid] = true
-        } else {
-          debug('handshake to remote', remoteId)
-          swarm.activeOutboundPeers[remoteId] = true
-        }
-      })
-      pump(socket, peerStream, socket, function () {
-        var remoteId = peerStream.remoteId
+      var once = true
+      var peerStream
+
+      socket.on('error', cleanup)
+      socket.on('close', cleanup)
+      socket.on('connect', onconnect)
+
+      function onconnect () {
+        peerStream = self.drive.createPeerStream()
+        connected[peerid] = true
+        peerStream.on('handshake', function () {
+          var remoteId = peerStream.remoteId.toString('hex')
+          var id = peerStream.id.toString('hex')
+          if (remoteId === id) { // peer === you
+            debug('peer is self, blacklisting', remoteId)
+            socket.destroy()
+            self.blacklist[peerid] = true
+          } else {
+            debug('handshake to remote', remoteId)
+            swarm.activeOutboundPeers[remoteId] = true
+          }
+        })
+        pump(socket, peerStream, socket, cleanup)
+      }
+
+      function cleanup () {
+        if (!once) return
+        once = true
+        delete connected[peerid]
+        var remoteId = peerStream && peerStream.remoteId
         if (!remoteId) return
         remoteId = remoteId.toString('hex')
         delete swarm.activeOutboundPeers[remoteId]
-      })
+      }
     })
 
     cb(null, swarm)
