@@ -1,6 +1,9 @@
 # dat
 
-Share datasets on the Internet. This is the Dat 1.0 Pre-release candidate.
+![#dat IRC channel on freenode](https://img.shields.io/badge/irc%20channel-%23dat--irc%20on%20freenode-blue.svg)
+[![datproject/discussions](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
+This is the Dat 1.0 Pre-release candidate. We want to make Dat into a data versioning, forking, and syncing tool. The first feature set we are working on is easy file synchronization. Dat embraces the Unix philosophy: a modular design with composable parts. All of the pieces can be replaced with alternative implementations as long as they implement the abstract API.
 
 Key features:
 
@@ -61,11 +64,3 @@ It will start downloading the data into the current location. It will also uploa
 Dat uses a built in TCP server to share data. This means at least one of the peers trying to share data will need their dat port open (default port is 3282, DATA on a phone keypad).
 
 For more information, see the [full project documentation here](http://github.com/datproject/docs#readme).
-
-## Overview
-
-This is the Dat 1.0 Pre-release candidate. We want to make Dat into a data versioning, forking, and syncing tool. The first feature set we are working on is easy file synchronization. Dat embraces the Unix philosophy: a modular design with composable parts. All of the pieces can be replaced with alternative implementations as long as they implement the abstract API.
-
-We would really appreciate your feedback.
-
-**Have questions or suggestions?** Join `#dat` on [freenode](https://webchat.freenode.net) or [![Gitter](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge). Chat logs are [available here](https://botbot.me/freenode/dat/)
