@@ -37,7 +37,7 @@ function runCommand () {
       return usage('root.txt')
     }
 
-    var db = dat({home: args.home, path: loc})
+    var db = dat({home: args.home})
 
     if (cmd === 'link') link(loc, db)
     else if (cmd === 'list') list(loc, db)
