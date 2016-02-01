@@ -27,23 +27,29 @@ function noop () {}
 
 var cmd = args._[0]
 var logger = getLogger()
-runCommand()
 
-function runCommand () {
-  var loc = args.path || process.cwd()
+checkLocation()
+
+function checkLocation () {
+  var loc = process.cwd()
+  if (!args.path) return runCommand(loc)
+  loc = args.path
   fs.exists(loc, function (exists) {
     if (!exists) {
       logger.error('Does not exist:', loc)
       return usage('root.txt')
     }
-
-    var db = dat({home: args.home, path: loc})
-
-    if (cmd === 'link') link(loc, db)
-    else if (cmd === 'list') list(loc, db)
-    else if (cmd) download(loc, db)
-    else return usage('root.txt')
+    runCommand(loc)
   })
+}
+
+function runCommand (loc) {
+  var db = dat({home: args.home, path: loc})
+
+  if (cmd === 'link') link(loc, db)
+  else if (cmd === 'list') list(loc, db)
+  else if (cmd) download(loc, db)
+  else return usage('root.txt')
 }
 
 function link (loc, db) {
