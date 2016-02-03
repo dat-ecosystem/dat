@@ -44,7 +44,7 @@ function checkLocation () {
 }
 
 function runCommand (loc) {
-  var db = dat({home: args.home, path: loc})
+  var db = dat({home: args.home})
 
   if (cmd === 'link') link(loc, db)
   else if (cmd === 'list') list(loc, db)
@@ -83,9 +83,16 @@ function link (loc, db) {
 }
 
 function list (loc, db) {
-  db = dat({home: args.home})
-  db.drive._links.createValueStream().on('data', function (o) {
-    logger.log(o)
+  var hash = args._[1]
+  db.joinTcpSwarm(hash, function (err, swarm) {
+    if (err) throw err
+    var archive = db.drive.get(swarm.link, loc)
+    archive.ready(function (err) {
+      if (err) throw err
+      archive.createEntryStream().on('data', function (o) {
+        logger.log(o)
+      })
+    })
   })
 }
 
