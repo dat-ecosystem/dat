@@ -31,7 +31,7 @@
     "discovery-channel": "^4.0.0",
     "folder-walker": "^1.1.2",
     "home-dir": "^1.0.0",
-    "hyperdrive": "^2.1.1",
+    "hyperdrive": "^3.0.0",
     "level-party": "^3.0.3",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
