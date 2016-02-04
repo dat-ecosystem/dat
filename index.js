@@ -94,7 +94,8 @@ Dat.prototype.addFiles = function (dirs, cb) {
     })
   }
 
-  function done () {
+  function done (err) {
+    if (err) return cb(err)
     pack.finalize(function (err) {
       if (err) return cb(err)
       var link = pack.id.toString('hex')
