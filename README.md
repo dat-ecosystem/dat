@@ -20,7 +20,7 @@ Key features:
 To install the 1.0 Pre-release from npm:
 
 ```
-npm install dat@next -g
+npm install dat -g
 ```
 
 If you receive an `EACCES` error read [this guide](https://docs.npmjs.com/getting-started/fixing-npm-permissions).
