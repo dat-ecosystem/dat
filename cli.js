@@ -27,23 +27,32 @@ function noop () {}
 
 var cmd = args._[0]
 var logger = getLogger()
-runCommand()
 
-function runCommand () {
-  var loc = args.path || process.cwd()
+var LOG_INTERVAL = (args.logspeed ? +args.logspeed : 200)
+if (isNaN(LOG_INTERVAL)) LOG_INTERVAL = 200
+
+checkLocation()
+
+function checkLocation () {
+  var loc = process.cwd()
+  if (!args.path) return runCommand(loc)
+  loc = args.path
   fs.exists(loc, function (exists) {
     if (!exists) {
       logger.error('Does not exist:', loc)
       return usage('root.txt')
     }
-
-    var db = dat({home: args.home})
-
-    if (cmd === 'link') link(loc, db)
-    else if (cmd === 'list') list(loc, db)
-    else if (cmd) download(loc, db)
-    else return usage('root.txt')
+    runCommand(loc)
   })
+}
+
+function runCommand (loc) {
+  var db = dat({home: args.home})
+
+  if (cmd === 'link') link(loc, db)
+  else if (cmd === 'list') list(loc, db)
+  else if (cmd) download(loc, db)
+  else return usage('root.txt')
 }
 
 function link (loc, db) {
@@ -68,12 +77,12 @@ function link (loc, db) {
 
     var addInterval = setInterval(function () {
       printAddProgress(statsAdd, statsScan.files)
-    }, 100)
+    }, LOG_INTERVAL)
   })
 
   var scanInterval = setInterval(function () {
     printScanProgress(statsScan)
-  }, 100)
+  }, LOG_INTERVAL)
 }
 
 function list (loc, db) {
@@ -110,7 +119,7 @@ function download (loc, db) {
 function startProgressLogging (stats) {
   setInterval(function () {
     printSwarmStatus(stats)
-  }, 500)
+  }, LOG_INTERVAL)
   printSwarmStatus(stats)
 
   process.on('SIGINT', function () {

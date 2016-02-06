@@ -20,7 +20,7 @@ Key features:
 To install the 1.0 Pre-release from npm:
 
 ```
-npm install dat@next -g
+npm install dat -g
 ```
 
 If you receive an `EACCES` error read [this guide](https://docs.npmjs.com/getting-started/fixing-npm-permissions).
@@ -39,7 +39,7 @@ This should add a `dat` command line command to your PATH. Now you can run the `
 
 Windows        | Mac/Linux
 -------------- | ------------
-[![Build status](https://ci.appveyor.com/api/projects/status/s236036xnglo4v5l)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](http://img.shields.io/travis/maxogden/dat.svg?style=flat)](https://travis-ci.org/maxogden/dat)
+[![Build status](https://ci.appveyor.com/api/projects/status/s236036xnglo4v5l)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](https://api.travis-ci.org/maxogden/dat.svg)](https://travis-ci.org/maxogden/dat)
 
 ## Getting started
 
