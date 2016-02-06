@@ -87,6 +87,7 @@ function link (loc, db) {
 
 function list (loc, db) {
   var hash = args._[1]
+  if (!hash) return usage('root.txt')
   db.joinTcpSwarm(hash, function (err, swarm) {
     if (err) throw err
     var archive = db.drive.get(swarm.link, loc)
