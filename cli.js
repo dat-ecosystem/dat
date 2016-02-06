@@ -91,10 +91,14 @@ function list (loc, db) {
   db.joinTcpSwarm(hash, function (err, swarm) {
     if (err) throw err
     var archive = db.drive.get(swarm.link, loc)
+    var metaChunks = []
     archive.ready(function (err) {
       if (err) throw err
       archive.createEntryStream().on('data', function (o) {
-        logger.log(o)
+        metaChunks.push(o)
+      }).on('end', function () {
+        logger.log(metaChunks)
+        process.exit(0)
       })
     })
   })
