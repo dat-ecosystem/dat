@@ -4,7 +4,11 @@ var walker = require('folder-walker')
 var each = require('stream-each')
 
 module.exports.listEach = function (opts, onEach, cb) {
-  var stream = walker(opts.dir, {filter: opts.filter})
+  var stream = walker(opts.dir, {filter: function (data) {
+    if (path.basename(data) === '.dat') return false
+    if ((typeof opts.filter) === 'function') return opts.filter(data)
+    return true
+  }})
   var dirname = path.basename(opts.dir)
 
   each(stream, function (data, next) {
