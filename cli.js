@@ -161,9 +161,9 @@ function printSwarmStatus (stats) {
     msg += 'Downloaded ' + downloadCount + '/' + totalCount + ' files' +
            ' (' + prettyBytes(stats.downloadRate()) + '/s, ' + prettyBytes(stats.downloaded) + ' total)\n'
   }
-  if (swarm.downloadComplete) msg += 'Download complete, sharing data. Connected to ' + count + ' peers\n'
-  else if (swarm.downloading) msg += 'Connected to ' + count + ' peers\n'
-  else msg += 'Sharing data on port ' + swarm.port + ', connected to ' + count + ' peers\n'
+  if (swarm.downloadComplete) msg += 'Download complete, sharing data. Connected to ' + count + ' sourcess\n'
+  else if (swarm.downloading) msg += 'Connected to ' + count + ' sources\n'
+  else msg += 'Sharing data on port ' + swarm.port + ', connected to ' + count + ' sources\n'
   logger.stdout(msg)
 }
 
