@@ -6,3 +6,4 @@ options
   --quiet, -q         quiet output mode
   --debug             debug output mode
   --version, -v       get the installed dat version
+  --port, -p          set a specific inbound tcp port

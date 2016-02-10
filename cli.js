@@ -1,5 +1,7 @@
 #!/usr/bin/env node
-var args = require('minimist')(process.argv.splice(2))
+var args = require('minimist')(process.argv.splice(2), {
+  alias: {p: 'port', q: 'quiet', v: 'version'}
+})
 
 process.title = 'dat'
 
@@ -10,7 +12,7 @@ if (args.debug) {
   process.env.DEBUG = debug
 }
 
-if (args.version || args.v) {
+if (args.version) {
   var pkg = require(__dirname + '/package.json')
   console.log(pkg.version)
   process.exit(0)
@@ -67,7 +69,7 @@ function link (loc, db) {
       printAddProgress(statsAdd, statsScan.files)
       clearInterval(addInterval)
       if (err) throw err
-      db.joinTcpSwarm(link, function (_err, swarm) {
+      db.joinTcpSwarm({link: link, port: args.port}, function (_err, swarm) {
         // ignore _err
         logger.log('') // newline
         logger.log('Link: dat://' + swarm.link)
@@ -88,7 +90,7 @@ function link (loc, db) {
 function list (loc, db) {
   var hash = args._[1]
   if (!hash) return usage('root.txt')
-  db.joinTcpSwarm(hash, function (err, swarm) {
+  db.joinTcpSwarm({link: hash, port: args.port}, function (err, swarm) {
     if (err) throw err
     var archive = db.drive.get(swarm.link, loc)
     var metaChunks = []
@@ -164,14 +166,14 @@ function printSwarmStatus (stats) {
     msg += 'Downloaded ' + downloadCount + '/' + totalCount + ' files' +
            ' (' + prettyBytes(stats.downloadRate()) + '/s, ' + prettyBytes(stats.downloaded) + ' total)\n'
   }
-  if (swarm.downloadComplete) msg += 'Download complete, sharing data. Connected to ' + count + ' peers\n'
-  else if (swarm.downloading) msg += 'Connected to ' + count + ' peers\n'
-  else msg += 'Sharing data on port ' + swarm.port + ', connected to ' + count + ' peers\n'
+  if (swarm.downloadComplete) msg += 'Download complete, sharing data. Connected to ' + count + ' sources\n'
+  else if (swarm.downloading) msg += 'Connected to ' + count + ' sources\n'
+  else msg += 'Sharing data on port ' + swarm.port + ', connected to ' + count + ' sources\n'
   logger.stdout(msg)
 }
 
 function getLogger () {
-  if (args.quiet || args.q) {
+  if (args.quiet) {
     return {
       stderr: noop,
       stdout: noop,

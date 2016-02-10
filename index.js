@@ -123,8 +123,10 @@ Dat.prototype.joinWebrtcSwarm = function (link, opts) {
   return swarm
 }
 
-Dat.prototype.joinTcpSwarm = function (link, cb) {
+Dat.prototype.joinTcpSwarm = function (opts, cb) {
   var self = this
+  if (typeof opts === 'string') opts = {link: opts}
+  var link = opts.link
   link = link.replace('dat://', '').replace('dat:', '')
   var activeInboundPeers = {}
 
@@ -225,7 +227,7 @@ Dat.prototype.joinTcpSwarm = function (link, cb) {
     else throw err
   })
 
-  server.listen(DEFAULT_PORT)
+  server.listen(opts.port || DEFAULT_PORT)
 }
 
 Dat.prototype.close = function (cb) {
