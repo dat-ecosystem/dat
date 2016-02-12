@@ -1,17 +1,28 @@
 # dat
 
+Dat is an decentralized data tool for distributing datasets small and large.
+
 ![#dat IRC channel on freenode](https://img.shields.io/badge/irc%20channel-%23dat--irc%20on%20freenode-blue.svg)
 [![datproject/discussions](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![docs](https://readthedocs.org/projects/pip/badge/?version=latest)](http://dat-data.readthedocs.org)
 
-This is the Dat 1.0 Pre-release candidate. We want to make Dat into a data versioning, forking, and syncing tool. The first feature set we are working on is easy file synchronization. Dat embraces the Unix philosophy: a modular design with composable parts. All of the pieces can be replaced with alternative implementations as long as they implement the abstract API.
+
+Windows        | Mac/Linux
+-------------- | ------------
+[![Build status](https://ci.appveyor.com/api/projects/status/s236036xnglo4v5l)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](https://api.travis-ci.org/maxogden/dat.svg)](https://travis-ci.org/maxogden/dat)
+
+
+This is the Dat 1.0 pre-release candidate. We want to make Dat into a data versioning, forking, and syncing tool. The first feature set we are working on is easy file distribution.
 
 Key features:
 
-  * **easily share large files** directly without having to copy them through a central server
-  * **sync incrementally** between machines only the parts of files that change
-  * **share data in a swarm** everyone who downloads data also helps upload to others
-  * **automatic peer discovery** uses peer to peer techniques for finding copies of the data
-  * **verify data integrity** data is verified using strong cryptographic hashes
+  * **Distribute large files** without copying data to a central server.
+  * **Intelligently sync** by deduplicating data between versions.
+  * **Swarm data** by connecting those who want data with those who already have it.
+  * **Verify data integrity** using strong cryptographic hashes.
+  * **Work everywhere**, including in the [browser](http://github.com/karissa/dat-browserify), on the [desktop](http://github.com/karissa/dat-desk), as well as in R and [python](http://github.com/karissa/datpy). 
+
+Dat embraces the Unix philosophy: a modular design with composable parts. All of the pieces can be replaced with alternative implementations as long as they implement the abstract API.
 
 **Please note** that previous versions of Dat (alpha, beta) are incompatible with the 1.0 pre-release.
 
@@ -34,12 +45,6 @@ npm link
 ```
 
 This should add a `dat` command line command to your PATH. Now you can run the `dat` command to try it out.
-
-## Build Status
-
-Windows        | Mac/Linux
--------------- | ------------
-[![Build status](https://ci.appveyor.com/api/projects/status/s236036xnglo4v5l)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](https://api.travis-ci.org/maxogden/dat.svg)](https://travis-ci.org/maxogden/dat)
 
 ## Getting started
 
