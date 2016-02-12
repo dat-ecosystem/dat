@@ -1,6 +1,6 @@
 # dat
 
-Dat is an decentralized data tool for distributing datasets small and large.
+Dat is a decentralized data tool for distributing datasets small and large.
 
 ![#dat IRC channel on freenode](https://img.shields.io/badge/irc%20channel-%23dat--irc%20on%20freenode-blue.svg)
 [![datproject/discussions](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -20,7 +20,7 @@ Key features:
   * **Intelligently sync** by deduplicating data between versions.
   * **Swarm data** by connecting those who want data with those who already have it.
   * **Verify data integrity** using strong cryptographic hashes.
-  * **Work everywhere**, including in the [browser](http://github.com/karissa/dat-browserify), on the [desktop](http://github.com/karissa/dat-desk), as well as in R and [python](http://github.com/karissa/datpy). 
+  * **Work everywhere**, including in the [browser](http://github.com/karissa/dat-browserify), on the [desktop](http://github.com/karissa/dat-desk), as well as in R and [python](http://github.com/karissa/datpy).
 
 Dat embraces the Unix philosophy: a modular design with composable parts. All of the pieces can be replaced with alternative implementations as long as they implement the abstract API.
 
