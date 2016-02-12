@@ -68,4 +68,4 @@ It will start downloading the data into the current location. It will also uploa
 
 Dat uses a built in TCP server to share data. This means at least one of the peers trying to share data will need their dat port open (default port is 3282, DATA on a phone keypad).
 
-For more information, see the [full project documentation here](http://github.com/datproject/docs#readme).
+For more information, see the [full project documentation here](http://dat-data.readthedocs.org).
