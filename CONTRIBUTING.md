@@ -10,7 +10,7 @@ For any new functionality we like to see unit tests added as well so that we can
 
 ## Development workflow
 
-We use and write a lot of node modules and it introduces a bit of a learning curve when working on multiple modules simultaneously.
+We use and write a lot of node modules and it introduces a bit of a learning curve when working on multiple modules simultaneously. There are lots of different and valid solutions to working on lots of modules at once, this is just one way.
 
 ### Developing inside a node_modules folder
 
@@ -37,3 +37,4 @@ This might seem a bit complicated at first, but is simple once you get the hang 
 
 - Never make any meaningful edits to code inside an "npm-managed" node_modules folder (such as `~/code/node_modules/dat/node_modules`), because when you run `npm install` inside those folders it could inadvertently delete all of your edits when installing an updated copy of a module. This has happened to me many times, so I just always use my git copy and delete the npm copy (as described above) to make edits to a module.
 - You should never need to run any npm commands in terminal when at your "manually managed"" node_modules folder at `~/code/node_modules`. Never running npm commands at that folder also prevents npm from accidentally erasing your git copies of modules
+- The location of your "manually managed" node_modules folder should be somewhere isolated from your normal require path. E.g. if you put it at `~/node_modules`, then when you run `npm install dat` at `~/Desktop` npm might decide to erase your git copy of dat at `~/node_modules/dat` and replace it with a copy from npm, which could make you lose work. Putting your manually managed `node_modules` folder in a sub-folder like `~/code` gets it "out of the way" and prevents accidents like that from happening.
