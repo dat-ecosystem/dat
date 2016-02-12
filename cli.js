@@ -144,9 +144,9 @@ function printScanProgress (stats) {
 
 function printAddProgress (statsAdd, statsScan) {
   logger.stdout(
-    'Fingerprinting file contents (' + statsAdd.files +
+    'Fingerprinting file contents (' + statsAdd.filesRead +
     '/' + statsScan.files + ')' +
-    ' ' + Math.floor(100 * (statsAdd.totalRead / statsScan.size)) + '%'
+    ' ' + Math.floor(100 * (statsAdd.bytesRead / statsScan.size)) + '%'
   )
 }
 

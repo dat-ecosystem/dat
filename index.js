@@ -80,7 +80,7 @@ Dat.prototype.addFiles = function (dirs, cb) {
   var pack = this.drive.add('.')
   this.scan(dirs, eachItem, done)
 
-  return pack.readStats
+  return pack.stats
 
   function eachItem (item, next) {
     pack.appendFile(item.path, item.name, next)
