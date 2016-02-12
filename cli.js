@@ -66,7 +66,7 @@ function link (loc, db) {
     clearInterval(scanInterval)
     logger.log('') // newline
     var statsAdd = db.addFiles(dirs, function (err, link) {
-      printAddProgress(statsAdd, statsScan.files)
+      printAddProgress(statsAdd, statsScan)
       clearInterval(addInterval)
       if (err) throw err
       db.joinTcpSwarm({link: link, port: args.port}, function (_err, swarm) {
@@ -78,7 +78,7 @@ function link (loc, db) {
     })
 
     var addInterval = setInterval(function () {
-      printAddProgress(statsAdd, statsScan.files)
+      printAddProgress(statsAdd, statsScan)
     }, LOG_INTERVAL)
   })
 
@@ -142,8 +142,12 @@ function printScanProgress (stats) {
   )
 }
 
-function printAddProgress (stats, total) {
-  logger.stdout('Fingerprinting file contents (' + stats.files + '/' + total + ')')
+function printAddProgress (statsAdd, statsScan) {
+  logger.stdout(
+    'Fingerprinting file contents (' + statsAdd.filesRead +
+    '/' + statsScan.files + ')' +
+    ' ' + Math.floor(100 * (statsAdd.bytesRead / statsScan.size)) + '%'
+  )
 }
 
 function printSwarmStatus (stats) {
