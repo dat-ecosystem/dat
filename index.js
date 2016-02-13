@@ -80,10 +80,23 @@ Dat.prototype.addFiles = function (dirs, cb) {
   var pack = this.drive.add('.')
   this.scan(dirs, eachItem, done)
 
-  return pack.stats
+  var stats = {
+    totalStats: pack.stats,
+    files: []
+  }
+
+  return stats
 
   function eachItem (item, next) {
-    pack.appendFile(item.path, item.name, next)
+    var appendStats = pack.appendFile(item.path, item.name, next)
+    // This could accumulate too many objects if
+    // logspeed is high & scanning many files.
+    if (item.type === 'file') {
+      stats.files.push({
+        name: item.name,
+        stats: appendStats
+      })
+    }
   }
 
   function done (err) {
