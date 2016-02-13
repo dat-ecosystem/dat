@@ -50,12 +50,16 @@ function checkLocation () {
 }
 
 function runCommand (loc) {
+  if (!cmd) return usage('root.txt')
+
+  logger.stdout(chalk.inverse('   Welcome to Dat!   '))
+  logger.log('\n') // newline & break
+
   var db = dat({home: args.home})
 
   if (cmd === 'link') link(loc, db)
   else if (cmd === 'list') list(loc, db)
   else if (cmd) download(loc, db)
-  else return usage('root.txt')
 }
 
 function link (loc, db) {
