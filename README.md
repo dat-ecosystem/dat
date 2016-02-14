@@ -2,7 +2,7 @@
 
 Dat is a decentralized data tool for distributing datasets small and large.
 
-![#dat IRC channel on freenode](https://img.shields.io/badge/irc%20channel-%23dat--irc%20on%20freenode-blue.svg)
+[![#dat IRC channel on freenode](https://img.shields.io/badge/irc%20channel-%23dat%20on%20freenode-blue.svg)](http://webchat.freenode.net/?channels=dat)
 [![datproject/discussions](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![docs](https://readthedocs.org/projects/pip/badge/?version=latest)](http://dat-data.readthedocs.org)
 
