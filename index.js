@@ -14,7 +14,7 @@ var debug = require('debug')('dat')
 module.exports = Dat
 
 var DEFAULT_PORT = 3282
-var DEFAULT_DISCOVERY = 'discovery.publicbits.org'
+var DEFAULT_DISCOVERY = ['discovery.publicbits.org', 'discovery.publicbits.org:5300']
 var DEFAULT_SIGNALHUB = 'https://signalhub.publicbits.org'
 var DAT_DOMAIN = 'dat.local'
 
