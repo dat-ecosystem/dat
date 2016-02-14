@@ -1,5 +1,3 @@
-var os = require('os')
-var net = require('net')
 var collect = require('collect-stream')
 var hyperdrive = require('hyperdrive')
 var speedometer = require('speedometer')
@@ -7,8 +5,7 @@ var pump = require('pump')
 var webrtcSwarm = require('webrtc-swarm')
 var signalhub = require('signalhub')
 var series = require('run-series')
-var discoveryChannel = require('discovery-channel')
-var connections = require('connections')
+var discoverySwarm = require('discovery-swarm')
 var debug = require('debug')('dat')
 
 module.exports = Dat
@@ -27,7 +24,15 @@ function Dat (opts) {
   this.drive = drive
   this.allPeers = {}
   this.blacklist = {}
-  if (opts.discovery !== false) this.discovery = discoveryChannel({dns: {server: DEFAULT_DISCOVERY, domain: DAT_DOMAIN}})
+
+  var discovery = opts.discovery !== false
+  this.swarm = discoverySwarm({
+    dns: discovery && {server: DEFAULT_DISCOVERY, domain: DAT_DOMAIN},
+    dht: discovery,
+    stream: function () {
+      return drive.createPeerStream()
+    }
+  })
 }
 
 Dat.prototype.scan = function (dirs, each, done) {
@@ -120,106 +125,20 @@ Dat.prototype.joinTcpSwarm = function (opts, cb) {
   if (typeof opts === 'string') opts = {link: opts}
   var link = opts.link
   link = link.replace('dat://', '').replace('dat:', '')
-  var activeInboundPeers = {}
+  var key = new Buffer(link, 'hex')
 
-  var server = net.createServer(function (socket) {
-    var peerStream = self.drive.createPeerStream()
-    pump(socket, peerStream, socket, function () {
-      var remoteId = peerStream.remoteId
-      if (!remoteId) return
-      remoteId = remoteId.toString('hex')
-      delete activeInboundPeers[remoteId]
-    })
-    peerStream.on('handshake', function () {
-      var remoteId = peerStream.remoteId.toString('hex')
-      debug('handshake from remote', remoteId)
-      activeInboundPeers[remoteId] = true
-    })
+  this.swarm.once('listening', function () {
+    self.swarm.link = link // backwards compat
+    self.swarm.add(key)
+    cb(null, self.swarm)
   })
 
-  var inboundConnections = connections(server)
-
-  server.on('listening', function () {
-    var swarm = {
-      port: server.address().port,
-      hash: resolveHash(link),
-      link: link,
-      close: close,
-      server: server,
-      inboundConnections: inboundConnections,
-      activeOutboundPeers: {},
-      activeInboundPeers: activeInboundPeers,
-      dat: self,
-      peerCount: 0,
-      blocks: null,
-      downloading: false,
-      downloadComplete: false
-    }
-
-    self.discovery.add(swarm.hash, swarm.port)
-    var connected = {}
-
-    self.discovery.on('peer', function (hash, peer) {
-      debug('peer discovery', link, peer)
-      var peerid = peer.host + ':' + peer.port
-      if (isLocalPeer(peer) && peer.port === swarm.port) return // ignore self
-      if (self.blacklist.hasOwnProperty(peerid)) return // ignore blacklist
-      if (!self.allPeers.hasOwnProperty(peerid)) swarm.peerCount++
-      if (connected.hasOwnProperty(peerid)) return
-
-      self.allPeers[peerid] = true
-      var socket = net.connect(peer.port, peer.host)
-      var once = true
-      var peerStream
-
-      socket.on('error', cleanup)
-      socket.on('close', cleanup)
-      socket.on('connect', onconnect)
-
-      function onconnect () {
-        peerStream = self.drive.createPeerStream()
-        connected[peerid] = true
-        peerStream.on('handshake', function () {
-          var remoteId = peerStream.remoteId.toString('hex')
-          var id = peerStream.id.toString('hex')
-          if (remoteId === id) { // peer === you
-            debug('peer is self, blacklisting', remoteId)
-            socket.destroy()
-            self.blacklist[peerid] = true
-          } else {
-            debug('handshake to remote', remoteId)
-            swarm.activeOutboundPeers[remoteId] = true
-          }
-        })
-        pump(socket, peerStream, socket, cleanup)
-      }
-
-      function cleanup () {
-        if (!once) return
-        once = true
-        delete connected[peerid]
-        var remoteId = peerStream && peerStream.remoteId
-        if (!remoteId) return
-        remoteId = remoteId.toString('hex')
-        delete swarm.activeOutboundPeers[remoteId]
-      }
-    })
-
-    cb(null, swarm)
-
-    function close (cb) {
-      server.close()
-      inboundConnections.destroy()
-      self.close(cb)
-    }
-  })
-
-  server.once('error', function (err) {
-    if (err.code === 'EADDRINUSE') server.listen(0) // asks OS for first open port
+  this.swarm.once('error', function (err) {
+    if (err.code === 'EADDRINUSE') self.swarm.listen(0) // asks OS for first open port
     else throw err
   })
 
-  server.listen(opts.port || DEFAULT_PORT)
+  this.swarm.listen(opts.port || DEFAULT_PORT)
 }
 
 Dat.prototype.close = function (cb) {
@@ -264,22 +183,4 @@ Dat.prototype.download = function (link, dir, cb) {
   })
 
   return stats
-}
-
-function resolveHash (link) {
-  // TODO: handle 'pretty' or 'named' links
-  return new Buffer(link, 'hex')
-}
-
-function isLocalPeer (peer) {
-  var localAddresses = {}
-  var interfaces = os.networkInterfaces()
-  Object.keys(interfaces).forEach(function (i) {
-    var entries = interfaces[i]
-    entries.forEach(function (e) {
-      localAddresses[e.address] = true
-    })
-  })
-  if (localAddresses.hasOwnProperty(peer.host)) return true
-  return false
 }

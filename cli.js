@@ -21,7 +21,6 @@ if (args.version) {
 var fs = require('fs')
 var singleLineLog = require('single-line-log')
 var prettyBytes = require('pretty-bytes')
-var xtend = require('xtend')
 var dat = require('./index.js')
 var usage = require('./usage')
 
@@ -155,19 +154,19 @@ function printSwarmStatus (stats) {
   if (!swarm) return logger.stdout('Finding data sources...\n')
   var totalCount = swarm.blocks
   var downloadCount = stats.files + stats.directories
-  var activePeers = xtend({}, swarm.activeInboundPeers, swarm.activeOutboundPeers)
-  var activeCount = Object.keys(activePeers).length
+  var activeCount = swarm.peersConnected
 
   var msg = ''
   var count = '0'
-  if (swarm.peerCount > 0) count = activeCount + '/' + swarm.peerCount
+  if (activeCount > 0) count = activeCount + '/' + (swarm.peersConnecting)
   if ((swarm.downloading || swarm.downloadComplete) && stats.downloaded > 0) {
     msg += 'Downloaded ' + downloadCount + '/' + totalCount + ' files' +
            ' (' + prettyBytes(stats.downloadRate()) + '/s, ' + prettyBytes(stats.downloaded) + ' total)\n'
   }
+
   if (swarm.downloadComplete) msg += 'Download complete, sharing data. Connected to ' + count + ' sources\n'
   else if (swarm.downloading) msg += 'Connected to ' + count + ' sources\n'
-  else msg += 'Sharing data on port ' + swarm.port + ', connected to ' + count + ' sources\n'
+  else msg += 'Sharing data on port ' + swarm.address().port + ', connected to ' + count + ' sources\n'
   logger.stdout(msg)
 }
 
