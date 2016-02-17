@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 var args = require('minimist')(process.argv.splice(2), {
-  alias: {p: 'port', q: 'quiet', v: 'version'}
+  alias: {p: 'port', q: 'quiet', v: 'version'},
+  boolean: ['color'],
+  default: {color: true}
 })
 
 process.title = 'dat'
@@ -33,6 +35,7 @@ var logger = getLogger()
 
 var LOG_INTERVAL = (args.logspeed ? +args.logspeed : 200)
 if (isNaN(LOG_INTERVAL)) LOG_INTERVAL = 200
+if (!args.color) chalk = new chalk.constructor({enabled: false})
 
 checkLocation()
 
@@ -161,9 +164,7 @@ function printAddProgress (statsAdd, statsScan) {
   var indent = '  ' // indent for single file info
 
   while (true) {
-    if (statsAdd.files.length === 0) {
-      break
-    }
+    if (statsAdd.files.length === 0) break
     var complete = printFileProgress(statsAdd.files[0])
     if (complete) statsAdd.files.shift()
     else break
