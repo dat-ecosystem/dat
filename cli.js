@@ -168,7 +168,8 @@ function printAddProgress (statsAdd, statsScan) {
   }
 
   if (statsAdd.files.length) {
-    printFileProgress(statsAdd.files.shift())
+    var complete = printFileProgress(statsAdd.files[0])
+    if (complete) statsAdd.files.shift()
   }
 
   function printFileProgress (fileStats) {
