@@ -159,17 +159,14 @@ function printScanProgress (stats, last) {
 function printAddProgress (statsAdd, statsScan) {
   var msg = ''
   var indent = '  ' // indent for single file info
-  var i = 0
 
-  while (statsAdd.files.length > 1) {
-    var complete = printFileProgress(statsAdd.files[i])
+  while (true) {
+    if (statsAdd.files.length === 0) {
+      break
+    }
+    var complete = printFileProgress(statsAdd.files[0])
     if (complete) statsAdd.files.shift()
-    else i++
-  }
-
-  if (statsAdd.files.length) {
-    complete = printFileProgress(statsAdd.files[0])
-    if (complete) statsAdd.files.shift()
+    else break
   }
 
   function printFileProgress (fileStats) {
@@ -192,7 +189,11 @@ function printAddProgress (statsAdd, statsScan) {
       )
     }
     // = to overwrite fake 100% msg
-    msg = chalk.bold.gray(indent + '[' + ('   ' + filePercent).slice(-3) + '%] ')
+    if (filePercent > 0) {
+      msg = chalk.bold.gray(indent + '[' + ('   ' + filePercent).slice(-3) + '%] ')
+    } else {
+      msg = chalk.bold.gray(indent + '       ')
+    }
     msg += chalk.blue(fileStats.name)
   }
 
