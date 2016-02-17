@@ -6,7 +6,6 @@ var spawn = require('./helpers/spawn.js')
 var dat = path.resolve(path.join(__dirname, '..', 'cli.js'))
 var tmp = os.tmpdir()
 var datSample = path.join(__dirname, 'fixtures')
-var fileList = []
 
 test('prints correct file & directory stats', function (t) {
   var st = spawn(t, dat + ' link ' + datSample + ' --home=' + tmp)
@@ -31,17 +30,15 @@ test('prints correct file & directory stats', function (t) {
 test('prints out all of the files', function (t) {
   var st = spawn(t, dat + ' link ' + datSample + ' --home=' + tmp)
   st.stdout.match(function (output) {
-    var fileDone = output.indexOf('[Done]') > -1
-    if (fileDone) {
-      var fileName = output.split('Done]')[1].split('\n')[0]
-      fileList.push(fileName)
-    }
     var downloadFinished = output.indexOf('Your Dat Link') > -1
     if (!downloadFinished) return false
 
+    var fileList = output.split('\n').filter(function (line) {
+      return line.indexOf('[Done]') > -1
+    })
     t.ok(fileList.length === 2, 'two files printed done')
 
-    if (downloadFinished) {
+    if (fileList.length) {
       st.kill()
       return true
     }
