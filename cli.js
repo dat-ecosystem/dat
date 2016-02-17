@@ -80,7 +80,7 @@ function link (loc, db) {
       if (err) throw err
       db.joinTcpSwarm({link: link, port: args.port}, function (_err, swarm) {
         // ignore _err
-        logger.stdout('') // newline
+        logger.stdout('') // clear progress lines
         logger.log(
           chalk.green.bold('Your Dat Link: ') +
           chalk.underline.blue('dat://' + swarm.link)
@@ -92,7 +92,6 @@ function link (loc, db) {
     var addInterval = setInterval(function () {
       printAddProgress(statsAdd, statsScan)
     }, LOG_INTERVAL)
-    printAddProgress(statsAdd, statsScan)
   })
 
   var scanInterval = setInterval(function () {
@@ -160,13 +159,15 @@ function printScanProgress (stats, last) {
 function printAddProgress (statsAdd, statsScan) {
   var msg = ''
   var indent = '  ' // indent for single file info
+  var i = 0
 
-  statsAdd.files.forEach(function (fileStats, index) {
-    var complete = printFileProgress(fileStats, index)
-    if (complete) statsAdd.files.splice(index, 1) // remove from queue
-  })
+  while (statsAdd.files.length > 1) {
+    var complete = printFileProgress(statsAdd.files[i])
+    if (complete) statsAdd.files.shift()
+    else i++
+  }
 
-  function printFileProgress (fileStats, index) {
+  function printFileProgress (fileStats) {
     var complete = (fileStats.stats.bytesTotal === fileStats.stats.bytesRead)
     if (complete) {
       if (msg === '') {
@@ -217,7 +218,7 @@ function printSwarmStatus (stats) {
   if (swarm.peerCount > 0) count = activeCount + '/' + swarm.peerCount
   if ((swarm.downloading || swarm.downloadComplete) && stats.downloaded > 0) {
     msg += 'Downloaded ' + downloadCount + '/' + totalCount + ' files' +
-           ' (' + prettyBytes(stats.downloadRate()) + '/s, ' + prettyBytes(stats.downloaded) + ' total)\n'
+      ' (' + prettyBytes(stats.downloadRate()) + '/s, ' + prettyBytes(stats.downloaded) + ' total)\n'
   }
   if (swarm.downloadComplete) msg += 'Download complete, sharing data. Connected to ' + count + ' sources\n'
   else if (swarm.downloading) msg += 'Connected to ' + count + ' sources\n'
