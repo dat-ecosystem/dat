@@ -14,10 +14,10 @@ try { fs.unlinkSync(path.join(__dirname, 'fixtures', '.DS_Store')) } catch (e) {
 test('prints correct file & directory stats', function (t) {
   var st = spawn(t, dat + ' link ' + datSample + ' --home=' + tmp)
   st.stdout.match(function (output) {
-    var datStats = output.indexOf('Creating New Dat') > -1
+    var datStats = output.indexOf('Creating Dat Link') > -1
     if (!datStats) return false
 
-    var stats = output.split(':')[1]
+    var stats = output.split('(')[1]
     var fileNum = stats.match(/\d+/g)[0]
     var dirNum = stats.match(/\d+/g)[1]
     t.ok(Number(fileNum) === 2, 'file number is 2')

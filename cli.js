@@ -54,9 +54,6 @@ function checkLocation () {
 function runCommand (loc) {
   if (!cmd) return usage('root.txt')
 
-  logger.stdout(chalk.inverse('   Welcome to Dat!   '))
-  logger.log('\n') // newline & break
-
   var db = dat({home: args.home})
 
   if (cmd === 'link') link(loc, db)
@@ -67,9 +64,6 @@ function runCommand (loc) {
 function link (loc, db) {
   var dirs = args._.slice(1)
   if (dirs.length === 0) dirs = loc
-
-  logger.stdout(chalk.dim('Making Dat Link...'))
-  logger.log('') // newline
 
   var statsScan = db.fileStats(dirs, function (err, stats) {
     if (err) throw err
@@ -150,10 +144,10 @@ function startProgressLogging (stats) {
 function printScanProgress (stats, last) {
   var dirCount = stats.directories + 1 // parent folder
   var msg = chalk.bold.blue('Calculating Size: ')
-  if (last) msg = chalk.bold.green('Creating New Dat: ')
-  msg += chalk.bgBlue.white(
-    '[ ' + stats.files + ' files | ' + dirCount + ' folders | ' +
-    (stats.size ? ' ' + prettyBytes(stats.size) + ' total' : '') + ' ]'
+  if (last) msg = chalk.bold.green('Creating Dat Link ')
+  msg += chalk.black(
+    '(' + stats.files + ' files, ' + dirCount + ' folders, ' +
+    (stats.size ? prettyBytes(stats.size) + ' total' : '') + ')'
   )
   logger.stdout(msg)
 }
