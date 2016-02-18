@@ -1,11 +1,15 @@
+var fs = require('fs')
 var os = require('os')
 var path = require('path')
+
 var test = require('tape')
 var spawn = require('./helpers/spawn.js')
-
 var dat = path.resolve(path.join(__dirname, '..', 'cli.js'))
 var tmp = os.tmpdir()
 var datSample = path.join(__dirname, 'fixtures')
+
+// os x adds this if you view the fixtures in finder and breaks the file count assertions
+try { fs.unlinkSync(path.join(__dirname, 'fixtures', '.DS_Store')) } catch (e) { /* ignore error */}
 
 test('prints correct file & directory stats', function (t) {
   var st = spawn(t, dat + ' link ' + datSample + ' --home=' + tmp)
