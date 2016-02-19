@@ -5,6 +5,7 @@ var pump = require('pump')
 var webrtcSwarm = require('webrtc-swarm')
 var signalhub = require('signalhub')
 var series = require('run-series')
+var subLevel = require('subleveldown')
 var discoverySwarm = require('discovery-swarm')
 var debug = require('debug')('dat')
 
@@ -139,10 +140,12 @@ Dat.prototype.joinTcpSwarm = function (opts, cb) {
   var link = opts.link
   link = link.replace('dat://', '').replace('dat:', '')
   var key = new Buffer(link, 'hex')
+  var metaLevel = subLevel(this.level, 'metadata')
 
   this.swarm.once('listening', function () {
     self.swarm.link = link // backwards compat
     self.swarm.add(key)
+    metaLevel.put(link + '-port', self.swarm.address().port)
     cb(null, self.swarm)
   })
 
@@ -151,7 +154,19 @@ Dat.prototype.joinTcpSwarm = function (opts, cb) {
     else throw err
   })
 
-  this.swarm.listen(opts.port || DEFAULT_PORT)
+  metaLevel.get(link + '-port', function (err, value) {
+    if (err) {
+      if (err.notFound) swarmListen() // no old ports
+      else return cb(err)
+    } else {
+      if (!opts.port) opts.port = Number(value)
+      swarmListen()
+    }
+  })
+
+  function swarmListen () {
+    self.swarm.listen(opts.port || DEFAULT_PORT)
+  }
 }
 
 Dat.prototype.close = function (cb) {
