@@ -154,14 +154,12 @@ Dat.prototype.joinTcpSwarm = function (opts, cb) {
     else throw err
   })
 
+  if (opts.port) return swarmListen()
   metaLevel.get(link + '-port', function (err, value) {
-    if (err) {
-      if (err.notFound) swarmListen() // no old ports
-      else return cb(err)
-    } else {
-      if (!opts.port) opts.port = Number(value)
-      swarmListen()
-    }
+    if (err && err.notFound) return swarmListen() // no old port
+    if (err) return cb(err)
+    opts.port = Number(value)
+    swarmListen()
   })
 
   function swarmListen () {
