@@ -36,17 +36,23 @@ module.exports.listEach = function (opts, onEach, cb) {
 
 // `stats` is for rendering progress bars
 module.exports.createDownloadStream = function (archive, stats) {
-  if (!stats) stats = {}
-  stats.files = 0
-  stats.directories = 0
+  if (!stats) stats = {progressStats:{}, files:[]}
+  //stats.files = 0
+  stats.progressStats.directories = 0
 
-  var downloader = through.obj(function (entry, enc, next) {
-    archive.download(entry, function (err) {
+  var downloader = through.obj(function (item, enc, next) {
+    var downloadStats = archive.download(item, function (err) {
       if (err) return next(err)
-      if (entry.type === 'directory') stats.directories++
-      else stats.files++
+      if (item.type === 'directory') stats.progressStats.directories++
+      //else stats.files++
       next()
     })
+    if (item.type === 'file') {
+      stats.files.push({
+        name: item.name,
+        stats: downloadStats
+      })
+    }
   })
   downloader.stats = stats
   return downloader

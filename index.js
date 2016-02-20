@@ -86,7 +86,7 @@ Dat.prototype.addFiles = function (dirs, cb) {
   this.scan(dirs, eachItem, done)
 
   var stats = {
-    totalStats: pack.stats,
+    progressStats: pack.stats,
     files: []
   }
 
@@ -170,7 +170,11 @@ Dat.prototype.download = function (link, dir, cb) {
   var self = this
   if (!cb) cb = function noop () {}
 
-  var stats = {}
+  var stats = {
+    progressStats: {},
+    totalStats: {},
+    files: []
+  }
 
   self.joinTcpSwarm(link, function (err, swarm) {
     if (err) return cb(err)
@@ -182,7 +186,8 @@ Dat.prototype.download = function (link, dir, cb) {
 
     archive.ready(function (err) {
       if (err) return cb(err)
-      swarm.blocks = archive.entries
+      stats.progressStats = archive.stats
+      stats.totalStats.filesTotal = archive.entries
       var download = self.fs.createDownloadStream(archive, stats)
       pump(archive.createEntryStream(), download, function (err) {
         cb(err, swarm)
@@ -190,7 +195,6 @@ Dat.prototype.download = function (link, dir, cb) {
     })
 
     archive.on('file-download', function (entry, data, block) {
-      stats.downloaded += data.length
       stats.downloadRate(data.length)
     })
   })
