@@ -145,7 +145,7 @@ function printScanProgress (stats, last) {
   var dirCount = stats.directories + 1 // parent folder
   var msg = chalk.bold.blue('Calculating Size: ')
   if (last) msg = chalk.bold.green('Creating Dat Link ')
-  msg += chalk.black(
+  msg += chalk.bold(
     '(' + stats.files + ' files, ' + dirCount + ' folders, ' +
     (stats.size ? prettyBytes(stats.size) + ' total' : '') + ')'
   )
