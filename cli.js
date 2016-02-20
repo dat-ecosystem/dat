@@ -186,19 +186,19 @@ function printAddProgress (statsAdd, statsScan) {
     if (filePercent > 0) {
       msg = chalk.bold.gray(indent + '[' + ('   ' + filePercent).slice(-3) + '%] ')
     } else {
-      msg = chalk.bold.gray(indent + '       ')
+      msg = chalk.bold.gray(indent + '       ') // # spaces = '[100%] '
     }
     msg += chalk.blue(fileStats.name)
   }
 
-  var totalPer = Math.floor(100 * (statsAdd.totalStats.bytesRead / statsScan.size))
+  var totalPer = Math.floor(100 * (statsAdd.progressStats.bytesRead / statsScan.size))
   msg += '\n'
   msg += chalk.bold.red('[' + ('  ' + totalPer).slice(-3) + '% ] ')
   msg += chalk.magenta(
     'Adding Files to Dat: ' +
-    statsAdd.totalStats.filesRead + ' of ' + statsScan.files +
+    statsAdd.progressStats.filesRead + ' of ' + statsScan.files +
     chalk.dim(
-      ' (' + prettyBytes(statsAdd.totalStats.bytesRead) +
+      ' (' + prettyBytes(statsAdd.progressStats.bytesRead) +
       ' of ' + prettyBytes(statsScan.size) + ')'
     )
   )
@@ -206,25 +206,39 @@ function printAddProgress (statsAdd, statsScan) {
 }
 
 function printSwarmStatus (stats) {
+  var statusMsg = chalk.bold.magenta('STATUS: ')
   var swarm = stats.swarm
-  if (!swarm) return logger.stdout('Finding data sources...\n')
-  var totalCount = swarm.blocks
-  var downloadCount = stats.files + stats.directories
-  var activeCount = swarm.peersConnected
+  if (!swarm) return logger.stdout(statusMsg + 'Finding data sources...\n')
 
-  var msg = ''
+  var msg = swarm.downloading ? printDownloadProgress(stats) : ''
+  msg += '\n' + statusMsg
+
+  var activeCount = swarm.peersConnected
   var count = '0'
   if (activeCount > 0) count = activeCount + '/' + (swarm.peersConnecting)
-  if ((swarm.downloading || swarm.downloadComplete) && stats.downloaded > 0) {
-    msg += 'Downloaded ' + downloadCount + '/' + totalCount + ' files' +
-      ' (' + prettyBytes(stats.downloadRate()) + '/s, ' + prettyBytes(stats.downloaded) + ' total)\n'
-  }
-
   if (swarm.downloadComplete) msg += 'Download complete, sharing data. Connected to ' + count + ' sources\n'
-  else if (swarm.downloading) msg += 'Connected to ' + count + ' sources\n'
-  else msg += chalk.green('Sharing data on port ' + chalk.bold(swarm.address().port) + ', connected to ' + chalk.bold(count) + ' sources\n')
+  msg += chalk.blue('Connected to ' + count + ' sources\n')
   logger.stdout(msg)
+
+  function printDownloadProgress () {
+    if (!stats.progressStats.bytesDownloaded) return chalk.magenta('Starting...')
+    var indent = '    '
+    var msg = '\n'
+
+    msg += chalk.bold.red('[   ] ')
+    msg += chalk.magenta(
+      'getting files from dat: ' +
+      stats.progressStats.filesDownloaded + ' of ' + stats.totalStats.filesTotal +
+      chalk.dim(
+        ' (' + prettyBytes(stats.progressStats.bytesDownloaded) +
+        ' of ' + '  ' + ') '
+      )
+    )
+    msg += chalk.red(prettyBytes(stats.downloadRate()) + '/s ')
+    return msg
+  }
 }
+
 
 function getLogger () {
   if (args.quiet) {
