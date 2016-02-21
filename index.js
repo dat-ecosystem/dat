@@ -28,6 +28,7 @@ function Dat (opts) {
 
   var discovery = opts.discovery !== false
   this.swarm = discoverySwarm({
+    id: drive.core.id,
     dns: discovery && {server: DEFAULT_DISCOVERY, domain: DAT_DOMAIN},
     dht: discovery,
     stream: function () {

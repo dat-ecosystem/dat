@@ -210,11 +210,12 @@ function printSwarmStatus (stats) {
   if (!swarm) return logger.stdout('Finding data sources...\n')
   var totalCount = swarm.blocks
   var downloadCount = stats.files + stats.directories
-  var activeCount = swarm.peersConnected
+  var activePeers = swarm.connections.length
+  var totalPeers = swarm.connecting + swarm.connections.length
 
   var msg = ''
   var count = '0'
-  if (activeCount > 0) count = activeCount + '/' + (swarm.peersConnecting)
+  if (activePeers > 0) count = activePeers + '/' + totalPeers
   if ((swarm.downloading || swarm.downloadComplete) && stats.downloaded > 0) {
     msg += 'Downloaded ' + downloadCount + '/' + totalCount + ' files' +
       ' (' + prettyBytes(stats.downloadRate()) + '/s, ' + prettyBytes(stats.downloaded) + ' total)\n'
