@@ -12,7 +12,12 @@ var debug = require('debug')('dat')
 module.exports = Dat
 
 var DEFAULT_PORT = 3282
-var DEFAULT_DISCOVERY = ['discovery.publicbits.org', 'discovery.publicbits.org:5300']
+var DEFAULT_DISCOVERY = [
+  'discovery.publicbits.org',
+  'discovery.publicbits.org:5300',
+  'discovery2.publicbits.org:5300'
+]
+
 var DEFAULT_SIGNALHUB = 'https://signalhub.publicbits.org'
 var DAT_DOMAIN = 'dat.local'
 
@@ -28,6 +33,7 @@ function Dat (opts) {
 
   var discovery = opts.discovery !== false
   this.swarm = discoverySwarm({
+    id: drive.core.id,
     dns: discovery && {server: DEFAULT_DISCOVERY, domain: DAT_DOMAIN},
     dht: discovery,
     stream: function () {
@@ -185,7 +191,10 @@ Dat.prototype.download = function (link, dir, cb) {
 
   var stats = {
     progressStats: {},
-    totalStats: {},
+    totalStats: {
+      bytesTotal: 0,
+      filesTotal: 0
+    },
     files: []
   }
 
@@ -193,7 +202,6 @@ Dat.prototype.download = function (link, dir, cb) {
     if (err) return cb(err)
     swarm.downloading = true
     stats.downloadRate = speedometer()
-    stats.downloaded = 0
     stats.swarm = swarm
     var archive = self.drive.get(swarm.link, dir)
 
@@ -202,9 +210,15 @@ Dat.prototype.download = function (link, dir, cb) {
       stats.progressStats = archive.stats
       stats.totalStats.filesTotal = archive.entries
       var download = self.fs.createDownloadStream(archive, stats)
-      pump(archive.createEntryStream(), download, function (err) {
-        cb(err, swarm)
-      })
+      archive.createEntryStream().on('data', function (item) {
+        stats.totalStats.bytesTotal += item.size
+      }).on('end', startDownload)
+
+      function startDownload() {
+        pump(archive.createEntryStream(), download, function (err) {
+          cb(err, swarm)
+        })
+      }
     })
 
     archive.on('file-download', function (entry, data, block) {
