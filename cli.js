@@ -154,7 +154,6 @@ function printScanProgress (stats, last) {
 
 function printAddProgress (statsAdd, statsScan) {
   var msg = ''
-  var indent = '  ' // indent for single file info
   var stats = statsAdd
   // make stats API consistent w/ download stats
   stats.totalStats =  {
@@ -164,37 +163,12 @@ function printAddProgress (statsAdd, statsScan) {
 
   while (true) {
     if (stats.files.length === 0) break
-    var complete = printFileProgress(stats.files[0])
+    var file = stats.files[0]
+    var complete = (file.stats.bytesTotal === file.stats.bytesRead)
+    file.complete = complete
+    msg = getFileProgressMsg(file, msg)
     if (complete) stats.files.shift()
     else break
-  }
-
-  function printFileProgress (fileStats) {
-    var complete = (fileStats.stats.bytesTotal === fileStats.stats.bytesRead)
-    if (complete) {
-      if (msg === '') {
-        // hack to avoid flashing no progress
-        msg += chalk.bold.gray(indent + '[' + 100 + '%] ')
-        msg += chalk.blue(fileStats.name)
-      }
-      logger.stdout(chalk.green.dim(indent + '[Done] ') + chalk.dim(fileStats.name))
-      logger.log('')
-      return true
-    }
-
-    var filePercent = 0
-    if (fileStats.stats.bytesTotal > 0) {
-      filePercent = Math.floor(
-        100 * (fileStats.stats.bytesRead / fileStats.stats.bytesTotal)
-      )
-    }
-    // = to overwrite fake 100% msg
-    if (filePercent > 0) {
-      msg = chalk.bold.gray(indent + '[' + ('   ' + filePercent).slice(-3) + '%] ')
-    } else {
-      msg = chalk.bold.gray(indent + '       ') // # spaces = '[100%] '
-    }
-    msg += chalk.blue(fileStats.name)
   }
 
   msg += getTotalProgressMsg(stats, 'Adding Files to Dat')
@@ -219,8 +193,39 @@ function printSwarmStatus (stats) {
 
   function getDownloadMsg () {
     if (!stats.progressStats.bytesDownloaded) return chalk.magenta('Starting...\n')
-    else return getTotalProgressMsg(stats, 'Downloading Files from Dat')
+    var downMsg = ''
+    downMsg += getTotalProgressMsg(stats, 'Downloading Files from Dat')
+    return downMsg
   }
+}
+
+function getFileProgressMsg (file, msg) {
+  var indent = '  ' // indent for single file info
+  if (file.complete) {
+    if (msg === '') {
+      // hack to avoid flashing no progress
+      msg += chalk.bold.gray(indent + '[' + 100 + '%] ')
+      msg += chalk.blue(file.name) + '\n'
+    }
+    logger.stdout(chalk.green.dim(indent + '[Done] ') + chalk.dim(file.name))
+    logger.log('')
+  }
+  logger.log(file.stats)
+
+  var filePercent = 0
+  if (file.stats.bytesTotal > 0) {
+    filePercent = Math.floor(
+      100 * (file.stats.bytesRead / file.stats.bytesTotal)
+    )
+  }
+  // = to overwrite fake 100% msg
+  if (filePercent > 0) {
+    msg = chalk.bold.gray(indent + '[' + ('   ' + filePercent).slice(-3) + '%] ')
+  } else {
+    msg = chalk.bold.gray(indent + '       ') // # spaces = '[100%] '
+  }
+  msg += chalk.blue(file.name)
+  return msg
 }
 
 function getTotalProgressMsg(stats, statusText, msg) {
@@ -237,7 +242,7 @@ function getTotalProgressMsg(stats, statusText, msg) {
   }
 
   var totalPer = Math.floor(100 * (bytesProgress / stats.totalStats.bytesTotal))
-  if (totalPer > 0) msg += chalk.bold.red('[' + ('  ' + totalPer).slice(-3) + '% ] ')
+  if (totalPer >= 0) msg += chalk.bold.red('[' + ('  ' + totalPer).slice(-3) + '% ] ')
   else msg += '        '
   msg += chalk.magenta(
     statusText + ': ' + fileProgress + ' of ' + stats.totalStats.filesTotal +
