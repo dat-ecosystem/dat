@@ -156,9 +156,9 @@ function printAddProgress (statsAdd, statsScan) {
   var msg = ''
   var stats = statsAdd
   // make stats API consistent w/ download stats
-  stats.totalStats =  {
+  stats.totalStats = {
     bytesTotal: statsScan.size,
-    filesTotal: statsScan.files,
+    filesTotal: statsScan.files
   }
 
   while (true) {
@@ -210,7 +210,6 @@ function getFileProgressMsg (file, msg) {
     logger.stdout(chalk.green.dim(indent + '[Done] ') + chalk.dim(file.name))
     logger.log('')
   }
-  logger.log(file.stats)
 
   var filePercent = 0
   if (file.stats.bytesTotal > 0) {
@@ -228,17 +227,17 @@ function getFileProgressMsg (file, msg) {
   return msg
 }
 
-function getTotalProgressMsg(stats, statusText, msg) {
+function getTotalProgressMsg (stats, statusText, msg) {
   if (!stats) return ''
   if (!msg) msg = ''
   msg += '\n'
 
+  var bytesProgress = stats.progressStats.bytesDownloaded
+  var fileProgress = stats.progressStats.filesDownloaded
+
   if (stats.progressStats.bytesRead > 0) {
-    var bytesProgress = stats.progressStats.bytesRead
-    var fileProgress = stats.progressStats.filesRead
-  } else {
-    var bytesProgress = stats.progressStats.bytesDownloaded
-    var fileProgress = stats.progressStats.filesDownloaded
+    bytesProgress = stats.progressStats.bytesRead
+    fileProgress = stats.progressStats.filesRead
   }
 
   var totalPer = Math.floor(100 * (bytesProgress / stats.totalStats.bytesTotal))

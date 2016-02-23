@@ -214,7 +214,7 @@ Dat.prototype.download = function (link, dir, cb) {
         stats.totalStats.bytesTotal += item.size
       }).on('end', startDownload)
 
-      function startDownload() {
+      function startDownload () {
         pump(archive.createEntryStream(), download, function (err) {
           cb(err, swarm)
         })
