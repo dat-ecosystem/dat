@@ -166,40 +166,44 @@ function printAddProgress (statsAdd, statsScan) {
     var file = stats.files[0]
     var complete = (file.stats.bytesTotal === file.stats.bytesRead)
     file.complete = complete
-    msg = getFileProgressMsg(file, msg)
+    msg = fileProgressMsg(file, msg)
     if (complete) stats.files.shift()
     else break
   }
 
-  msg += getTotalProgressMsg(stats, 'Adding Files to Dat')
+  msg += '\n' + totalProgressMsg(stats, 'Adding Files to Dat')
   logger.stdout(msg)
 }
 
 function printSwarmStatus (stats) {
-  var statusMsg = chalk.bold.blue('STATUS: ')
   var swarm = stats.swarm
-  if (!swarm) return logger.stdout(statusMsg + 'Finding data sources...\n')
+  if (!swarm) return logger.stdout(chalk.bold.blue('STATUS: ') + 'Finding data sources...\n')
 
-  var msg = swarm.downloading ? getDownloadMsg() : ''
-  msg += statusMsg
+  var msg = swarm.downloading ? downloadMsg() : ''
+  if (swarm.downloadComplete) msg = downloadCompleteMsg()
+  msg += chalk.bold.blue('STATUS: ')
 
   var count = '0'
   var activePeers = swarm.connections.length
   var totalPeers = swarm.connecting + swarm.connections.length
+  if (!swarm.downloading) msg += 'Sharing data. '
   if (activePeers > 0) count = activePeers + '/' + totalPeers
-  if (swarm.downloadComplete) msg += 'Download complete, sharing data. Connected to ' + count + ' sources\n'
   msg += chalk.blue('Connected to ' + count + ' sources\n')
   logger.stdout(msg)
 
-  function getDownloadMsg () {
-    if (!stats.progressStats.bytesDownloaded) return chalk.magenta('Starting...\n')
-    var downMsg = ''
-    downMsg += getTotalProgressMsg(stats, 'Downloading Files from Dat')
-    return downMsg
+  function downloadMsg () {
+    if (!stats.progressStats.bytesDownloaded) return chalk.magenta('       Starting...\n')
+    // TODO: add file progress
+    return totalProgressMsg(stats, 'Downloading Files from Dat')
+  }
+
+  function downloadCompleteMsg () {
+    stats.downloadRate = null // Remove download speed display
+    return totalProgressMsg(stats, 'Download Complete')
   }
 }
 
-function getFileProgressMsg (file, msg) {
+function fileProgressMsg (file, msg) {
   var indent = '  ' // indent for single file info
   if (file.complete) {
     if (msg === '') {
@@ -227,10 +231,9 @@ function getFileProgressMsg (file, msg) {
   return msg
 }
 
-function getTotalProgressMsg (stats, statusText, msg) {
+function totalProgressMsg (stats, statusText, msg) {
   if (!stats) return ''
   if (!msg) msg = ''
-  msg += '\n'
 
   var bytesProgress = stats.progressStats.bytesDownloaded
   var fileProgress = stats.progressStats.filesDownloaded
@@ -241,7 +244,7 @@ function getTotalProgressMsg (stats, statusText, msg) {
   }
 
   var totalPer = Math.floor(100 * (bytesProgress / stats.totalStats.bytesTotal))
-  if (totalPer >= 0) msg += chalk.bold.red('[' + ('  ' + totalPer).slice(-3) + '% ] ')
+  if (totalPer >= 0) msg += chalk.bold.red('[' + ('  ' + totalPer).slice(-3) + '%] ')
   else msg += '        '
   msg += chalk.magenta(
     statusText + ': ' + fileProgress + ' of ' + stats.totalStats.filesTotal +
