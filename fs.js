@@ -50,11 +50,8 @@ module.exports.createDownloadStream = function (archive, stats) {
         name: item.name,
         stats: downloadStats
       })
-      downloadStats.on('ready', function() {
+      downloadStats.on('ready', function () {
         stats.progress.bytesRead += downloadStats.bytesInitial
-      })
-      downloadStats.on('end', function() {
-
       })
     }
   })

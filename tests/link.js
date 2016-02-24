@@ -67,7 +67,7 @@ test('connects if link process starts second', function (t) {
 
     cloner.stdout.match(function (output) {
       var str = output.toString()
-      if (relinker && str.indexOf('Download complete') > -1) {
+      if (relinker && str.indexOf('Download Complete') > -1) {
         cloner.kill()
         relinker.kill()
         relinker.end()

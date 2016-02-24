@@ -38,7 +38,7 @@ test('prints out all of the files', function (t) {
     if (!downloadFinished) return false
 
     var fileList = output.split('\n').filter(function (line) {
-      return line.indexOf('[Done]') > -1
+      return line.indexOf('[Done]') > -1 && line.indexOf('Files Read') === -1
     })
     t.ok(fileList.length === 2, 'two files printed done')
 
