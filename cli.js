@@ -69,20 +69,14 @@ function link (loc, db) {
 
   stats.total = db.fileStats(dirs, function (err) {
     if (err) throw err
-    printScanProgress(stats, true)
+    printScanProgress(stats, {done: true})
     clearInterval(scanInterval)
-    logger.log('') // newline
     var statsProgress = db.addFiles(dirs, function (err, link) {
-      printAddProgress(stats)
+      printAddProgress(stats, {done: true})
       clearInterval(addInterval)
       if (err) throw err
       db.joinTcpSwarm({link: link, port: args.port}, function (_err, swarm) {
         // ignore _err
-        logger.stdout('') // clear progress lines
-        logger.log(
-          chalk.green.bold('Your Dat Link: ') +
-          chalk.underline.blue('dat://' + swarm.link)
-        )
         startProgressLogging({swarm: swarm})
       })
     })
@@ -145,110 +139,121 @@ function startProgressLogging (stats) {
   })
 }
 
-function printScanProgress (stats, last) {
+function printScanProgress (stats, opts) {
+  if (!opts) opts = {}
   var dirCount = stats.total.directories + 1 // parent folder
   var msg = chalk.bold.blue('Calculating Size: ')
-  if (last) msg = chalk.bold.green('Creating Dat Link ')
+  if (opts.done) msg = chalk.bold.green('Creating Dat Link ')
   msg += chalk.bold(
     '(' + stats.total.filesTotal + ' files, ' + dirCount + ' folders, ' +
     (stats.total.bytesTotal ? prettyBytes(stats.total.bytesTotal) + ' total' : '') + ')'
   )
   logger.stdout(msg)
+  if (opts.done) logger.log('')
 }
 
-function printAddProgress (stats) {
+function printAddProgress (stats, opts) {
+  if (!opts) opts = {}
+  if (opts.done) {
+    var msg = printFileProgress(stats, {
+      returnMsg: true, message: 'Files Read to Dat'
+    })
+    logger.stdout(msg)
+    logger.log('')
+  } else {
+    printFileProgress(stats, {message: 'Adding Files to Dat'})
+  }
+}
+
+function printSwarmStatus (stats) {
+  var swarm = stats.swarm
+  if (!swarm) return logger.stdout(chalk.bold('[Status]\n') + '  Finding data sources...\n')
+
+  var msg = swarm.downloading ? downloadMsg() : ''
+  if (swarm.downloadComplete) msg = downloadCompleteMsg()
+  msg += chalk.green.bold('Your Dat Link: ') +
+          chalk.underline.blue('dat://' + swarm.link)
+  msg += chalk.bold('\n[Status]\n')
+
+  var count = '0'
+  var activePeers = swarm.connections.length
+  var totalPeers = swarm.connecting + swarm.connections.length
+  if (!swarm.downloading) msg += chalk.blue('  Sharing data\n')
+  else if (swarm.downloading) msg += chalk.blue('  Downloading\n')
+  if (activePeers > 0) count = activePeers + '/' + totalPeers
+  msg += chalk.blue('  Connected to ' + count + ' sources\n')
+  logger.stdout(msg)
+
+  function downloadMsg () {
+    if (!stats.progress.bytesRead) return chalk.magenta('       Starting...\n')
+    return printFileProgress(stats, {
+      returnMsg: true, message: 'Downloading Data'
+    })
+  }
+
+  function downloadCompleteMsg () {
+    stats.downloadRate = null // Remove download speed display
+    return printFileProgress(stats, {
+      returnMsg: true, message: 'Download Complete'
+    })
+  }
+}
+
+function printFileProgress (stats, opts) {
+  if (!opts) opts = {}
+  var totalMsg = opts.message || 'File Progress'
+  var indent = '  ' // indent for single file info
   var msg = ''
 
   while (true) {
     if (stats.fileQueue.length === 0) break
     var file = stats.fileQueue[0]
+    msg = getSingleFileOutput(file)
     var complete = (file.stats.bytesTotal === file.stats.bytesRead)
-    file.complete = complete
-    msg = fileProgressMsg(file, msg)
-    if (complete) stats.fileQueue.shift()
-    else break
-  }
-
-  msg += '\n' + totalProgressMsg(stats, 'Adding Files to Dat')
-  logger.stdout(msg)
-}
-
-function printSwarmStatus (stats) {
-  var swarm = stats.swarm
-  if (!swarm) return logger.stdout(chalk.bold.blue('STATUS: ') + 'Finding data sources...\n')
-
-  var msg = swarm.downloading ? downloadMsg() : ''
-  if (swarm.downloadComplete) msg = downloadCompleteMsg()
-  msg += chalk.bold.blue('STATUS: ')
-
-  var count = '0'
-  var activePeers = swarm.connections.length
-  var totalPeers = swarm.connecting + swarm.connections.length
-  if (!swarm.downloading) msg += 'Sharing data. '
-  if (activePeers > 0) count = activePeers + '/' + totalPeers
-  msg += chalk.blue('Connected to ' + count + ' sources\n')
-  logger.stdout(msg)
-
-  function downloadMsg () {
-    if (!stats.progress.bytesRead) return chalk.magenta('       Starting...\n')
-    // TODO: add file progress
-    var downMsg = ''
-    while (true) {
-      if (stats.fileQueue.length === 0) break
-      var file = stats.fileQueue[0]
-      var complete = (file.stats.bytesTotal === file.stats.bytesRead)
-      file.complete = complete
-      downMsg = fileProgressMsg(file, downMsg)
-      if (complete) stats.fileQueue.shift()
-      else break
-    }
-    downMsg += '\n' + totalProgressMsg(stats, 'Downloading Files from Dat')
-    return downMsg
-  }
-
-  function downloadCompleteMsg () {
-    stats.downloadRate = null // Remove download speed display
-    return totalProgressMsg(stats, 'Download Complete')
-  }
-}
-
-function fileProgressMsg (file, msg) {
-  var indent = '  ' // indent for single file info
-  if (file.complete) {
-    if (msg === '') {
-      // hack to avoid flashing no progress
-      msg += chalk.bold.gray(indent + '[' + 100 + '%] ')
-      msg += chalk.blue(file.name) + '\n'
-    }
+    if (!complete && stats.fileQueue.length === 1) break
+    if (stats.fileQueue.length === 1 && !queueDone) msg = getSingleFileOutput(file)
     logger.stdout(chalk.green.dim(indent + '[Done] ') + chalk.dim(file.name))
     logger.log('')
+    stats.fileQueue.shift()
   }
 
+  var queueDone = (stats.total.bytesTotal <= stats.progress.bytesRead)
+  if (queueDone) msg = ''
+  else msg += '\n'
+
+  msg += getTotalProgressOutput(stats, totalMsg)
+  if (opts.returnMsg) return msg
+  else logger.stdout(msg)
+}
+
+function getSingleFileOutput (file) {
+  var fileMsg = ''
+  var indent = '  ' // indent for single file info
   var filePercent = 0
   if (file.stats.bytesTotal > 0) {
     filePercent = Math.floor(
       100 * (file.stats.bytesRead / file.stats.bytesTotal)
     )
   }
-  // = to overwrite fake 100% msg
-  if (filePercent > 0) {
-    msg = chalk.bold.gray(indent + '[' + ('   ' + filePercent).slice(-3) + '%] ')
+  if (filePercent > 0 && filePercent < 100) {
+    fileMsg = chalk.bold.gray(indent + '[' + ('   ' + filePercent).slice(-3) + '%] ')
   } else {
-    msg = chalk.bold.gray(indent + '       ') // # spaces = '[100%] '
+    fileMsg = chalk.bold.gray(indent + '       ') // # spaces = '[100%] '
   }
-  msg += chalk.blue(file.name)
-  return msg
+  fileMsg += chalk.blue(file.name)
+  return fileMsg
 }
 
-function totalProgressMsg (stats, statusText, msg) {
+function getTotalProgressOutput (stats, statusText, msg) {
   if (!stats) return ''
   if (!msg) msg = ''
 
   var bytesProgress = stats.progress.bytesRead
   var fileProgress = stats.progress.filesRead
-
   var totalPer = Math.floor(100 * (bytesProgress / stats.total.bytesTotal))
-  if (totalPer >= 0) msg += chalk.bold.red('[' + ('  ' + totalPer).slice(-3) + '%] ')
+
+  if (totalPer === 100) msg += chalk.bold.green('[Done] ')
+  else if (totalPer >= 0) msg += chalk.bold.red('[' + ('  ' + totalPer).slice(-3) + '%] ')
   else msg += '        '
   msg += chalk.magenta(
     statusText + ': ' + fileProgress + ' of ' + stats.total.filesTotal +
