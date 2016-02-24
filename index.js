@@ -62,30 +62,30 @@ Dat.prototype.scan = function (dirs, each, done) {
 Dat.prototype.fileStats = function (dirs, cb) {
   this.scan(dirs, eachItem, done)
 
-  var stats = {
-    files: 0,
+  var totalStats = {
+    filesTotal: 0,
     directories: 0,
-    size: 0,
+    bytesTotal: 0,
     latest: null
   }
 
   function eachItem (item, next) {
     if (item.type === 'file') {
-      stats.files++
-      stats.size += item.size
-      if (item.mtime > stats.latest) stats.latest = item.mtime
+      totalStats.filesTotal++
+      totalStats.bytesTotal += item.size
+      if (item.mtime > totalStats.latest) totalStats.latest = item.mtime
     } else if (item.type === 'directory') {
-      stats.directories++
+      totalStats.directories++
     }
     next()
   }
 
   function done (err) {
     if (err) return cb(err)
-    cb(null, stats)
+    cb(null)
   }
 
-  return stats
+  return totalStats
 }
 
 Dat.prototype.addFiles = function (dirs, cb) {
@@ -93,8 +93,8 @@ Dat.prototype.addFiles = function (dirs, cb) {
   this.scan(dirs, eachItem, done)
 
   var stats = {
-    progressStats: pack.stats,
-    files: []
+    'progress': pack.stats,
+    'fileQueue': []
   }
 
   return stats
@@ -104,7 +104,7 @@ Dat.prototype.addFiles = function (dirs, cb) {
     // This could accumulate too many objects if
     // logspeed is high & scanning many files.
     if (item.type === 'file') {
-      stats.files.push({
+      stats.fileQueue.push({
         name: item.name,
         stats: appendStats
       })
@@ -190,12 +190,16 @@ Dat.prototype.download = function (link, dir, cb) {
   if (!cb) cb = function noop () {}
 
   var stats = {
-    progressStats: {},
-    totalStats: {
+    progress: {
+      bytesRead: 0,
+      filesRead: 0,
+      directories: 0
+    },
+    total: {
       bytesTotal: 0,
       filesTotal: 0
     },
-    files: []
+    fileQueue: []
   }
 
   self.joinTcpSwarm(link, function (err, swarm) {
@@ -207,14 +211,13 @@ Dat.prototype.download = function (link, dir, cb) {
 
     archive.ready(function (err) {
       if (err) return cb(err)
-      stats.progressStats = archive.stats
-      stats.totalStats.filesTotal = archive.entries
       var download = self.fs.createDownloadStream(archive, stats)
       archive.createEntryStream().on('data', function (item) {
-        stats.totalStats.bytesTotal += item.size
-      }).on('end', startDownload)
+        stats.total.bytesTotal += item.size
+        if (item.type === 'file') stats.total.filesTotal++
+      }).on('end', downloadStream)
 
-      function startDownload () {
+      function downloadStream () {
         pump(archive.createEntryStream(), download, function (err) {
           cb(err, swarm)
         })
@@ -222,6 +225,7 @@ Dat.prototype.download = function (link, dir, cb) {
     })
 
     archive.on('file-download', function (entry, data, block) {
+      stats.progress.bytesRead += data.length
       stats.downloadRate(data.length)
     })
   })

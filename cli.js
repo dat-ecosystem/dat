@@ -65,13 +65,15 @@ function link (loc, db) {
   var dirs = args._.slice(1)
   if (dirs.length === 0) dirs = loc
 
-  var statsScan = db.fileStats(dirs, function (err, stats) {
+  var stats = {}
+
+  stats.total = db.fileStats(dirs, function (err) {
     if (err) throw err
     printScanProgress(stats, true)
     clearInterval(scanInterval)
     logger.log('') // newline
-    var statsAdd = db.addFiles(dirs, function (err, link) {
-      printAddProgress(statsAdd, statsScan)
+    var statsProgress = db.addFiles(dirs, function (err, link) {
+      printAddProgress(stats)
       clearInterval(addInterval)
       if (err) throw err
       db.joinTcpSwarm({link: link, port: args.port}, function (_err, swarm) {
@@ -84,14 +86,16 @@ function link (loc, db) {
         startProgressLogging({swarm: swarm})
       })
     })
+    stats.progress = statsProgress.progress
+    stats.fileQueue = statsProgress.fileQueue
 
     var addInterval = setInterval(function () {
-      printAddProgress(statsAdd, statsScan)
+      printAddProgress(stats)
     }, LOG_INTERVAL)
   })
 
   var scanInterval = setInterval(function () {
-    printScanProgress(statsScan)
+    printScanProgress(stats)
   }, LOG_INTERVAL)
 }
 
@@ -142,32 +146,26 @@ function startProgressLogging (stats) {
 }
 
 function printScanProgress (stats, last) {
-  var dirCount = stats.directories + 1 // parent folder
+  var dirCount = stats.total.directories + 1 // parent folder
   var msg = chalk.bold.blue('Calculating Size: ')
   if (last) msg = chalk.bold.green('Creating Dat Link ')
   msg += chalk.bold(
-    '(' + stats.files + ' files, ' + dirCount + ' folders, ' +
-    (stats.size ? prettyBytes(stats.size) + ' total' : '') + ')'
+    '(' + stats.total.filesTotal + ' files, ' + dirCount + ' folders, ' +
+    (stats.total.bytesTotal ? prettyBytes(stats.total.bytesTotal) + ' total' : '') + ')'
   )
   logger.stdout(msg)
 }
 
-function printAddProgress (statsAdd, statsScan) {
+function printAddProgress (stats) {
   var msg = ''
-  var stats = statsAdd
-  // make stats API consistent w/ download stats
-  stats.totalStats = {
-    bytesTotal: statsScan.size,
-    filesTotal: statsScan.files
-  }
 
   while (true) {
-    if (stats.files.length === 0) break
-    var file = stats.files[0]
+    if (stats.fileQueue.length === 0) break
+    var file = stats.fileQueue[0]
     var complete = (file.stats.bytesTotal === file.stats.bytesRead)
     file.complete = complete
     msg = fileProgressMsg(file, msg)
-    if (complete) stats.files.shift()
+    if (complete) stats.fileQueue.shift()
     else break
   }
 
@@ -192,9 +190,20 @@ function printSwarmStatus (stats) {
   logger.stdout(msg)
 
   function downloadMsg () {
-    if (!stats.progressStats.bytesDownloaded) return chalk.magenta('       Starting...\n')
+    if (!stats.progress.bytesRead) return chalk.magenta('       Starting...\n')
     // TODO: add file progress
-    return totalProgressMsg(stats, 'Downloading Files from Dat')
+    var downMsg = ''
+    while (true) {
+      if (stats.fileQueue.length === 0) break
+      var file = stats.fileQueue[0]
+      var complete = (file.stats.bytesTotal === file.stats.bytesRead)
+      file.complete = complete
+      downMsg = fileProgressMsg(file, downMsg)
+      if (complete) stats.fileQueue.shift()
+      else break
+    }
+    downMsg += '\n' + totalProgressMsg(stats, 'Downloading Files from Dat')
+    return downMsg
   }
 
   function downloadCompleteMsg () {
@@ -235,22 +244,17 @@ function totalProgressMsg (stats, statusText, msg) {
   if (!stats) return ''
   if (!msg) msg = ''
 
-  var bytesProgress = stats.progressStats.bytesDownloaded
-  var fileProgress = stats.progressStats.filesDownloaded
+  var bytesProgress = stats.progress.bytesRead
+  var fileProgress = stats.progress.filesRead
 
-  if (stats.progressStats.bytesRead > 0) {
-    bytesProgress = stats.progressStats.bytesRead
-    fileProgress = stats.progressStats.filesRead
-  }
-
-  var totalPer = Math.floor(100 * (bytesProgress / stats.totalStats.bytesTotal))
+  var totalPer = Math.floor(100 * (bytesProgress / stats.total.bytesTotal))
   if (totalPer >= 0) msg += chalk.bold.red('[' + ('  ' + totalPer).slice(-3) + '%] ')
   else msg += '        '
   msg += chalk.magenta(
-    statusText + ': ' + fileProgress + ' of ' + stats.totalStats.filesTotal +
+    statusText + ': ' + fileProgress + ' of ' + stats.total.filesTotal +
     chalk.dim(
       ' (' + prettyBytes(bytesProgress) +
-      ' of ' + prettyBytes(stats.totalStats.bytesTotal) + ') '
+      ' of ' + prettyBytes(stats.total.bytesTotal) + ') '
     )
   )
   if (stats.downloadRate) msg += chalk.red(prettyBytes(stats.downloadRate()) + '/s ')
