@@ -129,25 +129,13 @@ function startProgressLogging (stats) {
     printSwarmStatus(stats)
   }, LOG_INTERVAL)
   printSwarmStatus(stats)
-
-  process.on('SIGINT', function () {
-    process.exit(1)
-    setTimeout(function () {
-      // sigterm if it is still running
-      process.kill(process.pid)
-    }, 2000)
-  })
 }
 
 function printScanProgress (stats, opts) {
   if (!opts) opts = {}
-  var dirCount = stats.total.directories + 1 // parent folder
-  var msg = chalk.bold.blue('Calculating Size: ')
-  if (opts.done) msg = chalk.bold.green('Creating Dat Link ')
-  msg += chalk.bold(
-    '(' + stats.total.filesTotal + ' files, ' + dirCount + ' folders, ' +
-    (stats.total.bytesTotal ? prettyBytes(stats.total.bytesTotal) + ' total' : '') + ')'
-  )
+  var statusText = chalk.bold.blue('Calculating Size')
+  if (opts.done) statusText = chalk.bold.green('Creating Dat Link')
+  var msg = getScanOutput(stats, statusText)
   logger.stdout(msg)
   if (opts.done) logger.log('')
 }
@@ -167,36 +155,63 @@ function printAddProgress (stats, opts) {
 
 function printSwarmStatus (stats) {
   var swarm = stats.swarm
-  if (!swarm) return logger.stdout(chalk.bold('[Status]\n') + '  Finding data sources...\n')
+  if (!swarm) return logger.stdout('Finding data sources...\n')
+
+  if (swarm.hasMetadata && swarm.gettingMetadata) {
+    // Print final metadata output
+    var scanMsg = ''
+    swarm.gettingMetadata = false
+    scanMsg = getScanOutput(stats, chalk.bold.green('Downloading Data'))
+    logger.stdout(scanMsg)
+    logger.log('')
+  }
 
   var msg = swarm.downloading ? downloadMsg() : ''
   if (swarm.downloadComplete) msg = downloadCompleteMsg()
-  msg += chalk.green.bold('Your Dat Link: ') +
-          chalk.underline.blue('dat://' + swarm.link)
-  msg += chalk.bold('\n[Status]\n')
 
   var count = '0'
   var activePeers = swarm.connections.length
   var totalPeers = swarm.connecting + swarm.connections.length
-  if (!swarm.downloading) msg += chalk.blue('  Sharing data\n')
-  else if (swarm.downloading) msg += chalk.blue('  Downloading\n')
   if (activePeers > 0) count = activePeers + '/' + totalPeers
-  msg += chalk.blue('  Connected to ' + count + ' sources\n')
+  msg += chalk.bold('[Status] ') + 'Connected to ' + chalk.bold(count) + ' sources\n'
+
+  if (!swarm.downloading) msg += chalk.bold('[Sharing] ')
+  else if (swarm.downloading) msg += chalk.bold('[Downloading] ')
+  msg += chalk.underline.blue('dat://' + swarm.link)
+
   logger.stdout(msg)
 
   function downloadMsg () {
-    if (!stats.progress.bytesRead) return chalk.magenta('       Starting...\n')
+    if (!stats.total.bytesTotal) return chalk.bold('Connecting...\n')
+    if (swarm.gettingMetadata && !swarm.hasMetadata) {
+      return getScanOutput(stats, chalk.bold.blue('Getting Metadata')) + '\n'
+    }
     return printFileProgress(stats, {
       returnMsg: true, message: 'Downloading Data'
     })
   }
 
   function downloadCompleteMsg () {
-    stats.downloadRate = null // Remove download speed display
-    return printFileProgress(stats, {
-      returnMsg: true, message: 'Download Complete'
+    var outMsg = printFileProgress(stats, {
+      returnMsg: true, showFilesOnly: true
     })
+    outMsg += chalk.green.bold('[Done] ')
+    outMsg += chalk.magenta(
+      'Downloaded ' + prettyBytes(stats.progress.bytesRead) + ' '
+    )
+    if (stats.parentFolder) outMsg += chalk.magenta('to ') + chalk.magenta.bold(stats.parentFolder)
+    outMsg += '\n'
+    return outMsg
   }
+}
+
+function getScanOutput (stats, statusMsg) {
+  if (!statusMsg) statusMsg = chalk.bold.green('Scan Progress')
+  var dirCount = stats.total.directories + 1 // parent folder
+  return statusMsg + ' ' + chalk.bold(
+    '(' + stats.total.filesTotal + ' files, ' + dirCount + ' folders, ' +
+    (stats.total.bytesTotal ? prettyBytes(stats.total.bytesTotal) + ' total' : '') + ')'
+  )
 }
 
 function printFileProgress (stats, opts) {
@@ -220,6 +235,8 @@ function printFileProgress (stats, opts) {
   var queueDone = (stats.total.bytesTotal <= stats.progress.bytesRead)
   if (queueDone) msg = ''
   else msg += '\n'
+
+  if (opts.showFilesOnly && opts.returnMsg) return msg
 
   msg += getTotalProgressOutput(stats, totalMsg)
   if (opts.returnMsg) return msg

@@ -1,7 +1,9 @@
+var path = require('path')
 var collect = require('collect-stream')
 var hyperdrive = require('hyperdrive')
 var speedometer = require('speedometer')
 var pump = require('pump')
+var through = require('through2')
 var webrtcSwarm = require('webrtc-swarm')
 var signalhub = require('signalhub')
 var series = require('run-series')
@@ -192,12 +194,12 @@ Dat.prototype.download = function (link, dir, cb) {
   var stats = {
     progress: {
       bytesRead: 0,
-      filesRead: 0,
-      directories: 0
+      filesRead: 0
     },
     total: {
       bytesTotal: 0,
-      filesTotal: 0
+      filesTotal: 0,
+      directories: 0
     },
     fileQueue: []
   }
@@ -211,11 +213,24 @@ Dat.prototype.download = function (link, dir, cb) {
 
     archive.ready(function (err) {
       if (err) return cb(err)
+      swarm.gettingMetadata = true
       var download = self.fs.createDownloadStream(archive, stats)
-      archive.createEntryStream().on('data', function (item) {
+      var counter = through.obj(function (item, enc, next) {
+        if (typeof stats.parentFolder === 'undefined') {
+          var segments = item.name.split(path.sep)
+          if (segments.length === 1 && item.type === 'file') stats.parentFolder = false
+          else stats.parentFolder = segments[0]
+        }
         stats.total.bytesTotal += item.size
         if (item.type === 'file') stats.total.filesTotal++
-      }).on('end', downloadStream)
+        else stats.total.directories++
+        next(null)
+      })
+      pump(archive.createEntryStream(), counter, function (err) {
+        if (err) return cb(err)
+        swarm.hasMetadata = true
+        downloadStream()
+      })
 
       function downloadStream () {
         pump(archive.createEntryStream(), download, function (err) {
