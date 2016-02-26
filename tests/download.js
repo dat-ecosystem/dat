@@ -1,10 +1,14 @@
 var os = require('os')
 var path = require('path')
 var test = require('tape')
+var rimraf = require('rimraf')
+var mkdirp = require('mkdirp')
 var spawn = require('./helpers/spawn.js')
 
 var dat = path.resolve(path.join(__dirname, '..', 'cli.js'))
 var tmp = os.tmpdir()
+
+var datFixtures = path.join(__dirname, 'fixtures')
 
 test('errors with non 64 character hashes', function (t) {
   var st = spawn(t, dat + ' pizza --home=' + tmp)
@@ -42,4 +46,81 @@ test('does not error with 64 character link with dat:// in front', function (t) 
     }
   })
   st.end()
+})
+
+test('download shows folder name on completion', function (t) {
+  var link
+  var tmpdir = tmp + '/dat-download-folder-test'
+  rimraf.sync(tmpdir)
+  var datFolderName = 'dat1'
+  var dat1 = tmpdir + '/' + datFolderName
+  var dat2 = tmpdir + '/dat2'
+  mkdirp.sync(dat1)
+  mkdirp.sync(dat2)
+
+  var linkCmd = dat + ' link --home=' + tmp + ' --path=' + dat1
+  var linker = spawn(t, linkCmd, {end: false})
+  linker.stderr.empty()
+  linker.stdout.match(function (output) {
+    var matches = output.match(/dat\:\/\/[A-Za-z0-9]+/)
+    if (!matches) return false
+    link = matches[0]
+    startDownloader()
+    return true
+  })
+
+  function startDownloader () {
+    var downloader = spawn(t, dat + ' ' + link + ' --home=' + tmp + ' --path=' + dat2, {end: false})
+    downloader.stdout.match(function (output) {
+      var contains = output.indexOf('Downloaded') > -1
+      if (!contains || !linker) return false
+      t.ok(output.toString().indexOf(datFolderName) > -1, 'contains folder name')
+      downloader.kill()
+      linker.kill()
+      return true
+    })
+    downloader.end(function () {
+      t.end()
+    })
+  }
+})
+
+test('download metadata is correct', function (t) {
+  var link
+  var tmpdir = tmp + '/dat-download-folder-test'
+  rimraf.sync(tmpdir)
+  var dat1 = tmpdir + '/dat2'
+  mkdirp.sync(dat1)
+
+  var linkCmd = dat + ' link --home=' + tmp + ' --path=' + datFixtures
+  var linker = spawn(t, linkCmd, {end: false})
+  linker.stderr.empty()
+  linker.stdout.match(function (output) {
+    var matches = output.match(/dat\:\/\/[A-Za-z0-9]+/)
+    if (!matches) return false
+    link = matches[0]
+    startDownloader()
+    return true
+  })
+
+  function startDownloader () {
+    var downloader = spawn(t, dat + ' ' + link + ' --home=' + tmp + ' --path=' + dat1, {end: false})
+    downloader.stdout.match(function (output) {
+      var contains = output.indexOf('Downloading Data') > -1
+      if (!contains || !linker) return false
+
+      var stats = output.split('(')[1]
+      var fileNum = stats.match(/\d+/g)[0]
+      var dirNum = stats.match(/\d+/g)[1]
+      t.ok(Number(fileNum) === 2, 'file number is 2')
+      t.ok(Number(dirNum) === 3, 'directory number is 3')
+
+      downloader.kill()
+      linker.kill()
+      return true
+    })
+    downloader.end(function () {
+      t.end()
+    })
+  }
 })

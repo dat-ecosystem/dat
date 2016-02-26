@@ -34,11 +34,11 @@ test('prints correct file & directory stats', function (t) {
 test('prints out all of the files', function (t) {
   var st = spawn(t, dat + ' link ' + datSample + ' --home=' + tmp)
   st.stdout.match(function (output) {
-    var downloadFinished = output.indexOf('Your Dat Link') > -1
+    var downloadFinished = output.indexOf('dat://') > -1
     if (!downloadFinished) return false
 
     var fileList = output.split('\n').filter(function (line) {
-      return line.indexOf('[Done]') > -1
+      return line.indexOf('[Done]') > -1 && line.indexOf('Files Read') === -1
     })
     t.ok(fileList.length === 2, 'two files printed done')
 

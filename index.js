@@ -1,7 +1,9 @@
+var path = require('path')
 var collect = require('collect-stream')
 var hyperdrive = require('hyperdrive')
 var speedometer = require('speedometer')
 var pump = require('pump')
+var through = require('through2')
 var webrtcSwarm = require('webrtc-swarm')
 var signalhub = require('signalhub')
 var series = require('run-series')
@@ -62,30 +64,30 @@ Dat.prototype.scan = function (dirs, each, done) {
 Dat.prototype.fileStats = function (dirs, cb) {
   this.scan(dirs, eachItem, done)
 
-  var stats = {
-    files: 0,
+  var totalStats = {
+    filesTotal: 0,
     directories: 0,
-    size: 0,
+    bytesTotal: 0,
     latest: null
   }
 
   function eachItem (item, next) {
     if (item.type === 'file') {
-      stats.files++
-      stats.size += item.size
-      if (item.mtime > stats.latest) stats.latest = item.mtime
+      totalStats.filesTotal++
+      totalStats.bytesTotal += item.size
+      if (item.mtime > totalStats.latest) totalStats.latest = item.mtime
     } else if (item.type === 'directory') {
-      stats.directories++
+      totalStats.directories++
     }
     next()
   }
 
   function done (err) {
     if (err) return cb(err)
-    cb(null, stats)
+    cb(null)
   }
 
-  return stats
+  return totalStats
 }
 
 Dat.prototype.addFiles = function (dirs, cb) {
@@ -93,8 +95,8 @@ Dat.prototype.addFiles = function (dirs, cb) {
   this.scan(dirs, eachItem, done)
 
   var stats = {
-    totalStats: pack.stats,
-    files: []
+    'progress': pack.stats,
+    'fileQueue': []
   }
 
   return stats
@@ -104,7 +106,7 @@ Dat.prototype.addFiles = function (dirs, cb) {
     // This could accumulate too many objects if
     // logspeed is high & scanning many files.
     if (item.type === 'file') {
-      stats.files.push({
+      stats.fileQueue.push({
         name: item.name,
         stats: appendStats
       })
@@ -189,27 +191,56 @@ Dat.prototype.download = function (link, dir, cb) {
   var self = this
   if (!cb) cb = function noop () {}
 
-  var stats = {}
+  var stats = {
+    progress: {
+      bytesRead: 0,
+      filesRead: 0
+    },
+    total: {
+      bytesTotal: 0,
+      filesTotal: 0,
+      directories: 0
+    },
+    fileQueue: []
+  }
 
   self.joinTcpSwarm(link, function (err, swarm) {
     if (err) return cb(err)
     swarm.downloading = true
     stats.downloadRate = speedometer()
-    stats.downloaded = 0
     stats.swarm = swarm
     var archive = self.drive.get(swarm.link, dir)
 
     archive.ready(function (err) {
       if (err) return cb(err)
-      swarm.blocks = archive.entries
+      swarm.gettingMetadata = true
       var download = self.fs.createDownloadStream(archive, stats)
-      pump(archive.createEntryStream(), download, function (err) {
-        cb(err, swarm)
+      var counter = through.obj(function (item, enc, next) {
+        if (typeof stats.parentFolder === 'undefined') {
+          var segments = item.name.split(path.sep)
+          if (segments.length === 1 && item.type === 'file') stats.parentFolder = false
+          else stats.parentFolder = segments[0]
+        }
+        stats.total.bytesTotal += item.size
+        if (item.type === 'file') stats.total.filesTotal++
+        else stats.total.directories++
+        next(null)
       })
+      pump(archive.createEntryStream(), counter, function (err) {
+        if (err) return cb(err)
+        swarm.hasMetadata = true
+        downloadStream()
+      })
+
+      function downloadStream () {
+        pump(archive.createEntryStream(), download, function (err) {
+          cb(err, swarm)
+        })
+      }
     })
 
     archive.on('file-download', function (entry, data, block) {
-      stats.downloaded += data.length
+      stats.progress.bytesRead += data.length
       stats.downloadRate(data.length)
     })
   })
