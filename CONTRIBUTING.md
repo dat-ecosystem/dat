@@ -8,6 +8,18 @@ Before taking the time to code something, feel free to open an issue first propo
 
 For any new functionality we like to see unit tests added as well so that we can catch regressions in the future in case something else breaks your fix.
 
+## For Collaborators
+
+Make sure to get a `:thumbsup:`, `+1` or `LGTM` from another collaborator before merging a PR.
+
+Release process:
+
+- if you aren't sure if a release should happen, open an issue
+- make sure the tests pass
+- `npm version <major|minor|patch>`
+- `git push && git push --tags` (or `git push` with `git config --global push.followTags true` on latest git)
+- `npm publish`
+
 ## Development workflow
 
 We use and write a lot of node modules and it introduces a bit of a learning curve when working on multiple modules simultaneously. There are lots of different and valid solutions to working on lots of modules at once, this is just one way.
