@@ -42,6 +42,7 @@ function Dat (opts) {
       return drive.createPeerStream()
     }
   })
+  this._listening = false
 }
 
 Dat.prototype.scan = function (dirs, each, done) {
@@ -171,7 +172,12 @@ Dat.prototype.joinTcpSwarm = function (opts, cb) {
   })
 
   function swarmListen () {
-    self.swarm.listen(opts.port || DEFAULT_PORT)
+    if (!self._listening) {
+      self._listening = true
+      self.swarm.listen(opts.port || DEFAULT_PORT)
+    } else {
+      cb(null, self.swarm)
+    }
   }
 }
 
