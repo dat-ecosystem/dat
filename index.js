@@ -193,8 +193,10 @@ Dat.prototype.metadata = function (link, cb) {
 }
 
 // returns object that is used to render progress bars
-Dat.prototype.download = function (link, dir, cb) {
+Dat.prototype.download = function (link, dir, opts, cb) {
   var self = this
+  if ((typeof opts) === 'function') return this.download(link, dir, {}, opts)
+  if (!opts) opts = {}
   if (!cb) cb = function noop () {}
 
   var stats = {
@@ -220,7 +222,7 @@ Dat.prototype.download = function (link, dir, cb) {
     archive.ready(function (err) {
       if (err) return cb(err)
       swarm.gettingMetadata = true
-      var download = self.fs.createDownloadStream(archive, stats)
+      var download = self.fs.createDownloadStream(archive, stats, opts)
       var counter = through.obj(function (item, enc, next) {
         if (typeof stats.parentFolder === 'undefined') {
           var segments = item.name.split(path.sep)

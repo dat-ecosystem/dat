@@ -112,11 +112,19 @@ function download (loc, db) {
   var hash = args._[0]
   if (!hash) return usage('root.txt')
   hash = hash.trim().replace('dat://', '').replace('dat:', '')
+  var opts = {}
+  var parts = hash.split(':')
+  hash = parts[0]
+  if (parts.length > 0) {
+    var selections = parts[parts.length - 1].split(',')
+    opts.files = []
+    for (var i = 0; i < selections.length; i++) opts.files.push(selections[i])
+  }
   if (hash.length !== 64) {
     logger.error('Error: Invalid dat link\n')
     return usage('root.txt')
   }
-  var downloadStats = db.download(hash, loc, function (err, swarm) {
+  var downloadStats = db.download(hash, loc, opts, function (err, swarm) {
     if (err) throw err
     swarm.downloading = false
     swarm.downloadComplete = true
