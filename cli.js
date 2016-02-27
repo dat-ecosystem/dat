@@ -134,7 +134,7 @@ function startProgressLogging (stats) {
 function printScanProgress (stats, opts) {
   if (!opts) opts = {}
   var statusText = chalk.bold.blue('Calculating Size')
-  if (opts.done) statusText = chalk.bold.green('Creating Dat Link')
+  if (opts.done) statusText = chalk.bold.dim('Creating Dat Link')
   var msg = getScanOutput(stats, statusText)
   logger.stdout(msg)
   if (opts.done) logger.log('')
@@ -217,7 +217,6 @@ function getScanOutput (stats, statusMsg) {
 function printFileProgress (stats, opts) {
   if (!opts) opts = {}
   var totalMsg = opts.message || 'File Progress'
-  var indent = '  ' // indent for single file info
   var msg = ''
 
   while (true) {
@@ -227,7 +226,7 @@ function printFileProgress (stats, opts) {
     var complete = (file.stats.bytesTotal === file.stats.bytesRead)
     if (!complete && stats.fileQueue.length === 1) break
     if (stats.fileQueue.length === 1 && !queueDone) msg = getSingleFileOutput(file)
-    logger.stdout(chalk.green.dim(indent + '[Done] ') + chalk.dim(file.name))
+    logger.stdout(chalk.green.dim('[Done] ') + chalk.dim(file.name))
     logger.log('')
     stats.fileQueue.shift()
   }
@@ -272,7 +271,7 @@ function getTotalProgressOutput (stats, statusText, msg) {
   if (totalPer === 100) msg += chalk.bold.green('[Done] ')
   else if (totalPer >= 0) msg += chalk.bold.red('[' + ('  ' + totalPer).slice(-3) + '%] ')
   else msg += '        '
-  msg += chalk.magenta(
+  msg += chalk.dim(
     statusText + ': ' + fileProgress + ' of ' + stats.total.filesTotal +
     chalk.dim(
       ' (' + prettyBytes(bytesProgress) +
