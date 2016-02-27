@@ -91,6 +91,25 @@ Dat.prototype.fileStats = function (dirs, cb) {
   return totalStats
 }
 
+Dat.prototype.metadata = function (link, cb) {
+  var self = this
+  var archive = self.drive.get(link)
+  var stream = archive.createEntryStream()
+
+  var res = {
+    size: 0
+  }
+
+  stream.on('data', function (entry) {
+    res.size += entry.size
+  })
+
+  stream.on('error', cb)
+  stream.on('end', function () {
+    cb(null, res)
+  })
+}
+
 Dat.prototype.addFiles = function (dirs, cb) {
   var pack = this.drive.add('.')
   this.scan(dirs, eachItem, done)
