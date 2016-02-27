@@ -15,7 +15,7 @@ if (args.debug) {
 }
 
 if (args.version) {
-  var pkg = require(__dirname + '/package.json')
+  var pkg = require('./package.json')
   console.log(pkg.version)
   process.exit(0)
 }
