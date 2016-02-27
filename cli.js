@@ -162,7 +162,7 @@ function printSwarmStatus (stats) {
     // Print final metadata output
     var scanMsg = ''
     swarm.gettingMetadata = false
-    scanMsg = getScanOutput(stats, chalk.bold.green('Downloading Data'))
+    scanMsg = getScanOutput(stats, chalk.bold.dim('Downloading Data'))
     logger.stdout(scanMsg)
     logger.log('')
   }
@@ -196,11 +196,11 @@ function printSwarmStatus (stats) {
     var outMsg = printFileProgress(stats, {
       returnMsg: true, showFilesOnly: true
     })
-    outMsg += chalk.green.bold('[Done] ')
-    outMsg += chalk.magenta(
+    outMsg += chalk.bold.green('[Done] ')
+    outMsg += chalk.bold(
       'Downloaded ' + prettyBytes(stats.progress.bytesRead) + ' '
     )
-    if (stats.parentFolder) outMsg += chalk.magenta('to ') + chalk.magenta.bold(stats.parentFolder)
+    if (stats.parentFolder) outMsg += chalk.bold('to ') + chalk.bold(stats.parentFolder)
     outMsg += '\n'
     return outMsg
   }
@@ -227,7 +227,7 @@ function printFileProgress (stats, opts) {
     var complete = (file.stats.bytesTotal === file.stats.bytesRead)
     if (!complete && stats.fileQueue.length === 1) break
     if (stats.fileQueue.length === 1 && !queueDone) msg = getSingleFileOutput(file)
-    logger.stdout(chalk.green.dim('[Done] ') + chalk.dim(file.name))
+    logger.stdout(chalk.dim.green('[Done] ') + chalk.dim(file.name))
     logger.log('')
     stats.fileQueue.shift()
   }
@@ -245,7 +245,6 @@ function printFileProgress (stats, opts) {
 
 function getSingleFileOutput (file) {
   var fileMsg = ''
-  var indent = '  ' // indent for single file info
   var filePercent = 0
   if (file.stats.bytesTotal > 0) {
     filePercent = Math.floor(
@@ -253,9 +252,9 @@ function getSingleFileOutput (file) {
     )
   }
   if (filePercent > 0 && filePercent < 100) {
-    fileMsg = chalk.bold.gray(indent + '[' + ('   ' + filePercent).slice(-3) + '%] ')
+    fileMsg = chalk.bold.blue('[' + ('   ' + filePercent).slice(-3) + '%] ')
   } else {
-    fileMsg = chalk.bold.gray(indent + '       ') // # spaces = '[100%] '
+    fileMsg = chalk.bold.gray('       ') // # spaces = '[100%] '
   }
   fileMsg += chalk.blue(file.name)
   return fileMsg
@@ -270,7 +269,7 @@ function getTotalProgressOutput (stats, statusText, msg) {
   var totalPer = Math.floor(100 * (bytesProgress / stats.total.bytesTotal))
 
   if (totalPer === 100) msg += chalk.bold.green('[Done] ')
-  else if (totalPer >= 0) msg += chalk.bold.red('[' + ('  ' + totalPer).slice(-3) + '%] ')
+  else if (totalPer >= 0) msg += chalk.bold.dim('[' + ('  ' + totalPer).slice(-3) + '%] ')
   else msg += '        '
   msg += chalk.dim(
     statusText + ': ' + fileProgress + ' of ' + stats.total.filesTotal +
@@ -279,7 +278,7 @@ function getTotalProgressOutput (stats, statusText, msg) {
       ' of ' + prettyBytes(stats.total.bytesTotal) + ') '
     )
   )
-  if (stats.downloadRate) msg += chalk.red(prettyBytes(stats.downloadRate()) + '/s ')
+  if (stats.downloadRate) msg += chalk.dim(prettyBytes(stats.downloadRate()) + '/s ')
   msg += '\n'
   return msg
 }
