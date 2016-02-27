@@ -44,10 +44,11 @@ function checkLocation () {
   loc = args.path
   fs.exists(loc, function (exists) {
     if (!exists) {
-      logger.error('Does not exist:', loc)
-      return usage('root.txt')
+      fs.mkdir(loc, function () {
+        runCommand(loc)
+      })
     }
-    runCommand(loc)
+    return runCommand(loc)
   })
 }
 
