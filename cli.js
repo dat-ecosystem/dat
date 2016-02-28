@@ -80,7 +80,7 @@ function runDoctor () {
       if (!me.port) console.log('Looks like you are behind a symmetric nat. Try enabling upnp.')
       else console.log('Looks like you can accept incoming p2p connections.')
       client.destroy()
-      sw.add(id)
+      sw.join(id)
       sw.on('connection', function (connection) {
         var data = crypto.randomBytes(16).toString('hex')
         console.log('[%s] Connection established to remote peer', data)
