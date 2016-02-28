@@ -27,6 +27,7 @@
     "collect-stream": "^1.1.1",
     "debug": "^2.2.0",
     "discovery-swarm": "^2.1.0",
+    "dns-discovery": "^5.3.1",
     "folder-walker": "^1.3.0",
     "home-dir": "^1.0.0",
     "hyperdrive": "^3.3.0",

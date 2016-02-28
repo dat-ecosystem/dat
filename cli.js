@@ -23,6 +23,7 @@ if (args.version) {
 var fs = require('fs')
 var singleLineLog = require('single-line-log')
 var prettyBytes = require('pretty-bytes')
+var dns = require('dns-discovery')
 var chalk = require('chalk')
 var dat = require('./index.js')
 var usage = require('./usage')
@@ -52,7 +53,23 @@ function checkLocation () {
   })
 }
 
+function runDoctor () {
+  var client = dns({
+    servers: dat.DNS_SERVERS
+  })
+
+  client.whoami(function (err, me) {
+    if (err) return console.error('Could not detect public ip / port')
+    console.log('Public IP: ' + me.host)
+    console.log('Your public port was ' + (me.port ? 'consistent' : 'inconsistent') + ' across remote multiple hosts')
+    if (!me.port) console.log('Looks like you are behind a symmetric nat. Try enabling upnp.')
+    else console.log('Looks like you can accept incoming p2p connections.')
+    client.destroy()
+  })
+}
+
 function runCommand (loc) {
+  if (args.doctor) return runDoctor()
   if (!cmd) return usage('root.txt')
 
   var db = dat({home: args.home})

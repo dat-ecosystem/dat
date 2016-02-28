@@ -44,6 +44,8 @@ function Dat (opts) {
   this._listening = false
 }
 
+Dat.DNS_SERVERS = DEFAULT_DISCOVERY
+
 Dat.prototype.scan = function (dirs, each, done) {
   var self = this
 
