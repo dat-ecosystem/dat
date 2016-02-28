@@ -173,7 +173,7 @@ Dat.prototype.joinTcpSwarm = function (opts, cb) {
 
   this.swarm.once('listening', function () {
     self.swarm.link = link // backwards compat
-    self.swarm.add(key)
+    self.swarm.join(key)
     metaLevel.put(link + '-port', self.swarm.address().port)
     cb(null, self.swarm)
   })
