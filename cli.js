@@ -24,7 +24,10 @@ var fs = require('fs')
 var singleLineLog = require('single-line-log')
 var prettyBytes = require('pretty-bytes')
 var dns = require('dns-discovery')
+var swarm = require('discovery-swarm')
 var chalk = require('chalk')
+var crypto = require('crypto')
+var pump = require('pump')
 var dat = require('./index.js')
 var usage = require('./usage')
 
@@ -58,13 +61,51 @@ function runDoctor () {
     servers: dat.DNS_SERVERS
   })
 
-  client.whoami(function (err, me) {
-    if (err) return console.error('Could not detect public ip / port')
-    console.log('Public IP: ' + me.host)
-    console.log('Your public port was ' + (me.port ? 'consistent' : 'inconsistent') + ' across remote multiple hosts')
-    if (!me.port) console.log('Looks like you are behind a symmetric nat. Try enabling upnp.')
-    else console.log('Looks like you can accept incoming p2p connections.')
-    client.destroy()
+  var id = typeof args.doctor === 'string' ? args.doctor : crypto.randomBytes(32).toString('hex')
+  var sw = swarm({
+    dns: {
+      servers: dat.DNS_SERVERS
+    }
+  })
+
+  sw.on('error', function () {
+    sw.listen(0)
+  })
+  sw.listen(3282)
+  sw.on('listening', function () {
+    client.whoami(function (err, me) {
+      if (err) return console.error('Could not detect public ip / port')
+      console.log('Public IP: ' + me.host)
+      console.log('Your public port was ' + (me.port ? 'consistent' : 'inconsistent') + ' across remote multiple hosts')
+      if (!me.port) console.log('Looks like you are behind a symmetric nat. Try enabling upnp.')
+      else console.log('Looks like you can accept incoming p2p connections.')
+      client.destroy()
+      sw.add(id)
+      sw.on('connection', function (connection) {
+        var data = crypto.randomBytes(16).toString('hex')
+        console.log('[%s] Connection established to remote peer', data)
+        var buf = ''
+        connection.setEncoding('utf-8')
+        connection.write(data)
+        connection.on('data', function (remote) {
+          buf += remote
+          if (buf.length === data.length) {
+            console.log('[%s] Remote peer echoed expected data back', data)
+          }
+        })
+        pump(connection, connection, function () {
+          console.log('[%s] Connected closed', data)
+        })
+      })
+
+      console.log('')
+      console.log('To test p2p connectivity ppen another client on another computer and run:')
+      console.log('')
+      console.log('  dat --doctor=' + id)
+      console.log('')
+      console.log('Waiting for incoming connections... (local port: %d)', sw.address().port)
+      console.log('')
+    })
   })
 }
 
