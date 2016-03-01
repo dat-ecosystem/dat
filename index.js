@@ -1,11 +1,12 @@
 var path = require('path')
+var walker = require('folder-walker')
 var hyperdrive = require('hyperdrive')
 var speedometer = require('speedometer')
 var pump = require('pump')
+var each = require('stream-each')
 var through = require('through2')
 var webrtcSwarm = require('webrtc-swarm')
 var signalhub = require('signalhub')
-var series = require('run-series')
 var subLevel = require('subleveldown')
 var discoverySwarm = require('discovery-swarm')
 var debug = require('debug')('dat')
@@ -45,21 +46,34 @@ function Dat (opts) {
 
 Dat.DNS_SERVERS = DEFAULT_DISCOVERY
 
-Dat.prototype.scan = function (dirs, each, done) {
-  var self = this
+Dat.prototype.scan = function (dirs, onEach, cb) {
+  var stream = walker(dirs, {filter: function (data) {
+    if (path.basename(data) === '.dat') return false
+    return true
+  }})
 
-  if (!Array.isArray(dirs)) dirs = [dirs]
-
-  var tasks = dirs.map(function (dir) {
-    return function (cb) {
-      self.fs.listEach({dir: dir}, each, cb)
+  each(stream, function (data, next) {
+    var prefix = path.resolve(data.filepath) !== path.resolve(data.root)
+    var dirname = path.basename(data.root)
+    var item = {
+      name: prefix ? path.join(dirname, data.relname) : data.relname,
+      path: path.resolve(data.filepath),
+      mode: data.stat.mode,
+      uid: data.stat.uid,
+      gid: data.stat.gid,
+      mtime: data.stat.mtime.getTime(),
+      ctime: data.stat.ctime.getTime(),
+      size: data.stat.size
     }
-  })
 
-  series(tasks, function (err) {
-    if (err) return done(err)
-    done()
-  })
+    var isFile = data.stat.isFile()
+    if (isFile) {
+      item.type = 'file'
+    }
+    var isDir = data.stat.isDirectory()
+    if (isDir) item.type = 'directory'
+    onEach(item, next)
+  }, cb)
 }
 
 Dat.prototype.fileStats = function (dirs, cb) {
