@@ -28,6 +28,7 @@ var swarm = require('discovery-swarm')
 var chalk = require('chalk')
 var crypto = require('crypto')
 var pump = require('pump')
+var xtend = require('xtend')
 var dat = require('./index.js')
 var usage = require('./usage')
 
@@ -136,11 +137,11 @@ function link (loc, db) {
       if (err) throw err
       db.joinTcpSwarm({link: link, port: args.port}, function (_err, swarm) {
         // ignore _err
-        startProgressLogging({swarm: swarm})
+        stats.swarm = swarm
+        startProgressLogging(stats)
       })
     })
-    stats.progress = statsProgress.progress
-    stats.fileQueue = statsProgress.fileQueue
+    stats = xtend(stats, statsProgress)
 
     var addInterval = setInterval(function () {
       printAddProgress(stats)
@@ -238,6 +239,12 @@ function printSwarmStatus (stats) {
   else if (swarm.downloading) msg += chalk.bold('[Downloading] ')
   msg += chalk.underline.blue('dat://' + swarm.link)
 
+  if (!swarm.downloading && stats.uploaded.bytesRead > 0) {
+    msg += '\n'
+    msg += chalk.bold('[Upload] ') + prettyBytes(stats.uploaded.bytesRead)
+    msg += ' at ' + prettyBytes(stats.uploadRate()) + '/s'
+  }
+  msg += '\n'
   logger.stdout(msg)
 
   function downloadMsg () {

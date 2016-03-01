@@ -112,18 +112,24 @@ Dat.prototype.metadata = function (link, cb) {
 }
 
 Dat.prototype.addFiles = function (dirs, cb) {
-  var pack = this.drive.add('.')
+  var archive = this.drive.add('.')
   this.scan(dirs, eachItem, done)
 
   var stats = {
-    'progress': pack.stats,
-    'fileQueue': []
+    progress: archive.stats,
+    uploaded: {
+      bytesRead: 0
+    },
+    fileQueue: []
   }
+
+  stats.uploadRate = speedometer()
+  trackUpload(stats, archive)
 
   return stats
 
   function eachItem (item, next) {
-    var appendStats = pack.appendFile(item.path, item.name, next)
+    var appendStats = archive.appendFile(item.path, item.name, next)
     // This could accumulate too many objects if
     // logspeed is high & scanning many files.
     if (item.type === 'file') {
@@ -136,11 +142,11 @@ Dat.prototype.addFiles = function (dirs, cb) {
 
   function done (err) {
     if (err) return cb(err)
-    pack.finalize(function (err) {
+    archive.finalize(function (err) {
       if (err) return cb(err)
-      var link = pack.id.toString('hex')
+      var link = archive.id.toString('hex')
       cb(null, link)
-      // TODO pack cleanup
+      // TODO archive cleanup
     })
   }
 }
@@ -227,6 +233,9 @@ Dat.prototype.download = function (link, dir, cb) {
       filesTotal: 0,
       directories: 0
     },
+    uploaded: {
+      bytesRead: 0
+    },
     fileQueue: []
   }
 
@@ -234,8 +243,11 @@ Dat.prototype.download = function (link, dir, cb) {
     if (err) return cb(err)
     swarm.downloading = true
     stats.downloadRate = speedometer()
+    stats.uploadRate = speedometer()
     stats.swarm = swarm
     var archive = self.drive.get(swarm.link, dir)
+
+    trackUpload(stats, archive)
 
     archive.ready(function (err) {
       if (err) return cb(err)
@@ -272,4 +284,11 @@ Dat.prototype.download = function (link, dir, cb) {
   })
 
   return stats
+}
+
+function trackUpload (stats, archive) {
+  archive.on('file-upload', function (entry, data) {
+    stats.uploaded.bytesRead += data.length
+    stats.uploadRate(data.length)
+  })
 }
