@@ -36,6 +36,16 @@ test('link with no args defaults to cwd', function (t) {
   st.end()
 })
 
+test('link with dat uri suggests correct usage', function (t) {
+  var st = spawn(t, dat + ' link dat://deadbeefcafe')
+  st.stderr.match(function (output) {
+    t.equal(output, 'Do you mean `dat dat://deadbeefcafe` ?\n')
+    st.kill()
+    return true
+  })
+  st.end()
+})
+
 test('connects if link process starts second', function (t) {
   var link
   var tmpdir = tmp + '/dat-link-restart-test'
