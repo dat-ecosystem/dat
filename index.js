@@ -1,5 +1,4 @@
 var path = require('path')
-var collect = require('collect-stream')
 var hyperdrive = require('hyperdrive')
 var speedometer = require('speedometer')
 var pump = require('pump')
