@@ -92,25 +92,6 @@ Dat.prototype.fileStats = function (dirs, cb) {
   return totalStats
 }
 
-Dat.prototype.metadata = function (link, cb) {
-  var self = this
-  var archive = self.drive.get(link)
-  var stream = archive.createEntryStream()
-
-  var res = {
-    size: 0
-  }
-
-  stream.on('data', function (entry) {
-    res.size += entry.size
-  })
-
-  stream.on('error', cb)
-  stream.on('end', function () {
-    cb(null, res)
-  })
-}
-
 Dat.prototype.addFiles = function (dirs, cb) {
   var pack = this.drive.add('.')
   this.scan(dirs, eachItem, done)
@@ -204,12 +185,6 @@ Dat.prototype.joinTcpSwarm = function (opts, cb) {
 Dat.prototype.close = function (cb) {
   this.drive.core.db.close()
   this.swarm.destroy(cb)
-}
-
-Dat.prototype.metadata = function (link, cb) {
-  var self = this
-  var archive = self.drive.get(link)
-  collect(archive.createEntryStream(), cb)
 }
 
 // returns object that is used to render progress bars
