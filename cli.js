@@ -123,6 +123,11 @@ function runCommand (loc) {
 
 function link (loc, db) {
   var dirs = args._.slice(1)
+  if (dirs.length === 1 && dirs[0].match(/^dat:/)) {
+    console.error('Do you mean `dat ' + dirs[0] + '` ?')
+    process.exit(1)
+  }
+
   if (dirs.length === 0) dirs = loc
 
   var stats = {}
