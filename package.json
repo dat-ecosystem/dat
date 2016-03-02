@@ -26,7 +26,7 @@
     "chalk": "^1.1.1",
     "collect-stream": "^1.1.1",
     "debug": "^2.2.0",
-    "discovery-swarm": "^3.0.0",
+    "discovery-swarm": "^3.1.0",
     "dns-discovery": "^5.3.3",
     "folder-walker": "^2.0.2",
     "home-dir": "^1.0.0",

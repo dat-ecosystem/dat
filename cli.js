@@ -62,6 +62,7 @@ function runDoctor () {
     servers: dat.DNS_SERVERS
   })
 
+  var tick = 0
   var id = typeof args.doctor === 'string' ? args.doctor : crypto.randomBytes(32).toString('hex')
   var sw = swarm({
     dns: {
@@ -82,25 +83,34 @@ function runDoctor () {
       else console.log('Looks like you can accept incoming p2p connections.')
       client.destroy()
       sw.join(id)
+      sw.on('connecting', function (peer) {
+        console.log('[info] Trying to connect to %s:%d', peer.host, peer.port)
+      })
+      sw.on('peer', function (peer) {
+        console.log('[info] Discovered %s:%d', peer.host, peer.port)
+      })
       sw.on('connection', function (connection) {
+        var num = tick++
+        var prefix = '0000'.slice(0, -num.toString().length) + num
+
         var data = crypto.randomBytes(16).toString('hex')
-        console.log('[%s] Connection established to remote peer', data)
+        console.log('[%s] Connection established to remote peer', prefix)
         var buf = ''
         connection.setEncoding('utf-8')
         connection.write(data)
         connection.on('data', function (remote) {
           buf += remote
           if (buf.length === data.length) {
-            console.log('[%s] Remote peer echoed expected data back', data)
+            console.log('[%s] Remote peer echoed expected data back', prefix)
           }
         })
         pump(connection, connection, function () {
-          console.log('[%s] Connected closed', data)
+          console.log('[%s] Connected closed', prefix)
         })
       })
 
       console.log('')
-      console.log('To test p2p connectivity ppen another client on another computer and run:')
+      console.log('To test p2p connectivity login to another computer and run:')
       console.log('')
       console.log('  dat --doctor=' + id)
       console.log('')
