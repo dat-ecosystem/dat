@@ -73,7 +73,7 @@ function runDoctor () {
   sw.on('error', function () {
     sw.listen(0)
   })
-  sw.listen(3282)
+  sw.listen(typeof args.port === 'number' ? args.port : 3282)
   sw.on('listening', function () {
     client.whoami(function (err, me) {
       if (err) return console.error('Could not detect public ip / port')
