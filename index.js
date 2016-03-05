@@ -110,7 +110,12 @@ Dat.prototype.addFiles = function (dirs, cb) {
   this.scan(dirs, eachItem, done)
 
   var stats = {
-    progress: archive.stats,
+    progress: {
+      bytesRead: 0,
+      bytesDownloaded: 0,
+      filesRead: 0,
+      filesDownloaded: 0
+    },
     uploaded: {
       bytesRead: 0
     },
@@ -125,11 +130,15 @@ Dat.prototype.addFiles = function (dirs, cb) {
   function eachItem (item, next) {
     var appendStats = archive.appendFile(item.path, item.name, next)
     // This could accumulate too many objects if
-    // logspeed is high & scanning many files.
+    // logspeed is slow & scanning many files.
     if (item.type === 'file') {
       stats.fileQueue.push({
         name: item.name,
         stats: appendStats
+      })
+      appendStats.on('end', function () {
+        stats.progress.filesRead += 1
+        stats.progress.bytesRead += appendStats.bytesRead
       })
     }
   }
