@@ -21,7 +21,6 @@ if (args.version) {
 }
 
 var fs = require('fs')
-var singleLineLog = require('single-line-log')
 var prettyBytes = require('pretty-bytes')
 var dns = require('dns-discovery')
 var swarm = require('discovery-swarm')
@@ -31,11 +30,10 @@ var pump = require('pump')
 var xtend = require('xtend')
 var dat = require('./index.js')
 var usage = require('./usage')
-
-function noop () {}
+var getLogger = require('./logger.js')
 
 var cmd = args._[0]
-var logger = getLogger()
+var logger = getLogger(args)
 
 var LOG_INTERVAL = (args.logspeed ? +args.logspeed : 200)
 if (isNaN(LOG_INTERVAL)) LOG_INTERVAL = 200
@@ -244,30 +242,37 @@ function printSwarmStatus (stats) {
     // Print final metadata output
     var scanMsg = ''
     swarm.gettingMetadata = false
-    scanMsg = getScanOutput(stats, chalk.bold.dim('Downloading Data'))
+    scanMsg = getScanOutput(stats, 'Downloading Data')
     logger.stdout(scanMsg)
     logger.log('')
   }
 
   var msg = swarm.downloading ? downloadMsg() : ''
-  if (swarm.downloadComplete) msg = downloadCompleteMsg()
+  if (swarm.downloadComplete && !swarm.printedDownloadComplete) {
+    msg = downloadCompleteMsg()
+    msg += chalk.bold('[Sharing] ')
+    msg += chalk.underline.blue('dat://' + swarm.link)
+    logger.log(msg)
+    msg = ''
+    swarm.printedDownloadComplete = true
+  }
+  if (!swarm.downloadComplete) {
+    msg += chalk.bold('[Downloading] ')
+    msg += chalk.underline.blue('dat://' + swarm.link + '\n')
+  }
 
   var count = '0'
   var activePeers = swarm.connections.length
   var totalPeers = swarm.connecting + swarm.connections.length
   if (activePeers > 0) count = activePeers + '/' + totalPeers
-  msg += chalk.bold('[Status] ') + 'Connected to ' + chalk.bold(count) + ' sources\n'
-
-  if (!swarm.downloading) msg += chalk.bold('[Sharing] ')
-  else if (swarm.downloading) msg += chalk.bold('[Downloading] ')
-  msg += chalk.underline.blue('dat://' + swarm.link)
+  msg += chalk.bold('[Status] ') + 'Connected to ' + chalk.bold(count) + ' sources'
 
   if (!swarm.downloading && stats.uploaded.bytesRead > 0) {
     msg += '\n'
-    msg += chalk.bold('[Upload] ') + prettyBytes(stats.uploaded.bytesRead)
+    msg += chalk.bold('[Uploaded] ') + prettyBytes(stats.uploaded.bytesRead)
     msg += ' at ' + prettyBytes(stats.uploadRate()) + '/s'
   }
-  msg += '\n'
+  // msg += '\n'
   logger.stdout(msg)
 
   function downloadMsg () {
@@ -369,31 +374,4 @@ function getTotalProgressOutput (stats, statusText, msg) {
   if (stats.downloadRate) msg += chalk.dim(prettyBytes(stats.downloadRate()) + '/s ')
   msg += '\n'
   return msg
-}
-
-function getLogger () {
-  if (args.quiet) {
-    return {
-      stderr: noop,
-      stdout: noop,
-      log: noop,
-      error: noop
-    }
-  }
-
-  if (args.debug) {
-    return {
-      stderr: console.error.bind(console),
-      stdout: console.log.bind(console),
-      log: console.error.bind(console),
-      error: console.log.bind(console)
-    }
-  }
-
-  return {
-    stderr: singleLineLog.stderr,
-    stdout: singleLineLog.stdout,
-    log: console.log.bind(console),
-    error: console.error.bind(console)
-  }
 }
