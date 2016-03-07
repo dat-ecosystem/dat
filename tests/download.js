@@ -121,6 +121,7 @@ test('download metadata is correct', function (t) {
 
       var hasLink = output.indexOf('dat://ffd5b634a2c7e916d2247043ece34ec41af72c7268ab51b346d6c3bf01dd25ec') > -1
       t.ok(hasLink, 'has link')
+      if (!hasLink) console.error('no link!' + output)
 
       downloader.kill()
       linker.kill()
