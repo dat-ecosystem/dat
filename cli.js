@@ -190,7 +190,7 @@ function download (loc, db) {
   var opts = {}
   var parts = hash.split(':')
   hash = parts[0]
-  if (parts.length > 0) {
+  if (parts.length > 1) {
     var selections = parts[parts.length - 1].split(',')
     opts.files = []
     for (var i = 0; i < selections.length; i++) opts.files.push(selections[i])
