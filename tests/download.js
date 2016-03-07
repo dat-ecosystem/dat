@@ -115,7 +115,7 @@ test('download metadata is correct', function (t) {
       var dirNum = stats.match(/\d+/g)[1]
       t.ok(Number(fileNum) === 2, 'file number is 2')
       t.ok(Number(dirNum) === 3, 'directory number is 3')
-      
+
       var hasSizeDest = output.indexOf('Downloaded 1.44 kB to fixtures') > -1
       t.ok(hasSizeDest, 'has size and destination')
 
