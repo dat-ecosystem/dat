@@ -48,6 +48,7 @@ test('does not error with 64 character link with dat:// in front', function (t) 
   st.end()
 })
 
+// this test just downloads an empty dat
 test('download shows folder name on completion', function (t) {
   var link
   var tmpdir = tmp + '/dat-download-folder-test'
@@ -106,7 +107,7 @@ test('download metadata is correct', function (t) {
   function startDownloader () {
     var downloader = spawn(t, dat + ' ' + link + ' --home=' + tmp + ' --path=' + dat1, {end: false})
     downloader.stdout.match(function (output) {
-      var contains = output.indexOf('Downloading Data') > -1
+      var contains = output.indexOf('Downloaded') > -1
       if (!contains || !linker) return false
 
       var stats = output.split('(')[1]
@@ -114,6 +115,12 @@ test('download metadata is correct', function (t) {
       var dirNum = stats.match(/\d+/g)[1]
       t.ok(Number(fileNum) === 2, 'file number is 2')
       t.ok(Number(dirNum) === 3, 'directory number is 3')
+      
+      var hasSizeDest = output.indexOf('Downloaded 1.44 kB to fixtures') > -1
+      t.ok(hasSizeDest, 'has size and destination')
+
+      var hasLink = output.indexOf('dat://ffd5b634a2c7e916d2247043ece34ec41af72c7268ab51b346d6c3bf01dd25ec') > -1
+      t.ok(hasLink, 'has link')
 
       downloader.kill()
       linker.kill()
