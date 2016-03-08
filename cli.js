@@ -278,7 +278,7 @@ function printSwarmStatus (stats) {
     msg += chalk.bold('[Uploaded] ') + prettyBytes(stats.uploaded.bytesRead)
     msg += ' at ' + prettyBytes(stats.uploadRate()) + '/s'
   }
-  logger.stdout(msg)
+  logger.stdout(msg + '\n')
 
   function downloadMsg () {
     if (!stats.total.bytesTotal) return chalk.bold('Connecting...\n')
