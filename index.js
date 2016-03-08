@@ -5,11 +5,8 @@ var speedometer = require('speedometer')
 var pump = require('pump')
 var each = require('stream-each')
 var through = require('through2')
-var webrtcSwarm = require('webrtc-swarm')
-var signalhub = require('signalhub')
 var subLevel = require('subleveldown')
 var discoverySwarm = require('discovery-swarm')
-var debug = require('debug')('dat')
 
 module.exports = Dat
 
@@ -18,8 +15,6 @@ var DEFAULT_DISCOVERY = [
   'discovery1.publicbits.org',
   'discovery2.publicbits.org'
 ]
-
-var DEFAULT_SIGNALHUB = 'https://signalhub.publicbits.org'
 var DAT_DOMAIN = 'dat.local'
 
 function Dat (opts) {
@@ -152,24 +147,6 @@ Dat.prototype.addFiles = function (dirs, cb) {
       // TODO archive cleanup
     })
   }
-}
-
-Dat.prototype.joinWebrtcSwarm = function (link, opts) {
-  if (!opts) opts = {}
-  opts.signalhub = opts.signalhub || DEFAULT_SIGNALHUB
-  var self = this
-  link = link.replace('dat://', '').replace('dat:', '')
-  var key = link.toString('hex')
-  var hub = signalhub('hyperdrive/' + key, [opts.signalhub])
-  var swarm = webrtcSwarm(hub, opts)
-
-  swarm.on('peer', function (peer) {
-    pump(peer, self.drive.createPeerStream(), peer, function () {
-      debug('found a peer for', link, peer)
-    })
-  })
-
-  return swarm
 }
 
 Dat.prototype.joinTcpSwarm = function (opts, cb) {

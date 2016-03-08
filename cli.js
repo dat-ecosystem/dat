@@ -151,6 +151,7 @@ function link (loc, db) {
       db.joinTcpSwarm({link: link, port: args.port}, function (_err, swarm) {
         // ignore _err
         stats.swarm = swarm
+        swarm.sharingLink = true
         startProgressLogging(stats)
       })
     })
@@ -215,7 +216,7 @@ function startProgressLogging (stats) {
 function printScanProgress (stats, opts) {
   if (!opts) opts = {}
   var statusText = chalk.bold.blue('Calculating Size')
-  if (opts.done) statusText = chalk.bold.dim('Creating Dat Link')
+  if (opts.done) statusText = 'Creating Dat Link'
   var msg = getScanOutput(stats, statusText)
   logger.stdout(msg)
   if (opts.done) logger.log('')
@@ -228,7 +229,6 @@ function printAddProgress (stats, opts) {
       returnMsg: true, message: 'Files Read to Dat'
     })
     logger.stdout(msg)
-    logger.log('')
   } else {
     printFileProgress(stats, {message: 'Adding Files to Dat'})
   }
@@ -247,16 +247,22 @@ function printSwarmStatus (stats) {
     logger.log('')
   }
 
-  var msg = swarm.downloading ? downloadMsg() : ''
+  var msg = ''
+  if (swarm.downloading) msg = downloadMsg()
+  if (swarm.sharingLink && !swarm.printedSharingLink) {
+    msg += chalk.bold('[Sharing] ')
+    msg += chalk.underline.blue('dat://' + swarm.link + '\n')
+    logger.log(msg)
+    msg = ''
+    swarm.printedSharingLink = true
+  }
   if (swarm.downloadComplete && !swarm.printedDownloadComplete) {
     msg = downloadCompleteMsg()
-    msg += chalk.bold('[Sharing] ')
-    msg += chalk.underline.blue('dat://' + swarm.link)
     logger.log(msg)
     msg = ''
     swarm.printedDownloadComplete = true
   }
-  if (!swarm.downloadComplete) {
+  if (swarm.downloading && !swarm.downloadComplete) {
     msg += chalk.bold('[Downloading] ')
     msg += chalk.underline.blue('dat://' + swarm.link + '\n')
   }
@@ -267,12 +273,11 @@ function printSwarmStatus (stats) {
   if (activePeers > 0) count = activePeers + '/' + totalPeers
   msg += chalk.bold('[Status] ') + 'Connected to ' + chalk.bold(count) + ' sources'
 
-  if (!swarm.downloading && stats.uploaded.bytesRead > 0) {
+  if (stats.uploaded.bytesRead > 0) {
     msg += '\n'
     msg += chalk.bold('[Uploaded] ') + prettyBytes(stats.uploaded.bytesRead)
     msg += ' at ' + prettyBytes(stats.uploadRate()) + '/s'
   }
-  // msg += '\n'
   logger.stdout(msg)
 
   function downloadMsg () {
@@ -295,6 +300,8 @@ function printSwarmStatus (stats) {
     )
     if (stats.parentFolder) outMsg += chalk.bold('to ') + chalk.bold(stats.parentFolder)
     outMsg += '\n'
+    outMsg += chalk.bold('[Sharing] ')
+    outMsg += chalk.underline.blue('dat://' + swarm.link)
     return outMsg
   }
 }
