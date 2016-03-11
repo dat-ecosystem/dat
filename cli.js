@@ -137,6 +137,10 @@ function link (loc, db) {
   }
 
   if (dirs.length === 0) dirs = loc
+  for (var i = 0; i < dirs.length; i++) {
+    var dir = dirs[i]
+    if (dir === '.') dirs[i] = loc
+  }
 
   var stats = {}
 

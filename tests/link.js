@@ -36,6 +36,18 @@ test('link with no args defaults to cwd', function (t) {
   st.end()
 })
 
+test('link with . arg defaults to cwd', function (t) {
+  var st = spawn(t, dat + ' link . --home=' + tmp, {cwd: dat1})
+  st.stdout.match(function (output) {
+    var contains = output.indexOf('dat://') > -1
+    if (!contains) return false
+    t.ok(output.toString().indexOf(dat1link) > -1, 'links match')
+    st.kill()
+    return true
+  })
+  st.end()
+})
+
 test('link with dat uri suggests correct usage', function (t) {
   var st = spawn(t, dat + ' link dat://deadbeefcafe')
   st.stderr.match(function (output) {
