@@ -53,9 +53,6 @@ Dat.prototype.scan = function (dirs, onEach, cb) {
     var item = {
       name: prefix ? path.join(dirname, data.relname) : data.relname,
       path: path.resolve(data.filepath),
-      mode: data.stat.mode,
-      uid: data.stat.uid,
-      gid: data.stat.gid,
       mtime: data.stat.mtime.getTime(),
       ctime: data.stat.ctime.getTime(),
       size: data.stat.size

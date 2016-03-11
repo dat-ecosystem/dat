@@ -119,7 +119,7 @@ test('download metadata is correct', function (t) {
       var hasSizeDest = output.indexOf('Downloaded 1.44 kB to fixtures') > -1
       t.ok(hasSizeDest, 'has size and destination')
 
-      var hasLink = output.indexOf('dat://ffd5b634a2c7e916d2247043ece34ec41af72c7268ab51b346d6c3bf01dd25ec') > -1
+      var hasLink = output.indexOf('dat://161a2706ac2ecae09a7b8529bb08f23feb7e1484dd1d48d7b4a2816cfce2215a') > -1
       t.ok(hasLink, 'has link')
       if (!hasLink) console.error('no link!' + output)
 
