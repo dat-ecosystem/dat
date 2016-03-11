@@ -13,7 +13,7 @@ var tmp = os.tmpdir()
 var dat1link
 
 test('prints link', function (t) {
-  var st = spawn(t, dat + ' link ' + dat1 + ' --home=' + tmp)
+  var st = spawn(t, dat + ' link --path=' + dat1 + ' --home=' + tmp)
   st.stdout.match(function (output) {
     var matches = output.match(/dat\:\/\/[A-Za-z0-9]+/)
     if (!matches) return false

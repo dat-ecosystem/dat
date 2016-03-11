@@ -122,7 +122,7 @@ function runCommand (loc) {
   if (args.doctor) return runDoctor()
   if (!cmd) return usage('root.txt')
 
-  var db = dat({home: args.home})
+  var db = dat({home: args.home, cwd: loc})
 
   if (cmd === 'link') link(loc, db)
   else if (cmd === 'list') list(loc, db)

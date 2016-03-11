@@ -1,12 +1,15 @@
 var path = require('path')
 var walker = require('folder-walker')
 var hyperdrive = require('hyperdrive')
+var minimatch = require('minimatch')
 var speedometer = require('speedometer')
 var pump = require('pump')
 var each = require('stream-each')
 var through = require('through2')
 var subLevel = require('subleveldown')
 var discoverySwarm = require('discovery-swarm')
+
+var readConfig = require('./config.js')
 
 module.exports = Dat
 
@@ -26,6 +29,7 @@ function Dat (opts) {
   this.drive = drive
   this.allPeers = {}
   this.blacklist = {}
+  this.config = readConfig(opts.cwd)
 
   var discovery = opts.discovery !== false
   this.swarm = discoverySwarm({
@@ -41,10 +45,27 @@ function Dat (opts) {
 
 Dat.DNS_SERVERS = DEFAULT_DISCOVERY
 
+var defaultFilter = function (data) {
+  if (path.basename(data) === '.dat') return false
+  return true
+}
+
+Dat.prototype._readConfig = function (cwd) {
+  this.config = readConfig(cwd || this.cwd)
+}
+
 Dat.prototype.scan = function (dirs, onEach, cb) {
-  var stream = walker(dirs, {filter: function (data) {
-    if (path.basename(data) === '.dat') return false
+  var self = this
+  var customFilter = function (data) {
+    for (var i = 0; i < self.config.ignore.length; i++) {
+      var pattern = self.config.ignore[i]
+      var match = minimatch(data, pattern) || minimatch(path.basename(data), '*' + pattern)
+      if (match) return false
+    }
     return true
+  }
+  var stream = walker(dirs, {filter: function (data) {
+    return defaultFilter(data) && customFilter(data)
   }})
 
   each(stream, function (data, next) {
