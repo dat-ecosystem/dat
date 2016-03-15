@@ -5,7 +5,7 @@ var test = require('tape')
 var rimraf = require('rimraf')
 var mkdirp = require('mkdirp')
 
-var spawn = require('./helpers/spawn.js')
+var spawn = require(path.resolve(path.join(__dirname, 'helpers', 'spawn.js')))
 
 var dat = path.resolve(path.join(__dirname, '..', 'cli.js'))
 var dat1 = path.join(__dirname, 'fixtures')

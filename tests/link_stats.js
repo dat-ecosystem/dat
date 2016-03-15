@@ -3,7 +3,7 @@ var os = require('os')
 var path = require('path')
 
 var test = require('tape')
-var spawn = require('./helpers/spawn.js')
+var spawn = require(path.resolve(path.join(__dirname, 'helpers', 'spawn.js')))
 var dat = path.resolve(path.join(__dirname, '..', 'cli.js'))
 var tmp = os.tmpdir()
 var datSample = path.join(__dirname, 'fixtures')
