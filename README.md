@@ -64,8 +64,6 @@ You are now publishing that data from your computer and it will be publicly acce
 $ dat dat://9d011b6c9de26e53e9961c8d8ea840d33e0d8408318332c9502bad112cad9989
 ```
 
-It will start downloading the data into the current location. It will also upload that data to others as long as the terminal is open.
-
-Dat uses a built in TCP server to share data. This means at least one of the peers trying to share data will need their dat port open (default port is 3282, DATA on a phone keypad).
+It will start downloading the data into the current location. It will also upload that data to others as long as the terminal is open. Anyone who gets access to the unique dat link will be able to download and re-host a copy of the data. It's distributed mad science!
 
 For more information, see the [full project documentation here](http://dat-data.readthedocs.org).
