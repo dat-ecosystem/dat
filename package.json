@@ -55,6 +55,6 @@
     "standard": "^6.0.7",
     "tap-spec": "^4.1.1",
     "tape": "^4.4.0",
-    "tape-spawn": "^1.4.0"
+    "tape-spawn": "^1.4.2"
   }
 }
