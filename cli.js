@@ -259,6 +259,7 @@ function printSwarmStatus (stats) {
     logger.log(msg)
     msg = ''
     swarm.printedSharingLink = true
+    if (args.quiet) console.log('dat://' + swarm.link)
   }
   if (swarm.downloadComplete && !swarm.printedDownloadComplete) {
     msg = downloadCompleteMsg()
