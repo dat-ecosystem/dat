@@ -266,6 +266,7 @@ function printSwarmStatus (stats) {
     logger.log(msg)
     msg = ''
     swarm.printedDownloadComplete = true
+    if (args.quiet) console.log('Downloaded to ' + stats.parentFolder)
   }
   if (swarm.downloading && !swarm.downloadComplete) {
     msg += chalk.bold('[Downloading] ')
