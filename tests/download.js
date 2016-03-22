@@ -113,13 +113,13 @@ test('download metadata is correct', function (t) {
       var stats = output.split('(')[1]
       var fileNum = stats.match(/\d+/g)[0]
       var dirNum = stats.match(/\d+/g)[1]
-      t.ok(Number(fileNum) === 2, 'file number is 2')
-      t.ok(Number(dirNum) === 3, 'directory number is 3')
+      t.equal(Number(fileNum), 3, 'file number is 3')
+      t.equal(Number(dirNum), 3, 'directory number is 3')
 
-      var hasSizeDest = output.indexOf('Downloaded 1.44 kB to fixtures') > -1
+      var hasSizeDest = output.indexOf('Downloaded 1.47 kB to fixtures') > -1
       t.ok(hasSizeDest, 'has size and destination')
 
-      var hasLink = output.indexOf('dat://161a2706ac2ecae09a7b8529bb08f23feb7e1484dd1d48d7b4a2816cfce2215a') > -1
+      var hasLink = output.indexOf('dat://7d2a091add2cec945f4dd35b55445c6c467dd36b05e9f61e9576c066b908b074') > -1
       t.ok(hasLink, 'has link')
       if (!hasLink) console.error('no link!' + output)
 
