@@ -1,11 +1,11 @@
 var path = require('path')
+var debug = require('debug')('dat')
 var walker = require('folder-walker')
 var hyperdrive = require('hyperdrive')
 var speedometer = require('speedometer')
 var pump = require('pump')
 var each = require('stream-each')
 var through = require('through2')
-var subLevel = require('subleveldown')
 var discoverySwarm = require('discovery-swarm')
 
 module.exports = Dat
@@ -20,6 +20,7 @@ var DAT_DOMAIN = 'dat.local'
 function Dat (opts) {
   if (!(this instanceof Dat)) return new Dat(opts)
   if (!opts) opts = {}
+  var self = this
   this.fs = opts.fs || require('./fs.js')
   this.level = opts.db || require('./db.js')(opts)
   var drive = hyperdrive(this.level)
@@ -36,7 +37,11 @@ function Dat (opts) {
       return drive.createPeerStream()
     }
   })
-  this._listening = false
+  this.swarm.listen(opts.port || DEFAULT_PORT)
+  this.swarm.once('error', function (err) {
+    if (err.code === 'EADDRINUSE') self.swarm.listen(0) // asks OS for first open port
+    else throw err
+  })
 }
 
 Dat.DNS_SERVERS = DEFAULT_DISCOVERY
@@ -48,10 +53,8 @@ Dat.prototype.scan = function (dirs, onEach, cb) {
   }})
 
   each(stream, function (data, next) {
-    var prefix = path.resolve(data.filepath) !== path.resolve(data.root)
-    var dirname = path.basename(data.root)
     var item = {
-      name: prefix ? path.join(dirname, data.relname) : data.relname,
+      name: data.relname,
       path: path.resolve(data.filepath),
       mtime: data.stat.mtime.getTime(),
       ctime: data.stat.ctime.getTime(),
@@ -141,52 +144,36 @@ Dat.prototype.addFiles = function (dirs, cb) {
       if (err) return cb(err)
       var link = archive.id.toString('hex')
       cb(null, link)
-      // TODO archive cleanup
     })
   }
 }
 
-Dat.prototype.joinTcpSwarm = function (opts, cb) {
-  var self = this
-  if (typeof opts === 'string') opts = {link: opts}
-  var link = opts.link
-  link = link.replace('dat://', '').replace('dat:', '')
+Dat.prototype.leave = function (link) {
+  link = this._normalize(link)
   var key = new Buffer(link, 'hex')
-  var metaLevel = subLevel(this.level, 'metadata')
+  debug('leaving', link, key)
+  this.swarm.leave(key)
+}
 
-  this.swarm.once('listening', function () {
-    self.swarm.link = link // backwards compat
-    self.swarm.join(key)
-    metaLevel.put(link + '-port', self.swarm.address().port)
-    cb(null, self.swarm)
-  })
-
-  this.swarm.once('error', function (err) {
-    if (err.code === 'EADDRINUSE') self.swarm.listen(0) // asks OS for first open port
-    else throw err
-  })
-
-  if (opts.port) return swarmListen()
-  metaLevel.get(link + '-port', function (err, value) {
-    if (err && err.notFound) return swarmListen() // no old port
-    if (err) return cb(err)
-    opts.port = Number(value)
-    swarmListen()
-  })
-
-  function swarmListen () {
-    if (!self._listening) {
-      self._listening = true
-      self.swarm.listen(opts.port || DEFAULT_PORT)
-    } else {
-      cb(null, self.swarm)
-    }
-  }
+Dat.prototype.join = function (link) {
+  link = this._normalize(link)
+  var key = new Buffer(link, 'hex')
+  debug('joining', link, key)
+  this.swarm.join(key)
 }
 
 Dat.prototype.close = function (cb) {
   this.drive.core.db.close()
   this.swarm.destroy(cb)
+}
+
+Dat.prototype._normalize = function (link) {
+  return link.replace('dat://', '').replace('dat:', '')
+}
+
+Dat.prototype.get = function (link, dir) {
+  var key = this._normalize(link)
+  return this.drive.get(key, dir)
 }
 
 // returns object that is used to render progress bars
@@ -211,49 +198,48 @@ Dat.prototype.download = function (link, dir, opts, cb) {
     },
     fileQueue: []
   }
+  link = this._normalize(link)
+  self.join(link)
 
-  self.joinTcpSwarm(link, function (err, swarm) {
+  self.swarm.downloading = true
+  stats.downloadRate = speedometer()
+  stats.uploadRate = speedometer()
+  stats.swarm = self.swarm
+  var archive = self.get(link, dir)
+
+  trackUpload(stats, archive)
+
+  archive.ready(function (err) {
     if (err) return cb(err)
-    swarm.downloading = true
-    stats.downloadRate = speedometer()
-    stats.uploadRate = speedometer()
-    stats.swarm = swarm
-    var archive = self.drive.get(swarm.link, dir)
-
-    trackUpload(stats, archive)
-
-    archive.ready(function (err) {
-      if (err) return cb(err)
-      swarm.gettingMetadata = true
-      var download = self.fs.createDownloadStream(archive, stats, opts)
-      var counter = through.obj(function (item, enc, next) {
-        if (typeof stats.parentFolder === 'undefined') {
-          var segments = item.name.split(path.sep)
-          if (segments.length === 1 && item.type === 'file') stats.parentFolder = false
-          else stats.parentFolder = segments[0]
-        }
-        stats.total.bytesTotal += item.size
-        if (item.type === 'file') stats.total.filesTotal++
-        else stats.total.directories++
-        next(null)
-      })
-      pump(archive.createEntryStream(), counter, function (err) {
-        if (err) return cb(err)
-        swarm.hasMetadata = true
-        downloadStream()
-      })
-
-      function downloadStream () {
-        pump(archive.createEntryStream(), download, function (err) {
-          cb(err, swarm)
-        })
+    self.swarm.gettingMetadata = true
+    var download = self.fs.createDownloadStream(archive, stats, opts)
+    var counter = through.obj(function (item, enc, next) {
+      if (typeof stats.parentFolder === 'undefined') {
+        var segments = item.name.split(path.sep)
+        if (segments.length === 1 && item.type === 'file') stats.parentFolder = false
+        else stats.parentFolder = segments[0]
       }
+      stats.total.bytesTotal += item.size
+      if (item.type === 'file') stats.total.filesTotal++
+      else stats.total.directories++
+      next(null)
+    })
+    pump(archive.createEntryStream(), counter, function (err) {
+      if (err) return cb(err)
+      self.swarm.hasMetadata = true
+      downloadStream()
     })
 
-    archive.on('file-download', function (entry, data, block) {
-      stats.progress.bytesRead += data.length
-      stats.downloadRate(data.length)
-    })
+    function downloadStream () {
+      pump(archive.createEntryStream(), download, function (err) {
+        cb(err, self.swarm)
+      })
+    }
+  })
+
+  archive.on('file-download', function (entry, data, block) {
+    stats.progress.bytesRead += data.length
+    stats.downloadRate(data.length)
   })
 
   return stats

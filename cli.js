@@ -30,6 +30,7 @@ var getLogger = require('./logger.js')
 var doctor = require('./bin/doctor.js')
 
 var cmd = args._[0]
+var STATS_TABLE = {}
 var logger = getLogger(args)
 
 var LOG_INTERVAL = (args.logspeed ? +args.logspeed : 200)
@@ -86,12 +87,12 @@ function link (loc, db) {
       printAddProgress(stats, {done: true})
       clearInterval(addInterval)
       if (err) throw err
-      db.joinTcpSwarm({link: link, port: args.port}, function (_err, swarm) {
-        // ignore _err
-        stats.swarm = swarm
-        swarm.sharingLink = true
-        startProgressLogging(stats)
-      })
+      db.join(link)
+      stats.sharingLink = true
+      stats.swarm = db.swarm
+      stats.link = link
+      STATS_TABLE[link] = stats
+      startProgressLogging(link)
     })
     stats = xtend(stats, statsProgress)
 
@@ -107,14 +108,13 @@ function link (loc, db) {
 
 function list (loc, db) {
   var hash = args._[1]
-  db.joinTcpSwarm({link: hash, port: args.port}, function (err, swarm) {
+  var link = db._normalize(hash)
+  db.join(link)
+  var archive = db.get(link, loc)
+  archive.ready(function (err) {
     if (err) throw err
-    var archive = db.drive.get(swarm.link, loc)
-    archive.ready(function (err) {
-      if (err) throw err
-      archive.createEntryStream().on('data', function (o) {
-        logger.log(o)
-      })
+    archive.createEntryStream().on('data', function (o) {
+      logger.log(o)
     })
   })
 }
@@ -123,7 +123,7 @@ function download (loc, db) {
   // download/share
   var hash = args._[0]
   if (!hash) return usage('root.txt')
-  hash = hash.trim().replace('dat://', '').replace('dat:', '')
+  hash = db._normalize(hash)
   var opts = {}
   var parts = hash.split(':')
   hash = parts[0]
@@ -141,14 +141,16 @@ function download (loc, db) {
     swarm.downloading = false
     swarm.downloadComplete = true
   })
-  startProgressLogging(downloadStats)
+  downloadStats.link = hash
+  STATS_TABLE[hash] = downloadStats
+  startProgressLogging(hash)
 }
 
-function startProgressLogging (stats) {
+function startProgressLogging (link) {
   setInterval(function () {
-    printSwarmStatus(stats)
+    printSwarmStatus(link)
   }, LOG_INTERVAL)
-  printSwarmStatus(stats)
+  printSwarmStatus(link)
 }
 
 function printScanProgress (stats, opts) {
@@ -172,9 +174,12 @@ function printAddProgress (stats, opts) {
   }
 }
 
-function printSwarmStatus (stats) {
+function printSwarmStatus (link) {
+  var stats = STATS_TABLE[link]
   var swarm = stats.swarm
-  if (!swarm) return logger.stdout('Finding data sources...\n')
+  if (!stats.sharingLink && !stats.swarm.connections.length && link) {
+    return logger.stdout('Finding data sources...\n')
+  }
 
   if (swarm.hasMetadata && swarm.gettingMetadata) {
     // Print final metadata output
@@ -187,13 +192,13 @@ function printSwarmStatus (stats) {
 
   var msg = ''
   if (swarm.downloading) msg = downloadMsg()
-  if (swarm.sharingLink && !swarm.printedSharingLink) {
+  if (stats.sharingLink && !stats.printedSharingLink) {
     msg += chalk.bold('[Sharing] ')
-    msg += chalk.underline.blue('dat://' + swarm.link + '\n')
+    msg += chalk.underline.blue('dat://' + stats.link + '\n')
     logger.log(msg)
     msg = ''
-    swarm.printedSharingLink = true
-    if (args.quiet) console.log('dat://' + swarm.link)
+    stats.printedSharingLink = true
+    if (args.quiet) console.log('dat://' + stats.link)
   }
   if (swarm.downloadComplete && !swarm.printedDownloadComplete) {
     msg = downloadCompleteMsg()
@@ -204,7 +209,7 @@ function printSwarmStatus (stats) {
   }
   if (swarm.downloading && !swarm.downloadComplete) {
     msg += chalk.bold('[Downloading] ')
-    msg += chalk.underline.blue('dat://' + swarm.link + '\n')
+    msg += chalk.underline.blue('dat://' + stats.link + '\n')
   }
 
   var count = '0'
@@ -241,7 +246,7 @@ function printSwarmStatus (stats) {
     if (stats.parentFolder) outMsg += chalk.bold('to ') + chalk.bold(stats.parentFolder)
     outMsg += '\n'
     outMsg += chalk.bold('[Sharing] ')
-    outMsg += chalk.underline.blue('dat://' + swarm.link)
+    outMsg += chalk.underline.blue('dat://' + stats.link)
     return outMsg
   }
 }
