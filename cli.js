@@ -37,48 +37,48 @@ var LOG_INTERVAL = (args.logspeed ? +args.logspeed : 200)
 if (isNaN(LOG_INTERVAL)) LOG_INTERVAL = 200
 if (!args.color) chalk = new chalk.constructor({enabled: false})
 
-checkLocation()
+runCommand()
 
-function checkLocation () {
-  var loc = process.cwd()
-  if (!args.path) return runCommand(loc)
-  loc = args.path
-  fs.exists(loc, function (exists) {
-    if (!exists) {
-      fs.mkdir(loc, function () {
-        runCommand(loc)
-      })
-    }
-    return runCommand(loc)
-  })
-}
-
-function runCommand (loc) {
+function runCommand () {
   if (args.doctor) return doctor(args)
   if (!cmd) return usage('root.txt')
 
   var db = dat({home: args.home})
 
-  if (cmd === 'link') link(loc, db)
-  else if (cmd === 'list') list(loc, db)
-  else if (cmd) download(loc, db)
+  if (cmd === 'link') {
+    var dirs = args._.slice(1)
+    if (dirs.length === 0) onerror('No links created. Do you mean \'dat link .\'?')
+    if (dirs.length === 1 && dirs[0].match(/^dat:/)) onerror('No links created. Did you mean `dat ' + dirs[0] + '` ?')
+
+    for (var i = 0; i < dirs.length; i++) {
+      var dir = dirs[i]
+      if (dir === '.') dirs[i] = process.cwd()
+    }
+    link(dirs, db)
+  } else if (cmd) {
+    var hash = args._[0]
+    if (!hash) return usage('root.txt')
+    var loc = args._[1]
+    if (!loc) return onerror('No download started. Make sure you specify a LOCATION: \n\n  dat LINK LOCATION\n')
+    fs.exists(loc, function (exists) {
+      if (!exists) {
+        fs.mkdir(loc, function () {
+          download(hash, loc, db)
+        })
+      }
+      download(hash, loc, db)
+    })
+  }
 }
 
-function link (loc, db) {
-  var dirs = args._.slice(1)
-  if (dirs.length === 1 && dirs[0].match(/^dat:/)) {
-    console.error('Do you mean `dat ' + dirs[0] + '` ?')
-    process.exit(1)
-  }
+function onerror (err, fatal) {
+  if (fatal) throw err
+  else console.error(err.message || err)
+  process.exit(1)
+}
 
-  if (dirs.length === 0) dirs = loc
-  for (var i = 0; i < dirs.length; i++) {
-    var dir = dirs[i]
-    if (dir === '.') dirs[i] = loc
-  }
-
+function link (dirs, db) {
   var stats = {}
-
   stats.total = db.fileStats(dirs, function (err) {
     if (err) throw err
     printScanProgress(stats, {done: true})
@@ -106,23 +106,8 @@ function link (loc, db) {
   }, LOG_INTERVAL)
 }
 
-function list (loc, db) {
-  var hash = args._[1]
-  var link = db._normalize(hash)
-  db.join(link)
-  var archive = db.get(link, loc)
-  archive.ready(function (err) {
-    if (err) throw err
-    archive.createEntryStream().on('data', function (o) {
-      logger.log(o)
-    })
-  })
-}
-
-function download (loc, db) {
+function download (hash, loc, db) {
   // download/share
-  var hash = args._[0]
-  if (!hash) return usage('root.txt')
   hash = db._normalize(hash)
   var opts = {}
   var parts = hash.split(':')

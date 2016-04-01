@@ -58,7 +58,8 @@ Dat.prototype.scan = function (dirs, onEach, cb) {
       path: path.resolve(data.filepath),
       mtime: data.stat.mtime.getTime(),
       ctime: data.stat.ctime.getTime(),
-      size: data.stat.size
+      size: data.stat.size,
+      root: data.root
     }
 
     var isFile = data.stat.isFile()
@@ -123,6 +124,7 @@ Dat.prototype.addFiles = function (dirs, cb) {
   return stats
 
   function eachItem (item, next) {
+    if (item.path === item.root.slice(0, item.root.length - 1)) return next()
     var appendStats = archive.appendFile(item.path, item.name, next)
     // This could accumulate too many objects if
     // logspeed is slow & scanning many files.
