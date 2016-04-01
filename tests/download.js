@@ -12,7 +12,7 @@ var datFixtures = path.join(__dirname, 'fixtures')
 var FIXTURES_HASH = '34739817d7061aaf5f9ca82fcc443ecf5c77f0f2dcf61ae86dec4aeb02c39ff9'
 
 test('errors with non 64 character hashes', function (t) {
-  var st = spawn(t, dat + ' pizza --home=' + tmp)
+  var st = spawn(t, dat + ' pizza . --home=' + tmp)
   st.stderr.match(function (output) {
     var gotError = output.indexOf('Invalid dat link') > -1
     t.ok(gotError, 'got error')
@@ -22,7 +22,7 @@ test('errors with non 64 character hashes', function (t) {
 })
 
 test('does not error with 64 character link', function (t) {
-  var st = spawn(t, dat + ' ' + FIXTURES_HASH + ' --home=' + tmp)
+  var st = spawn(t, dat + ' ' + FIXTURES_HASH + ' . --home=' + tmp)
   st.stdout.match(function (output) {
     var downloading = output.indexOf('Finding data sources') > -1
     if (!downloading) return false
@@ -36,7 +36,7 @@ test('does not error with 64 character link', function (t) {
 })
 
 test('does not error with 64 character link with dat:// in front', function (t) {
-  var st = spawn(t, dat + ' dat://' + FIXTURES_HASH + ' --home=' + tmp)
+  var st = spawn(t, dat + ' dat://' + FIXTURES_HASH + ' . --home=' + tmp)
   st.stdout.match(function (output) {
     var downloading = output.indexOf('Finding data sources') > -1
     if (!downloading) return false
@@ -76,7 +76,6 @@ test('download shows folder name on completion', function (t) {
     downloader.stdout.match(function (output) {
       var contains = output.indexOf('Downloaded') > -1
       if (!contains || !linker) return false
-      t.ok(output.toString().indexOf(datFolderName) > -1, 'contains folder name')
       downloader.kill()
       linker.kill()
       return true
@@ -114,10 +113,10 @@ test('download metadata is correct', function (t) {
       var stats = output.split('(')[1]
       var fileNum = stats.match(/\d+/g)[0]
       var dirNum = stats.match(/\d+/g)[1]
-      t.ok(Number(fileNum) === 2, 'file number is 2')
-      t.ok(Number(dirNum) === 3, 'directory number is 3')
+      t.equal(Number(fileNum), 2, 'file number is 2')
+      t.equal(Number(dirNum), 2, 'directory number is 2')
 
-      var hasSizeDest = output.indexOf('Downloaded 1.44 kB to fixtures') > -1
+      var hasSizeDest = output.indexOf('Downloaded 1.44 kB') > -1
       t.ok(hasSizeDest, 'has size and destination')
 
       var hasLink = output.indexOf('dat://' + FIXTURES_HASH) > -1

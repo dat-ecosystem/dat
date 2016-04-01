@@ -25,7 +25,7 @@ test('prints link', function (t) {
 })
 
 test('link with no args defaults to cwd', function (t) {
-  var st = spawn(t, dat + ' link --home=' + tmp, {cwd: dat1})
+  var st = spawn(t, dat + ' link . --home=' + tmp, {cwd: dat1})
   st.stdout.match(function (output) {
     var contains = output.indexOf('dat://') > -1
     if (!contains) return false
@@ -51,7 +51,7 @@ test('link with . arg defaults to cwd', function (t) {
 test('link with dat uri suggests correct usage', function (t) {
   var st = spawn(t, dat + ' link dat://deadbeefcafe')
   st.stderr.match(function (output) {
-    t.equal(output, 'Do you mean `dat dat://deadbeefcafe` ?\n')
+    t.equal(output, 'No links created. Did you mean `dat dat://deadbeefcafe` ?\n')
     st.kill()
     return true
   })

@@ -47,7 +47,10 @@ function runCommand () {
 
   if (cmd === 'link') {
     var dirs = args._.slice(1)
-    if (dirs.length === 0) onerror('No links created. Do you mean \'dat link .\'?')
+    if (dirs.length === 0) {
+      if (args.path) dirs = args.path
+      else onerror('No links created. Do you mean \'dat link .\'?')
+    }
     if (dirs.length === 1 && dirs[0].match(/^dat:/)) onerror('No links created. Did you mean `dat ' + dirs[0] + '` ?')
 
     for (var i = 0; i < dirs.length; i++) {
@@ -58,7 +61,7 @@ function runCommand () {
   } else if (cmd) {
     var hash = args._[0]
     if (!hash) return usage('root.txt')
-    var loc = args._[1]
+    var loc = args.path || args._[1]
     if (!loc) return onerror('No download started. Make sure you specify a LOCATION: \n\n  dat LINK LOCATION\n')
     fs.exists(loc, function (exists) {
       if (!exists) {
@@ -73,7 +76,7 @@ function runCommand () {
 
 function onerror (err, fatal) {
   if (fatal) throw err
-  else console.error(err.message || err)
+  else logger.error(err.message || err)
   process.exit(1)
 }
 
@@ -190,7 +193,7 @@ function printSwarmStatus (link) {
     logger.log(msg)
     msg = ''
     swarm.printedDownloadComplete = true
-    if (args.quiet) console.log('Downloaded to ' + stats.parentFolder)
+    if (args.quiet) console.log('Downloaded successfully.')
   }
   if (swarm.downloading && !swarm.downloadComplete) {
     msg += chalk.bold('[Downloading] ')
@@ -228,7 +231,6 @@ function printSwarmStatus (link) {
     outMsg += chalk.bold(
       'Downloaded ' + prettyBytes(stats.progress.bytesRead) + ' '
     )
-    if (stats.parentFolder) outMsg += chalk.bold('to ') + chalk.bold(stats.parentFolder)
     outMsg += '\n'
     outMsg += chalk.bold('[Sharing] ')
     outMsg += chalk.underline.blue('dat://' + stats.link)
@@ -238,7 +240,7 @@ function printSwarmStatus (link) {
 
 function getScanOutput (stats, statusMsg) {
   if (!statusMsg) statusMsg = chalk.bold.green('Scan Progress')
-  var dirCount = stats.total.directories + 1 // parent folder
+  var dirCount = stats.total.directories
   return statusMsg + ' ' + chalk.bold(
     '(' + stats.total.filesTotal + ' files, ' + dirCount + ' folders, ' +
     (stats.total.bytesTotal ? prettyBytes(stats.total.bytesTotal) + ' total' : '') + ')'
