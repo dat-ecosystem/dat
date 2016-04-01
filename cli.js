@@ -24,6 +24,8 @@ var fs = require('fs')
 var prettyBytes = require('pretty-bytes')
 var chalk = require('chalk')
 var xtend = require('xtend')
+var path = require('path')
+
 var dat = require('./index.js')
 var usage = require('./usage')
 var getLogger = require('./logger.js')
@@ -42,20 +44,17 @@ runCommand()
 function runCommand () {
   if (args.doctor) return doctor(args)
   if (!cmd) return usage('root.txt')
+  var cwd = args.cwd || process.cwd()
 
   var db = dat({home: args.home})
 
   if (cmd === 'link') {
     var dirs = args._.slice(1)
-    if (dirs.length === 0) {
-      if (args.path) dirs = args.path
-      else onerror('No links created. Do you mean \'dat link .\'?')
-    }
+    if (dirs.length === 0) onerror('No links created. Do you mean \'dat link .\'?')
     if (dirs.length === 1 && dirs[0].match(/^dat:/)) onerror('No links created. Did you mean `dat ' + dirs[0] + '` ?')
 
     for (var i = 0; i < dirs.length; i++) {
-      var dir = dirs[i]
-      if (dir === '.') dirs[i] = process.cwd()
+      dirs[i] = path.resolve(cwd, dirs[i])
     }
     link(dirs, db)
   } else if (cmd) {
@@ -63,6 +62,7 @@ function runCommand () {
     if (!hash) return usage('root.txt')
     var loc = args.path || args._[1]
     if (!loc) return onerror('No download started. Make sure you specify a LOCATION: \n\n  dat LINK LOCATION\n')
+    loc = path.resolve(cwd, loc)
     fs.exists(loc, function (exists) {
       if (!exists) {
         fs.mkdir(loc, function () {

@@ -60,7 +60,7 @@ test('download shows folder name on completion', function (t) {
   mkdirp.sync(dat1)
   mkdirp.sync(dat2)
 
-  var linkCmd = dat + ' link --home=' + tmp + ' --path=' + dat1
+  var linkCmd = dat + ' link . --home=' + tmp + ' --cwd=' + dat1
   var linker = spawn(t, linkCmd, {end: false})
   linker.stderr.empty()
   linker.stdout.match(function (output) {
@@ -72,7 +72,7 @@ test('download shows folder name on completion', function (t) {
   })
 
   function startDownloader () {
-    var downloader = spawn(t, dat + ' ' + link + ' --home=' + tmp + ' --path=' + dat2, {end: false})
+    var downloader = spawn(t, dat + ' ' + link + ' . --home=' + tmp + ' --cwd=' + dat2, {end: false})
     downloader.stdout.match(function (output) {
       var contains = output.indexOf('Downloaded') > -1
       if (!contains || !linker) return false
@@ -93,7 +93,7 @@ test('download metadata is correct', function (t) {
   var dat1 = tmpdir + '/dat2'
   mkdirp.sync(dat1)
 
-  var linkCmd = dat + ' link --home=' + tmp + ' --path=' + datFixtures
+  var linkCmd = dat + ' link . --home=' + tmp + ' --cwd=' + datFixtures
   var linker = spawn(t, linkCmd, {end: false})
   linker.stderr.empty()
   linker.stdout.match(function (output) {
@@ -105,7 +105,7 @@ test('download metadata is correct', function (t) {
   })
 
   function startDownloader () {
-    var downloader = spawn(t, dat + ' ' + link + ' --home=' + tmp + ' --path=' + dat1, {end: false})
+    var downloader = spawn(t, dat + ' ' + link + ' . --home=' + tmp + ' --cwd=' + dat1, {end: false})
     downloader.stdout.match(function (output) {
       var contains = output.indexOf('Downloaded') > -1
       if (!contains || !linker) return false

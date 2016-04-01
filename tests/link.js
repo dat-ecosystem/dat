@@ -68,7 +68,7 @@ test('connects if link process starts second', function (t) {
   mkdirp.sync(dat2)
 
   fs.writeFileSync(dat1 + '/foo.txt', new Buffer('hello world'))
-  var linkCmd = dat + ' link --home=' + tmp + ' --path=' + dat1
+  var linkCmd = dat + ' link . --home=' + tmp + ' --cwd=' + dat1
   var linker = spawn(t, linkCmd, {end: false})
   linker.stderr.empty()
   linker.stdout.match(function (output) {
@@ -84,7 +84,7 @@ test('connects if link process starts second', function (t) {
   })
 
   function startClone () {
-    var cloner = spawn(t, dat + ' ' + link + ' --home=' + tmp + ' --path=' + dat2, {end: false})
+    var cloner = spawn(t, dat + ' ' + link + ' . --home=' + tmp + ' --cwd=' + dat2, {end: false})
     cloner.timeout(10000, 'waited 10 seconds and download didnt start')
 
     cloner.stdout.match(function (output) {
@@ -106,7 +106,7 @@ test('connects if link process starts second', function (t) {
   }
 
   function startRelinking () {
-    var relinker = spawn(t, dat + ' link --home=' + tmp + ' --path=' + dat1, {end: false})
+    var relinker = spawn(t, dat + ' link . --home=' + tmp + ' --cwd=' + dat1, {end: false})
     return relinker
   }
 })
