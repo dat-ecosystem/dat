@@ -1,6 +1,6 @@
 dat <command> [--option <argument>]
-  dat link            creates a link to share some data
-  dat <share-link>    downloads and shares data from a link
+  dat link <PATH>            creates a URL to share some data
+  dat <URL> <PATH>           downloads and shares data from a dat link
 
 options
   --quiet, -q         quiet output mode
