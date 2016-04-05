@@ -34,6 +34,7 @@ function Dat (opts) {
     dns: discovery && {server: DEFAULT_DISCOVERY, domain: DAT_DOMAIN},
     dht: discovery,
     stream: function () {
+      console.log('stream created')
       return drive.createPeerStream()
     }
   })
@@ -211,9 +212,11 @@ Dat.prototype.download = function (link, dir, opts, cb) {
 
   trackUpload(stats, archive)
 
+  console.log('waiting to be ready....')
   archive.ready(function (err) {
     if (err) return cb(err)
     self.swarm.gettingMetadata = true
+    console.log('handshaked')
     var download = self.fs.createDownloadStream(archive, stats, opts)
     var counter = through.obj(function (item, enc, next) {
       if (typeof stats.parentFolder === 'undefined') {
@@ -224,6 +227,7 @@ Dat.prototype.download = function (link, dir, opts, cb) {
       stats.total.bytesTotal += item.size
       if (item.type === 'file') stats.total.filesTotal++
       else stats.total.directories++
+      console.log(stats)
       next(null)
     })
     pump(archive.createEntryStream(), counter, function (err) {

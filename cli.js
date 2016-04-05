@@ -39,6 +39,14 @@ var LOG_INTERVAL = (args.logspeed ? +args.logspeed : 200)
 if (isNaN(LOG_INTERVAL)) LOG_INTERVAL = 200
 if (!args.color) chalk = new chalk.constructor({enabled: false})
 
+var autod = require('auto-daemon')
+var autodOpts = {
+  rpcfile: path.join(__dirname, 'server.js'),
+  sockfile: path.join(__dirname, 'datmon.sock'),
+  methods: [ 'join', 'leave', 'close' ],
+  debug: true
+}
+
 runCommand()
 
 function runCommand () {
@@ -47,7 +55,6 @@ function runCommand () {
   var cwd = args.cwd || process.cwd()
 
   var db = dat({home: args.home})
-
   if (cmd === 'link') {
     var dirs = args._.slice(1)
     if (dirs.length === 0) onerror('No links created. Do you mean \'dat link .\'?')
@@ -57,6 +64,16 @@ function runCommand () {
       dirs[i] = path.resolve(cwd, dirs[i])
     }
     link(dirs, db)
+  } else if (cmd === 'killall') {
+    autod(autodOpts, function (err, r, c) {
+      if (err) throw err
+      r.close(function (err) {
+        if (err) throw err
+        db.close()
+        console.log('exiting')
+        c.destroy()
+      })
+    })
   } else if (cmd) {
     var hash = args._[0]
     if (!hash) return usage('root.txt')
@@ -68,15 +85,13 @@ function runCommand () {
         fs.mkdir(loc, function () {
           download(hash, loc, db)
         })
-      }
-      download(hash, loc, db)
+      } else download(hash, loc, db)
     })
   }
 }
 
 function onerror (err, fatal) {
-  if (fatal) throw err
-  else logger.error(err.message || err)
+  logger.error(err.message || err)
   process.exit(1)
 }
 
@@ -90,12 +105,19 @@ function link (dirs, db) {
       printAddProgress(stats, {done: true})
       clearInterval(addInterval)
       if (err) throw err
-      db.join(link)
-      stats.sharingLink = true
-      stats.swarm = db.swarm
-      stats.link = link
-      STATS_TABLE[link] = stats
-      startProgressLogging(link)
+      autod(autodOpts, function (err, rpc, conn) {
+        if (err) throw err
+        rpc.join(link, function (err) {
+          if (err) throw err
+          stats.sharingLink = true
+          stats.swarm = db.swarm
+          stats.link = link
+          STATS_TABLE[link] = stats
+          console.log(link)
+          db.close()
+          conn.destroy()
+        })
+      })
     })
     stats = xtend(stats, statsProgress)
 
