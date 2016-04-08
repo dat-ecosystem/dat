@@ -4,8 +4,13 @@ var JSONStream = require('JSONStream')
 
 module.exports = function (server, stream) {
   return {
-    join: function (link, dir, cb) {
-      return emitStream(dat.join(link, dir, cb)).pipe(JSONStream.stringify())
+    join: function (link, dir) {
+      var progress = dat.join(link, dir)
+      var stream = emitStream(progress).pipe(JSONStream.stringify())
+      progress.on('end', function () {
+        stream.end()
+      })
+      return stream
     },
     leave: function (id) {
       dat.leave(id)

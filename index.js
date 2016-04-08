@@ -147,10 +147,10 @@ Dat.prototype.addFiles = function (dirs, cb) {
 
   function done (err) {
     if (err) return cb(err)
-    emitter.emit('data', stats)
     archive.finalize(function (err) {
       if (err) return cb(err)
       var link = archive.id.toString('hex')
+      emitter.emit('data', stats)
       cb(null, link)
     })
   }
@@ -236,7 +236,7 @@ Dat.prototype.join = function (link, dir, opts, cb) {
 
     function downloadStream () {
       pump(archive.createEntryStream(), download, function (err) {
-        cb(err, self.swarm)
+        cb(err)
       })
     }
   })

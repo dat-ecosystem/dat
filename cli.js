@@ -43,8 +43,7 @@ var autod = require('auto-daemon')
 var autodOpts = {
   rpcfile: path.join(__dirname, 'server.js'),
   sockfile: path.join(__dirname, 'datmon.sock'),
-  methods: [ 'join:s', 'leave', 'close' ],
-  debug: true
+  methods: [ 'join:s', 'leave', 'close' ]
 }
 
 runCommand()
@@ -68,7 +67,6 @@ function runCommand () {
       r.close(function (err) {
         if (err) throw err
         db.close()
-        console.log('exiting')
         c.destroy()
       })
     })
@@ -103,30 +101,38 @@ function link (dir, db) {
     function done (err, link) {
       printAddProgress(stats, {done: true})
       if (err) throw err
-      autod(autodOpts, function (err, rpc, conn) {
-        if (err) throw err
-        var seed = rpc.join(link, dir, function (err) {
-          if (err) throw err
-          stats.sharingLink = true
-          stats.swarm = db.swarm
-          STATS_TABLE[link] = stats
-          printSwarmStatus(link)
-          console.log('done')
-        })
-        seed.on('error', onerror)
-        seed.on('data', function (data) {
-          stats.sharingLink = true
-          stats.swarm = db.swarm
-          STATS_TABLE[link] = stats
-          printSwarmStatus(link)
-        })
-      })
+      startLink(link, dir, db)
     }
     var adder = db.addFiles(dir, done)
     adder.on('data', function (data) {
       stats = xtend(stats, data)
       printScanProgress(stats)
       printAddProgress(stats)
+    })
+  })
+}
+
+function startLink (link, dir, db) {
+  var stats = {}
+  autod(autodOpts, function (err, rpc, conn) {
+    if (err) throw err
+    var seed = rpc.join(link, dir)
+    seed.on('end', function (err) {
+      if (err) throw err
+      stats.sharingLink = true
+      stats.swarm = db.swarm
+      STATS_TABLE[link] = stats
+      printSwarmStatus(link)
+      db.close()
+      conn.destroy()
+    })
+    seed.on('error', onerror)
+    seed.on('data', function (data) {
+      stats = xtend(stats, data)
+      stats.sharingLink = true
+      stats.swarm = db.swarm
+      STATS_TABLE[link] = stats
+      printSwarmStatus(link)
     })
   })
 }
@@ -150,6 +156,7 @@ function download (link, loc, db) {
     if (err) throw err
     STATS_TABLE[link].downloadComplete = true
     printSwarmStatus(link)
+    db.close()
   }
   var stats = {}
   var downloader = db.join(link, loc, done)
@@ -199,7 +206,15 @@ function printSwarmStatus (link) {
   }
 
   var msg = ''
-  if (stats.downloading) msg = downloadMsg()
+  if (stats.downloading) {
+    if (!stats.total.bytesTotal) return chalk.bold('Connecting...\n')
+    if (stats.gettingMetadata && !stats.hasMetadata) {
+      return getScanOutput(stats, chalk.bold.blue('Getting Metadata')) + '\n'
+    }
+    return printFileProgress(stats, {
+      returnMsg: true, message: 'Downloading Data'
+    })
+  }
   if (stats.sharingLink && !stats.printedSharingLink) {
     msg += chalk.bold('[Sharing] ')
     msg += chalk.underline.blue('dat://' + link + '\n')
@@ -207,10 +222,18 @@ function printSwarmStatus (link) {
     msg = ''
     stats.printedSharingLink = true
     if (args.quiet) console.log('dat://' + link)
-    printConnectionStatus(stats.swarm)
   }
   if (stats.downloadComplete && !stats.printedDownloadComplete) {
-    msg = downloadCompleteMsg()
+    printFileProgress(stats, {
+      returnMsg: true, showFilesOnly: true
+    })
+    msg = chalk.bold.green('[Done] ')
+    msg += chalk.bold(
+      'Downloaded ' + prettyBytes(stats.progress.bytesRead) + ' '
+    )
+    msg += '\n'
+    msg += chalk.bold('[Sharing] ')
+    msg += chalk.underline.blue('dat://' + link)
     logger.log(msg)
     msg = ''
     stats.printedDownloadComplete = true
@@ -220,37 +243,6 @@ function printSwarmStatus (link) {
   if (stats.downloading && !stats.downloadComplete) {
     msg += chalk.bold('[Downloading] ')
     msg += chalk.underline.blue('dat://' + link + '\n')
-  }
-
-  if (stats.uploaded.bytesRead > 0) {
-    msg += '\n'
-    msg += chalk.bold('[Uploaded] ') + prettyBytes(stats.uploaded.bytesRead)
-    msg += ' at ' + prettyBytes(stats.uploadRate()) + '/s'
-  }
-  logger.stdout(msg + '\n')
-
-  function downloadMsg () {
-    if (!stats.total.bytesTotal) return chalk.bold('Connecting...\n')
-    if (stats.gettingMetadata && !stats.hasMetadata) {
-      return getScanOutput(stats, chalk.bold.blue('Getting Metadata')) + '\n'
-    }
-    return printFileProgress(stats, {
-      returnMsg: true, message: 'Downloading Data'
-    })
-  }
-
-  function downloadCompleteMsg () {
-    var outMsg = printFileProgress(stats, {
-      returnMsg: true, showFilesOnly: true
-    })
-    outMsg += chalk.bold.green('[Done] ')
-    outMsg += chalk.bold(
-      'Downloaded ' + prettyBytes(stats.progress.bytesRead) + ' '
-    )
-    outMsg += '\n'
-    outMsg += chalk.bold('[Sharing] ')
-    outMsg += chalk.underline.blue('dat://' + link)
-    return outMsg
   }
 }
 
@@ -335,6 +327,7 @@ function printConnectionStatus (swarm) {
   swarm.on('connection', print)
   swarm.on('peer', print)
   swarm.on('drop', print)
+  print()
   function print () {
     var count = '0'
     var activePeers = swarm.connections.length
