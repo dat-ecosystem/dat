@@ -8,7 +8,6 @@ var each = require('stream-each')
 var through = require('through2')
 var discoverySwarm = require('discovery-swarm')
 var events = require('events')
-var inherits = require('inherits')
 
 module.exports = Dat
 
@@ -119,10 +118,10 @@ Dat.prototype.addFiles = function (dirs, cb) {
     fileQueue: []
   }
 
-  stats.uploadRate = speedometer()
+  var uploadRate = speedometer()
   archive.on('file-upload', function (entry, data) {
     stats.uploaded.bytesRead += data.length
-    stats.uploadRate(data.length)
+    stats.uploadRate = uploadRate(data.length)
     emitter.emit('data', stats)
   })
 
@@ -203,14 +202,13 @@ Dat.prototype.join = function (link, dir, opts, cb) {
   }
   link = this._normalize(link)
   self.swarm.join(new Buffer(link, 'hex'))
-  stats.downloadRate = speedometer()
-  stats.uploadRate = speedometer()
-  stats.swarm = self.swarm
+  var downloadRate = speedometer()
+  var uploadRate = speedometer()
   var archive = self.get(link, dir)
 
   archive.on('file-upload', function (entry, data) {
     stats.uploaded.bytesRead += data.length
-    stats.uploadRate(data.length)
+    stats.uploadRate = uploadRate(data.length)
     emitter.emit('data', stats)
   })
 
@@ -245,7 +243,7 @@ Dat.prototype.join = function (link, dir, opts, cb) {
 
   archive.on('file-download', function (entry, data, block) {
     stats.progress.bytesRead += data.length
-    stats.downloadRate(data.length)
+    stats.downloadRate = downloadRate(data.length)
     emitter.emit('data', stats)
   })
 

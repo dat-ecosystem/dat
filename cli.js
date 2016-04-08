@@ -43,7 +43,7 @@ var autod = require('auto-daemon')
 var autodOpts = {
   rpcfile: path.join(__dirname, 'server.js'),
   sockfile: path.join(__dirname, 'datmon.sock'),
-  methods: [ 'join', 'leave', 'close' ],
+  methods: [ 'join:s', 'leave', 'close' ],
   debug: true
 }
 
@@ -103,24 +103,30 @@ function link (dir, db) {
     function done (err, link) {
       printAddProgress(stats, {done: true})
       if (err) throw err
-      var seed = db.join(link, dir, function (err) {
+      autod(autodOpts, function (err, rpc, conn) {
         if (err) throw err
-        stats.sharingLink = true
-        stats.swarm = db.swarm
-        STATS_TABLE[link] = stats
-        printSwarmStatus(link)
-      })
-      seed.on('data', function (data) {
-        stats.sharingLink = true
-        stats.swarm = db.swarm
-        STATS_TABLE[link] = data
+        var seed = rpc.join(link, dir, function (err) {
+          if (err) throw err
+          stats.sharingLink = true
+          stats.swarm = db.swarm
+          STATS_TABLE[link] = stats
+          printSwarmStatus(link)
+          console.log('done')
+        })
+        seed.on('error', onerror)
+        seed.on('data', function (data) {
+          stats.sharingLink = true
+          stats.swarm = db.swarm
+          STATS_TABLE[link] = stats
+          printSwarmStatus(link)
+        })
       })
     }
     var adder = db.addFiles(dir, done)
     adder.on('data', function (data) {
       stats = xtend(stats, data)
-      printAddProgress(stats)
       printScanProgress(stats)
+      printAddProgress(stats)
     })
   })
 }
@@ -320,7 +326,7 @@ function getTotalProgressOutput (stats, statusText, msg) {
       ' of ' + prettyBytes(stats.total.bytesTotal) + ') '
     )
   )
-  if (stats.downloadRate) msg += chalk.dim(prettyBytes(stats.downloadRate()) + '/s ')
+  if (stats.downloadRate) msg += chalk.dim(prettyBytes(stats.downloadRate) + '/s ')
   msg += '\n'
   return msg
 }
