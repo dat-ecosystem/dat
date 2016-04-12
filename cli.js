@@ -39,13 +39,6 @@ var LOG_INTERVAL = (args.logspeed ? +args.logspeed : 200)
 if (isNaN(LOG_INTERVAL)) LOG_INTERVAL = 200
 if (!args.color) chalk = new chalk.constructor({enabled: false})
 
-var autod = require('auto-daemon')
-var autodOpts = {
-  rpcfile: path.join(__dirname, 'server.js'),
-  sockfile: path.join(__dirname, 'datmon.sock'),
-  methods: [ 'join:s', 'leave', 'close' ]
-}
-
 runCommand()
 
 function runCommand () {
