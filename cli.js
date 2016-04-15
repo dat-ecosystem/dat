@@ -23,7 +23,6 @@ if (args.version) {
 var fs = require('fs')
 var prettyBytes = require('pretty-bytes')
 var chalk = require('chalk')
-var xtend = require('xtend')
 var path = require('path')
 var dat = require('dat-server')
 
@@ -32,7 +31,6 @@ var getLogger = require('./logger.js')
 var doctor = require('./bin/doctor.js')
 
 var cmd = args._[0]
-var STATS_TABLE = {}
 var logger = getLogger(args)
 
 var LOG_INTERVAL = (args.logspeed ? +args.logspeed : 200)
@@ -106,11 +104,23 @@ function link (dir, server) {
   server.link(dir, done)
 
   var statsInterval = setInterval(printLinkStatus, LOG_INTERVAL)
+  var linking = false
   function printLinkStatus () {
     server.status(function (err, stats) {
       if (err) throw err
-      if (stats[dir] && stats[dir].total) {
-        printFileProgress(stats[dir], {message: 'Adding Files to Dat'})
+      if (stats[dir]) {
+        if (stats[dir].total && linking) return printFileProgress(stats[dir], {message: 'Adding Files to Dat'})
+
+        var statusText
+        if (stats[dir].total) statusText = 'Creating Dat Link'
+        else statusText = chalk.bold.blue('Calculating Size')
+
+        var msg = getScanOutput(stats[dir], statusText)
+        logger.stdout(msg)
+        if (stats[dir].total) {
+          logger.log('')
+          linking = true
+        }
       }
     })
   }
@@ -133,25 +143,23 @@ function download (link, dir, server) {
   }
   server.join(link, dir, function (err) {
     if (err) throw err
-    console.log(link, dir)
+    server.status(function (err, stats) {
+      if (err) throw err
+      printSharingLink(stats[dir])
+      clearInterval(downloadInterval)
+    })
   })
-}
+  var downloadInterval = setInterval(printDownloadStatus, LOG_INTERVAL)
 
-function printScanProgress (stats, opts) {
-  if (!opts) opts = {}
-  var statusText = chalk.bold.blue('Calculating Size')
-  var done = (stats.bytesRead === stats.total.bytesTotal)
-  if (done) statusText = 'Creating Dat Link'
-  var msg = getScanOutput(stats, statusText)
-  logger.stdout(msg)
-  if (done) logger.log('')
-}
-
-function printSwarmStatus (link) {
-  var stats = STATS_TABLE[link]
-  if (!stats.sharingLink && !stats.swarm.connections.length && link) {
-    return logger.stdout('Finding data sources...\n')
+  function printDownloadStatus () {
+    server.status(function (err, stats) {
+      if (err) throw err
+      printSwarmStatus(stats[dir])
+    })
   }
+}
+
+function printSwarmStatus (stats) {
   if (stats.hasMetadata && stats.gettingMetadata) {
     // Print final metadata output
     var scanMsg = ''
@@ -162,16 +170,19 @@ function printSwarmStatus (link) {
   }
 
   var msg = ''
-  if (stats.downloading) {
+  if (!stats.downloadComplete) {
     if (!stats.total.bytesTotal) return chalk.bold('Connecting...\n')
     if (stats.gettingMetadata && !stats.hasMetadata) {
       return getScanOutput(stats, chalk.bold.blue('Getting Metadata')) + '\n'
     }
-    return printFileProgress(stats, {
+    printFileProgress(stats, {
       returnMsg: true, message: 'Downloading Data'
     })
+    msg += chalk.bold('[Downloading] ')
+    msg += chalk.underline.blue('dat://' + link + '\n')
+    return
   }
-  if (stats.downloadComplete && !stats.printedDownloadComplete) {
+  if (!stats.printedDownloadComplete) {
     printFileProgress(stats, {
       returnMsg: true, showFilesOnly: true
     })
@@ -186,11 +197,7 @@ function printSwarmStatus (link) {
     msg = ''
     stats.printedDownloadComplete = true
     if (args.quiet) console.log('Downloaded successfully.')
-    printConnectionStatus(stats.swarm)
-  }
-  if (stats.downloading && !stats.downloadComplete) {
-    msg += chalk.bold('[Downloading] ')
-    msg += chalk.underline.blue('dat://' + link + '\n')
+    // printConnectionStatus(stats.swarm)
   }
 }
 
