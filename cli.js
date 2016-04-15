@@ -149,18 +149,19 @@ function download (link, dir, server) {
       clearInterval(downloadInterval)
     })
   })
-  var downloadInterval = setInterval(printDownloadStatus, LOG_INTERVAL)
-
-  function printDownloadStatus () {
+  var downloadInterval = setInterval(function () {
     server.status(function (err, stats) {
       if (err) throw err
-      printSwarmStatus(stats[dir])
+      printDownloadStatus(stats[dir])
     })
-  }
+  }, LOG_INTERVAL)
 }
 
-function printSwarmStatus (stats) {
-  if (stats.hasMetadata && stats.gettingMetadata) {
+function printDownloadStatus (stats) {
+  if (stats.gettingMetadata && !stats.hasMetadata) {
+    return getScanOutput(stats, chalk.bold.blue('Getting Metadata')) + '\n'
+  }
+  if (!stats.hasMetadata && stats.gettingMetadata) {
     // Print final metadata output
     var scanMsg = ''
     stats.gettingMetadata = false
@@ -170,14 +171,11 @@ function printSwarmStatus (stats) {
   }
 
   var msg = ''
+  if (!stats.total.bytesTotal) return chalk.bold('Connecting...\n')
+  printFileProgress(stats, {
+    returnMsg: true, message: 'Downloading Data'
+  })
   if (!stats.downloadComplete) {
-    if (!stats.total.bytesTotal) return chalk.bold('Connecting...\n')
-    if (stats.gettingMetadata && !stats.hasMetadata) {
-      return getScanOutput(stats, chalk.bold.blue('Getting Metadata')) + '\n'
-    }
-    printFileProgress(stats, {
-      returnMsg: true, message: 'Downloading Data'
-    })
     msg += chalk.bold('[Downloading] ')
     msg += chalk.underline.blue('dat://' + link + '\n')
     return
