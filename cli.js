@@ -25,8 +25,8 @@ var prettyBytes = require('pretty-bytes')
 var chalk = require('chalk')
 var xtend = require('xtend')
 var path = require('path')
+var dat = require('dat-server')
 
-var dat = require('./index.js')
 var usage = require('./usage')
 var getLogger = require('./logger.js')
 var doctor = require('./bin/doctor.js')
@@ -46,22 +46,18 @@ function runCommand () {
   if (!cmd) return usage('root.txt')
   var cwd = args.cwd || process.cwd()
 
-  var db = dat({home: args.home})
+  var server = dat()
 
   if (cmd === 'link') {
     var dirs = args._.slice(1)
     if (dirs.length === 0) onerror('No link created. Do you mean \'dat link .\'?')
     if (dirs.length === 1 && dirs[0].match(/^dat:/)) onerror('No link created. Did you mean `dat ' + dirs[0] + '` ?')
     if (dirs.length > 1) onerror('No link created. You can only provide one LOCATION. \n\n dat link LOCATION')
-    link(path.resolve(cwd, dirs[0]), db)
-  } else if (cmd === 'killall') {
-    autod(autodOpts, function (err, r, c) {
+    link(path.resolve(cwd, dirs[0]), server)
+  } else if (cmd === 'status') {
+    server.status(function (err, status) {
       if (err) throw err
-      r.close(function (err) {
-        if (err) throw err
-        db.close()
-        c.destroy()
-      })
+      console.log(status)
     })
   } else if (cmd) {
     var hash = args._[0]
@@ -72,9 +68,9 @@ function runCommand () {
     fs.exists(loc, function (exists) {
       if (!exists) {
         fs.mkdir(loc, function () {
-          download(hash, loc, db)
+          download(hash, loc, server)
         })
-      } else download(hash, loc, db)
+      } else download(hash, loc, server)
     })
   }
 }
@@ -84,55 +80,33 @@ function onerror (err, fatal) {
   process.exit(1)
 }
 
-function link (dir, db) {
+function link (dir, server) {
   var stats = {}
-  db.fileStats(dir, function (err, totalStats) {
+  function done (err, link) {
+    clearInterval(statsInterval)
     if (err) throw err
-    stats.total = totalStats
-    printScanProgress(stats, {done: true})
-
-    function done (err, link) {
-      printAddProgress(stats, {done: true})
+    server.join(link, dir, function (err) {
       if (err) throw err
-      startLink(link, dir, db)
-    }
-    var adder = db.addFiles(dir, done)
-    adder.on('data', function (data) {
-      stats = xtend(stats, data)
-      printScanProgress(stats)
-      printAddProgress(stats)
+      console.log(link, dir)
     })
-  })
+  }
+  server.link(dir, done)
+
+  var statsInterval = setInterval(function () {
+    server.status(function (err, statsProgress) {
+      if (err) throw err
+      stats = xtend(stats, statsProgress)
+      if (stats.total) {
+        printScanProgress(stats[dir])
+        printAddProgress(stats[dir])
+      }
+    })
+  }, LOG_INTERVAL)
 }
 
-function startLink (link, dir, db) {
-  var stats = {}
-  autod(autodOpts, function (err, rpc, conn) {
-    if (err) throw err
-    var seed = rpc.join(link, dir)
-    seed.on('end', function (err) {
-      if (err) throw err
-      stats.sharingLink = true
-      stats.swarm = db.swarm
-      STATS_TABLE[link] = stats
-      printSwarmStatus(link)
-      db.close()
-      conn.destroy()
-    })
-    seed.on('error', onerror)
-    seed.on('data', function (data) {
-      stats = xtend(stats, data)
-      stats.sharingLink = true
-      stats.swarm = db.swarm
-      STATS_TABLE[link] = stats
-      printSwarmStatus(link)
-    })
-  })
-}
-
-function download (link, loc, db) {
+function download (link, dir, server) {
   // download/share
-  link = db._normalize(link)
+  link = link.replace('dat://', '').replace('//', '')
   var opts = {}
   var parts = link.split(':')
   link = parts[0]
@@ -145,21 +119,9 @@ function download (link, loc, db) {
     logger.error('Error: Invalid dat link\n')
     return usage('root.txt')
   }
-  function done (err) {
+  server.join(link, dir, function (err) {
     if (err) throw err
-    STATS_TABLE[link].downloadComplete = true
-    printSwarmStatus(link)
-    db.close()
-  }
-  var stats = {}
-  var downloader = db.join(link, loc, done)
-  stats.gettingMetadata = true
-  downloader.on('data', function (data) {
-    stats = xtend(stats, data)
-    stats.downloading = true
-    stats.swarm = db.swarm
-    STATS_TABLE[link] = stats
-    printSwarmStatus(link)
+    console.log(link, dir)
   })
 }
 
@@ -254,7 +216,7 @@ function printFileProgress (stats, opts) {
   var msg = ''
 
   while (true) {
-    if (stats.fileQueue.length === 0) break
+    if (!stats.fileQueue || stats.fileQueue.length === 0) break
     var file = stats.fileQueue[0]
     msg = getSingleFileOutput(file)
     var complete = (file.stats.bytesTotal === file.stats.bytesRead)
