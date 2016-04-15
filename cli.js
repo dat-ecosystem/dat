@@ -80,28 +80,40 @@ function onerror (err, fatal) {
   process.exit(1)
 }
 
+function printSharingLink (stats) {
+  var msg = chalk.bold('[Sharing] ')
+  msg += chalk.underline.blue('dat://' + stats.link)
+  logger.log(msg)
+  if (args.quiet) console.log('dat://' + stats.link)
+}
+
 function link (dir, server) {
-  var stats = {}
   function done (err, link) {
-    clearInterval(statsInterval)
     if (err) throw err
     server.join(link, dir, function (err) {
       if (err) throw err
-      console.log(link, dir)
+      clearInterval(statsInterval)
+      server.status(function (err, stats) {
+        if (err) throw err
+        var msg = printFileProgress(stats[dir], {
+          returnMsg: true, message: 'Files Read to Dat'
+        })
+        logger.stdout(msg)
+        printSharingLink(stats[dir])
+      })
     })
   }
   server.link(dir, done)
 
-  var statsInterval = setInterval(function () {
-    server.status(function (err, statsProgress) {
+  var statsInterval = setInterval(printLinkStatus, LOG_INTERVAL)
+  function printLinkStatus () {
+    server.status(function (err, stats) {
       if (err) throw err
-      stats = xtend(stats, statsProgress)
-      if (stats.total) {
-        printScanProgress(stats[dir])
-        printAddProgress(stats[dir])
+      if (stats[dir] && stats[dir].total) {
+        printFileProgress(stats[dir], {message: 'Adding Files to Dat'})
       }
     })
-  }, LOG_INTERVAL)
+  }
 }
 
 function download (link, dir, server) {
@@ -128,22 +140,11 @@ function download (link, dir, server) {
 function printScanProgress (stats, opts) {
   if (!opts) opts = {}
   var statusText = chalk.bold.blue('Calculating Size')
-  if (opts.done) statusText = 'Creating Dat Link'
+  var done = (stats.bytesRead === stats.total.bytesTotal)
+  if (done) statusText = 'Creating Dat Link'
   var msg = getScanOutput(stats, statusText)
   logger.stdout(msg)
-  if (opts.done) logger.log('')
-}
-
-function printAddProgress (stats, opts) {
-  if (!opts) opts = {}
-  if (opts.done) {
-    var msg = printFileProgress(stats, {
-      returnMsg: true, message: 'Files Read to Dat'
-    })
-    logger.stdout(msg)
-  } else {
-    printFileProgress(stats, {message: 'Adding Files to Dat'})
-  }
+  if (done) logger.log('')
 }
 
 function printSwarmStatus (link) {
@@ -169,14 +170,6 @@ function printSwarmStatus (link) {
     return printFileProgress(stats, {
       returnMsg: true, message: 'Downloading Data'
     })
-  }
-  if (stats.sharingLink && !stats.printedSharingLink) {
-    msg += chalk.bold('[Sharing] ')
-    msg += chalk.underline.blue('dat://' + link + '\n')
-    logger.log(msg)
-    msg = ''
-    stats.printedSharingLink = true
-    if (args.quiet) console.log('dat://' + link)
   }
   if (stats.downloadComplete && !stats.printedDownloadComplete) {
     printFileProgress(stats, {
