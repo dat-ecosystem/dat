@@ -23,7 +23,7 @@
   "author": "max ogden",
   "license": "BSD-3-Clause",
   "dependencies": {
-
+    "cli-prompt": "^0.5.0"
   },
   "bugs": {
     "url": "https://github.com/maxogden/dat/issues"

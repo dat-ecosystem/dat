@@ -25,6 +25,7 @@ var prettyBytes = require('pretty-bytes')
 var chalk = require('chalk')
 var path = require('path')
 var dat = require('dat-server')
+var prompt = require('cli-prompt')
 
 var usage = require('./usage')
 var getLogger = require('./logger.js')
@@ -56,6 +57,20 @@ function runCommand () {
     server.status(function (err, status) {
       if (err) throw err
       printStatus(status)
+    })
+  } else if (cmd === 'stop') {
+    server.status(function (err, status) {
+      if (err) onerror(err)
+      var num = chalk.bold(Object.keys(status.dats).length)
+      prompt('This will stop ' + num + ' dats. Are you sure? [y/n] ', function (res) {
+        if (res === 'yes' || res === 'y') {
+          server.close(function (err) {
+            if (err) onerror(err)
+            console.log('Stopped serving ' + num + ' dats.')
+          })
+        }
+        else process.exit(0)
+      })
     })
   } else if (cmd) {
     var hash = args._[0]
