@@ -54,10 +54,7 @@ function runCommand () {
     if (dirs.length > 1) onerror('No link created. You can only provide one LOCATION. \n\n dat link LOCATION')
     link(path.resolve(cwd, dirs[0]), server)
   } else if (cmd === 'status') {
-    server.status(function (err, status) {
-      if (err) throw err
-      printStatus(status)
-    })
+    printStatus(server)
   } else if (cmd === 'stop') {
     server.status(function (err, status) {
       if (err) onerror(err)
@@ -302,22 +299,25 @@ function getTotalProgressOutput (stats, statusText, msg) {
   return msg
 }
 
-function printStatus (status) {
-  var count = '0'
-  var activePeers = status.swarm.connections.length
-  var totalPeers = status.swarm.connecting + status.swarm.connections.length
-  if (activePeers > 0) count = activePeers + '/' + totalPeers
-  var keys = Object.keys(status.dats)
-  var msg = chalk.bold('[Status] ') + 'Sharing ' + chalk.bold(keys.length) + ' Dats, connected to ' + chalk.bold(count) + ' sources\n'
-  logger.log(msg)
-  if (keys.length === 0) return
-  for (var key in keys) {
-    var dir = keys[key]
-    var dat = status.dats[dir]
-    msg = ''
-    msg += chalk.bold(dir) + '\n'
-    msg += chalk.underline.blue('dat://' + dat.link) + '\n'
-    msg += getTotalProgressOutput(dat, '')
+function printStatus (server) {
+  server.status(function (err, status) {
+    if (err) throw err
+    var count = '0'
+    var activePeers = status.swarm.connections.length
+    var totalPeers = status.swarm.connecting + status.swarm.connections.length
+    if (activePeers > 0) count = activePeers + '/' + totalPeers
+    var keys = Object.keys(status.dats)
+    var msg = chalk.bold('[Status] ') + 'Sharing ' + chalk.bold(keys.length) + ' Dats, connected to ' + chalk.bold(count) + ' sources\n'
     logger.log(msg)
-  }
+    if (keys.length === 0) return
+    for (var key in keys) {
+      var dir = keys[key]
+      var dat = status.dats[dir]
+      msg = ''
+      msg += chalk.bold(dir) + '\n'
+      msg += chalk.underline.blue('dat://' + dat.link) + '\n'
+      msg += getTotalProgressOutput(dat, '')
+      logger.log(msg)
+    }
+  })
 }
