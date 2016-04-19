@@ -61,16 +61,26 @@ function runCommand () {
   } else if (cmd === 'stop') {
     server.status(function (err, status) {
       if (err) onerror(err)
-      var num = chalk.bold(Object.keys(status.dats).length)
-      prompt('This will stop ' + num + ' dats. Are you sure? [y/n] ', function (res) {
-        if (res === 'yes' || res === 'y') {
-          server.close(function (err) {
-            if (err) onerror(err)
-            console.log('Stopped serving ' + num + ' dats.')
-          })
-        }
-        else process.exit(0)
-      })
+      var dir = args._[1]
+      var dat = status.dats[dir]
+      if (dir && !dat) return onerror('Not sharing a dat for that directory.')
+      if (dat) {
+        server.leave(dir, function (err) {
+          if (err) onerror(err)
+          logger.log(chalk.green('[Success]') + ' Stopped serving ' + chalk.bold(dir))
+        })
+      } else {
+        var num = chalk.bold(Object.keys(status.dats).length)
+        prompt('This will stop ' + num + ' dats. Are you sure? [y/n] ', function (res) {
+          if (res === 'yes' || res === 'y') {
+            server.close(function (err) {
+              if (err) onerror(err)
+              logger.log(chalk.green('[Success] ') + 'Stopped serving ' + num + ' dats.')
+            })
+          }
+          else process.exit(0)
+        })
+      }
     })
   } else if (cmd) {
     var hash = args._[0]
