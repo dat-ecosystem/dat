@@ -55,7 +55,7 @@ function runCommand () {
   } else if (cmd === 'status') {
     server.status(function (err, status) {
       if (err) throw err
-      console.log(status)
+      printStatus(status)
     })
   } else if (cmd) {
     var hash = args._[0]
@@ -91,8 +91,10 @@ function link (dir, server) {
     server.join(link, dir, function (err) {
       if (err) throw err
       clearInterval(statsInterval)
-      server.status(function (err, stats) {
+      server.status(function (err, status) {
         if (err) throw err
+        var stats = status.dats
+        if (!stats[dir]) return
         var msg = printFileProgress(stats[dir], {
           returnMsg: true, message: 'Files Read to Dat'
         })
@@ -106,21 +108,20 @@ function link (dir, server) {
   var statsInterval = setInterval(printLinkStatus, LOG_INTERVAL)
   var linking = false
   function printLinkStatus () {
-    server.status(function (err, stats) {
+    server.status(function (err, status) {
       if (err) throw err
-      if (stats[dir]) {
-        if (stats[dir].total && linking) return printFileProgress(stats[dir], {message: 'Adding Files to Dat'})
+      var stats = status.dats
+      if (!stats[dir]) return
+      if (stats[dir].total && linking) return printFileProgress(stats[dir], {message: 'Adding Files to Dat'})
+      var statusText
+      if (stats[dir].total) statusText = 'Creating Dat Link'
+      else statusText = chalk.bold.blue('Calculating Size')
 
-        var statusText
-        if (stats[dir].total) statusText = 'Creating Dat Link'
-        else statusText = chalk.bold.blue('Calculating Size')
-
-        var msg = getScanOutput(stats[dir], statusText)
-        logger.stdout(msg)
-        if (stats[dir].total) {
-          logger.log('')
-          linking = true
-        }
+      var msg = getScanOutput(stats[dir], statusText)
+      logger.stdout(msg)
+      if (stats[dir].total) {
+        logger.log('')
+        linking = true
       }
     })
   }
@@ -145,14 +146,14 @@ function download (link, dir, server) {
     if (err) throw err
     server.status(function (err, stats) {
       if (err) throw err
-      printSharingLink(stats[dir])
+      printSharingLink(stats.dats[dir])
       clearInterval(downloadInterval)
     })
   })
   var downloadInterval = setInterval(function () {
     server.status(function (err, stats) {
       if (err) throw err
-      printDownloadStatus(stats[dir])
+      printDownloadStatus(stats.dats[dir])
     })
   }, LOG_INTERVAL)
 }
@@ -265,7 +266,7 @@ function getTotalProgressOutput (stats, statusText, msg) {
   else if (totalPer >= 0) msg += chalk.bold.dim('[' + ('  ' + totalPer).slice(-3) + '%] ')
   else msg += '        '
   msg += chalk.dim(
-    statusText + ': ' + fileProgress + ' of ' + stats.total.filesTotal +
+    fileProgress + ' of ' + stats.total.filesTotal + ' files' +
     chalk.dim(
       ' (' + prettyBytes(bytesProgress) +
       ' of ' + prettyBytes(stats.total.bytesTotal) + ') '
@@ -276,17 +277,22 @@ function getTotalProgressOutput (stats, statusText, msg) {
   return msg
 }
 
-function printConnectionStatus (swarm) {
-  swarm.on('connection', print)
-  swarm.on('peer', print)
-  swarm.on('drop', print)
-  print()
-  function print () {
-    var count = '0'
-    var activePeers = swarm.connections.length
-    var totalPeers = swarm.connecting + swarm.connections.length
-    if (activePeers > 0) count = activePeers + '/' + totalPeers
-    var msg = chalk.bold('[Status] ') + 'Connected to ' + chalk.bold(count) + ' sources'
-    logger.stdout(msg + '\n')
+function printStatus (status) {
+  var count = '0'
+  var activePeers = status.swarm.connections.length
+  var totalPeers = status.swarm.connecting + status.swarm.connections.length
+  if (activePeers > 0) count = activePeers + '/' + totalPeers
+  var keys = Object.keys(status.dats)
+  var msg = chalk.bold('[Status] ') + 'Sharing ' + chalk.bold(keys.length) + ' Dats, connected to ' + chalk.bold(count) + ' sources\n'
+  logger.log(msg)
+  if (keys.length === 0) return
+  for (var key in keys) {
+    var dir = keys[key]
+    var dat = status.dats[dir]
+    msg = ''
+    msg += chalk.bold(dir) + '\n'
+    msg += chalk.underline.blue('dat://' + dat.link) + '\n'
+    msg += getTotalProgressOutput(dat, '')
+    logger.log(msg)
   }
 }
