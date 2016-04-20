@@ -55,6 +55,17 @@ function runCommand () {
     link(path.resolve(cwd, dirs[0]), server)
   } else if (cmd === 'status') {
     printStatus(server)
+  } else if (cmd === 'start') {
+    server.status(function (err, status) {
+      if (err) onerror(err)
+      var dir = args._[1]
+      var dat = status.dats[dir]
+      if (dir && !dat) return onerror('Create a link for that directory first.')
+      server.join(dat.link, dir, function (err) {
+        if (err) onerror(err)
+        logger.log(chalk.green('[Success]') + ' Started ' + chalk.bold(dir))
+      })
+    })
   } else if (cmd === 'stop') {
     server.status(function (err, status) {
       if (err) onerror(err)
@@ -284,7 +295,7 @@ function getTotalProgressOutput (stats, statusText, msg) {
   var fileProgress = stats.progress.filesRead
   var totalPer = Math.floor(100 * (bytesProgress / stats.total.bytesTotal))
 
-  if (totalPer === 100) msg += chalk.bold.green('[Done] ')
+  if (totalPer === 100) msg += chalk.bold.green('[' + stats.state + '] ')
   else if (totalPer >= 0) msg += chalk.bold.dim('[' + ('  ' + totalPer).slice(-3) + '%] ')
   else msg += '        '
   msg += chalk.dim(
@@ -307,7 +318,7 @@ function printStatus (server) {
     var totalPeers = status.swarm.connecting + status.swarm.connections.length
     if (activePeers > 0) count = activePeers + '/' + totalPeers
     var keys = Object.keys(status.dats)
-    var msg = chalk.bold('[Status] ') + 'Sharing ' + chalk.bold(keys.length) + ' Dats, connected to ' + chalk.bold(count) + ' sources\n'
+    var msg = 'Sharing ' + chalk.bold(keys.length) + ' Dats, connected to ' + chalk.bold(count) + ' sources\n'
     logger.log(msg)
     if (keys.length === 0) return
     for (var key in keys) {
