@@ -107,7 +107,7 @@ function runCommand () {
 }
 
 function onerror (err, fatal) {
-  logger.error(err.message || err)
+  console.trace(err)
   process.exit(1)
 }
 
@@ -120,7 +120,7 @@ function printSharingLink (stats) {
 
 function link (dir, server) {
   function done (err, link) {
-    if (err) throw err
+    if (err) onerror(err)
     server.join(link, dir, function (err) {
       if (err) throw err
       clearInterval(statsInterval)
@@ -142,7 +142,7 @@ function link (dir, server) {
   var linking = false
   function printLinkStatus () {
     server.status(function (err, status) {
-      if (err) throw err
+      if (err) onerror(err)
       var stats = status.dats
       if (!stats[dir]) return
       if (stats[dir].total && linking) return printFileProgress(stats[dir], {message: 'Adding Files to Dat'})
