@@ -52,16 +52,8 @@ Go into a directory and type
 
 ```
 $ dat link mydata/
-Creating Dat Link (7 files, 1 folders, 3.92 MB total)
-[Done] MFGEmployees4.csv
-[Done] MFGAbsences-part2.r
-[Done] MFGAbsences-part1.R
-[Done] Absenteeism-Part2.pdf
-[Done] Absenteeism-Part2.Rmd
-[Done] Absenteeism-Part1.pdf
-[Done] Absenteeism-Part1.Rmd
-[Done] 7 of 7 files (3.92 MB of 3.92 MB)
-[Sharing] dat://4190f843d69ce8e38e28f166798a9b03c1ba6c65a504511b1d24be12bd150f14
+Creating Dat Link (399 files, 20 folders, 1.68 GB total)
+[Sharing] dat://ed46e4f34d8d0ac851662e95f0e86a34fbd01dd0edc11dfdedc591dd37b2ed1a
 ```
 
 You are now serving that data from your computer over a peer to peer network.
@@ -69,9 +61,8 @@ You are now serving that data from your computer over a peer to peer network.
 Copy the dat URL (`dat://..`). Anyone can now download that data by using `dat`
 
 ```
-$ dat dat://somehash mydata
+$ dat dat://somehash downloads
 Downloading Data (399 files, 41 folders, 1.68 GB total)
-$ 
 ```
 
 Dat will start downloading the data into `downloads`.
@@ -80,11 +71,21 @@ You can see the progress of your download by typing
 ```
 $ dat status
 [active]
-/Users/karissa/Downloads
+/Users/karissa/downloads
 dat://ed46e4f34d8d0ac851662e95f0e86a34fbd01dd0edc11dfdedc591dd37b2ed1a
 [ 29%] 20 of 399 files (503.52 MB of 1.68 GB)
 1.68 GB
 ```
+
+Once the download is complete, dat will continue to serve that data to the public.
+
+You can stop sharing a dat to the public:
+
+```
+$ dat stop /Users/karissa/downloads
+[Success] Stopped serving /Users/karissa/downloads
+```
+
 
 You can share some more data:
 
@@ -101,21 +102,14 @@ And see the status of your local dats:
 ```
 $ dat status
 [Active]
-/Users/karissa/Downloads/People Analytics - An Example Using R
+/Users/karissa/downloads
 dat://4190f843d69ce8e38e28f166798a9b03c1ba6c65a504511b1d24be12bd150f14
- 8 of 8 files (3.92 MB of 3.92 MB)
+1.68 GB
 
 [Active]
-/Users/karissa/Downloads/data
+/path/to/some/more/data
 dat://ed46e4f34d8d0ac851662e95f0e86a34fbd01dd0edc11dfdedc591dd37b2ed1a
 1 of 1 files (83.66 MB of 83.66 MB)
-```
-
-Stop sharing a dat to the public:
-
-```
-$ dat stop /Users/karissa/Downloads/data
-[Success] Stopped serving /Users/karissa/Downloads/data
 ```
 
 Stop sharing all dats:
