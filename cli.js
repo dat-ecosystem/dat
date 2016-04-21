@@ -79,7 +79,7 @@ function runCommand () {
         })
       } else {
         var num = chalk.bold(Object.keys(status.dats).length)
-        prompt('This will stop ' + num + ' dats. Are you sure? [y/n] ', function (res) {
+        prompt('This will stop ' + num + ' dats. Are you sure? [y/n]: ', function (res) {
           if (res === 'yes' || res === 'y') {
             server.close(function (err) {
               if (err) onerror(err)
@@ -175,62 +175,26 @@ function download (link, dir, server) {
     logger.error('Error: Invalid dat link\n')
     return usage('root.txt')
   }
-  server.join(link, dir, function (err) {
-    if (err) throw err
-    server.status(function (err, stats) {
-      if (err) throw err
-      printSharingLink(stats.dats[dir])
-      clearInterval(downloadInterval)
-    })
-  })
+  logger.stdout(chalk.bold('Connecting...\n'))
+  server.join(link, dir, {wait: false})
   var downloadInterval = setInterval(function () {
-    server.status(function (err, stats) {
+    server.status(function (err, status) {
       if (err) throw err
-      printDownloadStatus(stats.dats[dir])
+      var stats = status.dats[dir]
+      if (stats.gettingMetadata && !stats.hasMetadata) {
+        return getScanOutput(stats, chalk.bold.blue('Getting Metadata')) + '\n'
+      }
+      if (stats.hasMetadata) {
+        // Print final metadata output
+        var scanMsg = ''
+        stats.gettingMetadata = false
+        scanMsg = getScanOutput(stats, 'Downloading Data')
+        logger.stdout(scanMsg)
+        logger.log('')
+        clearInterval(downloadInterval)
+      }
     })
   }, LOG_INTERVAL)
-}
-
-function printDownloadStatus (stats) {
-  if (stats.gettingMetadata && !stats.hasMetadata) {
-    return getScanOutput(stats, chalk.bold.blue('Getting Metadata')) + '\n'
-  }
-  if (!stats.hasMetadata && stats.gettingMetadata) {
-    // Print final metadata output
-    var scanMsg = ''
-    stats.gettingMetadata = false
-    scanMsg = getScanOutput(stats, 'Downloading Data')
-    logger.stdout(scanMsg)
-    logger.log('')
-  }
-
-  var msg = ''
-  if (!stats.total.bytesTotal) return chalk.bold('Connecting...\n')
-  printFileProgress(stats, {
-    returnMsg: true, message: 'Downloading Data'
-  })
-  if (!stats.downloadComplete) {
-    msg += chalk.bold('[Downloading] ')
-    msg += chalk.underline.blue('dat://' + link + '\n')
-    return
-  }
-  if (!stats.printedDownloadComplete) {
-    printFileProgress(stats, {
-      returnMsg: true, showFilesOnly: true
-    })
-    msg = chalk.bold.green('[Done] ')
-    msg += chalk.bold(
-      'Downloaded ' + prettyBytes(stats.progress.bytesRead) + ' '
-    )
-    msg += '\n'
-    msg += chalk.bold('[Sharing] ')
-    msg += chalk.underline.blue('dat://' + link)
-    logger.log(msg)
-    msg = ''
-    stats.printedDownloadComplete = true
-    if (args.quiet) console.log('Downloaded successfully.')
-    // printConnectionStatus(stats.swarm)
-  }
 }
 
 function getScanOutput (stats, statusMsg) {
@@ -295,7 +259,7 @@ function getTotalProgressOutput (stats, statusText, msg) {
   var fileProgress = stats.progress.filesRead
   var totalPer = Math.floor(100 * (bytesProgress / stats.total.bytesTotal))
 
-  if (totalPer === 100) msg += chalk.bold.green('[' + stats.state + '] ')
+  if (totalPer === 100) msg += chalk.bold.green('[Done] ')
   else if (totalPer >= 0) msg += chalk.bold.dim('[' + ('  ' + totalPer).slice(-3) + '%] ')
   else msg += '        '
   msg += chalk.dim(
@@ -325,9 +289,11 @@ function printStatus (server) {
       var dir = keys[key]
       var dat = status.dats[dir]
       msg = ''
-      msg += chalk.bold(dir) + '\n'
+      msg += chalk.bold('[' + dat.state + ']\n')
+      msg += dir + '\n'
       msg += chalk.underline.blue('dat://' + dat.link) + '\n'
-      msg += getTotalProgressOutput(dat, '')
+      if (dat.progress.bytesRead !== dat.total.bytesTotal) msg += getTotalProgressOutput(dat, '')
+      msg += prettyBytes(dat.total.bytesTotal) + '\n'
       logger.log(msg)
     }
   })
