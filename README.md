@@ -101,12 +101,12 @@ And see the status of your local dats:
 
 ```
 $ dat status
-[Active]
+[inactive]
 /Users/karissa/downloads
 dat://4190f843d69ce8e38e28f166798a9b03c1ba6c65a504511b1d24be12bd150f14
 1.68 GB
 
-[Active]
+[active]
 /path/to/some/more/data
 dat://ed46e4f34d8d0ac851662e95f0e86a34fbd01dd0edc11dfdedc591dd37b2ed1a
 1 of 1 files (83.66 MB of 83.66 MB)
