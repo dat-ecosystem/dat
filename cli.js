@@ -147,7 +147,7 @@ function link (dir, server) {
       if (!stats[dir]) return
       if (stats[dir].total && linking) return printFileProgress(stats[dir], {message: 'Adding Files to Dat'})
       var statusText
-      if (stats[dir].total) statusText = 'Creating Dat Link'
+      if (stats[dir].total) statusText = chalk.green('[Creating Dat Link]')
       else statusText = chalk.bold.blue('Calculating Size')
 
       var msg = getScanOutput(stats[dir], statusText)
@@ -176,7 +176,9 @@ function download (link, dir, server) {
     return usage('root.txt')
   }
   logger.stdout(chalk.bold('Connecting...\n'))
-  server.join(link, dir, {wait: false})
+  server.joinSync(link, dir, function (err) {
+    if (err) onerror(err)
+  })
   var downloadInterval = setInterval(function () {
     server.status(function (err, status) {
       if (err) throw err
@@ -188,9 +190,10 @@ function download (link, dir, server) {
         // Print final metadata output
         var scanMsg = ''
         stats.gettingMetadata = false
-        scanMsg = getScanOutput(stats, 'Downloading Data')
+        scanMsg = getScanOutput(stats, chalk.green('[Downloading]'))
         logger.stdout(scanMsg)
         logger.log('')
+        logger.log('Type ' + chalk.bold('dat status') + ' to see download progress.')
         clearInterval(downloadInterval)
       }
     })
@@ -200,9 +203,9 @@ function download (link, dir, server) {
 function getScanOutput (stats, statusMsg) {
   if (!statusMsg) statusMsg = chalk.bold.green('Scan Progress')
   var dirCount = stats.total.directories
-  return statusMsg + ' ' + chalk.bold(
-    '(' + stats.total.filesTotal + ' files, ' + dirCount + ' folders, ' +
-    (stats.total.bytesTotal ? prettyBytes(stats.total.bytesTotal) + ' total' : '') + ')'
+  return statusMsg + ' ' + chalk.dim(
+    stats.total.filesTotal + ' files, ' + dirCount + ' folders, ' +
+    (stats.total.bytesTotal ? prettyBytes(stats.total.bytesTotal) + ' total' : '')
   )
 }
 
