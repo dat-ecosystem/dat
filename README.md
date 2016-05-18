@@ -51,19 +51,72 @@ This should add a `dat` command line command to your PATH. Now you can run the `
 Go into a directory and type
 
 ```
-$ cd mydata/
-$ dat link
-Creating share link for 4 files in 1 directories. 18.54 kB total.
-dat://9d011b6c9de26e53e9961c8d8ea840d33e0d8408318332c9502bad112cad9989
-Serving data on port 3282 (0 connections)
+$ dat link mydata/
+Creating Dat Link (399 files, 20 folders, 1.68 GB total)
+[Sharing] dat://ed46e4f34d8d0ac851662e95f0e86a34fbd01dd0edc11dfdedc591dd37b2ed1a
 ```
 
-You are now publishing that data from your computer and it will be publicly accessible as long as your terminal is open. Your friend can get that data like this:
+You are now serving that data from your computer over a peer to peer network.
+
+Copy the dat URL (`dat://..`). Anyone can now download that data by using `dat`
 
 ```
-$ dat dat://9d011b6c9de26e53e9961c8d8ea840d33e0d8408318332c9502bad112cad9989
+$ dat dat://somehash downloads
+Downloading Data (399 files, 41 folders, 1.68 GB total)
 ```
 
-It will start downloading the data into the current location. It will also upload that data to others as long as the terminal is open. Anyone who gets access to the unique dat link will be able to download and re-host a copy of the data. It's distributed mad science!
+Dat will start downloading the data into `downloads`.
+
+You can see the progress of your download by typing
+```
+$ dat status
+[active]
+/Users/karissa/downloads
+dat://ed46e4f34d8d0ac851662e95f0e86a34fbd01dd0edc11dfdedc591dd37b2ed1a
+[ 29%] 20 of 399 files (503.52 MB of 1.68 GB)
+1.68 GB
+```
+
+Once the download is complete, dat will continue to serve that data to the public.
+
+You can stop sharing a dat to the public:
+
+```
+$ dat stop /Users/karissa/downloads
+[Success] Stopped serving /Users/karissa/downloads
+```
+
+
+You can share some more data:
+
+```
+$ dat link /path/to/some/more/data
+Creating Dat Link (1 files, 2 folders, 83.66 MB total)
+[Done] atom-mac.zip
+[Done] 1 of 1 files (83.66 MB of 83.66 MB)
+[Sharing] dat://ed46e4f34d8d0ac851662e95f0e86a34fbd01dd0edc11dfdedc591dd37b2ed1a
+```
+
+And see the status of your local dats:
+
+```
+$ dat status
+[inactive]
+/Users/karissa/downloads
+dat://4190f843d69ce8e38e28f166798a9b03c1ba6c65a504511b1d24be12bd150f14
+1.68 GB
+
+[active]
+/path/to/some/more/data
+dat://ed46e4f34d8d0ac851662e95f0e86a34fbd01dd0edc11dfdedc591dd37b2ed1a
+1 of 1 files (83.66 MB of 83.66 MB)
+```
+
+Stop sharing all dats:
+```
+$ dat stop
+This will stop 2 dats. Are you sure? [y/n]: y
+[Success] Stopped serving 2 dats.
+```
 
 For more information, see the [full project documentation here](http://dat-data.readthedocs.org).

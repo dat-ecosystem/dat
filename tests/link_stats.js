@@ -20,8 +20,8 @@ test('prints correct file & directory stats', function (t) {
     var stats = output.split('(')[1]
     var fileNum = stats.match(/\d+/g)[0]
     var dirNum = stats.match(/\d+/g)[1]
-    t.ok(Number(fileNum) === 2, 'file number is 2')
-    t.ok(Number(dirNum) === 3, 'directory number is 3')
+    t.equal(Number(fileNum), 2, 'file number is 2')
+    t.equal(Number(dirNum), 2, 'directory number is 2')
 
     if (fileNum && dirNum) {
       st.kill()

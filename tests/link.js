@@ -25,7 +25,7 @@ test('prints link', function (t) {
 })
 
 test('link with no args defaults to cwd', function (t) {
-  var st = spawn(t, dat + ' link --home=' + tmp, {cwd: dat1})
+  var st = spawn(t, dat + ' link . --home=' + tmp, {cwd: dat1})
   st.stdout.match(function (output) {
     var contains = output.indexOf('dat://') > -1
     if (!contains) return false
@@ -51,7 +51,7 @@ test('link with . arg defaults to cwd', function (t) {
 test('link with dat uri suggests correct usage', function (t) {
   var st = spawn(t, dat + ' link dat://deadbeefcafe')
   st.stderr.match(function (output) {
-    t.equal(output, 'Do you mean `dat dat://deadbeefcafe` ?\n')
+    t.equal(output, 'No links created. Did you mean `dat dat://deadbeefcafe` ?\n')
     st.kill()
     return true
   })
@@ -68,7 +68,7 @@ test('connects if link process starts second', function (t) {
   mkdirp.sync(dat2)
 
   fs.writeFileSync(dat1 + '/foo.txt', new Buffer('hello world'))
-  var linkCmd = dat + ' link --home=' + tmp + ' --path=' + dat1
+  var linkCmd = dat + ' link . --home=' + tmp + ' --cwd=' + dat1
   var linker = spawn(t, linkCmd, {end: false})
   linker.stderr.empty()
   linker.stdout.match(function (output) {
@@ -84,7 +84,7 @@ test('connects if link process starts second', function (t) {
   })
 
   function startClone () {
-    var cloner = spawn(t, dat + ' ' + link + ' --home=' + tmp + ' --path=' + dat2, {end: false})
+    var cloner = spawn(t, dat + ' ' + link + ' . --home=' + tmp + ' --cwd=' + dat2, {end: false})
     cloner.timeout(10000, 'waited 10 seconds and download didnt start')
 
     cloner.stdout.match(function (output) {
@@ -106,7 +106,7 @@ test('connects if link process starts second', function (t) {
   }
 
   function startRelinking () {
-    var relinker = spawn(t, dat + ' link --home=' + tmp + ' --path=' + dat1, {end: false})
+    var relinker = spawn(t, dat + ' link . --home=' + tmp + ' --cwd=' + dat1, {end: false})
     return relinker
   }
 })

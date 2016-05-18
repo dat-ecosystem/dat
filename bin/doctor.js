@@ -2,7 +2,7 @@ var dns = require('dns-discovery')
 var swarm = require('discovery-swarm')
 var crypto = require('crypto')
 var pump = require('pump')
-var dat = require('../index.js')
+var dat = require('dat-server')
 
 module.exports = function (args) {
   var client = dns({

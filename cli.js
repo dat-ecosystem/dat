@@ -23,8 +23,10 @@ if (args.version) {
 var fs = require('fs')
 var prettyBytes = require('pretty-bytes')
 var chalk = require('chalk')
-var xtend = require('xtend')
-var dat = require('./index.js')
+var path = require('path')
+var dat = require('dat-server')
+var prompt = require('cli-prompt')
+
 var usage = require('./usage')
 var getLogger = require('./logger.js')
 var doctor = require('./bin/doctor.js')
@@ -36,222 +38,174 @@ var LOG_INTERVAL = (args.logspeed ? +args.logspeed : 200)
 if (isNaN(LOG_INTERVAL)) LOG_INTERVAL = 200
 if (!args.color) chalk = new chalk.constructor({enabled: false})
 
-checkLocation()
+runCommand()
 
-function checkLocation () {
-  var loc = process.cwd()
-  if (!args.path) return runCommand(loc)
-  loc = args.path
-  fs.exists(loc, function (exists) {
-    if (!exists) {
-      fs.mkdir(loc, function () {
-        runCommand(loc)
-      })
-    }
-    return runCommand(loc)
-  })
-}
-
-function runCommand (loc) {
+function runCommand () {
   if (args.doctor) return doctor(args)
   if (!cmd) return usage('root.txt')
+  var cwd = args.cwd || process.cwd()
 
-  var db = dat({home: args.home})
+  var server = dat()
 
-  if (cmd === 'link') link(loc, db)
-  else if (cmd === 'list') list(loc, db)
-  else if (cmd) download(loc, db)
-}
-
-function link (loc, db) {
-  var dirs = args._.slice(1)
-  if (dirs.length === 1 && dirs[0].match(/^dat:/)) {
-    console.error('Do you mean `dat ' + dirs[0] + '` ?')
-    process.exit(1)
-  }
-
-  if (dirs.length === 0) dirs = loc
-  for (var i = 0; i < dirs.length; i++) {
-    var dir = dirs[i]
-    if (dir === '.') dirs[i] = loc
-  }
-
-  var stats = {}
-
-  stats.total = db.fileStats(dirs, function (err) {
-    if (err) throw err
-    printScanProgress(stats, {done: true})
-    clearInterval(scanInterval)
-    var statsProgress = db.addFiles(dirs, function (err, link) {
-      printAddProgress(stats, {done: true})
-      clearInterval(addInterval)
-      if (err) throw err
-      db.joinTcpSwarm({link: link, port: args.port}, function (_err, swarm) {
-        // ignore _err
-        stats.swarm = swarm
-        swarm.sharingLink = true
-        startProgressLogging(stats)
+  if (cmd === 'link') {
+    var dirs = args._.slice(1)
+    if (dirs.length === 0) onerror('No link created. Do you mean \'dat link .\'?')
+    if (dirs.length === 1 && dirs[0].match(/^dat:/)) onerror('No link created. Did you mean `dat ' + dirs[0] + '` ?')
+    if (dirs.length > 1) onerror('No link created. You can only provide one LOCATION. \n\n dat link LOCATION')
+    link(path.resolve(cwd, dirs[0]), server)
+  } else if (cmd === 'status') {
+    printStatus(server)
+  } else if (cmd === 'start') {
+    server.status(function (err, status) {
+      if (err) onerror(err)
+      var dir = args._[1]
+      var dat = status.dats[dir]
+      if (dir && !dat) return onerror('Create a link for that directory first.')
+      server.join(dat.link, dir, function (err) {
+        if (err) onerror(err)
+        logger.log(chalk.green('[Success]') + ' Started ' + chalk.bold(dir))
       })
     })
-    stats = xtend(stats, statsProgress)
-
-    var addInterval = setInterval(function () {
-      printAddProgress(stats)
-    }, LOG_INTERVAL)
-  })
-
-  var scanInterval = setInterval(function () {
-    printScanProgress(stats)
-  }, LOG_INTERVAL)
+  } else if (cmd === 'stop') {
+    server.status(function (err, status) {
+      if (err) onerror(err)
+      var dir = args._[1]
+      var dat = status.dats[dir]
+      if (dir && !dat) return onerror('Not sharing a dat for that directory.')
+      if (dat) {
+        server.leave(dir, function (err) {
+          if (err) onerror(err)
+          logger.log(chalk.green('[Success]') + ' Stopped serving ' + chalk.bold(dir))
+        })
+      } else {
+        var num = chalk.bold(Object.keys(status.dats).length)
+        prompt('This will stop ' + num + ' dats. Are you sure? [y/n]: ', function (res) {
+          if (res === 'yes' || res === 'y') {
+            server.close(function (err) {
+              if (err) onerror(err)
+              logger.log(chalk.green('[Success] ') + 'Stopped serving ' + num + ' dats.')
+            })
+          }
+          else process.exit(0)
+        })
+      }
+    })
+  } else if (cmd) {
+    var hash = args._[0]
+    if (!hash) return usage('root.txt')
+    var loc = args.path || args._[1]
+    if (!loc) return onerror('No download started. Make sure you specify a LOCATION: \n\n  dat LINK LOCATION\n')
+    loc = path.resolve(cwd, loc)
+    fs.exists(loc, function (exists) {
+      if (!exists) {
+        fs.mkdir(loc, function () {
+          download(hash, loc, server)
+        })
+      } else download(hash, loc, server)
+    })
+  }
 }
 
-function list (loc, db) {
-  var hash = args._[1]
-  db.joinTcpSwarm({link: hash, port: args.port}, function (err, swarm) {
-    if (err) throw err
-    var archive = db.drive.get(swarm.link, loc)
-    archive.ready(function (err) {
+function onerror (err, fatal) {
+  console.trace(err)
+  process.exit(1)
+}
+
+function printSharingLink (stats) {
+  var msg = chalk.bold('[Sharing] ')
+  msg += chalk.underline.blue('dat://' + stats.link)
+  logger.log(msg)
+  if (args.quiet) console.log('dat://' + stats.link)
+}
+
+function link (dir, server) {
+  function done (err, link) {
+    if (err) onerror(err)
+    server.join(link, dir, function (err) {
       if (err) throw err
-      archive.createEntryStream().on('data', function (o) {
-        logger.log(o)
+      clearInterval(statsInterval)
+      server.status(function (err, status) {
+        if (err) throw err
+        var stats = status.dats
+        if (!stats[dir]) return
+        var msg = printFileProgress(stats[dir], {
+          returnMsg: true, message: 'Files Read to Dat'
+        })
+        logger.stdout(msg)
+        printSharingLink(stats[dir])
       })
     })
-  })
+  }
+  server.link(dir, done)
+
+  var statsInterval = setInterval(printLinkStatus, LOG_INTERVAL)
+  var linking = false
+  function printLinkStatus () {
+    server.status(function (err, status) {
+      if (err) onerror(err)
+      var stats = status.dats
+      if (!stats[dir]) return
+      if (stats[dir].total && linking) return printFileProgress(stats[dir], {message: 'Adding Files to Dat'})
+      var statusText
+      if (stats[dir].total) statusText = chalk.green('[Creating Dat Link]')
+      else statusText = chalk.bold.blue('Calculating Size')
+
+      var msg = getScanOutput(stats[dir], statusText)
+      logger.stdout(msg)
+      if (stats[dir].total) {
+        logger.log('')
+        linking = true
+      }
+    })
+  }
 }
 
-function download (loc, db) {
+function download (link, dir, server) {
   // download/share
-  var hash = args._[0]
-  if (!hash) return usage('root.txt')
-  hash = hash.trim().replace('dat://', '').replace('dat:', '')
+  link = link.replace('dat://', '').replace('//', '')
   var opts = {}
-  var parts = hash.split(':')
-  hash = parts[0]
+  var parts = link.split(':')
+  link = parts[0]
   if (parts.length > 1) {
     var selections = parts[parts.length - 1].split(',')
     opts.files = []
     for (var i = 0; i < selections.length; i++) opts.files.push(selections[i])
   }
-  if (hash.length !== 64) {
+  if (link.length !== 64) {
     logger.error('Error: Invalid dat link\n')
     return usage('root.txt')
   }
-  var downloadStats = db.download(hash, loc, opts, function (err, swarm) {
-    if (err) throw err
-    swarm.downloading = false
-    swarm.downloadComplete = true
+  logger.stdout(chalk.bold('Connecting...\n'))
+  server.joinSync(link, dir, function (err) {
+    if (err) onerror(err)
   })
-  startProgressLogging(downloadStats)
-}
-
-function startProgressLogging (stats) {
-  setInterval(function () {
-    printSwarmStatus(stats)
+  var downloadInterval = setInterval(function () {
+    server.status(function (err, status) {
+      if (err) throw err
+      var stats = status.dats[dir]
+      if (stats.gettingMetadata && !stats.hasMetadata) {
+        return getScanOutput(stats, chalk.bold.blue('Getting Metadata')) + '\n'
+      }
+      if (stats.hasMetadata) {
+        // Print final metadata output
+        var scanMsg = ''
+        stats.gettingMetadata = false
+        scanMsg = getScanOutput(stats, chalk.green('[Downloading]'))
+        logger.stdout(scanMsg)
+        logger.log('')
+        logger.log('Type ' + chalk.bold('dat status') + ' to see download progress.')
+        clearInterval(downloadInterval)
+      }
+    })
   }, LOG_INTERVAL)
-  printSwarmStatus(stats)
-}
-
-function printScanProgress (stats, opts) {
-  if (!opts) opts = {}
-  var statusText = chalk.bold.blue('Calculating Size')
-  if (opts.done) statusText = 'Creating Dat Link'
-  var msg = getScanOutput(stats, statusText)
-  logger.stdout(msg)
-  if (opts.done) logger.log('')
-}
-
-function printAddProgress (stats, opts) {
-  if (!opts) opts = {}
-  if (opts.done) {
-    var msg = printFileProgress(stats, {
-      returnMsg: true, message: 'Files Read to Dat'
-    })
-    logger.stdout(msg)
-  } else {
-    printFileProgress(stats, {message: 'Adding Files to Dat'})
-  }
-}
-
-function printSwarmStatus (stats) {
-  var swarm = stats.swarm
-  if (!swarm) return logger.stdout('Finding data sources...\n')
-
-  if (swarm.hasMetadata && swarm.gettingMetadata) {
-    // Print final metadata output
-    var scanMsg = ''
-    swarm.gettingMetadata = false
-    scanMsg = getScanOutput(stats, 'Downloading Data')
-    logger.stdout(scanMsg)
-    logger.log('')
-  }
-
-  var msg = ''
-  if (swarm.downloading) msg = downloadMsg()
-  if (swarm.sharingLink && !swarm.printedSharingLink) {
-    msg += chalk.bold('[Sharing] ')
-    msg += chalk.underline.blue('dat://' + swarm.link + '\n')
-    logger.log(msg)
-    msg = ''
-    swarm.printedSharingLink = true
-    if (args.quiet) console.log('dat://' + swarm.link)
-  }
-  if (swarm.downloadComplete && !swarm.printedDownloadComplete) {
-    msg = downloadCompleteMsg()
-    logger.log(msg)
-    msg = ''
-    swarm.printedDownloadComplete = true
-    if (args.quiet) console.log('Downloaded to ' + stats.parentFolder)
-  }
-  if (swarm.downloading && !swarm.downloadComplete) {
-    msg += chalk.bold('[Downloading] ')
-    msg += chalk.underline.blue('dat://' + swarm.link + '\n')
-  }
-
-  var count = '0'
-  var activePeers = swarm.connections.length
-  var totalPeers = swarm.connecting + swarm.connections.length
-  if (activePeers > 0) count = activePeers + '/' + totalPeers
-  msg += chalk.bold('[Status] ') + 'Connected to ' + chalk.bold(count) + ' sources'
-
-  if (stats.uploaded.bytesRead > 0) {
-    msg += '\n'
-    msg += chalk.bold('[Uploaded] ') + prettyBytes(stats.uploaded.bytesRead)
-    msg += ' at ' + prettyBytes(stats.uploadRate()) + '/s'
-  }
-  logger.stdout(msg + '\n')
-
-  function downloadMsg () {
-    if (!stats.total.bytesTotal) return chalk.bold('Connecting...\n')
-    if (swarm.gettingMetadata && !swarm.hasMetadata) {
-      return getScanOutput(stats, chalk.bold.blue('Getting Metadata')) + '\n'
-    }
-    return printFileProgress(stats, {
-      returnMsg: true, message: 'Downloading Data'
-    })
-  }
-
-  function downloadCompleteMsg () {
-    var outMsg = printFileProgress(stats, {
-      returnMsg: true, showFilesOnly: true
-    })
-    outMsg += chalk.bold.green('[Done] ')
-    outMsg += chalk.bold(
-      'Downloaded ' + prettyBytes(stats.progress.bytesRead) + ' '
-    )
-    if (stats.parentFolder) outMsg += chalk.bold('to ') + chalk.bold(stats.parentFolder)
-    outMsg += '\n'
-    outMsg += chalk.bold('[Sharing] ')
-    outMsg += chalk.underline.blue('dat://' + swarm.link)
-    return outMsg
-  }
 }
 
 function getScanOutput (stats, statusMsg) {
   if (!statusMsg) statusMsg = chalk.bold.green('Scan Progress')
-  var dirCount = stats.total.directories + 1 // parent folder
-  return statusMsg + ' ' + chalk.bold(
-    '(' + stats.total.filesTotal + ' files, ' + dirCount + ' folders, ' +
-    (stats.total.bytesTotal ? prettyBytes(stats.total.bytesTotal) + ' total' : '') + ')'
+  var dirCount = stats.total.directories
+  return statusMsg + ' ' + chalk.dim(
+    stats.total.filesTotal + ' files, ' + dirCount + ' folders, ' +
+    (stats.total.bytesTotal ? prettyBytes(stats.total.bytesTotal) + ' total' : '')
   )
 }
 
@@ -261,7 +215,7 @@ function printFileProgress (stats, opts) {
   var msg = ''
 
   while (true) {
-    if (stats.fileQueue.length === 0) break
+    if (!stats.fileQueue || stats.fileQueue.length === 0) break
     var file = stats.fileQueue[0]
     msg = getSingleFileOutput(file)
     var complete = (file.stats.bytesTotal === file.stats.bytesRead)
@@ -312,13 +266,38 @@ function getTotalProgressOutput (stats, statusText, msg) {
   else if (totalPer >= 0) msg += chalk.bold.dim('[' + ('  ' + totalPer).slice(-3) + '%] ')
   else msg += '        '
   msg += chalk.dim(
-    statusText + ': ' + fileProgress + ' of ' + stats.total.filesTotal +
+    fileProgress + ' of ' + stats.total.filesTotal + ' files' +
     chalk.dim(
       ' (' + prettyBytes(bytesProgress) +
       ' of ' + prettyBytes(stats.total.bytesTotal) + ') '
     )
   )
-  if (stats.downloadRate) msg += chalk.dim(prettyBytes(stats.downloadRate()) + '/s ')
+  if (stats.downloadRate) msg += chalk.dim(prettyBytes(stats.downloadRate) + '/s ')
   msg += '\n'
   return msg
+}
+
+function printStatus (server) {
+  server.status(function (err, status) {
+    if (err) throw err
+    var count = '0'
+    var activePeers = status.swarm.connections.length
+    var totalPeers = status.swarm.connecting + status.swarm.connections.length
+    if (activePeers > 0) count = activePeers + '/' + totalPeers
+    var keys = Object.keys(status.dats)
+    var msg = 'Sharing ' + chalk.bold(keys.length) + ' Dats, connected to ' + chalk.bold(count) + ' sources\n'
+    logger.log(msg)
+    if (keys.length === 0) return
+    for (var key in keys) {
+      var dir = keys[key]
+      var dat = status.dats[dir]
+      msg = ''
+      msg += chalk.bold('[' + dat.state + ']\n')
+      msg += dir + '\n'
+      msg += chalk.underline.blue('dat://' + dat.link) + '\n'
+      if (dat.progress.bytesRead !== dat.total.bytesTotal) msg += getTotalProgressOutput(dat, '')
+      msg += prettyBytes(dat.total.bytesTotal) + '\n'
+      logger.log(msg)
+    }
+  })
 }
