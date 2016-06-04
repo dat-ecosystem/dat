@@ -1,5 +1,5 @@
 dat <command> [--option <argument>]
-  dat link            creates a link to share some data
+  dat share           creates a link to share some data
   dat <share-link>    downloads and shares data from a link
 
 options
@@ -7,4 +7,7 @@ options
   --debug             debug output mode
   --version, -v       get the installed dat version
   --port, -p          set a specific inbound tcp port
+  --live              when downloading, keep connections open and wait for new data
+  --static            create a non-updateable link when sharing
+  --append=<link>     append data to a link you created earlier
   --no-color          print output without colors

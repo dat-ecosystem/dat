@@ -14,7 +14,7 @@
   "scripts": {
     "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "standard": "standard",
-    "test": "standard && tape tests/*.js | tap-spec"
+    "test": "standard"
   },
   "repository": {
     "type": "git",
@@ -24,24 +24,24 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "chalk": "^1.1.1",
-    "collect-stream": "^1.1.1",
+    "datland-swarm-defaults": "^1.0.0",
     "debug": "^2.2.0",
-    "discovery-swarm": "^3.1.0",
+    "discovery-swarm": "^3.4.0",
     "dns-discovery": "^5.3.3",
     "folder-walker": "^2.0.2",
     "home-dir": "^1.0.0",
-    "hyperdrive": "^4.0.0",
+    "hyperdrive": "^6.0.0",
     "level-party": "^3.0.3",
+    "memdb": "^1.3.1",
     "minimist": "^1.2.0",
-    "mkdirp": "^0.5.1",
     "pretty-bytes": "^3.0.0",
     "pump": "^1.0.1",
+    "random-access-file": "^1.2.0",
+    "signalhub": "^4.4.0",
     "single-line-log": "^1.1.0",
     "speedometer": "^1.0.0",
     "stream-each": "^1.1.0",
-    "subleveldown": "^2.1.0",
-    "through2": "^2.0.0",
-    "xtend": "^4.0.1"
+    "webrtc-swarm": "^2.4.0"
   },
   "bugs": {
     "url": "https://github.com/maxogden/dat/issues"
