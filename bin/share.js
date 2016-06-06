@@ -9,7 +9,7 @@ var replicate = require('../lib/replicate')
 
 module.exports = function (argv) {
   var drive = hyperdrive(memdb()) // TODO: use level instead
-  var dir = argv._[2] || '.'
+  var dir = argv._[0] || '.'
 
   try {
     var isDirectory = fs.statSync(dir).isDirectory()
