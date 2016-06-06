@@ -9,7 +9,8 @@ var replicate = require('../lib/replicate')
 
 module.exports = function (argv) {
   var drive = hyperdrive(memdb()) // TODO: use level instead
-  var dir = argv._[0] || '.'
+  var dir = argv._[1] || '.'
+  var firstAppend = true
 
   try {
     var isDirectory = fs.statSync(dir).isDirectory()
@@ -31,7 +32,7 @@ module.exports = function (argv) {
 
     if (archive.live || archive.owner) {
       console.log('Share this link:', archive.key.toString('hex'))
-      onswarm(replicate(archive))
+      onswarm(replicate(argv, archive))
     }
 
     each(walker(dir), appendEntry, done)
@@ -40,7 +41,10 @@ module.exports = function (argv) {
   // archive.list({live: true}).on('data', console.log)
 
   function appendEntry (data, next) {
-    if (data.relname === '.') return next()
+    if (isDirectory && firstAppend) {
+      firstAppend = false // folder walker seems off on the first item. TODO: investigate
+      return next()
+    }
 
     console.log('Adding', data.relname)
     archive.append({type: data.type, name: data.relname}, next)
@@ -74,7 +78,7 @@ module.exports = function (argv) {
         return
       }
 
-      console.log('Watching', dir === '.' ? process.cwd() : '.', '...')
+      console.log('Watching', dir === '.' ? process.cwd() : dir, '...')
 
       yoloWatch(dir, function (name, st) {
         console.log('Adding', name)

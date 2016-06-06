@@ -13,7 +13,7 @@ module.exports = function (argv) {
     }
   })
 
-  var swarm = replicate(archive)
+  var swarm = replicate(argv, archive)
 
   swarm.on('connection', function (con) {
     console.log('Connected to remote peer')

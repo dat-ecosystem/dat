@@ -29,6 +29,7 @@
     "discovery-swarm": "^3.4.0",
     "dns-discovery": "^5.3.3",
     "folder-walker": "^2.0.2",
+    "get-browser-rtc": "^1.0.2",
     "home-dir": "^1.0.0",
     "hyperdrive": "^6.0.0",
     "level-party": "^3.0.3",

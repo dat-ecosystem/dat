@@ -24,7 +24,7 @@ if (args.doctor) {
   require('./bin/doctor')(args)
 } else if (args._[0] === 'share') {
   require('./bin/share')(args)
-} else if (args._[0]) {
+} else if (args._[0] && args._[0].length === 64) { // TODO: support dat.land link
   require('./bin/download')(args)
 } else {
   require('./usage')('root.txt')
