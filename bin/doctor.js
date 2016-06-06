@@ -2,18 +2,18 @@ var dns = require('dns-discovery')
 var swarm = require('discovery-swarm')
 var crypto = require('crypto')
 var pump = require('pump')
-var dat = require('../index.js')
+var defaults = require('datland-swarm-defaults')()
 
 module.exports = function (args) {
   var client = dns({
-    servers: dat.DNS_SERVERS
+    servers: defaults.dns.server
   })
 
   var tick = 0
   var id = typeof args.doctor === 'string' ? args.doctor : crypto.randomBytes(32).toString('hex')
   var sw = swarm({
     dns: {
-      servers: dat.DNS_SERVERS
+      servers: defaults.dns.server
     }
   })
 
