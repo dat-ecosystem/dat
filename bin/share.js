@@ -30,7 +30,7 @@ module.exports = function (argv) {
     if (err) return onerror(err)
     if (argv.append && !archive.owner) return onerror('You cannot append to this link')
 
-    if (archive.live || archive.owner) {
+    if ((archive.live || archive.owner) && archive.key) {
       console.log('Share this link:', archive.key.toString('hex'))
       onswarm(replicate(argv, archive))
     }
@@ -74,7 +74,7 @@ module.exports = function (argv) {
       console.log('All files added. Share this link:', archive.key.toString('hex'))
 
       if (!archive.live) {
-        replicate()
+        replicate(argv, archive)
         return
       }
 
