@@ -17,20 +17,30 @@ module.exports = function (argv) {
   })
 
   var logger = StatusLogger(argv)
-  logger.status('Connecting...')
+
+  logger.message(chalk.gray('Starting Download...'), 4)
+
+  logger.status('', 0) // reserve line for file progress
+  // logger.status(chalk.bold('[...]'), 1) // TODO: total progress and size
+  logger.status(chalk.bold('[Downloading] ') + chalk.blue.underline(archive.key.toString('hex')), 1)
+  logger.status(chalk.bold('[Status]'), 2)
+  logger.status(chalk.blue('  Connecting...'), -1)
 
   swarmLogger(replicate(argv, archive), logger)
 
   each(archive.list({live: argv.live}), function (data, next) {
-    logger.status('Downloading')
-    logger.message('Downloading ' + data.name)
+    // logger.status(chalk.blue('  Downloading Files...'), 3)
+    logger.status('         ' + data.name, 0) // TODO: actual progress %
     archive.download(data, function (err) {
       if (err) return onerror(err)
-      logger.message('Download of ' + data.name + ' finished')
+      logger.message(chalk.green.dim('  [Done] ') + chalk.dim(data.name))
+      logger.status('', 0) // clear file progress msg
       next()
     })
   }, function () {
-    logger.logNow(chalk.green('Download Completed.'))
+    logger.status(chalk.green('[Download Completed] ') + chalk.blue.underline(archive.key.toString('hex')))
+    logger.status('', -1) // remove peer count
+    logger.logNow()
     process.exit(0)
   })
 
