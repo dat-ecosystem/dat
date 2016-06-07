@@ -34,10 +34,15 @@ module.exports = function (argv) {
 
   swarmLogger(replicate(argv, archive), logger)
 
+  var noDataTimeout = null
   archive.on('download', function (data) {
     stats.bytesTransferred += data.length
     stats.transferRate(data.length)
     logger.status(chalk.blue('  Downloading ' + prettyBytes(stats.transferRate()) + '/s'), 2)
+    if (noDataTimeout) clearInterval(noDataTimeout)
+    noDataTimeout = setInterval(function () {
+      logger.status(chalk.blue('  Downloading ' + prettyBytes(stats.transferRate()) + '/s'), 2)
+    }, 100)
   })
 
   each(archive.list({live: argv.live}), function (data, next) {

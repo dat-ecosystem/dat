@@ -55,10 +55,15 @@ module.exports = function (argv) {
     logger.status(chalk.bold('[Status]'), 2)
     logger.status(chalk.blue('  Reading Files...'), 3)
 
+    var noDataTimeout = null
     archive.on('upload', function (data) {
       stats.bytesTransferred += data.length
       stats.transferRate(data.length)
-      logger.status(chalk.blue('  Uploading ' + prettyBytes(stats.transferRate()) + '/s'), 2)
+      logger.status(chalk.blue('  Uploading ' + prettyBytes(stats.transferRate()) + '/s'), 4)
+      if (noDataTimeout) clearInterval(noDataTimeout)
+      noDataTimeout = setInterval(function () {
+        logger.status(chalk.blue('  Uploading ' + prettyBytes(stats.transferRate()) + '/s'), 4)
+      }, 100)
     })
 
     each(walker(dir), appendEntry, done)
