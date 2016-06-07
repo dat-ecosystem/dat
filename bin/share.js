@@ -23,7 +23,7 @@ module.exports = function (argv) {
   }
 
   var logger = StatusLogger(argv)
-  logger.status('Starting')
+  logger.message(chalk.gray('Creating Dat...'))
 
   var archive = drive.createArchive(argv.resume, {
     live: !argv.static,
@@ -54,8 +54,12 @@ module.exports = function (argv) {
       return next()
     }
 
-    logger.message('Adding: ' + data.relname)
-    archive.append({type: data.type, name: data.relname}, next)
+    logger.status('         ' + data.relname, 0) // TODO: actual progress %
+    archive.append({type: data.type, name: data.relname}, function () {
+      logger.message(chalk.green.dim('  [Done] ') + chalk.dim(data.relname))
+      logger.status('', 0) // clear file progress msg
+      next()
+    })
   }
 
   function done (err) {
@@ -64,21 +68,20 @@ module.exports = function (argv) {
     archive.finalize(function (err) {
       if (err) return onerror(err)
 
-      logger.message(chalk.green('All files added'))
-      var completedMsg = 'Dat Completed ' + chalk.blue.underline(archive.key.toString('hex'))
-      logger.status(completedMsg, 1)
-
       if (!archive.live) {
         replicate(argv, archive)
         return
       }
 
       var dirName = dir === '.' ? process.cwd() : dir
-      logger.status('Watching ' + dirName + ' ...', 2)
+      logger.status(chalk.blue('  Watching ' + chalk.bold(dirName) + ' ...'), 3)
 
       yoloWatch(dir, function (name, st) {
-        logger.message('Adding: ' + name)
-        archive.append({type: st.isDirectory() ? 'directory' : 'file', name: name})
+        logger.status('         ' + name, 0)
+        archive.append({type: st.isDirectory() ? 'directory' : 'file', name: name}, function () {
+          logger.message(chalk.green.dim('  [Done] ') + chalk.dim(name))
+          logger.status('', 0)
+        })
       })
     })
   }
