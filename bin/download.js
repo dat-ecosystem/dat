@@ -2,7 +2,10 @@ var hyperdrive = require('hyperdrive')
 var memdb = require('memdb')
 var each = require('stream-each')
 var raf = require('random-access-file')
+var chalk = require('chalk')
 var replicate = require('../lib/replicate')
+var StatusLogger = require('../lib/statusLogger')
+var swarmLogger = require('../lib/swarmLogger')
 
 module.exports = function (argv) {
   var key = argv._[0]
@@ -13,30 +16,21 @@ module.exports = function (argv) {
     }
   })
 
-  var swarm = replicate(argv, archive)
+  var logger = StatusLogger(argv)
+  logger.status('Connecting...')
 
-  swarm.on('connection', function (con) {
-    console.log('Connected to remote peer')
-    con.on('close', function () {
-      console.log('Disconnected from remote peer')
-    })
-  })
-  swarm.on('browser-connection', function (con) {
-    console.log('WebRTC browser connected')
-    con.on('close', function () {
-      console.log('WebRTC browser disconnected')
-    })
-  })
+  swarmLogger(replicate(argv, archive), logger)
 
   each(archive.list({live: argv.live}), function (data, next) {
-    console.log('Downloading', data.name)
+    logger.status('Downloading')
+    logger.message('Downloading ' + data.name)
     archive.download(data, function (err) {
       if (err) return onerror(err)
-      console.log('Download of', data.name, 'finished')
+      logger.message('Download of ' + data.name + ' finished')
       next()
     })
   }, function () {
-    console.log('All files downloaded.')
+    logger.logNow(chalk.green('Download Completed.'))
     process.exit(0)
   })
 

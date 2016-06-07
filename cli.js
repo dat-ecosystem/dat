@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 var args = require('minimist')(process.argv.splice(2), {
-  alias: {p: 'port', q: 'quiet', v: 'version', 's': 'static', 'a': 'append'},
+  alias: {p: 'port', q: 'quiet', v: 'version', s: 'static', r: 'resume'},
   boolean: ['color', 'static', 'quiet', 'version'],
   default: {color: true}
 })
@@ -24,10 +24,15 @@ if (args.doctor) {
   require('./bin/doctor')(args)
 } else if (args._[0] === 'share') {
   require('./bin/share')(args)
-} else if (args._[0] && args._[0].length === 64) { // TODO: support dat.land link
+} else if (args._[0] && isDatLink(args._[0])) {
   require('./bin/download')(args)
 } else {
   require('./usage')('root.txt')
+}
+
+function isDatLink (val) {
+  // TODO: support dat.land link
+  return val.length === 64
 }
 
 // var fs = require('fs')
