@@ -6,6 +6,8 @@ var raf = require('random-access-file')
 var fs = require('fs')
 var path = require('path')
 var chalk = require('chalk')
+var prettyBytes = require('pretty-bytes')
+var speedometer = require('speedometer')
 var replicate = require('../lib/replicate')
 var StatusLogger = require('../lib/statusLogger')
 var swarmLogger = require('../lib/swarmLogger')
@@ -22,6 +24,10 @@ module.exports = function (argv) {
     process.exit(1)
   }
 
+  var stats = {
+    bytesTransferred: 0,
+    transferRate: speedometer()
+  }
   var logger = StatusLogger(argv)
   logger.message(chalk.gray('Creating Dat...'))
 
@@ -47,10 +53,19 @@ module.exports = function (argv) {
       swarmLogger(swarm, logger)
     }
 
+    logger.status(chalk.bold('[Status]'), 2)
+    logger.status(chalk.blue('  Reading Files...'), 3)
+
+    archive.on('upload', function (data) {
+      stats.bytesTransferred += data.length
+      stats.transferRate(data.length)
+      logger.status(chalk.blue('  Uploading ' + prettyBytes(stats.transferRate()) + '/s'), 2)
+    })
+
     each(walker(dir), appendEntry, done)
   })
 
-  // archive.list({live: true}).on('data', logger.message)
+  // archive.list({live: true}).on('data', console.log)
 
   function appendEntry (data, next) {
     if (isDirectory && firstAppend) {
@@ -78,7 +93,9 @@ module.exports = function (argv) {
       }
 
       var dirName = dir === '.' ? process.cwd() : dir
-      logger.status(chalk.blue('  Watching ' + chalk.bold(dirName) + ' ...'), 3)
+
+      logger.status(chalk.blue('  Watching ' + chalk.bold(dirName) + '...'), 3)
+      logger.status(chalk.blue('  Waiting for connections...'), -1)
 
       yoloWatch(dir, function (name, st) {
         logger.status('         ' + name, 0)
