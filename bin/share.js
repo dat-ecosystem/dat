@@ -38,13 +38,12 @@ module.exports = function (argv) {
 
     logger.status('', 0) // reserve line for file progress
     // logger.status(chalk.bold('[...]'), 1) // TODO: total progress and size
+    logger.status('', 1) // reserve for dat link
 
     if ((archive.live || archive.owner) && archive.key) {
       logger.status(chalk.bold('[Sharing] ') + chalk.blue.underline(archive.key.toString('hex')), 1)
       var swarm = replicate(argv, archive)
       swarmLogger(swarm, logger)
-    } else {
-      logger.status('', 1) // reserve for dat link
     }
 
     logger.status(chalk.bold('[Status]'), 2)
