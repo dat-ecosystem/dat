@@ -36,15 +36,19 @@ module.exports = function (argv) {
     if (err) return onerror(err)
     if (argv.resume && !archive.owner) return onerror('You cannot resume this link')
 
-    if (archive.live || archive.owner) {
-      logger.status('', 0) // reserve line for file progress
-      // logger.status(chalk.bold('[...]'), 1) // TODO: total progress and size
+    logger.status('', 0) // reserve line for file progress
+    // logger.status(chalk.bold('[...]'), 1) // TODO: total progress and size
+
+    if ((archive.live || archive.owner) && archive.key) {
       logger.status(chalk.bold('[Sharing] ') + chalk.blue.underline(archive.key.toString('hex')), 1)
-      logger.status(chalk.bold('[Status]'), 2)
-      logger.status(chalk.blue('  Reading Files...'), 3)
       var swarm = replicate(argv, archive)
       swarmLogger(swarm, logger)
+    } else {
+      logger.status('', 1) // reserve for dat link
     }
+
+    logger.status(chalk.bold('[Status]'), 2)
+    logger.status(chalk.blue('  Reading Files...'), 3)
 
     each(walker(dir), appendEntry, done)
   })
@@ -72,12 +76,17 @@ module.exports = function (argv) {
       if (err) return onerror(err)
 
       if (!archive.live) {
-        replicate()
+        logger.status(chalk.bold('[Sharing] ') + chalk.blue.underline(archive.key.toString('hex')), 1)
+        logger.status(chalk.blue('  Static Dat Finalized'), 3)
+        logger.status(chalk.blue('  Waiting for connections...'), -1)
+        var swarm = replicate(argv, archive)
+        swarmLogger(swarm, logger)
         return
       }
 
       var dirName = dir === '.' ? process.cwd() : dir
       logger.status(chalk.blue('  Watching ' + chalk.bold(dirName) + ' ...'), 3)
+      logger.status(chalk.blue('  Waiting for connections...'), -1)
 
       yoloWatch(dir, function (name, st) {
         logger.status('         ' + name, 0)
