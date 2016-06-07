@@ -38,10 +38,10 @@ module.exports = function (argv) {
 
     if (archive.live || archive.owner) {
       logger.status('', 0) // reserve line for file progress
-      logger.status(chalk.bold('[...]'), 1) // TODO: total progress and size
-      logger.status(chalk.bold('Dat Link ') + chalk.blue.underline(archive.key.toString('hex')), 2)
-      logger.status(chalk.bold('[Status]'), 3)
-      logger.status(chalk.blue('  Reading Files...'), 4)
+      // logger.status(chalk.bold('[...]'), 1) // TODO: total progress and size
+      logger.status(chalk.bold('[Sharing] ') + chalk.blue.underline(archive.key.toString('hex')), 1)
+      logger.status(chalk.bold('[Status]'), 2)
+      logger.status(chalk.blue('  Reading Files...'), 3)
       var swarm = replicate(argv, archive)
       swarmLogger(swarm, logger)
     }
