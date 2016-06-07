@@ -3,6 +3,8 @@ var memdb = require('memdb')
 var each = require('stream-each')
 var raf = require('random-access-file')
 var chalk = require('chalk')
+var prettyBytes = require('pretty-bytes')
+var speedometer = require('speedometer')
 var replicate = require('../lib/replicate')
 var StatusLogger = require('../lib/statusLogger')
 var swarmLogger = require('../lib/swarmLogger')
@@ -16,9 +18,13 @@ module.exports = function (argv) {
     }
   })
 
+  var stats = {
+    bytesTransferred: 0,
+    transferRate: speedometer()
+  }
   var logger = StatusLogger(argv)
 
-  logger.message(chalk.gray('Starting Download...'), 4)
+  logger.message(chalk.gray('Starting...'), 4)
 
   logger.status('', 0) // reserve line for file progress
   // logger.status(chalk.bold('[...]'), 1) // TODO: total progress and size
@@ -28,8 +34,13 @@ module.exports = function (argv) {
 
   swarmLogger(replicate(argv, archive), logger)
 
+  archive.on('download', function (data) {
+    stats.bytesTransferred += data.length
+    stats.transferRate(data.length)
+    logger.status(chalk.blue('  Downloading ' + prettyBytes(stats.transferRate()) + '/s'), 2)
+  })
+
   each(archive.list({live: argv.live}), function (data, next) {
-    // logger.status(chalk.blue('  Downloading Files...'), 3)
     logger.status('         ' + data.name, 0) // TODO: actual progress %
     archive.download(data, function (err) {
       if (err) return onerror(err)
