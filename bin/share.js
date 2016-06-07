@@ -36,6 +36,10 @@ module.exports = function (argv) {
     if (err) return onerror(err)
     if (argv.resume && !archive.owner) return onerror('You cannot resume this link')
 
+    logger.status('', 0) // reserve line for file progress
+    // logger.status(chalk.bold('[...]'), 1) // TODO: total progress and size
+    logger.status('', 1) // reserve for dat link
+
     if ((archive.live || archive.owner) && archive.key) {
       logger.message('Reading Files...')
       logger.status('Creating Dat: ' + archive.key.toString('hex'))
