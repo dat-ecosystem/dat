@@ -23,7 +23,7 @@ module.exports = function (argv) {
   }
 
   var logger = StatusLogger(argv)
-  logger.status('Starting')
+  logger.message(chalk.gray('Creating Dat...'))
 
   var archive = drive.createArchive(argv.resume, {
     live: !argv.static,
@@ -37,8 +37,11 @@ module.exports = function (argv) {
     if (argv.resume && !archive.owner) return onerror('You cannot resume this link')
 
     if (archive.live || archive.owner) {
-      logger.message('Reading Files...')
-      logger.status('Creating Dat: ' + archive.key.toString('hex'))
+      logger.status('', 0) // reserve line for file progress
+      logger.status(chalk.bold('[...]'), 1) // TODO: total progress and size
+      logger.status(chalk.bold('Dat Link ') + chalk.blue.underline(archive.key.toString('hex')), 2)
+      logger.status(chalk.bold('[Status]'), 3)
+      logger.status(chalk.blue('  Reading Files...'), 4)
       var swarm = replicate(argv, archive)
       swarmLogger(swarm, logger)
     }
@@ -54,8 +57,12 @@ module.exports = function (argv) {
       return next()
     }
 
-    logger.message('Adding: ' + data.relname)
-    archive.append({type: data.type, name: data.relname}, next)
+    logger.status('         ' + data.relname, 0) // TODO: actual progress %
+    archive.append({type: data.type, name: data.relname}, function () {
+      logger.message(chalk.green.dim('  [Done] ') + chalk.dim(data.relname))
+      logger.status('', 0) // clear file progress msg
+      next()
+    })
   }
 
   function done (err) {
@@ -64,21 +71,20 @@ module.exports = function (argv) {
     archive.finalize(function (err) {
       if (err) return onerror(err)
 
-      logger.message(chalk.green('All files added'))
-      var completedMsg = 'Dat Completed ' + chalk.blue.underline(archive.key.toString('hex'))
-      logger.status(completedMsg, 1)
-
       if (!archive.live) {
         replicate()
         return
       }
 
       var dirName = dir === '.' ? process.cwd() : dir
-      logger.status('Watching ' + dirName + ' ...', 2)
+      logger.status(chalk.blue('  Watching ' + chalk.bold(dirName) + ' ...'), 3)
 
       yoloWatch(dir, function (name, st) {
-        logger.message('Adding: ' + name)
-        archive.append({type: st.isDirectory() ? 'directory' : 'file', name: name})
+        logger.status('         ' + name, 0)
+        archive.append({type: st.isDirectory() ? 'directory' : 'file', name: name}, function () {
+          logger.message(chalk.green.dim('  [Done] ') + chalk.dim(name))
+          logger.status('', 0)
+        })
       })
     })
   }
