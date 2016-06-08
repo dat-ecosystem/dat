@@ -43,9 +43,9 @@ module.exports = function (argv) {
     stats.bytesTransferred += data.length
     stats.transferRate(data.length)
     logger.status(chalk.bold('[Downloading] ') + chalk.blue.underline(archive.key.toString('hex')), 2)
-    logger.status(chalk.blue('  Downloading ' + prettyBytes(stats.transferRate()) + '/s'), 3)
+    logger.status(chalk.blue('  Downloading ' + prettyBytes(stats.transferRate()) + '/s'), 4)
     noDataTimeout = setInterval(function () {
-      logger.status(chalk.blue('  Waiting for Data...'), 3)
+      logger.status(chalk.blue('  Waiting for Data...'), 4)
     }, 1000)
   })
 
@@ -68,8 +68,9 @@ module.exports = function (argv) {
       next()
     })
   }, function () {
-    logger.status(chalk.green('[Completed] ') + chalk.blue.underline(archive.key.toString('hex')))
+    logger.status(chalk.bold('[Downloaded] ') + chalk.blue.underline(archive.key.toString('hex')))
     logger.status('', -1) // remove peer count
+    printTotalStats()
     logger.logNow()
     process.exit(0)
   })
