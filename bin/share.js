@@ -25,11 +25,12 @@ module.exports = function (argv) {
   }
 
   var stats = {
+    filesTotal: 0,
+    bytesTotal: 0,
     bytesTransferred: 0,
     transferRate: speedometer()
   }
   var logger = StatusLogger(argv)
-  logger.message(chalk.gray('Creating Dat...'))
 
   var archive = drive.createArchive(argv.resume, {
     live: !argv.static,
@@ -38,39 +39,38 @@ module.exports = function (argv) {
     }
   })
 
+  logger.message(chalk.gray('Creating Dat: ' + dir))
+
   archive.open(function (err) {
     if (err) return onerror(err)
     if (argv.resume && !archive.owner) return onerror('You cannot resume this link')
 
     logger.status('', 0) // reserve line for file progress
-    // logger.status(chalk.bold('[...]'), 1) // TODO: total progress and size
-    logger.status('', 1) // reserve for dat link
+    logger.status('', 1) // reserve total progress and size
+    logger.status('Creating Link...', 2) // reserve for dat link
 
     if ((archive.live || archive.owner) && archive.key) {
-      logger.message('Reading Files...')
-      logger.status('Creating Dat: ' + archive.key.toString('hex'))
+      logger.status(chalk.bold('[Sharing] ') + chalk.blue.underline(archive.key.toString('hex')), 2)
       var swarm = replicate(argv, archive)
       swarmLogger(swarm, logger)
     }
 
-    logger.status(chalk.bold('[Status]'), 2)
-    logger.status(chalk.blue('  Reading Files...'), 3)
+    logger.status(chalk.bold('[Status]'), 3)
+    logger.status(chalk.blue('  Reading Files...'), 4)
 
     var noDataTimeout = null
     archive.on('upload', function (data) {
       stats.bytesTransferred += data.length
       stats.transferRate(data.length)
-      logger.status(chalk.blue('  Uploading ' + prettyBytes(stats.transferRate()) + '/s'), 4)
+      logger.status(chalk.blue('  Uploading ' + prettyBytes(stats.transferRate()) + '/s'), 5)
       if (noDataTimeout) clearInterval(noDataTimeout)
       noDataTimeout = setInterval(function () {
-        logger.status(chalk.blue('  Uploading ' + prettyBytes(stats.transferRate()) + '/s'), 4)
+        logger.status(chalk.blue('  Uploading ' + prettyBytes(stats.transferRate()) + '/s'), 5)
       }, 100)
     })
 
     each(walker(dir), appendEntry, done)
   })
-
-  // archive.list({live: true}).on('data', console.log)
 
   function appendEntry (data, next) {
     if (isDirectory && firstAppend) {
@@ -83,7 +83,17 @@ module.exports = function (argv) {
       logger.message(chalk.green.dim('  [Done] ') + chalk.dim(data.relname))
       logger.status('', 0) // clear file progress msg
       next()
+
+      stats.filesTotal = archive.metadata.blocks
+      stats.bytesTotal = archive.content.bytes
+      printTotalStats()
     })
+  }
+
+  function printTotalStats () {
+    var totalStatsMsg = 'Files: ' + chalk.bold(stats.filesTotal)
+    totalStatsMsg += '  Size: ' + chalk.bold(prettyBytes(stats.bytesTotal))
+    logger.status(totalStatsMsg, 1) // TODO: total progress and size
   }
 
   function done (err) {
@@ -93,13 +103,17 @@ module.exports = function (argv) {
       if (err) return onerror(err)
 
       if (!archive.live) {
-        replicate(argv, archive)
+        logger.status(chalk.bold('[Sharing] ') + chalk.blue.underline(archive.key.toString('hex')), 2)
+        logger.status(chalk.blue('  Static Dat Finalized'), 4)
+        logger.status(chalk.blue('  Waiting for connections...'), -1)
+        var swarm = replicate(argv, archive)
+        swarmLogger(swarm, logger)
         return
       }
 
       var dirName = dir === '.' ? process.cwd() : dir
 
-      logger.status(chalk.blue('  Watching ' + chalk.bold(dirName) + '...'), 3)
+      logger.status(chalk.blue('  Watching ' + chalk.bold(dirName) + '...'), 4)
       logger.status(chalk.blue('  Waiting for connections...'), -1)
 
       yoloWatch(dir, function (name, st) {
@@ -107,6 +121,10 @@ module.exports = function (argv) {
         archive.append({type: st.isDirectory() ? 'directory' : 'file', name: name}, function () {
           logger.message(chalk.green.dim('  [Done] ') + chalk.dim(name))
           logger.status('', 0)
+
+          stats.filesTotal = archive.metadata.blocks
+          stats.bytesTotal = archive.content.bytes
+          printTotalStats()
         })
       })
     })
