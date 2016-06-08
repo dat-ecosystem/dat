@@ -44,6 +44,7 @@ module.exports = function (argv) {
     stats.transferRate(data.length)
     logger.status(chalk.bold('[Downloading] ') + chalk.blue.underline(archive.key.toString('hex')), 2)
     logger.status(chalk.blue('  Downloading ' + prettyBytes(stats.transferRate()) + '/s'), 4)
+    printTotalStats()
     noDataTimeout = setInterval(function () {
       logger.status(chalk.blue('  Waiting for Data...'), 4)
     }, 1000)
