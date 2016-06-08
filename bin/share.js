@@ -13,9 +13,7 @@ var StatusLogger = require('../lib/statusLogger')
 var swarmLogger = require('../lib/swarmLogger')
 
 module.exports = function (argv) {
-  var drive = hyperdrive(memdb()) // TODO: use level instead
   var dir = argv._[1] || '.'
-  var firstAppend = true
 
   try {
     var isDirectory = fs.statSync(dir).isDirectory()
@@ -24,13 +22,17 @@ module.exports = function (argv) {
     process.exit(1)
   }
 
+  var drive = hyperdrive(memdb()) // TODO: use level instead
+  var logger = StatusLogger(argv)
+  var firstAppend = true
+  var noDataTimeout = null
   var stats = {
     filesTotal: 0,
     bytesTotal: 0,
     bytesTransferred: 0,
     transferRate: speedometer()
   }
-  var logger = StatusLogger(argv)
+
   logger.message(chalk.gray('Creating Dat: ' + dir))
 
   var archive = drive.createArchive(argv.resume, {
@@ -57,7 +59,6 @@ module.exports = function (argv) {
     logger.status(chalk.bold('[Status]'), 3)
     logger.status(chalk.blue('  Reading Files...'), 4)
 
-    var noDataTimeout = null
     archive.on('upload', function (data) {
       stats.bytesTransferred += data.length
       stats.transferRate(data.length)
@@ -90,9 +91,9 @@ module.exports = function (argv) {
   }
 
   function printTotalStats () {
-    var totalStatsMsg = 'Files: ' + chalk.bold(stats.filesTotal)
-    totalStatsMsg += '  Size: ' + chalk.bold(prettyBytes(stats.bytesTotal))
-    logger.status(totalStatsMsg, 1)
+    var msg = 'Files: ' + chalk.bold(stats.filesTotal)
+    msg += '  Size: ' + chalk.bold(prettyBytes(stats.bytesTotal))
+    logger.status(msg, 1)
   }
 
   function done (err) {

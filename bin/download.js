@@ -17,7 +17,7 @@ module.exports = function (argv) {
       return raf(name)
     }
   })
-
+  var noDataTimeout = null
   var stats = {
     filesTotal: 0,
     bytesTotal: 0,
@@ -26,7 +26,8 @@ module.exports = function (argv) {
     transferRate: speedometer()
   }
   var logger = StatusLogger(argv)
-  logger.message(chalk.gray('Starting Dat: ')  + chalk.blue.underline(archive.key.toString('hex')) + '\n')
+
+  logger.message(chalk.gray('Starting Dat: ') + chalk.blue.underline(archive.key.toString('hex')) + '\n')
 
   logger.status(chalk.gray('Getting Information...'), 0) // reserve line for file progress
   logger.status(chalk.bold(''), 1) // TODO: total progress and size
@@ -37,7 +38,6 @@ module.exports = function (argv) {
   var swarm = replicate(argv, archive)
   swarmLogger(swarm, logger)
 
-  var noDataTimeout = null
   archive.on('download', function (data) {
     if (noDataTimeout) clearInterval(noDataTimeout)
     stats.bytesTransferred += data.length
@@ -81,7 +81,7 @@ module.exports = function (argv) {
     if (totalPer === 100) msg += chalk.bold.green('[Done] ')
     else if (totalPer >= 0) msg += chalk.bold('[' + ('  ' + totalPer).slice(-3) + '%] ')
     else msg += '        '
-    msg += stats.filesTransferred  + ' of ' + stats.filesTotal + ' files'
+    msg += stats.filesTransferred + ' of ' + stats.filesTotal + ' files'
     msg += chalk.dim(' (' + prettyBytes(stats.bytesTransferred) + ' of ')
     msg += chalk.dim(prettyBytes(stats.bytesTotal) + ') ')
     logger.status(msg, 1)
