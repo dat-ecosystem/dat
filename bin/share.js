@@ -31,7 +31,7 @@ module.exports = function (argv) {
     transferRate: speedometer()
   }
   var logger = StatusLogger(argv)
-  logger.message(chalk.gray('Creating Dat...'))
+  logger.message(chalk.gray('Creating Dat: ' + dir))
 
   var archive = drive.createArchive(argv.resume, {
     live: !argv.static,
@@ -39,8 +39,6 @@ module.exports = function (argv) {
       return raf(isDirectory ? path.join(dir, name) : dir, {readable: true, writable: false})
     }
   })
-
-  logger.message(chalk.gray('Creating Dat: ' + dir))
 
   archive.open(function (err) {
     if (err) return onerror(err)
@@ -85,7 +83,7 @@ module.exports = function (argv) {
       logger.status('', 0) // clear file progress msg
       next()
 
-      stats.filesTotal = archive.metadata.blocks
+      stats.filesTotal = archive.metadata.blocks - 1 // first block is header
       stats.bytesTotal = archive.content.bytes
       printTotalStats()
     })
@@ -94,7 +92,7 @@ module.exports = function (argv) {
   function printTotalStats () {
     var totalStatsMsg = 'Files: ' + chalk.bold(stats.filesTotal)
     totalStatsMsg += '  Size: ' + chalk.bold(prettyBytes(stats.bytesTotal))
-    logger.status(totalStatsMsg, 1) // TODO: total progress and size
+    logger.status(totalStatsMsg, 1)
   }
 
   function done (err) {
@@ -118,14 +116,14 @@ module.exports = function (argv) {
       logger.status(chalk.blue('  Waiting for connections...'), -1)
 
       yoloWatch(dir, function (name, st) {
+        stats.filesTotal = archive.metadata.blocks - 1 // first block is header
+        stats.bytesTotal = archive.content.bytes
+        printTotalStats()
+
         logger.status('         ' + name, 0)
         archive.append({type: st.isDirectory() ? 'directory' : 'file', name: name}, function () {
           logger.message(chalk.green.dim('  [Done] ') + chalk.dim(name))
           logger.status('', 0)
-
-          stats.filesTotal = archive.metadata.blocks
-          stats.bytesTotal = archive.content.bytes
-          printTotalStats()
         })
       })
     })

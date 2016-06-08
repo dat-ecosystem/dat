@@ -19,46 +19,72 @@ module.exports = function (argv) {
   })
 
   var stats = {
+    filesTotal: 0,
+    bytesTotal: 0,
+    filesTransferred: 0,
     bytesTransferred: 0,
     transferRate: speedometer()
   }
   var logger = StatusLogger(argv)
+  logger.message(chalk.gray('Starting Dat: ')  + chalk.blue.underline(archive.key.toString('hex')) + '\n')
 
-  logger.message(chalk.gray('Starting...'), 4)
+  logger.status(chalk.gray('Getting Information...'), 0) // reserve line for file progress
+  logger.status(chalk.bold(''), 1) // TODO: total progress and size
+  logger.status(chalk.bold('[Joining] ') + chalk.blue.underline(archive.key.toString('hex')), 2)
+  logger.status(chalk.bold('[Status]'), 3)
+  logger.status(chalk.blue('  Looking for Peers...'), -1)
 
-  logger.status('', 0) // reserve line for file progress
-  // logger.status(chalk.bold('[...]'), 1) // TODO: total progress and size
-  logger.status(chalk.bold('[Downloading] ') + chalk.blue.underline(archive.key.toString('hex')), 1)
-  logger.status(chalk.bold('[Status]'), 2)
-  logger.status(chalk.blue('  Connecting...'), -1)
-
-  swarmLogger(replicate(argv, archive), logger)
+  var swarm = replicate(argv, archive)
+  swarmLogger(swarm, logger)
 
   var noDataTimeout = null
   archive.on('download', function (data) {
+    if (noDataTimeout) clearInterval(noDataTimeout)
     stats.bytesTransferred += data.length
     stats.transferRate(data.length)
-    logger.status(chalk.blue('  Downloading ' + prettyBytes(stats.transferRate()) + '/s'), 2)
-    if (noDataTimeout) clearInterval(noDataTimeout)
+    logger.status(chalk.bold('[Downloading] ') + chalk.blue.underline(archive.key.toString('hex')), 2)
+    logger.status(chalk.blue('  Downloading ' + prettyBytes(stats.transferRate()) + '/s'), 3)
     noDataTimeout = setInterval(function () {
-      logger.status(chalk.blue('  Downloading ' + prettyBytes(stats.transferRate()) + '/s'), 2)
-    }, 100)
+      logger.status(chalk.blue('  Waiting for Data...'), 3)
+    }, 1000)
   })
 
   each(archive.list({live: argv.live}), function (data, next) {
-    logger.status('         ' + data.name, 0) // TODO: actual progress %
+    stats.filesTotal = archive.metadata.blocks - 1 // first block is header
+    stats.bytesTotal = archive.content.bytes
+
+    if (stats.bytesTransferred === 0) {
+      logger.status('  Getting Metadata...', 0) // HACK
+    } else {
+      logger.status('         ' + data.name, 0) // TODO: actual progress %
+    }
     archive.download(data, function (err) {
       if (err) return onerror(err)
       logger.message(chalk.green.dim('  [Done] ') + chalk.dim(data.name))
       logger.status('', 0) // clear file progress msg
+      stats.filesTransferred += 1
+      printTotalStats()
+
       next()
     })
   }, function () {
-    logger.status(chalk.green('[Download Completed] ') + chalk.blue.underline(archive.key.toString('hex')))
+    logger.status(chalk.green('[Completed] ') + chalk.blue.underline(archive.key.toString('hex')))
     logger.status('', -1) // remove peer count
     logger.logNow()
     process.exit(0)
   })
+
+  function printTotalStats () {
+    var totalPer = Math.floor(100 * (stats.bytesTransferred / stats.bytesTotal))
+    var msg = ''
+    if (totalPer === 100) msg += chalk.bold.green('[Done] ')
+    else if (totalPer >= 0) msg += chalk.bold('[' + ('  ' + totalPer).slice(-3) + '%] ')
+    else msg += '        '
+    msg += stats.filesTransferred  + ' of ' + stats.filesTotal + ' files'
+    msg += chalk.dim(' (' + prettyBytes(stats.bytesTransferred) + ' of ')
+    msg += chalk.dim(prettyBytes(stats.bytesTotal) + ') ')
+    logger.status(msg, 1)
+  }
 
   function onerror (err) {
     console.error(err.stack || err)
