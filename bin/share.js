@@ -9,8 +9,8 @@ var chalk = require('chalk')
 var prettyBytes = require('pretty-bytes')
 var speedometer = require('speedometer')
 var replicate = require('../lib/replicate')
-var StatusLogger = require('../lib/statusLogger')
-var swarmLogger = require('../lib/swarmLogger')
+var statusLogger = require('../lib/status-logger')
+var swarmLogger = require('../lib/swarm-logger')
 
 module.exports = function (argv) {
   var dir = argv._[1] || '.'
@@ -23,7 +23,7 @@ module.exports = function (argv) {
   }
 
   var drive = hyperdrive(memdb()) // TODO: use level instead
-  var logger = StatusLogger(argv)
+  var logger = statusLogger(argv)
   var firstAppend = true
   var noDataTimeout = null
   var stats = {

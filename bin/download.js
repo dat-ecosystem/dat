@@ -6,8 +6,8 @@ var chalk = require('chalk')
 var prettyBytes = require('pretty-bytes')
 var speedometer = require('speedometer')
 var replicate = require('../lib/replicate')
-var StatusLogger = require('../lib/statusLogger')
-var swarmLogger = require('../lib/swarmLogger')
+var statusLogger = require('../lib/status-logger')
+var swarmLogger = require('../lib/swarm-logger')
 
 module.exports = function (argv) {
   var key = argv._[0]
@@ -25,7 +25,7 @@ module.exports = function (argv) {
     bytesTransferred: 0,
     transferRate: speedometer()
   }
-  var logger = StatusLogger(argv)
+  var logger = statusLogger(argv)
 
   logger.message(chalk.gray('Starting Dat: ') + chalk.blue.underline(archive.key.toString('hex')) + '\n')
 
