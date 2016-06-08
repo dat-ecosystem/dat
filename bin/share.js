@@ -31,6 +31,7 @@ module.exports = function (argv) {
     transferRate: speedometer()
   }
   var logger = StatusLogger(argv)
+  logger.message(chalk.gray('Creating Dat...'))
 
   var archive = drive.createArchive(argv.resume, {
     live: !argv.static,
