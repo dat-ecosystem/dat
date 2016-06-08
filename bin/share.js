@@ -5,12 +5,15 @@ var each = require('stream-each')
 var raf = require('random-access-file')
 var fs = require('fs')
 var path = require('path')
+var chalk = require('chalk')
+var prettyBytes = require('pretty-bytes')
+var speedometer = require('speedometer')
 var replicate = require('../lib/replicate')
+var StatusLogger = require('../lib/statusLogger')
+var swarmLogger = require('../lib/swarmLogger')
 
 module.exports = function (argv) {
-  var drive = hyperdrive(memdb()) // TODO: use level instead
   var dir = argv._[1] || '.'
-  var firstAppend = true
 
   try {
     var isDirectory = fs.statSync(dir).isDirectory()
@@ -19,7 +22,20 @@ module.exports = function (argv) {
     process.exit(1)
   }
 
-  var archive = drive.createArchive(argv.append, {
+  var drive = hyperdrive(memdb()) // TODO: use level instead
+  var logger = StatusLogger(argv)
+  var firstAppend = true
+  var noDataTimeout = null
+  var stats = {
+    filesTotal: 0,
+    bytesTotal: 0,
+    bytesTransferred: 0,
+    transferRate: speedometer()
+  }
+
+  logger.message(chalk.gray('Creating Dat: ' + dir))
+
+  var archive = drive.createArchive(argv.resume, {
     live: !argv.static,
     file: function (name) {
       return raf(isDirectory ? path.join(dir, name) : dir, {readable: true, writable: false})
@@ -28,17 +44,33 @@ module.exports = function (argv) {
 
   archive.open(function (err) {
     if (err) return onerror(err)
-    if (argv.append && !archive.owner) return onerror('You cannot append to this link')
+    if (argv.resume && !archive.owner) return onerror('You cannot resume this link')
+
+    logger.status('', 0) // reserve line for file progress
+    logger.status('', 1) // reserve total progress and size
+    logger.status('Creating Link...', 2) // reserve for dat link
 
     if ((archive.live || archive.owner) && archive.key) {
-      console.log('Share this link:', archive.key.toString('hex'))
-      onswarm(replicate(argv, archive))
+      logger.status(chalk.bold('[Sharing] ') + chalk.blue.underline(archive.key.toString('hex')), 2)
+      var swarm = replicate(argv, archive)
+      swarmLogger(swarm, logger)
     }
+
+    logger.status(chalk.bold('[Status]'), 3)
+    logger.status(chalk.blue('  Reading Files...'), 4)
+
+    archive.on('upload', function (data) {
+      stats.bytesTransferred += data.length
+      stats.transferRate(data.length)
+      logger.status(chalk.blue('  Uploading ' + prettyBytes(stats.transferRate()) + '/s'), 5)
+      if (noDataTimeout) clearInterval(noDataTimeout)
+      noDataTimeout = setInterval(function () {
+        logger.status(chalk.blue('  Uploading ' + prettyBytes(stats.transferRate()) + '/s'), 5)
+      }, 100)
+    })
 
     each(walker(dir), appendEntry, done)
   })
-
-  // archive.list({live: true}).on('data', console.log)
 
   function appendEntry (data, next) {
     if (isDirectory && firstAppend) {
@@ -46,23 +78,22 @@ module.exports = function (argv) {
       return next()
     }
 
-    console.log('Adding', data.relname)
-    archive.append({type: data.type, name: data.relname}, next)
+    logger.status('         ' + data.relname, 0) // TODO: actual progress %
+    archive.append({type: data.type, name: data.relname}, function () {
+      logger.message(chalk.green.dim('  [Done] ') + chalk.dim(data.relname))
+      logger.status('', 0) // clear file progress msg
+      next()
+
+      stats.filesTotal = archive.metadata.blocks - 1 // first block is header
+      stats.bytesTotal = archive.content.bytes
+      printTotalStats()
+    })
   }
 
-  function onswarm (swarm) {
-    swarm.on('connection', function (con) {
-      console.log('Remote peer connected')
-      con.on('close', function () {
-        console.log('Remote peer disconnected')
-      })
-    })
-    swarm.on('browser-connection', function (con) {
-      console.log('WebRTC browser connected')
-      con.on('close', function () {
-        console.log('WebRTC browser disconnected')
-      })
-    })
+  function printTotalStats () {
+    var msg = 'Files: ' + chalk.bold(stats.filesTotal)
+    msg += '  Size: ' + chalk.bold(prettyBytes(stats.bytesTotal))
+    logger.status(msg, 1)
   }
 
   function done (err) {
@@ -71,18 +102,30 @@ module.exports = function (argv) {
     archive.finalize(function (err) {
       if (err) return onerror(err)
 
-      console.log('All files added. Share this link:', archive.key.toString('hex'))
-
       if (!archive.live) {
-        replicate(argv, archive)
+        logger.status(chalk.bold('[Sharing] ') + chalk.blue.underline(archive.key.toString('hex')), 2)
+        logger.status(chalk.blue('  Static Dat Finalized'), 4)
+        logger.status(chalk.blue('  Waiting for connections...'), -1)
+        var swarm = replicate(argv, archive)
+        swarmLogger(swarm, logger)
         return
       }
 
-      console.log('Watching', dir === '.' ? process.cwd() : dir, '...')
+      var dirName = dir === '.' ? process.cwd() : dir
+
+      logger.status(chalk.blue('  Watching ' + chalk.bold(dirName) + '...'), 4)
+      logger.status(chalk.blue('  Waiting for connections...'), -1)
 
       yoloWatch(dir, function (name, st) {
-        console.log('Adding', name)
-        archive.append({type: st.isDirectory() ? 'directory' : 'file', name: name})
+        stats.filesTotal = archive.metadata.blocks - 1 // first block is header
+        stats.bytesTotal = archive.content.bytes
+        printTotalStats()
+
+        logger.status('         ' + name, 0)
+        archive.append({type: st.isDirectory() ? 'directory' : 'file', name: name}, function () {
+          logger.message(chalk.green.dim('  [Done] ') + chalk.dim(name))
+          logger.status('', 0)
+        })
       })
     })
   }
