@@ -1,134 +1,161 @@
+var fs = require('fs')
 var os = require('os')
 var path = require('path')
 var test = require('tape')
-var rimraf = require('rimraf')
 var mkdirp = require('mkdirp')
+var rimraf = require('rimraf')
 var spawn = require('./helpers/spawn.js')
 
 var dat = path.resolve(path.join(__dirname, '..', 'cli.js'))
+var fixtures = path.join(__dirname, 'fixtures')
 var tmp = os.tmpdir()
 
-var datFixtures = path.join(__dirname, 'fixtures')
+// os x adds this if you view the fixtures in finder and breaks the file count assertions
+try { fs.unlinkSync(path.join(__dirname, 'fixtures', '.DS_Store')) } catch (e) { /* ignore error */ }
 
-test('errors with non 64 character hashes', function (t) {
-  var st = spawn(t, dat + ' pizza --home=' + tmp)
+test('starts looking for peers with correct hash', function (t) {
+  // cmd: dat <link> tmp
+  rimraf.sync(path.join(tmp, '.dat'))
+  var st = spawn(t, dat + ' 9d011b6c9de26e53e9961c8d8ea840d33e0d8408318332c9502bad112cad9989 ' + tmp)
+  st.stdout.match(function (output) {
+    var downloading = output.indexOf('waiting for connections') > -1
+    if (!downloading) return false
+    t.ok(downloading, 'Started looking for Peers')
+    st.kill()
+    return true
+  })
+  st.end()
+})
+
+test('errors with invalid hash', function (t) {
+  // cmd: dat pizza tmp
+  rimraf.sync(path.join(tmp, '.dat'))
+  var st = spawn(t, dat + ' pizza ' + tmp)
   st.stderr.match(function (output) {
-    var gotError = output.indexOf('Invalid dat link') > -1
+    var gotError = output.indexOf('Invalid Dat Link') > -1
     t.ok(gotError, 'got error')
     if (gotError) return true
   })
   st.end()
 })
 
-test('does not error with 64 character link', function (t) {
-  var st = spawn(t, dat + ' 9d011b6c9de26e53e9961c8d8ea840d33e0d8408318332c9502bad112cad9989 --home=' + tmp)
-  st.stdout.match(function (output) {
-    var downloading = output.indexOf('Finding data sources') > -1
-    if (!downloading) return false
-    t.ok(downloading, output + ' contains "Finding data sources"')
-    if (downloading) {
-      st.kill()
-      return true
-    }
+test('errors on new download without directory', function (t) {
+  // cmd: dat <link>
+  rimraf.sync(path.join(process.cwd(), '.dat')) // in case we have a .dat folder here
+  var st = spawn(t, dat + ' 9d011b6c9de26e53e9961c8d8ea840d33e0d8408318332c9502bad112cad9989')
+  st.stderr.match(function (output) {
+    var gotError = output.indexOf('Please specify a directory.') > -1
+    t.ok(gotError, 'got error')
+    if (gotError) return true
   })
   st.end()
 })
 
-test('does not error with 64 character link with dat:// in front', function (t) {
-  var st = spawn(t, dat + ' dat://9d011b6c9de26e53e9961c8d8ea840d33e0d8408318332c9502bad112cad9989 --home=' + tmp)
-  st.stdout.match(function (output) {
-    var downloading = output.indexOf('Finding data sources') > -1
-    if (!downloading) return false
-    t.ok(downloading, output + ' contains "Finding data sources"')
-    if (downloading) {
-      st.kill()
-      return true
-    }
-  })
-  st.end()
-})
-
-// this test just downloads an empty dat
-test('download shows folder name on completion', function (t) {
-  var link
-  var tmpdir = tmp + '/dat-download-folder-test'
-  rimraf.sync(tmpdir)
-  var datFolderName = 'dat1'
-  var dat1 = tmpdir + '/' + datFolderName
-  var dat2 = tmpdir + '/dat2'
-  mkdirp.sync(dat1)
-  mkdirp.sync(dat2)
-
-  var linkCmd = dat + ' link --home=' + tmp + ' --path=' + dat1
-  var linker = spawn(t, linkCmd, {end: false})
-  linker.stderr.empty()
-  linker.stdout.match(function (output) {
-    var matches = output.match(/dat\:\/\/[A-Za-z0-9]+/)
+test('download resumes with same key', function (t) {
+  // cmd: dat <link> . (twice)
+  var tmpdir = newTestFolder()
+  var link = null
+  var share = spawn(t, dat + ' ' + fixtures, {end: false})
+  share.stderr.empty()
+  share.stdout.match(function (output) {
+    var matches = matchDatLink(output)
     if (!matches) return false
-    link = matches[0]
+    link = matches
     startDownloader()
     return true
-  })
+  }, 'share started')
 
   function startDownloader () {
-    var downloader = spawn(t, dat + ' ' + link + ' --home=' + tmp + ' --path=' + dat2, {end: false})
+    // cmd: dat <link> tmpdir
+    var downloader = spawn(t, dat + ' ' + link + ' ' + tmpdir, {end: false})
     downloader.stdout.match(function (output) {
-      var contains = output.indexOf('Downloaded') > -1
-      if (!contains || !linker) return false
-      t.ok(output.toString().indexOf(datFolderName) > -1, 'contains folder name')
+      var contains = output.indexOf('DONE') > -1
+      if (!contains || !share) return false
       downloader.kill()
-      linker.kill()
+      spawnDownloaderTwo()
       return true
-    })
-    downloader.end(function () {
+    }, 'download one started')
+    downloader.end()
+  }
+
+  function spawnDownloaderTwo () {
+    // cmd: dat <link> (no dir required in cwd w/ dat folder)
+    var downloaderTwo = spawn(t, dat + ' ' + link, {cwd: tmpdir, end: false})
+    downloaderTwo.stdout.match(function (output) {
+      var contains = output.indexOf('Initializing') > -1
+      if (!contains || !share) return false
+      downloaderTwo.kill()
+      return true
+    }, 'download two resumed without dir argument')
+    downloaderTwo.end(function () {
       t.end()
     })
   }
 })
 
-test('download metadata is correct', function (t) {
+test('download transfers files', function (t) {
   var link
-  var tmpdir = tmp + '/dat-download-folder-test'
-  rimraf.sync(tmpdir)
-  var dat1 = tmpdir + '/dat2'
-  mkdirp.sync(dat1)
+  var tmpdir = newTestFolder()
+  rimraf.sync(path.join(process.cwd(), '.dat')) // this keeps ending up here
+  rimraf.sync(path.join(fixtures, '.dat'))
 
-  var linkCmd = dat + ' link --home=' + tmp + ' --path=' + datFixtures
-  var linker = spawn(t, linkCmd, {end: false})
-  linker.stderr.empty()
-  linker.stdout.match(function (output) {
-    var matches = output.match(/dat\:\/\/[A-Za-z0-9]+/)
+  var share = spawn(t, dat + ' ' + fixtures, {end: false})
+  share.stderr.empty()
+  share.stdout.match(function (output) {
+    var matches = matchDatLink(output)
     if (!matches) return false
-    link = matches[0]
+    link = matches
     startDownloader()
     return true
-  })
+  }, 'share started')
 
   function startDownloader () {
-    var downloader = spawn(t, dat + ' ' + link + ' --home=' + tmp + ' --path=' + dat1, {end: false})
+    var downloader = spawn(t, dat + ' ' + link + ' ' + tmpdir, {end: false})
     downloader.stdout.match(function (output) {
-      var contains = output.indexOf('Downloaded') > -1
-      if (!contains || !linker) return false
+      var contains = output.indexOf('Finished') > -1
+      if (!contains || !share) return false
 
-      var stats = output.split('(')[1]
-      var fileNum = stats.match(/\d+/g)[0]
-      var dirNum = stats.match(/\d+/g)[1]
-      t.ok(Number(fileNum) === 2, 'file number is 2')
-      t.ok(Number(dirNum) === 3, 'directory number is 3')
+      var hasFiles = output.indexOf('3 items') > -1
+      t.ok(hasFiles, 'file number is 3')
 
-      var hasSizeDest = output.indexOf('Downloaded 1.44 kB to fixtures') > -1
-      t.ok(hasSizeDest, 'has size and destination')
+      var hasSize = output.indexOf('1.44 kB') > -1
+      t.ok(hasSize, 'has size')
 
-      var hasLink = output.indexOf('dat://161a2706ac2ecae09a7b8529bb08f23feb7e1484dd1d48d7b4a2816cfce2215a') > -1
+      var hasLink = output.indexOf(link) > -1
       t.ok(hasLink, 'has link')
-      if (!hasLink) console.error('no link!' + output)
+
+      // var hasDest = output.indexOf('dat-download-folder-test') > -1
+      // t.ok(hasDest, 'has destination')
+
+      var fileList = fs.readdirSync(tmpdir).join(' ')
+      var hasCsvFile = fileList.indexOf('all_hour.csv') > -1
+      var hasDatFolder = fileList.indexOf('.dat') > -1
+      t.ok(hasDatFolder, '.dat folder created')
+      t.ok(hasCsvFile, 'csv file downloaded')
+      // var hasSubDir = fileList.indexOf('folder') > -1
+      // t.ok(hasSubDir, 'sub directory downloaded')
+      // TODO: known hyperdrive issue https://github.com/mafintosh/hyperdrive/issues/28
 
       downloader.kill()
-      linker.kill()
+      share.kill()
       return true
-    })
+    }, 'download finished')
     downloader.end(function () {
       t.end()
     })
   }
 })
+
+function newTestFolder () {
+  var tmpdir = tmp + '/dat-download-folder-test'
+  rimraf.sync(tmpdir)
+  mkdirp.sync(tmpdir)
+  return tmpdir
+}
+
+function matchDatLink (output) {
+  // TODO: dat.land links
+  var match = output.match(/Link [A-Za-z0-9]{64}/)
+  if (!match) return false
+  return match[0].split('Link ')[1].trim()
+}

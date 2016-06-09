@@ -1,5 +1,4 @@
 var hyperdrive = require('hyperdrive')
-var memdb = require('memdb')
 var walker = require('folder-walker')
 var each = require('stream-each')
 var raf = require('random-access-file')
@@ -12,18 +11,14 @@ var createSwarm = require('hyperdrive-archive-swarm')
 var statusLogger = require('../lib/status-logger')
 var swarmLogger = require('../lib/swarm-logger')
 
-module.exports = function (argv) {
-  var dir = argv._[1] || '.'
-
-  try {
-    var isDirectory = fs.statSync(dir).isDirectory()
-  } catch (err) {
-    console.error('Directory does not exist')
-    process.exit(1)
-  }
-
-  var drive = hyperdrive(memdb()) // TODO: use level instead
-  var logger = statusLogger(argv)
+module.exports = function (args) {
+  var db = args.level
+  var dir = args.dir
+  var pathName = dir === '.' ? process.cwd() : dir
+  var key = args.key ? Buffer(args.key, 'hex') : null
+  var drive = hyperdrive(db)
+  var swarm = null
+  var logger = statusLogger(args)
   var firstAppend = true
   var noDataTimeout = null
   var stats = {
@@ -33,66 +28,110 @@ module.exports = function (argv) {
     transferRate: speedometer()
   }
 
-  logger.message(chalk.gray('Creating Dat: ' + dir))
-
-  var archive = drive.createArchive(argv.resume, {
-    live: !argv.static,
+  var archive = drive.createArchive(key, {
+    name: path.basename(pathName), // TODO: hyperdrive support for this
+    live: !args.snapshot,
     file: function (name) {
-      return raf(isDirectory ? path.join(dir, name) : dir, {readable: true, writable: false})
+      return raf(path.join(dir, name), {readable: true, writable: false})
     }
   })
 
   archive.open(function (err) {
     if (err) return onerror(err)
-    if (argv.resume && !archive.owner) return onerror('You cannot resume this link')
-
-    logger.status('', 0) // reserve line for file progress
-    logger.status('', 1) // reserve total progress and size
-    logger.status('Creating Link...', 2) // reserve for dat link
-
-    if ((archive.live || archive.owner) && archive.key) {
-      logger.status(chalk.bold('[Sharing] ') + chalk.blue.underline(archive.key.toString('hex')), 2)
-      var swarm = createSwarm(archive, argv)
-      swarmLogger(swarm, logger)
+    if (key && !archive.owner) {
+      logger.message('External Dat already exists in directory.')
+      logger.message('Run ' + chalk.bold('dat ' + key.toString('hex')) + ' to update.')
+      logger.logNow()
+      process.exit(0)
     }
 
-    logger.status(chalk.bold('[Status]'), 3)
-    logger.status(chalk.blue('  Reading Files...'), 4)
+    logger.message('Initializing Dat in ' + pathName)
+
+    logger.status('', 0) // reserve total progress and size
+    if (key) logger.status(printDatLink(archive.key), 1)
+    else logger.status('Creating Share Link...', 1) // reserve for dat link
+    logger.status('The Share Link is secret and only those you share it with will be able to get the files', 2)
+
+    if ((archive.live || archive.owner) && archive.key) {
+      if (!key) db.put('!dat!key', archive.key.toString('hex'))
+      logger.status(printDatLink(archive.key), 1)
+      swarm = createSwarm(archive, args)
+      swarmLogger(swarm, logger, 'Sharing ' + pathName)
+    }
 
     archive.on('upload', function (data) {
       stats.bytesTransferred += data.length
       stats.transferRate(data.length)
-      logger.status(chalk.blue('  Uploading ' + prettyBytes(stats.transferRate()) + '/s'), 5)
+      var msg = 'Uploading ' + prettyBytes(stats.transferRate()) + '/s'
+      msg += ', ' + prettyBytes(stats.bytesTransferred) + ' Total'
+      logger.status(msg, -1)
       if (noDataTimeout) clearInterval(noDataTimeout)
       noDataTimeout = setInterval(function () {
-        logger.status(chalk.blue('  Uploading ' + prettyBytes(stats.transferRate()) + '/s'), 5)
+        var msg = 'Uploading ' + prettyBytes(stats.transferRate()) + '/s'
+        msg += ', ' + prettyBytes(stats.bytesTransferred) + ' Total'
+        logger.status(msg, -1)
       }, 100)
     })
 
-    each(walker(dir), appendEntry, done)
+    if (args.resume) {
+      db.get('!dat!finalized', function (err, val) {
+        if (err || val !== 'true') return walkFolder(true)
+        else walkFolder(true) // TODO: check mtimes
+      })
+    } else {
+      walkFolder()
+    }
   })
 
-  function appendEntry (data, next) {
-    if (isDirectory && firstAppend) {
+  function walkFolder (resume) {
+    var fileStream = walker(dir, {filter: function (data) {
+      return data.indexOf('.dat') === -1
+    }})
+    if (resume) each(fileStream, checkAppend, done)
+    else each(fileStream, appendEntry, done)
+  }
+
+  function checkAppend (data, next) {
+    if (firstAppend) {
       firstAppend = false // folder walker seems off on the first item. TODO: investigate
       return next()
     }
+    archive.lookup(data.relname, function (err, result) {
+      if (!err && result) {
+        var msg = chalk.green.dim('[DONE] ') + chalk.dim(result.name)
+        if (data.type === 'file') msg += chalk.dim(' (' + prettyBytes(result.length) + ')')
+        logger.message(msg)
+        printTotalStats()
+        return next()
+      }
+      appendEntry(data, next)
+    })
+  }
 
-    logger.status('         ' + data.relname, 0) // TODO: actual progress %
+  function appendEntry (data, next) {
+    if (firstAppend) {
+      firstAppend = false // folder walker seems off on the first item. TODO: investigate
+      return next()
+    }
     archive.append({type: data.type, name: data.relname}, function () {
-      logger.message(chalk.green.dim('  [Done] ') + chalk.dim(data.relname))
-      logger.status('', 0) // clear file progress msg
+      var msg = chalk.green.dim('[DONE] ') + chalk.dim(data.relname)
+      if (data.type === 'file') msg += chalk.dim(' (' + prettyBytes(data.stat.size) + ')')
+      logger.message(msg)
       next()
       printTotalStats()
     })
   }
 
+  function printDatLink (key) {
+    return chalk.bold('Share Link ') + chalk.blue.underline(key.toString('hex'))
+  }
+
   function printTotalStats () {
     stats.filesTotal = archive.metadata.blocks - 1 // first block is header
-    stats.bytesTotal = archive.content.bytes
-    var msg = 'Files: ' + chalk.bold(stats.filesTotal)
+    stats.bytesTotal = archive.content ? archive.content.bytes : 0
+    var msg = 'Items: ' + chalk.bold(stats.filesTotal)
     msg += '  Size: ' + chalk.bold(prettyBytes(stats.bytesTotal))
-    logger.status(msg, 1)
+    logger.status(msg, 0)
   }
 
   function done (err) {
@@ -100,25 +139,19 @@ module.exports = function (argv) {
 
     archive.finalize(function (err) {
       if (err) return onerror(err)
+      db.put('!dat!finalized', true)
 
-      if (!archive.live) {
-        logger.status(chalk.bold('[Sharing] ') + chalk.blue.underline(archive.key.toString('hex')), 2)
-        logger.status(chalk.blue('  Static Dat Finalized'), 4)
-        logger.status(chalk.blue('  Waiting for connections...'), -1)
-        var swarm = createSwarm(archive, argv)
-        swarmLogger(swarm, logger)
+      if (args.snapshot) {
+        logger.status(printDatLink(archive.key), 1)
+        swarm = createSwarm(archive, args)
+        swarmLogger(swarm, logger, 'Sharing Snapshot ' + pathName)
         return
       }
 
-      var dirName = dir === '.' ? process.cwd() : dir
-
-      logger.status(chalk.blue('  Watching ' + chalk.bold(dirName) + '...'), 4)
-      logger.status(chalk.blue('  Waiting for connections...'), -1)
-
       yoloWatch(dir, function (name, st) {
-        logger.status('         ' + name, 0)
+        if (name.indexOf('.dat') > -1) return
         archive.append({type: st.isDirectory() ? 'directory' : 'file', name: name}, function () {
-          logger.message(chalk.green.dim('  [Done] ') + chalk.dim(name))
+          logger.message(chalk.green.dim('[Added] ') + chalk.dim(name))
           logger.status('', 0)
           printTotalStats()
         })
