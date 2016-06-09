@@ -51,9 +51,7 @@ module.exports = function (argv) {
   })
 
   each(archive.list({live: argv.live}), function (data, next) {
-    stats.filesTotal = archive.metadata.blocks - 1 // first block is header
-    stats.bytesTotal = archive.content.bytes
-
+    printTotalStats()
     if (stats.bytesTransferred === 0) {
       logger.status('  Getting Metadata...', 0) // HACK
     } else {
@@ -65,7 +63,6 @@ module.exports = function (argv) {
       logger.status('', 0) // clear file progress msg
       stats.filesTransferred += 1
       printTotalStats()
-
       next()
     })
   }, function () {
@@ -77,6 +74,8 @@ module.exports = function (argv) {
   })
 
   function printTotalStats () {
+    stats.filesTotal = archive.metadata.blocks - 1 // first block is header
+    stats.bytesTotal = archive.content.bytes
     var totalPer = Math.floor(100 * (stats.bytesTransferred / stats.bytesTotal))
     var msg = ''
     if (totalPer === 100) msg += chalk.bold.green('[Done] ')

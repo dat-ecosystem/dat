@@ -83,14 +83,13 @@ module.exports = function (argv) {
       logger.message(chalk.green.dim('  [Done] ') + chalk.dim(data.relname))
       logger.status('', 0) // clear file progress msg
       next()
-
-      stats.filesTotal = archive.metadata.blocks - 1 // first block is header
-      stats.bytesTotal = archive.content.bytes
       printTotalStats()
     })
   }
 
   function printTotalStats () {
+    stats.filesTotal = archive.metadata.blocks - 1 // first block is header
+    stats.bytesTotal = archive.content.bytes
     var msg = 'Files: ' + chalk.bold(stats.filesTotal)
     msg += '  Size: ' + chalk.bold(prettyBytes(stats.bytesTotal))
     logger.status(msg, 1)
@@ -117,14 +116,11 @@ module.exports = function (argv) {
       logger.status(chalk.blue('  Waiting for connections...'), -1)
 
       yoloWatch(dir, function (name, st) {
-        stats.filesTotal = archive.metadata.blocks - 1 // first block is header
-        stats.bytesTotal = archive.content.bytes
-        printTotalStats()
-
         logger.status('         ' + name, 0)
         archive.append({type: st.isDirectory() ? 'directory' : 'file', name: name}, function () {
           logger.message(chalk.green.dim('  [Done] ') + chalk.dim(name))
           logger.status('', 0)
+          printTotalStats()
         })
       })
     })
