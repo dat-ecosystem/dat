@@ -75,7 +75,7 @@ module.exports = function (argv) {
 
   function printTotalStats () {
     stats.filesTotal = archive.metadata.blocks - 1 // first block is header
-    stats.bytesTotal = archive.content.bytes
+    stats.bytesTotal = archive.content ? archive.content.bytes : 0
     var totalPer = Math.floor(100 * (stats.bytesTransferred / stats.bytesTotal))
     var msg = ''
     if (totalPer === 100) msg += chalk.bold.green('[Done] ')
