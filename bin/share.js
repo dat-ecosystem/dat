@@ -8,7 +8,7 @@ var path = require('path')
 var chalk = require('chalk')
 var prettyBytes = require('pretty-bytes')
 var speedometer = require('speedometer')
-var replicate = require('../lib/replicate')
+var createSwarm = require('hyperdrive-archive-swarm')
 var statusLogger = require('../lib/status-logger')
 var swarmLogger = require('../lib/swarm-logger')
 
@@ -52,7 +52,7 @@ module.exports = function (argv) {
 
     if ((archive.live || archive.owner) && archive.key) {
       logger.status(chalk.bold('[Sharing] ') + chalk.blue.underline(archive.key.toString('hex')), 2)
-      var swarm = replicate(argv, archive)
+      var swarm = createSwarm(archive, argv)
       swarmLogger(swarm, logger)
     }
 
@@ -105,7 +105,7 @@ module.exports = function (argv) {
         logger.status(chalk.bold('[Sharing] ') + chalk.blue.underline(archive.key.toString('hex')), 2)
         logger.status(chalk.blue('  Static Dat Finalized'), 4)
         logger.status(chalk.blue('  Waiting for connections...'), -1)
-        var swarm = replicate(argv, archive)
+        var swarm = createSwarm(archive, argv)
         swarmLogger(swarm, logger)
         return
       }
