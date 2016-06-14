@@ -5,7 +5,7 @@ var raf = require('random-access-file')
 var chalk = require('chalk')
 var prettyBytes = require('pretty-bytes')
 var speedometer = require('speedometer')
-var replicate = require('../lib/replicate')
+var createSwarm = require('hyperdrive-archive-swarm')
 var statusLogger = require('../lib/status-logger')
 var swarmLogger = require('../lib/swarm-logger')
 
@@ -35,7 +35,7 @@ module.exports = function (argv) {
   logger.status(chalk.bold('[Status]'), 3)
   logger.status(chalk.blue('  Looking for Peers...'), -1)
 
-  var swarm = replicate(argv, archive)
+  var swarm = createSwarm(archive, argv)
   swarmLogger(swarm, logger)
 
   archive.on('download', function (data) {
