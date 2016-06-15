@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 var args = require('minimist')(process.argv.splice(2), {
   alias: {p: 'port', q: 'quiet', v: 'version', s: 'static', r: 'resume'},
-  boolean: ['color', 'static', 'quiet', 'version'],
+  boolean: ['color', 'static', 'quiet', 'version', 'list'],
   default: {color: true}
 })
 
@@ -24,6 +24,8 @@ if (args.doctor) {
   require('./bin/doctor')(args)
 } else if (args._[0] === 'share') {
   require('./bin/share')(args)
+} else if (args.list && args._[0] && isDatLink(args._[0])) {
+  require('./bin/list')(args)
 } else if (args._[0] && isDatLink(args._[0])) {
   require('./bin/download')(args)
 } else {

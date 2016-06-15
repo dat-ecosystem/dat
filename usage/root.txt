@@ -9,5 +9,6 @@ options
   --port, -p          set a specific inbound tcp port
   --live              when downloading, keep connections open and wait for new data
   --static            create a non-updateable link when sharing
+  --list              list files for a dat link
   --append=<link>     append data to a link you created earlier
   --no-color          print output without colors
