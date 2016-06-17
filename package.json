@@ -14,7 +14,7 @@
   "scripts": {
     "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "standard": "standard",
-    "test": "standard"
+    "test": "standard && tape tests/*.js | tap-spec"
   },
   "repository": {
     "type": "git",
@@ -26,24 +26,20 @@
     "chalk": "^1.1.1",
     "datland-swarm-defaults": "^1.0.0",
     "debug": "^2.2.0",
-    "discovery-swarm": "^3.4.0",
+    "discovery-swarm": "^4.0.0",
     "dns-discovery": "^5.3.3",
     "folder-walker": "^2.0.2",
-    "get-browser-rtc": "^1.0.2",
-    "home-dir": "^1.0.0",
-    "hyperdrive": "^6.0.0",
+    "hyperdrive": "^6.2.2",
     "hyperdrive-archive-swarm": "^3.0.1",
-    "level-party": "^3.0.3",
+    "level": "^1.4.0",
     "memdb": "^1.3.1",
     "minimist": "^1.2.0",
     "pretty-bytes": "^3.0.0",
     "pump": "^1.0.1",
     "random-access-file": "^1.2.0",
-    "signalhub": "^4.4.0",
     "single-line-log": "^1.1.0",
     "speedometer": "^1.0.0",
-    "stream-each": "^1.1.0",
-    "webrtc-swarm": "^2.4.0"
+    "stream-each": "^1.1.0"
   },
   "bugs": {
     "url": "https://github.com/maxogden/dat/issues"
@@ -53,6 +49,7 @@
     "test": "tests"
   },
   "devDependencies": {
+    "mkdirp": "^0.5.1",
     "rimraf": "^2.5.0",
     "standard": "^6.0.7",
     "tap-spec": "^4.1.1",
