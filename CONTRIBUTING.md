@@ -6,7 +6,10 @@ If you are opening an issue because of a bug or technical problem, please provid
 
 Before taking the time to code something, feel free to open an issue first proposing your idea to other contributors, that way you can get feedback on the idea before taking time to write precious code.
 
-For any new functionality we like to see unit tests added as well so that we can catch regressions in the future in case something else breaks your fix.
+For any new functionality we like to see:
+
+* unit tests so that we can improve long term maintenance and catch regressions in the future
+* updates to the [change log](http://keepachangelog.com/) and relevant documentation
 
 ## For Collaborators
 
