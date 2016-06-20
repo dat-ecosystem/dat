@@ -9,7 +9,7 @@
     "synchronization"
   ],
   "bin": {
-    "dat": "cli.js"
+    "dat": "bin/cli.js"
   },
   "scripts": {
     "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
