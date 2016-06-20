@@ -5,6 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 11.0.1 - 2016-06-20
+### Fixed
+* Create download directory if it doesn't exist
+
+### Added
+* Updated Docs
+
 ## 11.0.0 - 2016-06-17
 ### Added
 * Live dat by default
