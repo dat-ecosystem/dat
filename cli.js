@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 var path = require('path')
 var level = require('level')
+var mkdirp = require('mkdirp')
 
 var args = require('minimist')(process.argv.splice(2), {
   alias: {p: 'port', q: 'quiet', v: 'version'},
@@ -61,6 +62,7 @@ function getDatDb () {
 
   var isNewDownload = (isDownload && !isDirectory(args.datDb, true))
   if (isNewDownload) {
+    if (dir !== '.') mkdirp.sync(args.datDb)
     args.level = level(args.datDb)
     run()
   } else {
