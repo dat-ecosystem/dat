@@ -81,10 +81,13 @@ module.exports = function (args) {
     }
   })
 
+  function ignore (filepath) {
+    // TODO: split this out and make it composable/modular/optional/modifiable
+    return filepath.indexOf('.dat') === -1 && filepath.indexOf('.swp') === -1
+  }
+
   function walkFolder (resume) {
-    var fileStream = walker(dir, {filter: function (data) {
-      return data.indexOf('.dat') === -1 && data.indexOf('.swp') === -1
-    }})
+    var fileStream = walker(dir, {filter: ignore})
     if (resume) each(fileStream, checkAppend, done)
     else each(fileStream, appendEntry, done)
   }
@@ -103,6 +106,7 @@ module.exports = function (args) {
   }
 
   function appendEntry (data, next) {
+    if (ignore(data.filepath)) return next()
     archive.append({type: data.type, name: data.relname}, function () {
       var msg = chalk.green.dim('[DONE] ') + chalk.dim(data.relname)
       if (data.type === 'file') msg += chalk.dim(' (' + prettyBytes(data.stat.size) + ')')
@@ -139,14 +143,8 @@ module.exports = function (args) {
       }
 
       var watcher = yoloWatch(dir)
-      watcher.on('data', function (file) {
-        if (file.filepath.indexOf('.dat') > -1) return
-        if (file.type === 'deleted') return
-        archive.append({type: file.type, name: file.relname}, function () {
-          logger.message(chalk.green.dim('[Added] ') + chalk.dim(file.relname))
-          logger.status('', 0)
-          printTotalStats()
-        })
+      watcher.on('changed', function (file) {
+        appendEntry(file, function () {})
       })
     })
   }
