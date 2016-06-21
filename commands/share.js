@@ -1,34 +1,53 @@
 var chalk = require('chalk')
 var prettyBytes = require('pretty-bytes')
 var Dat = require('../lib/dat')
+var logger = require('../lib/logger')
 
 module.exports = function (args) {
   var dat = Dat(args)
-  var pathName = dat.dir === '.' ? process.cwd() : dat.dir
-  //var logger = statusLogger(args)
+  var log = logger(args)
+
+  log.status('Starting Dat...\n', 0)
+  log.status('Connecting...', 1)
 
   dat.on('ready', function () {
-    console.log('Starting dat at: ', pathName)
+    log.message('Initializing Dat in ' + dat.dir + '\n')
     dat.addFiles(function (err) {
       onerror(err)
     })
   })
 
   dat.on('key', function (key) {
-    console.log('key', key)
+    var msg = 'Share link: ' + chalk.blue.underline(key) + '\n'
+    msg += 'The Share Link is secret and only those you share it with will be able to get the files'
+    log.message(msg + '\n')
   })
 
-  dat.on('file-added', function (data) {
-    console.log('file added: ', data.relname)
+  dat.on('file-added', printStats)
+  dat.on('file-exists', printStats)
+
+  dat.on('connecting', function () {
+    var msg = 'Waiting for connections. '
+    if (dat.archive.live) msg += 'Watching for updates...'
+    log.status(msg, 1)
   })
 
-  dat.on('file-exists', function (data) {
-    console.log('file exists: ', data.name)
-  })
+  dat.on('swarm-update', printSwarm)
+  dat.on('upload', printSwarm)
 
-  dat.on('swarm-update', function () {
-    console.log('peers: ', dat.swarm.connections)
-  })
+  function printSwarm () {
+    var msg = 'Connected to ' + dat.swarm.connections + ' peers. '
+    msg += 'Uploading ' + prettyBytes(dat.stats.rateUp()) + '/s. '
+    if (dat.archive.live) msg += 'Watching for updates...'
+    log.status(msg, 1)
+  }
+
+  function printStats () {
+    var stats = dat.stats
+    var msg = 'Adding ' + chalk.bold(stats.filesTotal) + ' files'
+    msg += chalk.dim(' (' + prettyBytes(stats.bytesTotal) + ')')
+    log.status(msg + '\n', 0)
+  }
 }
 
 function onerror (err) {
