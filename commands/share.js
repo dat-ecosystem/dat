@@ -9,7 +9,9 @@ module.exports = function (args) {
 
   dat.on('ready', function () {
     console.log('Starting dat at: ', pathName)
-    dat.addFiles()
+    dat.addFiles(function (err) {
+      onerror(err)
+    })
   })
 
   dat.on('key', function (key) {
@@ -27,4 +29,9 @@ module.exports = function (args) {
   dat.on('swarm-update', function () {
     console.log('peers: ', dat.swarm.connections)
   })
+}
+
+function onerror (err) {
+  console.error(err.stack || err)
+  process.exit(1)
 }

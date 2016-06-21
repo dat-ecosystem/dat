@@ -5,11 +5,12 @@ var Dat = require('../lib/dat')
 module.exports = function (args) {
   var dat = Dat(args)
   var pathName = dat.dir === '.' ? process.cwd() : dat.dir
-  //var logger = statusLogger(args)
 
   dat.on('ready', function () {
     console.log('Starting dat at: ', pathName)
-    dat.download()
+    dat.download(function (err) {
+      onerror(err)
+    })
   })
 
   dat.on('file-downloaded', function (data) {
@@ -19,4 +20,13 @@ module.exports = function (args) {
   dat.on('download-finished', function () {
     console.log('download finished')
   })
+
+  dat.on('download', function () {
+
+  })
+}
+
+function onerror (err) {
+  console.error(err.stack || err)
+  process.exit(1)
 }
