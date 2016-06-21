@@ -28,7 +28,7 @@
     "debug": "^2.2.0",
     "discovery-swarm": "^4.0.0",
     "dns-discovery": "^5.3.3",
-    "folder-walker": "^2.0.2",
+    "folder-walker": "^3.0.0",
     "hyperdrive": "^6.2.2",
     "hyperdrive-archive-swarm": "^3.0.1",
     "level": "^1.4.0",
