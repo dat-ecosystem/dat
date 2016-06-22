@@ -7,12 +7,14 @@ module.exports = function (args) {
   var dat = Dat(args)
   var log = logger(args)
 
+  var addText = 'Adding '
+
   log.status('Starting Dat...\n', 0)
   log.status('Connecting...', 1)
 
   dat.on('ready', function () {
     log.message('Initializing Dat in ' + dat.dir + '\n')
-    dat.addFiles(function (err) {
+    dat.share(function (err) {
       onerror(err)
     })
   })
@@ -25,6 +27,16 @@ module.exports = function (args) {
 
   dat.on('file-added', printStats)
   dat.on('file-exists', printStats)
+
+  dat.on('archive-finalized', function () {
+    addText = 'Added '
+    printStats()
+  })
+
+  dat.on('archive-updated', function () {
+    addText = 'Adding '
+    printStats()
+  })
 
   dat.on('connecting', function () {
     var msg = 'Waiting for connections. '
@@ -42,9 +54,9 @@ module.exports = function (args) {
     log.status(msg, 1)
   }
 
-  function printStats () {
+  function printStats (data) {
     var stats = dat.stats
-    var msg = 'Adding ' + chalk.bold(stats.filesTotal) + ' files'
+    var msg = addText + chalk.bold(stats.filesTotal) + ' files'
     msg += chalk.dim(' (' + prettyBytes(stats.bytesTotal) + ')')
     log.status(msg + '\n', 0)
   }

@@ -7,8 +7,12 @@ module.exports = function (args) {
   var dat = Dat(args)
   var log = logger(args)
 
+  var downloadTxt = 'Downloading '
+
   log.status('Starting Dat...\n', 0)
   log.status('Connecting...', 1)
+
+  dat.on('error', onerror)
 
   dat.on('ready', function () {
     log.message('Initializing Dat in ' + dat.dir + '\n')
@@ -24,6 +28,13 @@ module.exports = function (args) {
   })
 
   dat.on('download', function (data) {
+    downloadTxt = 'Downloading '
+    printStats()
+    printSwarm()
+  })
+
+  dat.on('download-finished', function () {
+    downloadTxt = 'Downloaded '
     printStats()
     printSwarm()
   })
@@ -39,17 +50,36 @@ module.exports = function (args) {
 
   function printSwarm () {
     var msg = 'Connected to ' + dat.swarm.connections + ' peers. '
-    msg += 'Downloading ' + prettyBytes(dat.stats.rateDown()) + '/s. '
+    msg += downloadTxt + prettyBytes(dat.stats.rateDown()) + '/s. '
     if (dat.stats.bytesUp) msg += 'Uploading ' + prettyBytes(dat.stats.rateUp()) + '/s. '
     log.status(msg, 1)
   }
 
   function printStats () {
     var stats = dat.stats
-    var msg = 'Downloading ' + chalk.bold(stats.filesTotal) + ' files'
+    var msg = progress(stats.bytesDown/stats.bytesTotal)
+    msg += ' Downloading ' + chalk.bold(stats.filesTotal) + ' files'
     msg += chalk.dim(' (' + prettyBytes(stats.bytesDown) + '/' + prettyBytes(stats.bytesTotal) + ')')
     log.status(msg + '\n', 0)
   }
+}
+
+function progress (percent) {
+  var width = 15
+  var cap = '>'
+  var ends = ['[', ']']
+  var spacer = Array(width).join(' ')
+  var progressVal = ''
+  var val = Math.round(percent * width)
+
+  if (val > 0) {
+    progressVal = Array(val).join('=')
+    progressVal += cap
+  }
+  progressVal += spacer
+  progressVal = progressVal.substring(0, width)
+
+  return ends[0] + progressVal + ends[1]
 }
 
 function onerror (err) {
