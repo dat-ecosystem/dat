@@ -5,6 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 11.0.2 - 2016-06-23
+### Fixed
+* Live mode with recursive adding files!
+
+### Changed
+* Separate yoloWatch to module
+
 ## 11.0.1 - 2016-06-20
 ### Fixed
 * Create download directory if it doesn't exist
