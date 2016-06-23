@@ -41,7 +41,7 @@
     "single-line-log": "^1.1.0",
     "speedometer": "^1.0.0",
     "stream-each": "^1.1.0",
-    "yolowatch": "^1.0.0"
+    "yolowatch": "^2.1.0"
   },
   "bugs": {
     "url": "https://github.com/maxogden/dat/issues"
