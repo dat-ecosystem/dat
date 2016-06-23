@@ -34,7 +34,7 @@ module.exports = function (args) {
   })
 
   dat.on('archive-updated', function () {
-    addText = 'Adding '
+    addText = 'Updated '
     printStats()
   })
 
