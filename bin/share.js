@@ -106,7 +106,7 @@ module.exports = function (args) {
   }
 
   function appendEntry (data, next) {
-    if (ignore(data.filepath)) return next()
+    if (!ignore(data.filepath)) return next()
     archive.append({type: data.type, name: data.relname}, function () {
       var msg = chalk.green.dim('[DONE] ') + chalk.dim(data.relname)
       if (data.type === 'file') msg += chalk.dim(' (' + prettyBytes(data.stat.size) + ')')
@@ -143,8 +143,19 @@ module.exports = function (args) {
       }
 
       var watcher = yoloWatch(dir)
-      watcher.on('changed', function (file) {
-        appendEntry(file, function () {})
+      watcher.on('changed', function (name, stat) {
+        // TODO: make yolowatch data consistent w/ folder-walker
+        if (name === dir) return
+        var data = {
+          filepath: name,
+          stat: stat,
+          relname: path.relative(dir, name),
+          basename: path.basename(name)
+        }
+        appendEntry(data, function () {})
+      })
+      watcher.on('added', function (file, stat) {
+        appendEntry(stat, function () {})
       })
     })
   }
