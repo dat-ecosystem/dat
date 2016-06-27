@@ -17,12 +17,12 @@ module.exports = function (args) {
   dat.on('ready', function () {
     log.message('Initializing Dat in ' + dat.dir + '\n')
     dat.download(function (err) {
-      onerror(err)
+      if (err) onerror(err)
     })
   })
 
   dat.on('key', function (key) {
-    var msg = 'Share link: ' + chalk.blue.underline(key) + '\n'
+    var msg = 'Share Link: ' + chalk.blue.underline(key) + '\n'
     msg += 'The Share Link is secret and only those you share it with will be able to get the files'
     log.message(msg + '\n')
   })
@@ -50,15 +50,15 @@ module.exports = function (args) {
 
   function printSwarm () {
     var msg = 'Connected to ' + dat.swarm.connections + ' peers. '
-    msg += downloadTxt + prettyBytes(dat.stats.rateDown()) + '/s. '
+    msg += 'Downloading ' + prettyBytes(dat.stats.rateDown()) + '/s. '
     if (dat.stats.bytesUp) msg += 'Uploading ' + prettyBytes(dat.stats.rateUp()) + '/s. '
     log.status(msg, 1)
   }
 
   function printStats () {
     var stats = dat.stats
-    var msg = progress(stats.bytesDown/stats.bytesTotal)
-    msg += ' Downloading ' + chalk.bold(stats.filesTotal) + ' files'
+    var msg = progress(stats.bytesDown / stats.bytesTotal)
+    msg += ' ' + downloadTxt + chalk.bold(stats.filesTotal) + ' files'
     msg += chalk.dim(' (' + prettyBytes(stats.bytesDown) + '/' + prettyBytes(stats.bytesTotal) + ')')
     log.status(msg + '\n', 0)
   }

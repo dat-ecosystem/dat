@@ -6,19 +6,18 @@ var mkdirp = require('mkdirp')
 var rimraf = require('rimraf')
 var spawn = require('./helpers/spawn.js')
 
-var dat = path.resolve(path.join(__dirname, '..', 'cli.js'))
+var dat = path.resolve(path.join(__dirname, '..', 'bin', 'cli.js'))
 var fixtures = path.join(__dirname, 'fixtures')
-var tmp = os.tmpdir()
+var downloadDir = newTestFolder()
 
 // os x adds this if you view the fixtures in finder and breaks the file count assertions
 try { fs.unlinkSync(path.join(__dirname, 'fixtures', '.DS_Store')) } catch (e) { /* ignore error */ }
 
 test('starts looking for peers with correct hash', function (t) {
-  // cmd: dat <link> tmp
-  rimraf.sync(path.join(tmp, '.dat'))
-  var st = spawn(t, dat + ' 9d011b6c9de26e53e9961c8d8ea840d33e0d8408318332c9502bad112cad9989 ' + tmp)
+  // cmd: dat <link> downloadDir
+  var st = spawn(t, dat + ' 9d011b6c9de26e53e9961c8d8ea840d33e0d8408318332c9502bad112cad9989 ' + downloadDir)
   st.stdout.match(function (output) {
-    var downloading = output.indexOf('waiting for connections') > -1
+    var downloading = output.indexOf('Waiting for connections') > -1
     if (!downloading) return false
     t.ok(downloading, 'Started looking for Peers')
     st.kill()

@@ -20,7 +20,7 @@ module.exports = function (args) {
   })
 
   dat.on('key', function (key) {
-    var msg = 'Share link: ' + chalk.blue.underline(key) + '\n'
+    var msg = 'Share Link: ' + chalk.blue.underline(key) + '\n'
     msg += 'The Share Link is secret and only those you share it with will be able to get the files'
     log.message(msg + '\n')
   })
