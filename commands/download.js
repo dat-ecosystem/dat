@@ -2,6 +2,7 @@ var chalk = require('chalk')
 var prettyBytes = require('pretty-bytes')
 var Dat = require('../lib/dat')
 var logger = require('../lib/logger')
+var ui = require('../lib/ui')
 
 module.exports = function (args) {
   var dat = Dat(args)
@@ -57,29 +58,11 @@ module.exports = function (args) {
 
   function printStats () {
     var stats = dat.stats
-    var msg = progress(stats.bytesDown / stats.bytesTotal)
+    var msg = ui.progress(stats.bytesDown / stats.bytesTotal)
     msg += ' ' + downloadTxt + chalk.bold(stats.filesTotal) + ' files'
     msg += chalk.dim(' (' + prettyBytes(stats.bytesDown) + '/' + prettyBytes(stats.bytesTotal) + ')')
     log.status(msg + '\n', 0)
   }
-}
-
-function progress (percent) {
-  var width = 15
-  var cap = '>'
-  var ends = ['[', ']']
-  var spacer = Array(width).join(' ')
-  var progressVal = ''
-  var val = Math.round(percent * width)
-
-  if (val > 0) {
-    progressVal = Array(val).join('=')
-    progressVal += cap
-  }
-  progressVal += spacer
-  progressVal = progressVal.substring(0, width)
-
-  return ends[0] + progressVal + ends[1]
 }
 
 function onerror (err) {
