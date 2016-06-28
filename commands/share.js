@@ -9,7 +9,6 @@ module.exports = function (args) {
   var log = logger(args)
 
   var addText = 'Adding '
-  var finalized = false
   var updated = false
   var initFileCount = 0
 
@@ -19,7 +18,7 @@ module.exports = function (args) {
   dat.on('ready', function () {
     log.message('Initializing Dat in ' + dat.dir + '\n')
     dat.share(function (err) {
-      onerror(err)
+      if (err) onerror(err)
     })
   })
 
@@ -38,7 +37,6 @@ module.exports = function (args) {
 
   dat.on('archive-finalized', function () {
     addText = 'Added '
-    finalized = true
     initFileCount = dat.stats.filesTotal
     printStats()
   })

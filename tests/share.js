@@ -4,7 +4,7 @@ var test = require('tape')
 var rimraf = require('rimraf')
 var spawn = require('./helpers/spawn.js')
 
-var dat = path.resolve(path.join(__dirname, '..', 'cli.js'))
+var dat = path.resolve(path.join(__dirname, '..', 'bin', 'cli.js'))
 var fixtures = path.join(__dirname, 'fixtures')
 
 var fixturesStaticLink
@@ -99,25 +99,13 @@ test('share prints shared directory', function (t) {
 test('prints file information (live)', function (t) {
   // cmd: dat tests/fixtures
   var st = spawn(t, dat + ' ' + fixtures)
-  var matchedFiles = 0
   st.stdout.match(function (output) {
-    var finished = output.match('Sharing')
+    var finished = output.match('Added')
     if (!finished) return false
 
-    var fileList = output.split('\n').filter(function (line) {
-      return line.indexOf('[DONE]') > -1
-    })
-    fileList.forEach(function (file) {
-      file = file.split('[DONE]')[1]
-      if (file.match(/all_hour|empty/)) matchedFiles += 1
-    })
-    t.ok((matchedFiles === 2), 'Printed ' + matchedFiles + ' file names')
-
-    var fileStats = output.split('\n').filter(function (line) {
-      return line.indexOf('Items') > -1
-    })[0]
-    t.ok(fileStats.match(/Items: 3/), 'File count correct')
-    t.ok(fileStats.match(/Size: 1\.44 kB/), 'File size correct')
+    console.log(output)
+    t.ok(output.match(/2 files/), 'File count correct')
+    t.ok(output.match(/1\.44 kB/), 'File size correct')
 
     st.kill()
     cleanDat()
@@ -126,28 +114,15 @@ test('prints file information (live)', function (t) {
   st.end()
 })
 
-test('prints file information (static)', function (t) {
+test('prints file information (snapshot)', function (t) {
   // cmd: dat tests/fixtures --snapshot
   var st = spawn(t, dat + ' ' + fixtures + ' --snapshot')
-  var matchedFiles = 0
   st.stdout.match(function (output) {
-    var finished = output.match('Sharing Snapshot')
+    var finished = output.match('Added')
     if (!finished) return false
 
-    var fileList = output.split('\n').filter(function (line) {
-      return line.indexOf('[DONE]') > -1
-    })
-    fileList.forEach(function (file) {
-      file = file.split('[DONE]')[1]
-      if (file.match(/all_hour|empty/)) matchedFiles += 1
-    })
-    t.ok((matchedFiles === 2), 'Printed ' + matchedFiles + ' file names')
-
-    var fileStats = output.split('\n').filter(function (line) {
-      return line.indexOf('Items') > -1
-    })[0]
-    t.ok(fileStats.match(/Items: 2/), 'File count correct') // TODO: make this consitent w/ live
-    t.ok(fileStats.match(/Size: 1\.44 kB/), 'File size correct')
+    t.ok(output.match(/2 files/), 'File count correct')
+    t.ok(output.match(/1\.44 kB/), 'File size correct')
 
     st.kill()
     cleanDat()
@@ -176,7 +151,7 @@ function cleanDat () {
 
 function matchDatLink (output) {
   // TODO: dat.land links
-  var match = output.match(/Link [A-Za-z0-9]{64}/)
+  var match = output.match(/Link: [A-Za-z0-9]{64}/)
   if (!match) return false
-  return match[0].split('Link ')[1].trim()
+  return match[0].split('Link: ')[1].trim()
 }
