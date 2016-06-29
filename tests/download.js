@@ -15,7 +15,7 @@ try { fs.unlinkSync(path.join(__dirname, 'fixtures', '.DS_Store')) } catch (e) {
 
 test('starts looking for peers with correct hash', function (t) {
   // cmd: dat <link> downloadDir
-  var st = spawn(t, dat + ' 9d011b6c9de26e53e9961c8d8ea840d33e0d8408318332c9502bad112cad9989 ' + downloadDir)
+  var st = spawn(t, dat + ' 5hz25io80t0m1ttr332awpslmlfn1mc5bf1z8lvhh34a9r1ob3 ' + downloadDir)
   st.stdout.match(function (output) {
     var downloading = output.indexOf('Waiting for connections') > -1
     if (!downloading) return false
@@ -41,7 +41,7 @@ test('errors with invalid hash', function (t) {
 test('errors on new download without directory', function (t) {
   // cmd: dat <link>
   rimraf.sync(path.join(process.cwd(), '.dat')) // in case we have a .dat folder here
-  var st = spawn(t, dat + ' 9d011b6c9de26e53e9961c8d8ea840d33e0d8408318332c9502bad112cad9989')
+  var st = spawn(t, dat + ' 5hz25io80t0m1ttr332awpslmlfn1mc5bf1z8lvhh34a9r1ob3')
   st.stderr.match(function (output) {
     var gotError = output.indexOf('Directory does not exist') > -1
     t.ok(gotError, 'got error')
@@ -159,7 +159,7 @@ function newTestFolder () {
 
 function matchDatLink (output) {
   // TODO: dat.land links
-  var match = output.match(/Link: [A-Za-z0-9]{64}/)
+  var match = output.match(/Link: [A-Za-z0-9]{50}/)
   if (!match) return false
   return match[0].split('Link: ')[1].trim()
 }

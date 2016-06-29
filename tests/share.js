@@ -150,7 +150,7 @@ function cleanDat () {
 
 function matchDatLink (output) {
   // TODO: dat.land links
-  var match = output.match(/Link: [A-Za-z0-9]{64}/)
+  var match = output.match(/Link: [A-Za-z0-9]{50}/)
   if (!match) return false
   return match[0].split('Link: ')[1].trim()
 }
