@@ -23,17 +23,13 @@ module.exports = function (args) {
   })
 
   dat.on('key', function (key) {
-    var msg = 'Share Link: ' + chalk.blue.underline(key) + '\n'
-    msg += 'The Share Link is secret and only those you share it with will be able to get the files'
-    log.message(msg + '\n')
+    log.message(ui.keyMsg(key))
   })
 
   dat.on('file-added', printStats)
   dat.on('file-exists', printStats)
 
-  dat.on('append-ready', function () {
-    printStats()
-  })
+  dat.on('append-ready', printStats)
 
   dat.on('archive-finalized', function () {
     addText = 'Added '
@@ -57,10 +53,7 @@ module.exports = function (args) {
   dat.on('upload', printSwarm)
 
   function printSwarm () {
-    var msg = 'Connected to ' + dat.swarm.connections + ' peers. '
-    msg += 'Uploading ' + prettyBytes(dat.stats.rateUp()) + '/s. '
-    if (dat.archive.live) msg += 'Watching for updates...'
-    log.status(msg, 1)
+    log.status(ui.swarmMsg(dat), 1)
   }
 
   function printStats (data) {
