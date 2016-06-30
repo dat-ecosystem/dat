@@ -11,6 +11,7 @@ module.exports = function (args) {
   var addText = 'Adding '
   var updated = false
   var initFileCount = 0
+  var swarmTimeout = null
 
   log.status('Starting Dat...\n', 0)
   if (args.snapshot) log.status('Creating Link...', 1)
@@ -62,6 +63,10 @@ module.exports = function (args) {
 
   function printSwarm () {
     log.status(ui.swarmMsg(dat), 1)
+    if (swarmTimeout) clearInterval(swarmTimeout)
+    swarmTimeout = setInterval(function () {
+      log.status(ui.swarmMsg(dat), 1)
+    }, 500)
   }
 
   function printStats (data) {

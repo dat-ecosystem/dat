@@ -9,6 +9,7 @@ module.exports = function (args) {
   var log = logger(args)
 
   var downloadTxt = 'Downloading '
+  var swarmTimeout = null
 
   log.status('Starting Dat...\n', 0)
   log.status('Connecting...', 1)
@@ -49,6 +50,10 @@ module.exports = function (args) {
 
   function printSwarm () {
     log.status(ui.swarmMsg(dat), 1)
+    if (swarmTimeout) clearInterval(swarmTimeout)
+    swarmTimeout = setInterval(function () {
+      log.status(ui.swarmMsg(dat), 1)
+    }, 500)
   }
 
   function printStats () {
