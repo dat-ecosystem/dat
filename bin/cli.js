@@ -41,7 +41,7 @@ function getCommand () {
   args.key = isDownload ? args._[0] : null
 
   if (isDirectory(args.dir)) run() // catch download dir error TODO: make optional
-  else onerror('Invalid Command')
+  else onerror('Invalid Command') // Should never get here...
 }
 
 function isDatLink (val, quiet) {
@@ -62,5 +62,5 @@ function isDirectory (val, quiet) {
 
 function onerror (msg) {
   console.error(msg + '\n')
-  require('../usage')('root.txt')
+  // require('../usage')('root.txt')
 }

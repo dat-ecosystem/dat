@@ -13,13 +13,21 @@ module.exports = function (args) {
   var initFileCount = 0
 
   log.status('Starting Dat...\n', 0)
-  log.status('Connecting...', 1)
+  if (args.snapshot) log.status('Creating Link...', 1)
+  else log.status('Connecting...', 1)
 
   dat.on('ready', function () {
     log.message('Sharing ' + dat.dir + '\n')
     dat.share(function (err) {
       if (err) onerror(err)
     })
+  })
+
+  dat.on('file-counted', function () {
+    var msg = 'Calculating Size: '
+    msg += dat.appendStats.files + ' files '
+    msg += chalk.dim('(' + prettyBytes(dat.appendStats.bytes) + ')')
+    log.status(msg + '\n', 0)
   })
 
   dat.on('key', function (key) {
