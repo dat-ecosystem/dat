@@ -86,7 +86,7 @@ test('share prints shared directory', function (t) {
   // cmd: dat tests/fixtures
   var st = spawn(t, dat + ' ' + fixtures)
   st.stdout.match(function (output) {
-    var contains = output.indexOf('Initializing Dat') > -1
+    var contains = output.indexOf('Sharing') > -1
     if (!contains) return false
     t.ok(output.indexOf(path.resolve(fixtures)) > -1, 'prints directory name')
     st.kill()
@@ -134,7 +134,7 @@ test('share with . arg defaults to cwd', function (t) {
   // cmd: dat .
   var st = spawn(t, dat + ' .', {cwd: fixtures})
   st.stdout.match(function (output) {
-    var contains = output.indexOf('Initializing Dat') > -1
+    var contains = output.indexOf('Sharing') > -1
     if (!contains) return false
     t.ok(output.indexOf(path.resolve(fixtures)) > -1, 'prints directory name')
     st.kill()

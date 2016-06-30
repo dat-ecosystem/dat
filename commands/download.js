@@ -16,7 +16,7 @@ module.exports = function (args) {
   dat.on('error', onerror)
 
   dat.on('ready', function () {
-    log.message('Initializing Dat in ' + dat.dir + '\n')
+    log.message('Downloading in ' + dat.dir + '\n')
     dat.download(function (err) {
       if (err) onerror(err)
     })

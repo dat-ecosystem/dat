@@ -16,7 +16,7 @@ module.exports = function (args) {
   log.status('Connecting...', 1)
 
   dat.on('ready', function () {
-    log.message('Initializing Dat in ' + dat.dir + '\n')
+    log.message('Sharing ' + dat.dir + '\n')
     dat.share(function (err) {
       if (err) onerror(err)
     })
@@ -59,10 +59,17 @@ module.exports = function (args) {
   function printStats (data) {
     var stats = dat.stats
     var files = stats.filesTotal
-    if (updated) files = files - initFileCount
-    var msg = ui.progress(stats.bytesTotal / dat.appendStats.bytes)
+    var bytesTotal = dat.appendStats.bytes
+    var bytesProgress = stats.bytesTotal
+    if (updated) {
+      files = files - initFileCount
+      bytesProgress = stats.bytesTotal // TODO: update progress for live
+      bytesTotal = stats.bytesTotal
+    }
+
+    var msg = ui.progress(bytesProgress / bytesTotal)
     msg += ' ' + addText + chalk.bold(files) + ' files'
-    msg += chalk.dim(' (' + prettyBytes(stats.bytesTotal) + '/' + prettyBytes(dat.appendStats.bytes) + ')')
+    msg += chalk.dim(' (' + prettyBytes(bytesProgress) + '/' + prettyBytes(bytesTotal) + ')')
     log.status(msg + '\n', 0)
   }
 }
