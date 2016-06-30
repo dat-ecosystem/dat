@@ -5,6 +5,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+### Fixed
+* Use yolowatch module for recursive live updates
+* Improved stats for edge cases
+
+### Changed
+* Simplified and clean up CLI output
+* Improve modularity
+
 ## 11.0.2 - 2016-06-23
 ### Fixed
 * Live mode with recursive adding files!
