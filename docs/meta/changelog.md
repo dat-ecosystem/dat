@@ -8,10 +8,17 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Fixed
 * Use yolowatch module for recursive live updates
 * Improved stats for edge cases
+* Print link with --quiet argument
 
 ### Changed
 * Simplified and clean up CLI output
-* Improve modularity
+* Improve modularity of library
+
+### Removed
+* List download option (will be re-added pending a hyperdrive update)
+
+### Added
+* Use dat-encoding for 50 character links
 
 ## 11.0.2 - 2016-06-23
 ### Fixed

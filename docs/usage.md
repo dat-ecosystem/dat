@@ -26,14 +26,14 @@ Share a directory by typing `dat <directory>`:
 
 ```
 $ dat my_data/
-Initializing Dat in my_data/
-[DONE] readme.txt (0.30 kB)
-[DONE] data.csv (1.14 kB)
-Items: 2  Size: 1.44 kB
-Share Link 4f36c088e9687ddf53d36f785ab84c65f4d24d8c4161950519b96a57d65ae08a
+Sharing /Users/joe/my_data
+
+Share Link: 34p3ak4jwnfn6og184k4tqojngo76qj0nqbat2h03miu85x61t
 The Share Link is secret and only those you share it with will be able to get the files
-Sharing /Users/joe, connected to 2/4 sources
-Uploading 28.62 kB/s, 765.08 kB Total
+
+[==============>] Added 21 files (448.41 MB/448.41 MB)
+
+Connected to 2 peers. Uploading 5 mBd/s. Watching for updates...
 ```
 
 You are now publishing that data from your computer. It will be publicly accessible as long as your terminal is open. The hash is a **secret hash**, your data is visible to anyone you send the hash to. As you add more files to the folder, dat will update and share the new files.
@@ -43,15 +43,15 @@ You are now publishing that data from your computer. It will be publicly accessi
 You can download data by typing `dat <dat-link> <directory>`:
 
 ```
-$ dat 2bede435504c9482910b5d4e324e995a9bc4d6f068b98ae03d97e8d3ac5f80ea download_dir
-Initializing Dat from 52d08a6d1ddc9b1f61b9862d2ae0d991676d489274bff6c5ebebecbfa3239f51
-[DONE] readme.txt (0.30 kB)
-[DONE] data.csv (1.14 kB)
-[DONE] 2 items (1.44 kB)
-Share Link 52d08a6d1ddc9b1f61b9862d2ae0d991676d489274bff6c5ebebecbfa3239f51
+$ dat 34p3ak4jwnfn6og184k4tqojngo76qj0nqbat2h03miu85x61t download_dir
+Downloading in /Users/joe/Downloads/download_dir
+
+Share Link: 34p3ak4jwnfn6og184k4tqojngo76qj0nqbat2h03miu85x61t
 The Share Link is secret and only those you share it with will be able to get the files
-Syncing live updates, connected to 1/2 sources
-Download Finished, you may exit process
+
+[===>          ] Downloading 180 files (79.01 kB/498.4 MB)
+
+Connected to 0 peers. Downloading 10 mB/s. Watching for updates...
 ```
 
 It will start downloading the data into the `download_dir` folder. Anyone who gets access to the unique dat-link will be able to download and re-host a copy of the data. It's distributed mad science!
