@@ -25,6 +25,7 @@ module.exports = function (args) {
 
   dat.on('key', function (key) {
     log.message(ui.keyMsg(key))
+    if (args.quiet) console.log(ui.keyMsg(key))
   })
 
   dat.on('download', function (data) {
@@ -36,6 +37,10 @@ module.exports = function (args) {
   dat.on('download-finished', function () {
     downloadTxt = 'Downloaded '
     printStats()
+    if (args.exit) {
+      log.status('', 1)
+      process.exit(0)
+    }
     printSwarm()
   })
 
