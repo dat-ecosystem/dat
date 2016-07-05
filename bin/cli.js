@@ -46,7 +46,7 @@ function getCommand () {
 
 function isDatLink (val, quiet) {
   // TODO: switch to using dat-encoding here
-  var isLink = (val.length === 50)
+  var isLink = (val.length === 50 || val.length === 64)
   if (quiet || isLink) return isLink
   onerror('Invalid Dat Link')
 }
