@@ -50,6 +50,7 @@
     "test": "tests"
   },
   "devDependencies": {
+    "mkdirp": "^0.5.1",
     "rimraf": "^2.5.3",
     "standard": "^6.0.7",
     "tap-spec": "^4.1.1",
