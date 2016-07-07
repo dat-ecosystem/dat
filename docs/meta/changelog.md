@@ -13,6 +13,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 * Simplified and clean up CLI output
 * Improve modularity of library
+* Move logger module into own npm package, status-logger
 
 ### Removed
 * List download option (will be re-added pending a hyperdrive update)

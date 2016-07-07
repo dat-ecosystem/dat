@@ -1,7 +1,7 @@
 var chalk = require('chalk')
 var prettyBytes = require('pretty-bytes')
 var Dat = require('../lib/dat')
-var logger = require('../lib/logger')
+var logger = require('status-logger')
 var ui = require('../lib/ui')
 
 module.exports = function (args) {
@@ -17,7 +17,9 @@ module.exports = function (args) {
   if (args.snapshot) log.status('Creating Link...', 1)
   else log.status('Connecting...', 1)
 
-  dat.on('ready', function () {
+  dat.on('error', onerror)
+
+  dat.once('ready', function () {
     log.message('Sharing ' + dat.dir + '\n')
     dat.share(function (err) {
       if (err) onerror(err)
@@ -31,7 +33,7 @@ module.exports = function (args) {
     log.status(msg + '\n', 0)
   })
 
-  dat.on('key', function (key) {
+  dat.once('key', function (key) {
     log.message(ui.keyMsg(key))
     if (args.quiet) console.log(ui.keyMsg(key))
   })
@@ -39,9 +41,9 @@ module.exports = function (args) {
   dat.on('file-added', printStats)
   dat.on('file-exists', printStats)
 
-  dat.on('append-ready', printStats)
+  dat.once('append-ready', printStats)
 
-  dat.on('archive-finalized', function () {
+  dat.once('archive-finalized', function () {
     addText = 'Added '
     initFileCount = dat.stats.filesTotal
     printStats()
@@ -53,7 +55,7 @@ module.exports = function (args) {
     printStats()
   })
 
-  dat.on('connecting', function () {
+  dat.once('connecting', function () {
     var msg = 'Waiting for connections. '
     if (dat.archive.live) msg += 'Watching for updates...'
     log.status(msg, 1)

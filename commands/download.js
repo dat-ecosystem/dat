@@ -1,7 +1,7 @@
 var chalk = require('chalk')
 var prettyBytes = require('pretty-bytes')
 var Dat = require('../lib/dat')
-var logger = require('../lib/logger')
+var logger = require('status-logger')
 var ui = require('../lib/ui')
 
 module.exports = function (args) {
@@ -16,14 +16,14 @@ module.exports = function (args) {
 
   dat.on('error', onerror)
 
-  dat.on('ready', function () {
+  dat.once('ready', function () {
     log.message('Downloading in ' + dat.dir + '\n')
     dat.download(function (err) {
       if (err) onerror(err)
     })
   })
 
-  dat.on('key', function (key) {
+  dat.once('key', function (key) {
     log.message(ui.keyMsg(key))
     if (args.quiet) console.log(ui.keyMsg(key))
   })
@@ -44,7 +44,7 @@ module.exports = function (args) {
     printSwarm()
   })
 
-  dat.on('connecting', function () {
+  dat.once('connecting', function () {
     var msg = 'Waiting for connections. '
     if (dat.archive.live) msg += 'Watching for updates...'
     log.status(msg, 1)

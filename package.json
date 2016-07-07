@@ -37,8 +37,8 @@
     "pretty-bytes": "^3.0.0",
     "pump": "^1.0.1",
     "random-access-file": "^1.2.0",
-    "single-line-log": "^1.1.0",
     "speedometer": "^1.0.0",
+    "status-logger": "^1.0.0",
     "stream-each": "^1.1.0",
     "yolowatch": "^2.3.0"
   },

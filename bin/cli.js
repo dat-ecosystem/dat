@@ -62,5 +62,6 @@ function isDirectory (val, quiet) {
 
 function onerror (msg) {
   console.error(msg + '\n')
+  process.exit(1)
   // require('../usage')('root.txt')
 }
