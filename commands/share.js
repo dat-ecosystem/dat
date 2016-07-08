@@ -11,7 +11,6 @@ module.exports = function (args) {
   var addText = 'Adding '
   var updated = false
   var initFileCount = 0
-  var swarmTimeout = null
 
   log.status('Starting Dat...\n', 0)
   if (args.snapshot) log.status('Creating Link...', 1)
@@ -53,12 +52,6 @@ module.exports = function (args) {
     addText = 'Updated '
     updated = true
     updateStats()
-  })
-
-  dat.once('connecting', function () {
-    var msg = 'Waiting for connections. '
-    if (dat.archive.live) msg += 'Watching for updates...'
-    log.status(msg, 1)
   })
 
   dat.on('swarm-update', printSwarm)

@@ -9,7 +9,6 @@ module.exports = function (args) {
   var log = logger(args)
 
   var downloadTxt = 'Downloading '
-  var swarmTimeout = null
 
   log.status('Starting Dat...\n', 0)
   log.status('Connecting...', 1)
@@ -40,12 +39,6 @@ module.exports = function (args) {
       log.status('', 1)
       process.exit(0)
     }
-  })
-
-  dat.once('connecting', function () {
-    var msg = 'Waiting for connections. '
-    if (dat.archive.live) msg += 'Watching for updates...'
-    log.status(msg, 1)
   })
 
   dat.on('swarm-update', printSwarm)
