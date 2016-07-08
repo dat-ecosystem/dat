@@ -2,7 +2,10 @@
 
 var args = require('minimist')(process.argv.splice(2), {
   alias: {p: 'port', q: 'quiet', v: 'version'},
-  boolean: ['snapshot', 'exit', 'list', 'quiet', 'version']
+  boolean: ['snapshot', 'exit', 'list', 'quiet', 'version'],
+  default: {
+    logspeed: 200
+  }
 })
 
 process.title = 'dat'
@@ -22,6 +25,9 @@ if (args.version) {
 
 var isShare = false
 var isDownload = false
+
+args.logspeed = +args.logspeed
+if (isNaN(args.logspeed)) args.logspeed = 200
 
 if (args.doctor || !args._[0]) run()
 else getCommand()

@@ -38,21 +38,21 @@ module.exports = function (args) {
     if (args.quiet) console.log(ui.keyMsg(key))
   })
 
-  dat.on('file-added', printStats)
-  dat.on('file-exists', printStats)
+  dat.on('file-added', updateStats)
+  dat.on('file-exists', updateStats)
 
-  dat.once('append-ready', printStats)
+  dat.once('append-ready', updateStats)
 
   dat.once('archive-finalized', function () {
     addText = 'Added '
     initFileCount = dat.stats.filesTotal
-    printStats()
+    updateStats()
   })
 
   dat.on('archive-updated', function () {
     addText = 'Updated '
     updated = true
-    printStats()
+    updateStats()
   })
 
   dat.once('connecting', function () {
@@ -62,17 +62,19 @@ module.exports = function (args) {
   })
 
   dat.on('swarm-update', printSwarm)
-  dat.on('upload', printSwarm)
+
+  setInterval(function () {
+    printSwarm()
+    log.print()
+    // console.log('here', log)
+  }, args.logspeed)
+  log.print()
 
   function printSwarm () {
     log.status(ui.swarmMsg(dat), 1)
-    if (swarmTimeout) clearInterval(swarmTimeout)
-    swarmTimeout = setInterval(function () {
-      log.status(ui.swarmMsg(dat), 1)
-    }, 500)
   }
 
-  function printStats (data) {
+  function updateStats (data) {
     var stats = dat.stats
     var files = stats.filesTotal
     var bytesTotal = dat.appendStats.bytes

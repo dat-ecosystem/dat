@@ -30,18 +30,16 @@ module.exports = function (args) {
 
   dat.on('download', function (data) {
     downloadTxt = 'Downloading '
-    printStats()
-    printSwarm()
+    updateStats()
   })
 
   dat.on('download-finished', function () {
     downloadTxt = 'Downloaded '
-    printStats()
+    updateStats()
     if (args.exit) {
       log.status('', 1)
       process.exit(0)
     }
-    printSwarm()
   })
 
   dat.once('connecting', function () {
@@ -51,17 +49,18 @@ module.exports = function (args) {
   })
 
   dat.on('swarm-update', printSwarm)
-  dat.on('upload', printSwarm)
+
+  setInterval(function () {
+    printSwarm()
+    log.print()
+  }, args.logspeed)
+  log.print()
 
   function printSwarm () {
     log.status(ui.swarmMsg(dat), 1)
-    if (swarmTimeout) clearInterval(swarmTimeout)
-    swarmTimeout = setInterval(function () {
-      log.status(ui.swarmMsg(dat), 1)
-    }, 500)
   }
 
-  function printStats () {
+  function updateStats () {
     var stats = dat.stats
     var msg = ui.progress(stats.bytesDown / stats.bytesTotal)
     msg += ' ' + downloadTxt + chalk.bold(stats.filesTotal) + ' files'

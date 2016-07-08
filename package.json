@@ -38,7 +38,7 @@
     "pump": "^1.0.1",
     "random-access-file": "^1.2.0",
     "speedometer": "^1.0.0",
-    "status-logger": "^1.0.0",
+    "status-logger": "^2.0.1",
     "stream-each": "^1.1.0",
     "yolowatch": "^2.3.0"
   },
