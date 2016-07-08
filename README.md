@@ -110,3 +110,80 @@ npm link
 This should add a `dat` command line command to your PATH. Now you can run the `dat` command to try it out.
 
 The contribution guide also has more tips on our [development workflow](https://github.com/maxogden/dat/blob/master/CONTRIBUTING.md#development-workflow).
+
+
+### Internal API
+
+**Note: we are in the process of moving the main library to a separate module, [joehand/dat-js](https://github.com/joehand/dat-js). Temp documentation here for developers.**
+
+#### dat.download(cb)
+
+download `dat.key` to `dat.dir`
+
+#### dat.share(cb) 
+
+share directory specified in `opts.dir`
+
+Swarm is automatically joined for key when it is available for share & download (`dat.joinSwarm()`).
+
+#### Events
+
+##### Initialization
+
+* `dat.on('ready')`: db created/read & hyperdrive archive created.
+* `dat.on('error')`: init/database error
+
+##### Swarm
+
+Swarm events and stats are available from `dat.swarm`.
+
+* `dat.on('connecting')`: looking for peers
+* `dat.on('swarm-update')`: peer number changed
+
+##### Share
+
+* `dat.on('key')`: key is available (this is at archive-finalized for snapshots)
+* `dat.on('append-ready')`: file count available (`dat.appendStats`), about to start appending to hyperdrive
+* `dat.on('file-added')`: file added to archive
+* `dat.on('upload', data)`: piece of data uploaded
+* `dat.on('archive-finalized')`: archive finalized, all files appended
+* `dat.on('archive-updated')`: live archive changed
+
+##### Download
+
+* `dat.on('key')`: key is available
+* `dat.on('file-downloaded', file)`: file downloaded
+* `dat.on('download', data)`: piece of data downloaded
+* `dat.on('upload', data)`: piece of data uploaded
+* `dat.on('download-finished')`: archive download finished
+
+#### Other API
+
+* `dat.key`: key
+* `dat.dir`: directory
+* `dat.datPath`: path to .dat folder
+* `dat.db`: database instance
+* `dat.swarm`: hyperdrive-archive-swarm instance
+* `dat.archive`: hyperdrive archive
+* `dat.snapshot` (boolean): sharing snapshot archive
+
+#### Internal Stats
+```javascript
+
+dat.stats = {
+    filesTotal: 0, // Latest archive size
+    bytesTotal: 0,
+    bytesUp: 0,
+    bytesDown: 0,
+    rateUp: speedometer(),
+    rateDown: speedometer()
+}
+
+// Calculated on share before append starts. Used for append progress.
+// Not updated for live.
+dat.appendStats = {
+    files: 0,
+    bytes: 0,
+    dirs: 0
+}
+````
