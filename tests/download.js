@@ -6,19 +6,18 @@ var mkdirp = require('mkdirp')
 var rimraf = require('rimraf')
 var spawn = require('./helpers/spawn.js')
 
-var dat = path.resolve(path.join(__dirname, '..', 'cli.js'))
+var dat = path.resolve(path.join(__dirname, '..', 'bin', 'cli.js'))
 var fixtures = path.join(__dirname, 'fixtures')
-var tmp = os.tmpdir()
+var downloadDir = newTestFolder()
 
 // os x adds this if you view the fixtures in finder and breaks the file count assertions
 try { fs.unlinkSync(path.join(__dirname, 'fixtures', '.DS_Store')) } catch (e) { /* ignore error */ }
 
 test('starts looking for peers with correct hash', function (t) {
-  // cmd: dat <link> tmp
-  rimraf.sync(path.join(tmp, '.dat'))
-  var st = spawn(t, dat + ' 9d011b6c9de26e53e9961c8d8ea840d33e0d8408318332c9502bad112cad9989 ' + tmp)
+  // cmd: dat <link> downloadDir
+  var st = spawn(t, dat + ' 5hz25io80t0m1ttr332awpslmlfn1mc5bf1z8lvhh34a9r1ob3 ' + downloadDir)
   st.stdout.match(function (output) {
-    var downloading = output.indexOf('waiting for connections') > -1
+    var downloading = output.indexOf('Waiting for connections') > -1
     if (!downloading) return false
     t.ok(downloading, 'Started looking for Peers')
     st.kill()
@@ -28,9 +27,9 @@ test('starts looking for peers with correct hash', function (t) {
 })
 
 test('errors with invalid hash', function (t) {
-  // cmd: dat pizza tmp
-  rimraf.sync(path.join(tmp, '.dat'))
-  var st = spawn(t, dat + ' pizza ' + tmp)
+  // cmd: dat pizza downloadDir
+  rimraf.sync(path.join(downloadDir, '.dat'))
+  var st = spawn(t, dat + ' pizza ' + downloadDir)
   st.stderr.match(function (output) {
     var gotError = output.indexOf('Invalid Dat Link') > -1
     t.ok(gotError, 'got error')
@@ -42,9 +41,9 @@ test('errors with invalid hash', function (t) {
 test('errors on new download without directory', function (t) {
   // cmd: dat <link>
   rimraf.sync(path.join(process.cwd(), '.dat')) // in case we have a .dat folder here
-  var st = spawn(t, dat + ' 9d011b6c9de26e53e9961c8d8ea840d33e0d8408318332c9502bad112cad9989')
+  var st = spawn(t, dat + ' 5hz25io80t0m1ttr332awpslmlfn1mc5bf1z8lvhh34a9r1ob3')
   st.stderr.match(function (output) {
-    var gotError = output.indexOf('Please specify a directory.') > -1
+    var gotError = output.indexOf('Directory does not exist') > -1
     t.ok(gotError, 'got error')
     if (gotError) return true
   })
@@ -69,7 +68,7 @@ test('download resumes with same key', function (t) {
     // cmd: dat <link> tmpdir
     var downloader = spawn(t, dat + ' ' + link + ' ' + tmpdir, {end: false})
     downloader.stdout.match(function (output) {
-      var contains = output.indexOf('DONE') > -1
+      var contains = output.indexOf('Downloaded') > -1
       if (!contains || !share) return false
       downloader.kill()
       spawnDownloaderTwo()
@@ -79,14 +78,14 @@ test('download resumes with same key', function (t) {
   }
 
   function spawnDownloaderTwo () {
-    // cmd: dat <link> (no dir required in cwd w/ dat folder)
-    var downloaderTwo = spawn(t, dat + ' ' + link, {cwd: tmpdir, end: false})
+    // cmd: dat <link> .
+    var downloaderTwo = spawn(t, dat + ' ' + link + ' ' + tmpdir, {end: false})
     downloaderTwo.stdout.match(function (output) {
-      var contains = output.indexOf('Initializing') > -1
+      var contains = output.indexOf('Downloaded') > -1
       if (!contains || !share) return false
       downloaderTwo.kill()
       return true
-    }, 'download two resumed without dir argument')
+    }, 'download two resumed with same key')
     downloaderTwo.end(function () {
       t.end()
     })
@@ -112,10 +111,10 @@ test('download transfers files', function (t) {
   function startDownloader () {
     var downloader = spawn(t, dat + ' ' + link + ' ' + tmpdir, {end: false})
     downloader.stdout.match(function (output) {
-      var contains = output.indexOf('Finished') > -1
+      var contains = output.indexOf('Downloaded') > -1
       if (!contains || !share) return false
 
-      var hasFiles = output.indexOf('3 items') > -1
+      var hasFiles = output.indexOf('3 files') > -1
       t.ok(hasFiles, 'file number is 3')
 
       var hasSize = output.indexOf('1.44 kB') > -1
@@ -146,8 +145,13 @@ test('download transfers files', function (t) {
   }
 })
 
+process.on('exit', function () {
+  console.log('cleaning up')
+  rimraf.sync(downloadDir)
+})
+
 function newTestFolder () {
-  var tmpdir = tmp + '/dat-download-folder-test'
+  var tmpdir = path.join(os.tmpdir(), 'dat-download-folder')
   rimraf.sync(tmpdir)
   mkdirp.sync(tmpdir)
   return tmpdir
@@ -155,7 +159,7 @@ function newTestFolder () {
 
 function matchDatLink (output) {
   // TODO: dat.land links
-  var match = output.match(/Link [A-Za-z0-9]{64}/)
+  var match = output.match(/Link: [A-Za-z0-9]{50}/)
   if (!match) return false
-  return match[0].split('Link ')[1].trim()
+  return match[0].split('Link: ')[1].trim()
 }

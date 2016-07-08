@@ -62,14 +62,14 @@ Share a directory by typing `dat <directory>`:
 
 ```
 $ dat my_data/
-Initializing Dat in my_data/
-[DONE] readme.txt (0.30 kB)
-[DONE] data.csv (1.14 kB)
-Items: 2  Size: 1.44 kB
-Share Link 4f36c088e9687ddf53d36f785ab84c65f4d24d8c4161950519b96a57d65ae08a
+Sharing /Users/joe/my_data/
+
+Share Link: 2imqzxdu46jh2rrhm6xnd30bsjgu3oosgy52dphdbxlzxvz5sj
 The Share Link is secret and only those you share it with will be able to get the files
-Sharing /Users/joe, connected to 2/4 sources
-Uploading 28.62 kB/s, 765.08 kB Total
+
+[==============>] Added 2 files (1.44 kB/1.44 kB)
+
+Connected to 1 peers. Uploading 288.2 B/s. Watching for updates...
 ```
 
 You are now publishing that data from your computer. It will be publicly accessible as long as your terminal is open. The hash is a **secret hash**, your data is visible to anyone you send the hash to. As you add more files to the folder, dat will update and share the new files.
@@ -79,15 +79,15 @@ You are now publishing that data from your computer. It will be publicly accessi
 Your colleague can get data like this:
 
 ```
-$ dat 2bede435504c9482910b5d4e324e995a9bc4d6f068b98ae03d97e8d3ac5f80ea download_dir
-Initializing Dat from 52d08a6d1ddc9b1f61b9862d2ae0d991676d489274bff6c5ebebecbfa3239f51
-[DONE] readme.txt (0.30 kB)
-[DONE] data.csv (1.14 kB)
-[DONE] 2 items (1.44 kB)
-Share Link 52d08a6d1ddc9b1f61b9862d2ae0d991676d489274bff6c5ebebecbfa3239f51
+$ dat 2imqzxdu46jh2rrhm6xnd30bsjgu3oosgy52dphdbxlzxvz5sj download_dir
+Downloading in /Users/joe/download_dir
+
+Share Link: 2imqzxdu46jh2rrhm6xnd30bsjgu3oosgy52dphdbxlzxvz5sj
 The Share Link is secret and only those you share it with will be able to get the files
-Syncing live updates, connected to 1/2 sources
-Download Finished, you may exit process
+
+[==============>] Downloaded 3 files (1.44 kB/1.44 kB)
+
+Connected to 1 peers. Downloading 1.44 kB/s. Watching for updates...
 ```
 
 It will start downloading the data into the `download_dir` folder. Anyone who gets access to the unique dat-link will be able to download and re-host a copy of the data. It's distributed mad science!
@@ -110,3 +110,80 @@ npm link
 This should add a `dat` command line command to your PATH. Now you can run the `dat` command to try it out.
 
 The contribution guide also has more tips on our [development workflow](https://github.com/maxogden/dat/blob/master/CONTRIBUTING.md#development-workflow).
+
+
+### Internal API
+
+**Note: we are in the process of moving the main library to a separate module, [joehand/dat-js](https://github.com/joehand/dat-js). Temp documentation here for developers.**
+
+#### dat.download(cb)
+
+download `dat.key` to `dat.dir`
+
+#### dat.share(cb) 
+
+share directory specified in `opts.dir`
+
+Swarm is automatically joined for key when it is available for share & download (`dat.joinSwarm()`).
+
+#### Events
+
+##### Initialization
+
+* `dat.on('ready')`: db created/read & hyperdrive archive created.
+* `dat.on('error')`: init/database error
+
+##### Swarm
+
+Swarm events and stats are available from `dat.swarm`.
+
+* `dat.on('connecting')`: looking for peers
+* `dat.on('swarm-update')`: peer number changed
+
+##### Share
+
+* `dat.on('key')`: key is available (this is at archive-finalized for snapshots)
+* `dat.on('append-ready')`: file count available (`dat.appendStats`), about to start appending to hyperdrive
+* `dat.on('file-added')`: file added to archive
+* `dat.on('upload', data)`: piece of data uploaded
+* `dat.on('archive-finalized')`: archive finalized, all files appended
+* `dat.on('archive-updated')`: live archive changed
+
+##### Download
+
+* `dat.on('key')`: key is available
+* `dat.on('file-downloaded', file)`: file downloaded
+* `dat.on('download', data)`: piece of data downloaded
+* `dat.on('upload', data)`: piece of data uploaded
+* `dat.on('download-finished')`: archive download finished
+
+#### Other API
+
+* `dat.key`: key
+* `dat.dir`: directory
+* `dat.datPath`: path to .dat folder
+* `dat.db`: database instance
+* `dat.swarm`: hyperdrive-archive-swarm instance
+* `dat.archive`: hyperdrive archive
+* `dat.snapshot` (boolean): sharing snapshot archive
+
+#### Internal Stats
+```javascript
+
+dat.stats = {
+    filesTotal: 0, // Latest archive size
+    bytesTotal: 0,
+    bytesUp: 0,
+    bytesDown: 0,
+    rateUp: speedometer(),
+    rateDown: speedometer()
+}
+
+// Calculated on share before append starts. Used for append progress.
+// Not updated for live.
+dat.appendStats = {
+    files: 0,
+    bytes: 0,
+    dirs: 0
+}
+````

@@ -9,7 +9,7 @@
     "synchronization"
   ],
   "bin": {
-    "dat": "cli.js"
+    "dat": "bin/cli.js"
   },
   "scripts": {
     "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
@@ -24,24 +24,23 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "chalk": "^1.1.1",
+    "dat-encoding": "^2.0.2",
     "datland-swarm-defaults": "^1.0.0",
     "debug": "^2.2.0",
     "discovery-swarm": "^4.0.0",
     "dns-discovery": "^5.3.3",
     "folder-walker": "^3.0.0",
-    "hyperdrive": "^6.2.2",
-    "hyperdrive-archive-swarm": "^3.0.1",
+    "hyperdrive": "^6.6.1",
+    "hyperdrive-archive-swarm": "^3.1.0",
     "level": "^1.4.0",
-    "memdb": "^1.3.1",
     "minimist": "^1.2.0",
-    "mkdirp": "^0.5.1",
     "pretty-bytes": "^3.0.0",
     "pump": "^1.0.1",
     "random-access-file": "^1.2.0",
-    "single-line-log": "^1.1.0",
     "speedometer": "^1.0.0",
+    "status-logger": "^1.0.0",
     "stream-each": "^1.1.0",
-    "yolowatch": "^2.1.0"
+    "yolowatch": "^2.3.0"
   },
   "bugs": {
     "url": "https://github.com/maxogden/dat/issues"
@@ -51,7 +50,8 @@
     "test": "tests"
   },
   "devDependencies": {
-    "rimraf": "^2.5.0",
+    "mkdirp": "^0.5.1",
+    "rimraf": "^2.5.3",
     "standard": "^6.0.7",
     "tap-spec": "^4.1.1",
     "tape": "^4.4.0",
