@@ -32,6 +32,9 @@ module.exports = function (args) {
     updateStats()
   })
 
+  dat.on('archive-updated', updateStats)
+  dat.on('file-downloaded', updateStats)
+
   dat.on('download-finished', function () {
     downloadTxt = 'Downloaded '
     updateStats()
@@ -55,9 +58,10 @@ module.exports = function (args) {
 
   function updateStats () {
     var stats = dat.stats
-    var msg = ui.progress(stats.bytesDown / stats.bytesTotal)
-    msg += ' ' + downloadTxt + chalk.bold(stats.filesTotal) + ' files'
-    msg += chalk.dim(' (' + prettyBytes(stats.bytesDown) + '/' + prettyBytes(stats.bytesTotal) + ')')
+    if (stats.bytesProgress >= stats.bytesTotal) downloadTxt = 'Downloaded '
+    var msg = ui.progress(stats.bytesProgress / stats.bytesTotal)
+    msg += ' ' + downloadTxt + chalk.bold(stats.filesTotal) + ' items'
+    msg += chalk.dim(' (' + prettyBytes(stats.bytesProgress) + '/' + prettyBytes(stats.bytesTotal) + ')')
     log.status(msg + '\n', 0)
   }
 }

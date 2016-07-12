@@ -27,8 +27,8 @@ module.exports = function (args) {
 
   dat.on('file-counted', function () {
     var msg = 'Calculating Size: '
-    msg += dat.appendStats.files + ' files '
-    msg += chalk.dim('(' + prettyBytes(dat.appendStats.bytes) + ')')
+    msg += dat.stats.filesTotal + ' items '
+    msg += chalk.dim('(' + prettyBytes(dat.stats.bytesTotal) + ')')
     log.status(msg + '\n', 0)
   })
 
@@ -49,7 +49,7 @@ module.exports = function (args) {
   })
 
   dat.on('archive-updated', function () {
-    addText = 'Updated '
+    addText = 'Updating '
     updated = true
     updateStats()
   })
@@ -59,7 +59,6 @@ module.exports = function (args) {
   setInterval(function () {
     printSwarm()
     log.print()
-    // console.log('here', log)
   }, args.logspeed)
   log.print()
 
@@ -67,19 +66,20 @@ module.exports = function (args) {
     log.status(ui.swarmMsg(dat), 1)
   }
 
-  function updateStats (data) {
+  function updateStats () {
     var stats = dat.stats
     var files = stats.filesTotal
-    var bytesTotal = dat.appendStats.bytes
-    var bytesProgress = stats.bytesTotal
+    var bytesTotal = stats.bytesTotal
+    var bytesProgress = stats.bytesProgress
+
     if (updated) {
+      if (stats.filesTotal === stats.filesProgress) addText = 'Updated '
       files = files - initFileCount
-      bytesProgress = stats.bytesTotal // TODO: update progress for live
       bytesTotal = stats.bytesTotal
     }
 
     var msg = ui.progress(bytesProgress / bytesTotal)
-    msg += ' ' + addText + chalk.bold(files) + ' files'
+    msg += ' ' + addText + chalk.bold(files) + ' items'
     msg += chalk.dim(' (' + prettyBytes(bytesProgress) + '/' + prettyBytes(bytesTotal) + ')')
     log.status(msg + '\n', 0)
   }

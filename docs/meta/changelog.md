@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Use yolowatch module for recursive live updates
 * Improved stats for edge cases
 * Print link with --quiet argument
+* Better stat & progress output with hyperdrive/hypercore events
 
 ### Changed
 * Simplified and clean up CLI output
