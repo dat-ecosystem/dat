@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 11.1.0 - 2016-07-15
 ### Fixed
 * Use yolowatch module for recursive live updates
 * Improved stats for edge cases
@@ -22,7 +23,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * List download option (will be re-added pending a hyperdrive update)
 
 ### Added
-* Use dat-encoding for 50 character links
+* Accept dat-encoding for 50 character links
 
 ## 11.0.2 - 2016-06-23
 ### Fixed
