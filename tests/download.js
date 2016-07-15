@@ -26,6 +26,19 @@ test('starts looking for peers with correct hash', function (t) {
   st.end()
 })
 
+test('accepts dat-desktop links', function (t) {
+  // cmd: dat dat://<link> downloadDir
+  var st = spawn(t, dat + ' dat://ki0dg8b5ukc7oy5gcdhx4nr27ayncu4gdart3y1zf1b8p9sk48 ' + downloadDir)
+  st.stdout.match(function (output) {
+    var downloading = output.indexOf('Waiting for connections') > -1
+    if (!downloading) return false
+    t.ok(downloading, 'Started looking for Peers')
+    st.kill()
+    return true
+  })
+  st.end()
+})
+
 test('errors with invalid hash', function (t) {
   // cmd: dat pizza downloadDir
   rimraf.sync(path.join(downloadDir, '.dat'))
