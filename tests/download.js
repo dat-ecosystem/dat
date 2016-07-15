@@ -106,6 +106,48 @@ test('download resumes with same key', function (t) {
   }
 })
 
+test('download twice to same dir errors', function (t) {
+  // cmd: dat <link> . (twice)
+  var tmpdir = newTestFolder()
+  var link = null
+  var share = spawn(t, dat + ' ' + fixtures, {end: false})
+  share.stderr.empty()
+  share.stdout.match(function (output) {
+    var matches = matchDatLink(output)
+    if (!matches) return false
+    link = matches
+    startDownloader()
+    return true
+  }, 'share started')
+
+  function startDownloader () {
+    // cmd: dat <link> tmpdir
+    var downloader = spawn(t, dat + ' ' + link + ' ' + tmpdir, {end: false})
+    downloader.stdout.match(function (output) {
+      var contains = output.indexOf('Downloaded') > -1
+      if (!contains || !share) return false
+      downloader.kill()
+      spawnDownloaderTwo()
+      return true
+    }, 'download one started')
+    downloader.end()
+  }
+
+  function spawnDownloaderTwo () {
+    // cmd: dat <link> .
+    var downloaderTwo = spawn(t, dat + ' 5hz25io80t0m1ttr332awpslmlfn1mc5bf1z8lvhh34a9r1ob3 ' + tmpdir, {end: false})
+    downloaderTwo.stderr.match(function (output) {
+      var contains = output.indexOf('Another Dat was already downloaded here') > -1
+      if (!contains || !share) return false
+      downloaderTwo.kill()
+      return true
+    }, 'download two errored')
+    downloaderTwo.end(function () {
+      t.end()
+    })
+  }
+})
+
 test('download transfers files', function (t) {
   var link
   var tmpdir = newTestFolder()
