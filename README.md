@@ -64,7 +64,7 @@ Share a directory by typing `dat <directory>`:
 $ dat my_data/
 Sharing /Users/joe/my_data/
 
-Share Link: 2imqzxdu46jh2rrhm6xnd30bsjgu3oosgy52dphdbxlzxvz5sj
+Share Link: d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6
 The Share Link is secret and only those you share it with will be able to get the files
 
 [==============>] Added 2 files (1.44 kB/1.44 kB)
@@ -79,10 +79,10 @@ You are now publishing that data from your computer. It will be publicly accessi
 Your colleague can get data like this:
 
 ```
-$ dat 2imqzxdu46jh2rrhm6xnd30bsjgu3oosgy52dphdbxlzxvz5sj download_dir
+$ dat d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6 download_dir
 Downloading in /Users/joe/download_dir
 
-Share Link: 2imqzxdu46jh2rrhm6xnd30bsjgu3oosgy52dphdbxlzxvz5sj
+Share Link: d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6
 The Share Link is secret and only those you share it with will be able to get the files
 
 [==============>] Downloaded 3 files (1.44 kB/1.44 kB)

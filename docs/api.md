@@ -25,7 +25,7 @@ Set your inbound TCP port. This is useful for debugging or on restrictive networ
 
 `dat <dat-link> <directory>`
 
-Download files from a dat-link into a local directory. 
+Download files from a dat-link into a local directory. The Dat CLI accepts both 64 character links or 50 character encoded links.
 
 ### Download Options
 

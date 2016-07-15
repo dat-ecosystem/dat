@@ -28,7 +28,7 @@ Share a directory by typing `dat <directory>`:
 $ dat my_data/
 Sharing /Users/joe/my_data
 
-Share Link: 34p3ak4jwnfn6og184k4tqojngo76qj0nqbat2h03miu85x61t
+Share Link: d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6
 The Share Link is secret and only those you share it with will be able to get the files
 
 [==============>] Added 21 files (448.41 MB/448.41 MB)
@@ -43,10 +43,10 @@ You are now publishing that data from your computer. It will be publicly accessi
 You can download data by typing `dat <dat-link> <directory>`:
 
 ```
-$ dat 34p3ak4jwnfn6og184k4tqojngo76qj0nqbat2h03miu85x61t download_dir
+$ dat d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6 download_dir
 Downloading in /Users/joe/Downloads/download_dir
 
-Share Link: 34p3ak4jwnfn6og184k4tqojngo76qj0nqbat2h03miu85x61t
+Share Link: d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6
 The Share Link is secret and only those you share it with will be able to get the files
 
 [===>          ] Downloading 180 files (79.01 kB/498.4 MB)
