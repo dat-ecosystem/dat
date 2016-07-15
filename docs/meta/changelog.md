@@ -9,12 +9,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Use yolowatch module for recursive live updates
 * Improved stats for edge cases
 * Print link with --quiet argument
+* Better stat & progress output with hyperdrive/hypercore events
 
 ### Changed
 * Simplified and clean up CLI output
 * Improve modularity of library
 * Move logger module into own npm package, status-logger
 * Store key in .dat db without encoding as hex string (#498)
+* upgrade to hyperdrive 7
 
 ### Removed
 * List download option (will be re-added pending a hyperdrive update)

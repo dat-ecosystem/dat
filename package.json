@@ -30,7 +30,7 @@
     "discovery-swarm": "^4.0.0",
     "dns-discovery": "^5.3.3",
     "folder-walker": "^3.0.0",
-    "hyperdrive": "^6.6.1",
+    "hyperdrive": "^7.0.0",
     "hyperdrive-archive-swarm": "^3.1.0",
     "level": "^1.4.0",
     "minimist": "^1.2.0",

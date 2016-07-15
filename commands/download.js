@@ -9,6 +9,7 @@ module.exports = function (args) {
   var log = logger(args)
 
   var downloadTxt = 'Downloading '
+  var finished = false
 
   log.status('Starting Dat...\n', 0)
   log.status('Connecting...', 1)
@@ -32,8 +33,14 @@ module.exports = function (args) {
     updateStats()
   })
 
+  dat.on('archive-updated', function () {
+    finished = false
+    updateStats()
+  })
+  dat.on('file-downloaded', updateStats)
+
   dat.on('download-finished', function () {
-    downloadTxt = 'Downloaded '
+    finished = true
     updateStats()
     if (args.exit) {
       log.status('', 1)
@@ -55,9 +62,13 @@ module.exports = function (args) {
 
   function updateStats () {
     var stats = dat.stats
-    var msg = ui.progress(stats.bytesDown / stats.bytesTotal)
-    msg += ' ' + downloadTxt + chalk.bold(stats.filesTotal) + ' files'
-    msg += chalk.dim(' (' + prettyBytes(stats.bytesDown) + '/' + prettyBytes(stats.bytesTotal) + ')')
+    var msg = ui.progress(stats.bytesProgress / stats.bytesTotal)
+    if (finished || stats.filesProgress >= stats.filesTotal) {
+      downloadTxt = 'Downloaded '
+      msg = ui.progress(1) // hack to show completed with existing files
+    }
+    msg += ' ' + downloadTxt + chalk.bold(stats.filesTotal) + ' items'
+    msg += chalk.dim(' (' + prettyBytes(stats.bytesProgress) + '/' + prettyBytes(stats.bytesTotal) + ')')
     log.status(msg + '\n', 0)
   }
 }
