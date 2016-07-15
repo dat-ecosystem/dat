@@ -16,6 +16,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Improve modularity of library
 * Move logger module into own npm package, status-logger
 * Store key in .dat db without encoding as hex string (#498)
+* upgrade to hyperdrive 7
 
 ### Removed
 * List download option (will be re-added pending a hyperdrive update)
