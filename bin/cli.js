@@ -1,5 +1,8 @@
 #!/usr/bin/env node
 
+var fs = require('fs')
+var mkdirp = require('mkdirp')
+
 var args = require('minimist')(process.argv.splice(2), {
   alias: {p: 'port', q: 'quiet', v: 'version'},
   boolean: ['snapshot', 'exit', 'list', 'quiet', 'version'],
@@ -41,12 +44,16 @@ function run () {
 }
 
 function getCommand () {
+  if (args._[0].indexOf('dat://') > -1) args._[0] = args._[0].replace('dat://', '')
   if (isDirectory(args._[0], true)) isShare = true
   else if (isDatLink(args._[0])) isDownload = true
   args.dir = isShare ? args._[0] : args._[1]
   args.key = isDownload ? args._[0] : null
 
-  if (isDirectory(args.dir)) run() // catch download dir error TODO: make optional
+  if (isShare) run()
+  else if (args.dir && isDownload && !isDirectory(args.dir, true)) mkdirp(args.dir, run)
+  else if (args.dir && isDownload) run()
+  else if (!args.dir) onerror('Directory required') // TODO: don't require for download
   else onerror('Invalid Command') // Should never get here...
 }
 
@@ -59,7 +66,7 @@ function isDatLink (val, quiet) {
 
 function isDirectory (val, quiet) {
   try {
-    return require('fs').statSync(val).isDirectory() // TODO: support sharing single files
+    return fs.statSync(val).isDirectory() // TODO: support sharing single files
   } catch (err) {
     if (quiet) return false
     onerror('Directory does not exist')
