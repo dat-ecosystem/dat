@@ -104,7 +104,7 @@ test('prints file information (live)', function (t) {
     if (!finished) return false
 
     t.ok(output.match(/3 items/), 'File count correct')
-    t.ok(output.match(/1\.54 kB/), 'File size correct')
+    t.ok(output.match(/1\.\d{1,2} kB/), 'File size correct')
 
     st.kill()
     cleanDat()
@@ -121,7 +121,7 @@ test('prints file information (snapshot)', function (t) {
     if (!finished) return false
 
     t.ok(output.match(/3 items/), 'File count correct')
-    t.ok(output.match(/1\.54 kB/), 'File size correct')
+    t.ok(output.match(/1\.\d{1,2} kB/), 'File size correct')
 
     st.kill()
     cleanDat()
