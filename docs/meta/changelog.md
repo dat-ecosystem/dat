@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 11.1.2 - 2016-07-18
+### Fixed
+* Zero bytes total when downloading Dat with single file
+
 ## 11.1.1 - 2016-07-15
 ### Fixed
 * Create download directory if doesn't exist
