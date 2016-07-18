@@ -192,17 +192,16 @@ test('download transfers files', function (t) {
       var hasLink = output.indexOf(link) > -1
       t.ok(hasLink, 'has link')
 
-      // var hasDest = output.indexOf('dat-download-folder-test') > -1
-      // t.ok(hasDest, 'has destination')
-
       var fileList = fs.readdirSync(tmpdir).join(' ')
       var hasCsvFile = fileList.indexOf('all_hour.csv') > -1
       var hasDatFolder = fileList.indexOf('.dat') > -1
       t.ok(hasDatFolder, '.dat folder created')
       t.ok(hasCsvFile, 'csv file downloaded')
-      // var hasSubDir = fileList.indexOf('folder') > -1
-      // t.ok(hasSubDir, 'sub directory downloaded')
-      // TODO: known hyperdrive issue https://github.com/mafintosh/hyperdrive/issues/28
+      var hasSubDir = fileList.indexOf('folder') > -1
+      t.ok(hasSubDir, 'sub directory downloaded')
+      // var hasEmtpy = fileList.indexOf('empty') > -1
+      // t.ok(hasEmtpy, 'empty file downloaded')
+      // TODO: known hyperdrive issue https://github.com/mafintosh/hyperdrive/issues/83
 
       downloader.kill()
       share.kill()
