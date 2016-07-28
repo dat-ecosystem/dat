@@ -72,7 +72,7 @@ module.exports = function (args) {
     var bytesTotal = stats.bytesTotal
     var bytesProgress = stats.bytesProgress
 
-    if (updated) {
+    if (dat.live && updated) {
       if (stats.filesTotal === stats.filesProgress) addText = 'Updated '
       files = files - initFileCount
       bytesTotal = stats.bytesTotal
