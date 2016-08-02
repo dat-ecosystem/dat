@@ -46,6 +46,7 @@ module.exports = function (args) {
       log.status('', 1)
       process.exit(0)
     }
+    log.status('\nDownload Finished. You may exit the process with Ctrl-C.', -1)
   })
 
   dat.on('swarm-update', printSwarm)
