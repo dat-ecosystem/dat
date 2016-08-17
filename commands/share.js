@@ -1,6 +1,6 @@
 var chalk = require('chalk')
 var prettyBytes = require('pretty-bytes')
-var Dat = require('../lib/dat')
+var Dat = require('dat-js')
 var logger = require('status-logger')
 var ui = require('../lib/ui')
 
@@ -18,7 +18,7 @@ module.exports = function (args) {
 
   dat.on('error', onerror)
 
-  dat.once('ready', function () {
+  dat.open(function () {
     log.message('Sharing ' + dat.dir + '\n')
     dat.share(function (err) {
       if (err) onerror(err)
