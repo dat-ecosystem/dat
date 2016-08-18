@@ -2,6 +2,7 @@ var chalk = require('chalk')
 var prettyBytes = require('pretty-bytes')
 var Dat = require('dat-js')
 var logger = require('status-logger')
+var speedometer = require('speedometer')
 var ui = require('../lib/ui')
 
 module.exports = function (args) {
@@ -10,6 +11,9 @@ module.exports = function (args) {
 
   var downloadTxt = 'Downloading '
   var finished = false
+
+  dat.stats.rateUp = speedometer()
+  dat.stats.rateDown = speedometer()
 
   log.status('Starting Dat...\n', 0)
   log.status('Connecting...', 1)
@@ -28,8 +32,13 @@ module.exports = function (args) {
     if (args.quiet) console.log(ui.keyMsg(key))
   })
 
+  dat.on('upload', function (data) {
+    dat.stats.rateUp(data.length)
+  })
+
   dat.on('download', function (data) {
     downloadTxt = 'Downloading '
+    dat.stats.rateDown(data.length)
     updateStats()
   })
 

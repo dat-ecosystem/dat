@@ -2,6 +2,7 @@ var chalk = require('chalk')
 var prettyBytes = require('pretty-bytes')
 var Dat = require('dat-js')
 var logger = require('status-logger')
+var speedometer = require('speedometer')
 var ui = require('../lib/ui')
 
 module.exports = function (args) {
@@ -11,6 +12,8 @@ module.exports = function (args) {
   var addText = 'Adding '
   var updated = false
   var initFileCount = 0
+
+  dat.stats.rateUp = speedometer()
 
   log.status('Starting Dat...\n', 0)
   if (args.snapshot) log.status('Creating Link...', 1)
@@ -23,6 +26,10 @@ module.exports = function (args) {
     dat.share(function (err) {
       if (err) onerror(err)
     })
+  })
+
+  dat.on('upload', function (data) {
+    dat.stats.rateUp(data.length)
   })
 
   dat.on('file-counted', function () {
