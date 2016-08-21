@@ -88,7 +88,7 @@ It will start downloading the data into the `download_dir` folder. Anyone who ge
 
 For more information, see the [dat project documentation](http://docs.dat-data.com).
 
-### Ecosystem
+## Ecosystem
 
   * [Hyperdrive](https://github.com/mafintosh/hyperdrive): on-disk database format
   * [Discovery Swarm](https://github.com/mafintosh/discovery-swarm): discovery mechanism
@@ -96,7 +96,7 @@ For more information, see the [dat project documentation](http://docs.dat-data.c
   * [dat-desktop](https://github.com/juliangruber/dat-desktop): desktop application
   * [dat.land](https://github.com/datproject/dat.land): website application
 
-## Development
+## For Developers
 
 Please see [guidelines on contributing](https://github.com/maxogden/dat/blob/master/CONTRIBUTING.md) before submitting an issue or PR.
 
