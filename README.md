@@ -25,12 +25,6 @@ Documentation for the Dat project is available at [docs.dat-data.com](http://doc
 
 Dat embraces the Unix philosophy: a modular design with composable parts. All of the pieces can be replaced with alternative implementations as long as they implement the abstract API.
 
-### Ways to Use Dat
-
-  * [Dat CLI](https://github.com/maxogden/dat): command line tool
-  * [Dat Desktop](https://github.com/juliangruber/dat-desktop/): desktop application
-  * [dat.land](https://github.com/datproject/dat.land): website application
-
 ## CLI Development Status
 
 This is the Dat CLI 1.0 release candidate (RC2). We are actively seeking feedback & developing this release candidate. Follow [this issue](https://github.com/datproject/projects/issues/5) for the Dat CLI road map discussion and see [known RC2 issues](https://github.com/maxogden/dat/issues/486).
@@ -92,10 +86,17 @@ Connected to 1 peers. Downloading 1.44 kB/s. Watching for updates...
 
 It will start downloading the data into the `download_dir` folder. Anyone who gets access to the unique dat-link will be able to download and re-host a copy of the data. It's distributed mad science!
 
-For more information, see the [Dat CLI documentation](http://dat-cli.readthedocs.org/) or the [dat project documentation](http://docs.dat-data.com).
+For more information, see the [dat project documentation](http://docs.dat-data.com).
 
+## Ecosystem
 
-## Development
+  * [Hyperdrive](https://github.com/mafintosh/hyperdrive): on-disk database format
+  * [Discovery Swarm](https://github.com/mafintosh/discovery-swarm): discovery mechanism
+  * [dat-js](https://github.com/joehand/dat-js): javascript library
+  * [dat-desktop](https://github.com/juliangruber/dat-desktop): desktop application
+  * [dat.land](https://github.com/datproject/dat.land): website application
+
+## For Developers
 
 Please see [guidelines on contributing](https://github.com/maxogden/dat/blob/master/CONTRIBUTING.md) before submitting an issue or PR.
 
