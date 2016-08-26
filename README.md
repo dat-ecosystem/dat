@@ -6,17 +6,13 @@ Dat is a decentralized data tool for distributing data small and large.
 [![datproject/discussions](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 [![docs](https://img.shields.io/badge/Dat%20Project-Docs-green.svg)](http://docs.dat-data.com)
 
-Windows        | Mac/Linux
--------------- | ------------
-[![Build status](https://ci.appveyor.com/api/projects/status/github/maxogden/dat?branch=master&svg=true)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](https://api.travis-ci.org/maxogden/dat.svg)](https://travis-ci.org/maxogden/dat)
-
 ### Key features:
 
-  * **Live sync** folders by sharing files as they are added to the folder.
+  * **Live sync** folders by sharing files as they are added or changed.
   * **Distribute large files** without copying data to a central server by connecting directly to peers.
   * **Intelligently sync** by deduplicating data between versions.
   * **Verify data integrity** using strong cryptographic hashes.
-  * **Work everywhere**, including in the [browser](https://github.com/datproject/dat.land) and on the [desktop](https://github.com/juliangruber/dat-desktop).
+  * **Work everywhere**, including on the [command line](https://github.com/maxogden/dat), in the [browser](https://github.com/datproject/dat.land), and on the [desktop](https://github.com/juliangruber/dat-desktop).
   
 ## Table of Contents
 
@@ -33,11 +29,15 @@ Windows        | Mac/Linux
 
 ## Getting Started
 
-The Dat command line interface can be used to share, download, and sync files across many computers. 
+The Dat command line tool can be used to share, download, and sync files across many computers.
+
+Windows        | Mac/Linux
+-------------- | ------------
+[![Build status](https://ci.appveyor.com/api/projects/status/github/maxogden/dat?branch=master&svg=true)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](https://api.travis-ci.org/maxogden/dat.svg)](https://travis-ci.org/maxogden/dat)
 
 ### Install
 
-To use Dat you will need to have [node and npm installed](https://docs.npmjs.com/getting-started/installing-node). Once you have npm, you can install Dat with npm:
+To use the Dat command line tool you will need to have [node and npm installed](https://docs.npmjs.com/getting-started/installing-node). Once you have npm, you can install Dat with npm:
 
 ```
 npm install -g dat
@@ -80,7 +80,7 @@ You tell Dat what files to download by giving it a Dat link. Dat links are 64 ch
 
 Along with the link, you tell Dat where to download the files. All together, you can download files by typing `dat <dat-link> <download-directory>`.
 
-For this example, we are going to download the Dat documentation files. In your console, run:
+We have our Dat documentation folders being shared by Dat (at the key above). For this example, we can download those files to your computer. In your console, run:
 
 ```
 dat 395e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2 dat_docs
@@ -97,9 +97,6 @@ This is the Dat CLI 1.0 release candidate (RC2). We are actively seeking feedbac
 **Please note** that previous versions of Dat (alpha, beta) are incompatible with the 1.0 release candidate.
 
 ## Using Dat
-
-The Dat command line interface makes it simple to share files or data across many computers. The source can be files on your computer or files shared via Dat on another computer. 
-
 
 There are two commands in Dat:
 
@@ -122,7 +119,7 @@ The Share Link is secret and only those you share it with will be able to get th
 Connected to 1 peers. Uploading 288.2 B/s. Watching for updates...
 ```
 
-You are now publishing that data from your computer. It will be publicly accessible as long as your terminal is open and the process is still running. The hash is a **secret hash**, your data is visible to anyone you send the hash to. As you add more files to the folder, Dat will update and share the new files.
+You are now publishing that data from your computer. It will be publicly accessible as long as your terminal is open and the process is still running. The hash is a **secret hash**, your data is visible to anyone you send the hash to.
 
 #### Updating Shared Files
 
@@ -130,7 +127,7 @@ Dat makes it easy to share a folder and send files as they are added to the fold
 
 #### Creating a snapshot
 
-A snapshot reads the files and creates a unique link that will always be the same for that set of files (if they remain unedited). To create a snapshot use the snapshot option: `dat my_data/ --snapshot`. Snapshots are automatically created for you in live mode.
+A snapshot reads the files and creates a unique link that will always be the same for that set of files (if they remain unchanged). To create a snapshot use the snapshot option: `dat my_data/ --snapshot`. Snapshots are automatically created for you in live mode as files update.
 
 #### Sharing Options
 
@@ -160,11 +157,11 @@ Connected to 1 peers. Downloading 1.44 kB/s. Watching for updates...
 
 Dat will start downloading the data into the `download_dir` folder. Once the download is finished (a message will print and the bar will turn green), you can safely exit the process with `Ctrl-C` (`Cmd-C` on Mac). 
 
-While downloading, you may be connected to more than 1 peer. Anyone who has the Dat link will be able to download and re-host a copy of the data. So you may be downloading from (and sharing to) other people that are also doing this tutorial! You only need one block of data to start helping as a host. It's distributed mad science!
+While downloading, you may be connected to more than 1 peer. Anyone who has the Dat link will be able to download and re-host a copy of the data. So you may be downloading from (and sharing to) other people that are also downloading that data! You only need one block of data to start helping as a host. It's distributed mad science!
 
 #### Updating the Downloaded Files
 
-What happens if the files get updated? Dat auto-syncs new files. So if you still have the process open it will download the new files. If you exited the process, you can run the same command you ran before (with the same link and directory) and the files will update!
+What happens if the files get updated? IfDat auto-syncs new files if it is still running. If you exited the process, you can run the same command you ran before (with the same link and directory) and the files will update!
 
 #### Download Options
 
@@ -176,22 +173,15 @@ After files are done downloading, exit the process. If you are connected to a li
 
 Set your inbound TCP port. This is useful for debugging or on restrictive networks. 
 
-### Additional Usage Options
+### Live Sync & Snapshots
 
-* `dat --version`: get the version of Dat you are running.
-* `dat --doctor`: visit the doctor to help identify connectivity issues.
-* `dat --quiet`: output only dat-link, no progress information
-* `dat --debug`: show debugging output
-
-#### Live Sync & Snapshots
-
-Dat makes it easy to share a folder and send files as they are changed or added to the folder. By default, when you share using Dat you will be in *live sync* mode. Anyone connected to you will receive file changes as you make them.
-
-A snapshot reads the files and creates a specific link that will never change (as long as the files don't change). To create a snapshot use the snapshot option: `dat my_data/ --snapshot`. Snapshots are automatically created for you in live mode.
+Dat makes it easy to share a folder and send files as they are changed or added. By default, when you share using Dat you will be in *live sync* mode. Anyone connected to you will receive file changes as you make them.
 
 When downloading a Dat, you do not have to worry about live mode. It will automatically start in the right mode based on the link. 
 
-#### Local Storage
+To create a snapshot when sharing files use the snapshot option: `dat my_data/ --snapshot`. A snapshot reads the files and creates a specific link that will never change (as long as the files don't change).
+
+### Dat Metadata Storage
 
 When you run a command, Dat creates a hidden folder, `.dat`, in the directory specified. Similar to git, this folder stores information about your Dat. File metadata and the Dat link are stored to make it easy to continue sharing or downloading the same directory.
 
@@ -213,7 +203,7 @@ dat -v
 
 You should see the Dat semantic version printed, e.g. 11.1.2.
 
-### Install Issues
+### Installation Issues
 
 * If you receive an `EACCES` error, read [this guide](https://docs.npmjs.com/getting-started/fixing-npm-permissions) on fixing npm permissions.
 * Have other installation issues? Let us know, you can [open an issue](https://github.com/maxogden/dat/issues/new) or ask us in our [chat room](https://gitter.im/datproject/discussions).
