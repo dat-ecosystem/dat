@@ -47,7 +47,7 @@ The `-g` option installs Dat globally allowing you to run it as a command.
 
 Running `dat` in the console, with no arguments, should show you the usage guide:
 
-```bash
+```
 dat <directory>
 
   share directory and create a dat-link
@@ -76,9 +76,9 @@ If the `dat` command does not work, there may have been issues in your installat
 
 We have Dat installed, now let's use it! In this quick demo we will download our documentation files using Dat.
 
-You tell Dat what files to download by giving it a Dat link. Dat links are 64 character strings, for example 395e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2.
+You tell Dat what files to download by giving it a Dat link. Dat links are 64 character strings, for example `395e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2`.
 
-Along with the link, you need to tell Dat what directory to download the files to. All together, you can download files by typing `dat <dat-link> <download-directory>`.
+Along with the link, you tell Dat where to download the files. All together, you can download files by typing `dat <dat-link> <download-directory>`.
 
 For this example, we are going to download the Dat documentation files. In your console, run:
 
