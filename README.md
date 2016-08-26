@@ -14,7 +14,7 @@ Dat is a decentralized data tool for distributing data small and large.
   * **Verify data integrity** using strong cryptographic hashes.
   * **Work everywhere**, including on the [command line](https://github.com/maxogden/dat), in the [browser](https://github.com/datproject/dat.land), and on the [desktop](https://github.com/juliangruber/dat-desktop).
 
-### [Documentation](https://docs.dat-data.com) | [Video Demo](#) | [Awesome Dat](https://github.com/clkao/awesome-dat) | [dat.land](https://dat.land)
+### [Documentation](https://docs.dat-data.com) | [Video Demo](https://www.youtube.com/watch?v=fxKjSyCoqO4) | [Awesome Dat](https://github.com/clkao/awesome-dat) | [dat.land](https://dat.land)
 
 ---
 
@@ -93,7 +93,7 @@ dat 395e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2 dat_docs
 
 You should see the output below. Once the download is finished, the files will be available on your computer in the `dat_docs` folder!
 
-**put gif here**
+![Download gif](https://raw.githubusercontent.com/datproject/docs/master/assets/cli_download.gif)
 
 ### CLI Development Status
 
