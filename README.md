@@ -80,7 +80,13 @@ You tell Dat what files to download by giving it a Dat link. Dat links are 64 ch
 
 Along with the link, you need to tell Dat what directory to download the files to. All together, you can download files by typing `dat <dat-link> <download-directory>`.
 
-For this example, we are going to download the Dat documentation files. In your console, run `dat 395e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2 dat_docs` and you should see the output below. Once the download is finished, the files will be available on your computer!
+For this example, we are going to download the Dat documentation files. In your console, run:
+
+```
+dat 395e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2 dat_docs
+```
+
+You should see the output below. Once the download is finished, the files will be available on your computer in the `dat_docs` folder!
 
 **put gif here**
 
