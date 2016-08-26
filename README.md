@@ -13,8 +13,18 @@ Dat is a decentralized data tool for distributing data small and large.
   * **Intelligently sync** by deduplicating data between versions.
   * **Verify data integrity** using strong cryptographic hashes.
   * **Work everywhere**, including on the [command line](https://github.com/maxogden/dat), in the [browser](https://github.com/datproject/dat.land), and on the [desktop](https://github.com/juliangruber/dat-desktop).
-  
-## Table of Contents
+
+### [Documentation](https://docs.dat-data.com) | [Video Demo](#) | [Awesome Dat](https://github.com/clkao/awesome-dat) | [dat.land](https://dat.land)
+
+---
+
+## Getting Started
+
+This guide will help you get started with the Dat command line tool. We are also developing [web](https://github.com/datproject/dat.land) and [desktop](https://github.com/juliangruber/dat-desktop) applications for Dat.
+
+The Dat command line tool can be used to share, download, and sync files across many computers via the command line.
+
+### Table of Contents
 
 <details>
   <summary>Table of Contents</summary>
@@ -25,11 +35,8 @@ Dat is a decentralized data tool for distributing data small and large.
   <li><a href="#for-developers">For Developers</a></li>
 </details>
 
----
-
-## Getting Started
-
-The Dat command line tool can be used to share, download, and sync files across many computers.
+<!-- NPM version -->
+[![NPM version](https://img.shields.io/npm/v/dat.svg?style=flat-square)](https://npmjs.org/package/dat)
 
 Windows        | Mac/Linux
 -------------- | ------------
