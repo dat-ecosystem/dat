@@ -24,6 +24,11 @@ This guide will help you get started with the Dat command line tool. We are also
 
 The Dat command line tool can be used to share, download, and sync files across many computers via the command line.
 
+
+Windows        | Mac/Linux    | Latest Version
+-------------- | ------------ | ------------
+[![Build status](https://ci.appveyor.com/api/projects/status/github/maxogden/dat?branch=master&svg=true)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](https://api.travis-ci.org/maxogden/dat.svg)](https://travis-ci.org/maxogden/dat) | [![NPM version](https://img.shields.io/npm/v/dat.svg?style=flat-square)](https://npmjs.org/package/dat)
+
 ### Table of Contents
 
 <details>
@@ -34,13 +39,6 @@ The Dat command line tool can be used to share, download, and sync files across 
   <li><a href="#ecosystem">Dat Ecosystem</a></li>
   <li><a href="#for-developers">For Developers</a></li>
 </details>
-
-<!-- NPM version -->
-[![NPM version](https://img.shields.io/npm/v/dat.svg?style=flat-square)](https://npmjs.org/package/dat)
-
-Windows        | Mac/Linux
--------------- | ------------
-[![Build status](https://ci.appveyor.com/api/projects/status/github/maxogden/dat?branch=master&svg=true)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](https://api.travis-ci.org/maxogden/dat.svg)](https://travis-ci.org/maxogden/dat)
 
 ### Install
 
