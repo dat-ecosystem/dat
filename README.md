@@ -35,12 +35,6 @@ Windows        | Mac/Linux
 
 The Dat command line interface can be used to share, download, and sync files across many computers. 
 
-### CLI Development Status
-
-This is the Dat CLI 1.0 release candidate (RC2). We are actively seeking feedback & developing this release candidate. Follow [this issue](https://github.com/datproject/projects/issues/5) for the Dat CLI road map discussion and see [known RC2 issues](https://github.com/maxogden/dat/issues/486).
-
-**Please note** that previous versions of Dat (alpha, beta) are incompatible with the 1.0 release candidate.
-
 ### Install
 
 To use Dat you will need to have [node and npm installed](https://docs.npmjs.com/getting-started/installing-node). Once you have npm, you can install Dat with npm:
@@ -90,9 +84,16 @@ For this example, we are going to download the Dat documentation files. In your 
 
 **put gif here**
 
+### CLI Development Status
+
+This is the Dat CLI 1.0 release candidate (RC2). We are actively seeking feedback & developing this release candidate. Follow [this issue](https://github.com/datproject/projects/issues/5) for the Dat CLI road map discussion and see [known RC2 issues](https://github.com/maxogden/dat/issues/486).
+
+**Please note** that previous versions of Dat (alpha, beta) are incompatible with the 1.0 release candidate.
+
 ## Using Dat
 
 The Dat command line interface makes it simple to share files or data across many computers. The source can be files on your computer or files shared via Dat on another computer. 
+
 
 There are two commands in Dat:
 
