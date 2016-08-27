@@ -41,7 +41,6 @@ You should be able to run the `dat` command now. If not, see the [installation t
 <li><a href="#getting-started">Getting Started</a></li>
 <li><a href="#using-dat">Using Dat</a></li>
 <li><a href="#troubleshooting">Troubleshooting</a></li>
-<li><a href="#ecosystem">Dat Ecosystem</a></li>
 <li><a href="#for-developers">For Developers</a></li>
 
 ### Demo
@@ -239,18 +238,6 @@ dat --doctor
 ```
 
 The doctor will print out a command to run on the other computer, `dat --doctor=<64-character-string>`. The doctor will run through the key steps in the process of sharing data between computers to help identify the issue.
-
----
-
-## Ecosystem
-
-  * [Hyperdrive](https://github.com/mafintosh/hyperdrive): on-disk database format
-  * [Discovery Swarm](https://github.com/mafintosh/discovery-swarm): discovery mechanism
-  * [dat-js](https://github.com/joehand/dat-js): javascript library
-  * [dat-desktop](https://github.com/juliangruber/dat-desktop): desktop application
-  * [dat.land](https://github.com/datproject/dat.land): website application
-
-Dat embraces the Unix philosophy: a modular design with composable parts. All of the pieces can be replaced with alternative implementations as long as they implement the abstract API.
 
 ---
 
