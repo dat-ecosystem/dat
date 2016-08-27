@@ -37,7 +37,7 @@ Windows        | Mac/Linux    | Version
 -------------- | ------------ | ------------
 [![Build status](https://ci.appveyor.com/api/projects/status/github/maxogden/dat?branch=master&svg=true)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](https://api.travis-ci.org/maxogden/dat.svg)](https://travis-ci.org/maxogden/dat) | [![NPM version](https://img.shields.io/npm/v/dat.svg?style=flat-square)](https://npmjs.org/package/dat)
 
-### Installation:
+### Installation
 
 ```
 npm install -g dat
