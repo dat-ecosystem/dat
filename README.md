@@ -14,7 +14,7 @@ Dat is a decentralized data tool for distributing data small and large.
   * **Verify data integrity** using strong cryptographic hashes.
   * **Work everywhere**, including on the [command line](https://github.com/maxogden/dat), in the [browser](https://github.com/datproject/dat.land), and on the [desktop](https://github.com/juliangruber/dat-desktop).
 
-### [Documentation](https://docs.dat-data.com) | [Video Demo](https://www.youtube.com/watch?v=fxKjSyCoqO4) | [Awesome Dat](https://github.com/clkao/awesome-dat) | [dat.land](https://dat.land)
+### [Documentation](http://docs.dat-data.com) | [Video Demo](https://www.youtube.com/watch?v=fxKjSyCoqO4) | [Ecosystem](https://github.com/clkao/awesome-dat)
 
 ---
 
@@ -24,58 +24,25 @@ This guide will help you get started with the Dat command line tool. We are also
 
 The Dat command line tool can be used to share, download, and sync files across many computers via the command line.
 
-
 Windows        | Mac/Linux    | Version
 -------------- | ------------ | ------------
 [![Build status](https://ci.appveyor.com/api/projects/status/github/maxogden/dat?branch=master&svg=true)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](https://api.travis-ci.org/maxogden/dat.svg)](https://travis-ci.org/maxogden/dat) | [![NPM version](https://img.shields.io/npm/v/dat.svg?style=flat-square)](https://npmjs.org/package/dat)
 
-### Table of Contents
-
-<details>
-  <summary>Table of Contents</summary>
-  <li><a href="#getting-started">Getting Started</a></li>
-  <li><a href="#using-dat">Using Dat</a></li>
-  <li><a href="#troubleshooting">Troubleshooting</a></li>
-  <li><a href="#ecosystem">Dat Ecosystem</a></li>
-  <li><a href="#for-developers">For Developers</a></li>
-</details>
-
-### Install
-
-To use the Dat command line tool you will need to have [node and npm installed](https://docs.npmjs.com/getting-started/installing-node). Once you have npm, you can install Dat with npm:
+### Installation:
 
 ```
 npm install -g dat
 ```
 
-The `-g` option installs Dat globally allowing you to run it as a command. 
+You should be able to run the `dat` command now. If not, see the [installation troubleshooting](#troubleshooting) for tips.
 
-Running `dat` in the console, with no arguments, should show you the usage guide:
+### Table of Contents
 
-```
-dat <directory>
-
-  share directory and create a dat-link
-
-  --snapshot            create a snapshot of directory
-  --port, -p            set a specific inbound tcp port
-
-dat <dat-link> <directory>
-
-  download a dat-link into directory
-
-  --exit                exit process after download finishes
-  --port, -p            set a specific inbound tcp port
-
-general options
-
-  --version, -v         get installed dat version
-  --doctor              run dat doctor
-  --quiet, -q           output only dat-link, no progress information
-  --debug               show debugging output
-```
-
-If the `dat` command does not work, there may have been issues in your installation, see the [installation troubleshooting](#troubleshooting).
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#using-dat">Using Dat</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+<li><a href="#ecosystem">Dat Ecosystem</a></li>
+<li><a href="#for-developers">For Developers</a></li>
 
 ### Demo
 
@@ -107,6 +74,31 @@ There are two commands in Dat:
 
 1. Share data: `dat <directory>` will share a directory on your computer.
 2. Download data: `dat <dat-link> <download-directory>` will download files from the Dat link to a directory on your computer. 
+
+Running `dat` in the console, with no arguments, will show you the usage guide. You can always use this as a reference for all the commands:
+
+```
+dat <directory>
+
+  share directory and create a dat-link
+
+  --snapshot            create a snapshot of directory
+  --port, -p            set a specific inbound tcp port
+
+dat <dat-link> <directory>
+
+  download a dat-link into directory
+
+  --exit                exit process after download finishes
+  --port, -p            set a specific inbound tcp port
+
+general options
+
+  --version, -v         get installed dat version
+  --doctor              run dat doctor
+  --quiet, -q           output only dat-link, no progress information
+  --debug               show debugging output
+```
 
 ### Sharing Files
 
@@ -209,6 +201,19 @@ dat -v
 You should see the Dat semantic version printed, e.g. 11.1.2.
 
 ### Installation Issues
+
+#### Node & npm
+
+To use the Dat command line tool you will need to have [node and npm installed](https://docs.npmjs.com/getting-started/installing-node). Make sure those are installed correctly before installing Dat. You can check the version of each:
+
+```
+node -v
+npm -v
+```
+
+#### Global Install
+
+The `-g` option installs Dat globally allowing you to run it as a command. Make sure you installed with that option.
 
 * If you receive an `EACCES` error, read [this guide](https://docs.npmjs.com/getting-started/fixing-npm-permissions) on fixing npm permissions.
 * Have other installation issues? Let us know, you can [open an issue](https://github.com/maxogden/dat/issues/new) or ask us in our [chat room](https://gitter.im/datproject/discussions).
