@@ -18,9 +18,18 @@ Dat is a decentralized data tool for distributing data small and large.
 
 ---
 
-## Getting Started
+## Dat Command Line Tool
 
 This guide will help you get started with the Dat command line tool. We are also developing [web](https://github.com/datproject/dat.land) and [desktop](https://github.com/juliangruber/dat-desktop) applications for Dat.
+
+### Table of Contents
+
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#using-dat">Using Dat</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+<li><a href="#for-developers">For Developers</a></li>
+
+## Getting Started
 
 The Dat command line tool can be used to share, download, and sync files across many computers via the command line.
 
@@ -35,13 +44,6 @@ npm install -g dat
 ```
 
 You should be able to run the `dat` command now. If not, see the [installation troubleshooting](#troubleshooting) for tips.
-
-### Table of Contents
-
-<li><a href="#getting-started">Getting Started</a></li>
-<li><a href="#using-dat">Using Dat</a></li>
-<li><a href="#troubleshooting">Troubleshooting</a></li>
-<li><a href="#for-developers">For Developers</a></li>
 
 ### Demo
 
