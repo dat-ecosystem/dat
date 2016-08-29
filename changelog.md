@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 *Note: unreleased changes are added here.*
 ### Added
 * Print message when download finishes telling user they can exit.
+* Add option for turning off UTP
+* Use dat-js module
 
 ## 11.1.2 - 2016-07-18
 ### Fixed
