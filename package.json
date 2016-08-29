@@ -18,7 +18,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/maxogden/dat.git"
+    "url": "git://github.com/datproject/dat.git"
   },
   "author": "max ogden",
   "license": "BSD-3-Clause",
@@ -44,9 +44,9 @@
     "yolowatch": "^2.3.0"
   },
   "bugs": {
-    "url": "https://github.com/maxogden/dat/issues"
+    "url": "https://github.com/datproject/dat/issues"
   },
-  "homepage": "https://github.com/maxogden/dat",
+  "homepage": "https://github.com/datproject/dat",
   "directories": {
     "test": "tests"
   },

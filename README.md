@@ -12,7 +12,7 @@ Dat is a decentralized data tool for distributing data small and large.
   * **Distribute large files** without copying data to a central server by connecting directly to peers.
   * **Intelligently sync** by deduplicating data between versions.
   * **Verify data integrity** using strong cryptographic hashes.
-  * **Work everywhere**, including on the [command line](https://github.com/maxogden/dat), in the [browser](https://github.com/datproject/dat.land), and on the [desktop](https://github.com/juliangruber/dat-desktop).
+  * **Work everywhere**, including on the [command line](https://github.com/datproject/dat), in the [browser](https://github.com/datproject/dat.land), and on the [desktop](https://github.com/juliangruber/dat-desktop).
 
 ### [Documentation](http://docs.dat-data.com) | [Video Demo](https://www.youtube.com/watch?v=fxKjSyCoqO4) | [Ecosystem](https://github.com/clkao/awesome-dat)
 
@@ -35,7 +35,7 @@ The Dat command line tool can be used to share, download, and sync files across 
 
 Windows        | Mac/Linux    | Version
 -------------- | ------------ | ------------
-[![Build status](https://ci.appveyor.com/api/projects/status/github/maxogden/dat?branch=master&svg=true)](https://ci.appveyor.com/project/maxogden/dat) | [![Travis](https://api.travis-ci.org/maxogden/dat.svg)](https://travis-ci.org/maxogden/dat) | [![NPM version](https://img.shields.io/npm/v/dat.svg?style=flat-square)](https://npmjs.org/package/dat)
+[![Build status](https://ci.appveyor.com/api/projects/status/github/datproject/dat?branch=master&svg=true)](https://ci.appveyor.com/project/datproject/dat) | [![Travis](https://api.travis-ci.org/datproject/dat.svg)](https://travis-ci.org/datproject/dat) | [![NPM version](https://img.shields.io/npm/v/dat.svg?style=flat-square)](https://npmjs.org/package/dat)
 
 ### Installation
 
@@ -65,7 +65,7 @@ You should see the output below. Once the download is finished, the files will b
 
 ### CLI Development Status
 
-This is the Dat CLI 1.0 release candidate (RC2). We are actively seeking feedback & developing this release candidate. Follow [this issue](https://github.com/datproject/projects/issues/5) for the Dat CLI road map discussion and see [known RC2 issues](https://github.com/maxogden/dat/issues/486).
+This is the Dat CLI 1.0 release candidate (RC2). We are actively seeking feedback & developing this release candidate. Follow [this issue](https://github.com/datproject/projects/issues/5) for the Dat CLI road map discussion and see [known RC2 issues](https://github.com/datproject/dat/issues/486).
 
 **Please note** that previous versions of Dat (alpha, beta) are incompatible with the 1.0 release candidate.
 
@@ -185,7 +185,7 @@ When you run a command, Dat creates a hidden folder, `.dat`, in the directory sp
 
 ## Troubleshooting
 
-We've provided some troubleshooting tips based on issues users have seen. Please [open an issue](https://github.com/maxogden/dat/issues/new) or ask us in our [chat room](https://gitter.im/datproject/discussions) if you need help troubleshooting and it is not covered here.
+We've provided some troubleshooting tips based on issues users have seen. Please [open an issue](https://github.com/datproject/dat/issues/new) or ask us in our [chat room](https://gitter.im/datproject/discussions) if you need help troubleshooting and it is not covered here.
 
 If you have trouble sharing/downloading in a directory with a `.dat` folder, try deleting it and running the command again.
 
@@ -218,7 +218,7 @@ The `-g` option installs Dat globally allowing you to run it as a command. Make 
 
 * If you receive an `EACCES` error, read [this guide](https://docs.npmjs.com/getting-started/fixing-npm-permissions) on fixing npm permissions.
 * If you receive an `EACCES` error, you may also install dat with sudo: `sudo npm install -g dat`.
-* Have other installation issues? Let us know, you can [open an issue](https://github.com/maxogden/dat/issues/new) or ask us in our [chat room](https://gitter.im/datproject/discussions).
+* Have other installation issues? Let us know, you can [open an issue](https://github.com/datproject/dat/issues/new) or ask us in our [chat room](https://gitter.im/datproject/discussions).
 
 ### Networking Issues
 
@@ -230,7 +230,7 @@ Networking capabilities vary widely with each computer, network, and configurati
 
 With successful use, Dat will show `Connected to 1 peer` after connection. If you never see a peer connected your network may be restricting discovery or connection. Please try using the `dat --doctor` command (see below) between the two computers not connecting. This will help troubleshoot the networks.
 
-* Dat may [have issues](https://github.com/maxogden/dat/issues/503) connecting if you are using iptables.
+* Dat may [have issues](https://github.com/datproject/dat/issues/503) connecting if you are using iptables.
 
 #### Dat Doctor
 
@@ -246,7 +246,7 @@ The doctor will print out a command to run on the other computer, `dat --doctor=
 
 ## For Developers
 
-Please see [guidelines on contributing](https://github.com/maxogden/dat/blob/master/CONTRIBUTING.md) before submitting an issue or PR.
+Please see [guidelines on contributing](https://github.com/datproject/dat/blob/master/CONTRIBUTING.md) before submitting an issue or PR.
 
 ### Installing from source
 
@@ -258,7 +258,7 @@ npm link
 
 This should add a `dat` command line command to your PATH. Now you can run the `dat` command to try it out.
 
-The contribution guide also has more tips on our [development workflow](https://github.com/maxogden/dat/blob/master/CONTRIBUTING.md#development-workflow).
+The contribution guide also has more tips on our [development workflow](https://github.com/datproject/dat/blob/master/CONTRIBUTING.md#development-workflow).
 
 
 ### Internal API
