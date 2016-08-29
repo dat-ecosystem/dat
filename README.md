@@ -217,6 +217,7 @@ npm -v
 The `-g` option installs Dat globally allowing you to run it as a command. Make sure you installed with that option.
 
 * If you receive an `EACCES` error, read [this guide](https://docs.npmjs.com/getting-started/fixing-npm-permissions) on fixing npm permissions.
+* If you receive an `EACCES` error, you may also install dat with sudo: `sudo npm install -g dat`.
 * Have other installation issues? Let us know, you can [open an issue](https://github.com/maxogden/dat/issues/new) or ask us in our [chat room](https://gitter.im/datproject/discussions).
 
 ### Networking Issues
