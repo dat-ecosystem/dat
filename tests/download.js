@@ -180,7 +180,7 @@ test('download transfers files', function (t) {
   function startDownloader () {
     var downloader = spawn(t, dat + ' ' + link + ' ' + tmpdir, {end: false})
     downloader.stdout.match(function (output) {
-      var contains = output.indexOf('Downloaded') > -1
+      var contains = output.indexOf('Download Finished') > -1
       if (!contains || !share) return false
 
       var hasFiles = output.indexOf('2 items') > -1
