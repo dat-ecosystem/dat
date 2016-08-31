@@ -25,6 +25,12 @@ module.exports = function (args) {
     dat.download(function (err) {
       if (err) onerror(err)
     })
+
+    setInterval(function () {
+      printSwarm()
+      log.print()
+    }, args.logspeed)
+    log.print()
   })
 
   dat.once('key', function (key) {
@@ -59,12 +65,6 @@ module.exports = function (args) {
   })
 
   dat.on('swarm-update', printSwarm)
-
-  setInterval(function () {
-    printSwarm()
-    log.print()
-  }, args.logspeed)
-  log.print()
 
   function printSwarm () {
     log.status(ui.swarmMsg(dat), 1)
