@@ -44,18 +44,20 @@ module.exports = function (args) {
 
   dat.on('download', function (data) {
     downloadTxt = 'Downloading '
-    dat.stats.rateDown(data.length)
+    if (!finished) dat.stats.rateDown(data.length)
     updateStats()
   })
 
   dat.on('archive-updated', function () {
     finished = false
+    dat.stats.rateDown = speedometer()
     updateStats()
   })
   dat.on('file-downloaded', updateStats)
 
   dat.on('download-finished', function () {
     finished = true
+    dat.stats.rateDown = 0
     updateStats()
     if (args.exit) {
       log.status('', 1)
