@@ -47,11 +47,14 @@ module.exports = function (args) {
       process.exit(0)
     }
     log.status('\nDownload Finished. You may exit the process with Ctrl-C.', -1)
+    printSwarm()
+    log.print()
+    clearInterval(iv)
   })
 
   dat.on('swarm-update', printSwarm)
 
-  setInterval(function () {
+  var iv = setInterval(function () {
     printSwarm()
     log.print()
   }, args.logspeed)
