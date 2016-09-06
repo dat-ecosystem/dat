@@ -38,10 +38,10 @@ module.exports = function (args) {
     dat.stats.rateUp(data.length)
   })
 
-  dat.on('file-counted', function () {
+  dat.on('file-counted', function (stats) {
     var msg = 'Calculating Size: '
-    msg += dat.stats.filesTotal + ' items '
-    msg += chalk.dim('(' + prettyBytes(dat.stats.bytesTotal) + ')')
+    msg += stats.filesTotal + ' items '
+    msg += chalk.dim('(' + prettyBytes(stats.bytesTotal) + ')')
     log.status(msg + '\n', 0)
   })
 
@@ -50,10 +50,12 @@ module.exports = function (args) {
     if (args.quiet) console.log(ui.keyMsg(key))
   })
 
-  dat.on('file-added', updateStats)
-  dat.on('file-exists', updateStats)
-
-  dat.once('append-ready', updateStats)
+  dat.once('files-counted', function (stats) {
+    // async file counting + appending
+    // wait until all counting is done to print append status
+    dat.on('file-added', updateStats)
+    dat.on('file-exists', updateStats)
+  })
 
   dat.once('archive-finalized', function () {
     addText = 'Added '
