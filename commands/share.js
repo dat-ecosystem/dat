@@ -7,7 +7,10 @@ var ui = require('../lib/ui')
 
 module.exports = function (args) {
   var dat = Dat(args)
-  var log = logger(args)
+
+  var messages = []
+  var progressLines = []
+  var log = logger([messages, progressLines], {debug: args.debug, quiet: args.quiet})
 
   var addText = 'Adding '
   var updated = false
@@ -15,14 +18,14 @@ module.exports = function (args) {
 
   dat.stats.rateUp = speedometer()
 
-  log.status('Starting Dat...\n', 0)
-  if (args.snapshot) log.status('Creating Link...', 1)
-  else log.status('Connecting...', 1)
+  progressLines[0] = 'Starting Dat...\n'
+  if (args.snapshot) progressLines[1] = 'Creating Link...'
+  else progressLines[1] = 'Connecting...'
 
   dat.on('error', onerror)
 
   dat.open(function () {
-    log.message('Sharing ' + dat.dir + '\n')
+    messages.push('Sharing ' + dat.dir + '\n')
     dat.share(function (err) {
       if (err) onerror(err)
     })
@@ -42,11 +45,11 @@ module.exports = function (args) {
     var msg = 'Calculating Size: '
     msg += stats.filesTotal + ' items '
     msg += chalk.dim('(' + prettyBytes(stats.bytesTotal) + ')')
-    log.status(msg + '\n', 0)
+    progressLines[0] = msg + '\n'
   })
 
   dat.once('key', function (key) {
-    log.message(ui.keyMsg(key))
+    messages.push(ui.keyMsg(key))
     if (args.quiet) console.log(ui.keyMsg(key))
   })
 
@@ -72,7 +75,7 @@ module.exports = function (args) {
   dat.on('swarm-update', printSwarm)
 
   function printSwarm () {
-    log.status(ui.swarmMsg(dat), 1)
+    progressLines[1] = ui.swarmMsg(dat)
   }
 
   function updateStats () {
@@ -90,7 +93,7 @@ module.exports = function (args) {
     var msg = ui.progress(bytesProgress / bytesTotal)
     msg += ' ' + addText + chalk.bold(files) + ' items'
     msg += chalk.dim(' (' + prettyBytes(bytesProgress) + '/' + prettyBytes(bytesTotal) + ')')
-    log.status(msg + '\n', 0)
+    progressLines[0] = msg + '\n'
   }
 }
 
