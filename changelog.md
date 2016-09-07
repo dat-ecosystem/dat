@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 * Add option for turning off UTP
 * Use dat-js module (includes using hyperdrive-import-files for appending)
 
+### Fixed
+* Download finished message not displayed when dat live updates
+* Download speed removed when download is finished
+
 ## 11.1.2 - 2016-07-18
 ### Fixed
 * Zero bytes total when downloading Dat with single file

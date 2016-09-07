@@ -53,6 +53,7 @@ module.exports = function (args) {
     finished = false
     dat.stats.rateDown = speedometer()
     updateStats()
+    log.status('', -1) // remove download finished message
   })
   dat.on('file-downloaded', updateStats)
 
