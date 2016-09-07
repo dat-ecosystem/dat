@@ -1,26 +1,37 @@
 var chalk = require('chalk')
 var prettyBytes = require('pretty-bytes')
-var Dat = require('../lib/dat')
+var Dat = require('dat-js')
 var logger = require('status-logger')
+var speedometer = require('speedometer')
 var ui = require('../lib/ui')
 
 module.exports = function (args) {
+  if (args && args.exit) args.upload = false
   var dat = Dat(args)
   var log = logger(args)
 
   var downloadTxt = 'Downloading '
   var finished = false
 
+  dat.stats.rateUp = speedometer()
+  dat.stats.rateDown = speedometer()
+
   log.status('Starting Dat...\n', 0)
   log.status('Connecting...', 1)
 
   dat.on('error', onerror)
 
-  dat.once('ready', function () {
+  dat.open(function () {
     log.message('Downloading in ' + dat.dir + '\n')
     dat.download(function (err) {
       if (err) onerror(err)
     })
+
+    setInterval(function () {
+      printSwarm()
+      log.print()
+    }, args.logspeed)
+    log.print()
   })
 
   dat.once('key', function (key) {
@@ -28,19 +39,26 @@ module.exports = function (args) {
     if (args.quiet) console.log(ui.keyMsg(key))
   })
 
+  dat.on('upload', function (data) {
+    dat.stats.rateUp(data.length)
+  })
+
   dat.on('download', function (data) {
     downloadTxt = 'Downloading '
+    if (!finished) dat.stats.rateDown(data.length)
     updateStats()
   })
 
   dat.on('archive-updated', function () {
     finished = false
+    dat.stats.rateDown = speedometer()
     updateStats()
   })
   dat.on('file-downloaded', updateStats)
 
   dat.on('download-finished', function () {
     finished = true
+    dat.stats.rateDown = 0
     updateStats()
     if (args.exit) {
       log.status('', 1)
@@ -50,12 +68,6 @@ module.exports = function (args) {
   })
 
   dat.on('swarm-update', printSwarm)
-
-  setInterval(function () {
-    printSwarm()
-    log.print()
-  }, args.logspeed)
-  log.print()
 
   function printSwarm () {
     log.status(ui.swarmMsg(dat), 1)

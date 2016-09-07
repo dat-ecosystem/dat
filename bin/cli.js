@@ -5,7 +5,7 @@ var mkdirp = require('mkdirp')
 
 var args = require('minimist')(process.argv.splice(2), {
   alias: {p: 'port', q: 'quiet', v: 'version'},
-  boolean: ['snapshot', 'exit', 'list', 'quiet', 'version'],
+  boolean: ['snapshot', 'exit', 'list', 'quiet', 'version', 'utp'],
   default: {
     logspeed: 200
   }

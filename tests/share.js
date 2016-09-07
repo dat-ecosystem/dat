@@ -103,7 +103,7 @@ test('prints file information (live)', function (t) {
     var finished = output.match('Added')
     if (!finished) return false
 
-    t.ok(output.match(/3 items/), 'File count correct')
+    t.ok(output.match(/2 items/), 'File count correct')
     t.ok(output.match(/1\.\d{1,2} kB/), 'File size correct')
 
     st.kill()
@@ -120,7 +120,7 @@ test('prints file information (snapshot)', function (t) {
     var finished = output.match('Added')
     if (!finished) return false
 
-    t.ok(output.match(/3 items/), 'File count correct')
+    t.ok(output.match(/2 items/), 'File count correct')
     t.ok(output.match(/1\.\d{1,2} kB/), 'File size correct')
 
     st.kill()

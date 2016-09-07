@@ -24,24 +24,16 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "chalk": "^1.1.1",
-    "dat-encoding": "^2.0.2",
-    "datland-swarm-defaults": "^1.0.0",
-    "debug": "^2.2.0",
-    "discovery-swarm": "^4.0.0",
-    "dns-discovery": "^5.3.3",
-    "folder-walker": "^3.0.0",
-    "hyperdrive": "^7.0.0",
-    "hyperdrive-archive-swarm": "^3.1.0",
-    "level": "^1.4.0",
+    "dat-js": "^3.3.1",
+    "datland-swarm-defaults": "^1.0.2",
+    "discovery-swarm": "^4.0.2",
+    "dns-discovery": "^5.3.4",
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "pretty-bytes": "^3.0.0",
     "pump": "^1.0.1",
-    "random-access-file": "^1.2.0",
     "speedometer": "^1.0.0",
-    "status-logger": "^2.0.1",
-    "stream-each": "^1.1.0",
-    "yolowatch": "^2.3.0"
+    "status-logger": "^2.0.1"
   },
   "bugs": {
     "url": "https://github.com/datproject/dat/issues"

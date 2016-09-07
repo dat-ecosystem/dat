@@ -1,7 +1,8 @@
 var chalk = require('chalk')
 var prettyBytes = require('pretty-bytes')
-var Dat = require('../lib/dat')
+var Dat = require('dat-js')
 var logger = require('status-logger')
+var speedometer = require('speedometer')
 var ui = require('../lib/ui')
 
 module.exports = function (args) {
@@ -12,23 +13,35 @@ module.exports = function (args) {
   var updated = false
   var initFileCount = 0
 
+  dat.stats.rateUp = speedometer()
+
   log.status('Starting Dat...\n', 0)
   if (args.snapshot) log.status('Creating Link...', 1)
   else log.status('Connecting...', 1)
 
   dat.on('error', onerror)
 
-  dat.once('ready', function () {
+  dat.open(function () {
     log.message('Sharing ' + dat.dir + '\n')
     dat.share(function (err) {
       if (err) onerror(err)
     })
+
+    setInterval(function () {
+      printSwarm()
+      log.print()
+    }, args.logspeed)
+    log.print()
   })
 
-  dat.on('file-counted', function () {
+  dat.on('upload', function (data) {
+    dat.stats.rateUp(data.length)
+  })
+
+  dat.on('file-counted', function (stats) {
     var msg = 'Calculating Size: '
-    msg += dat.stats.filesTotal + ' items '
-    msg += chalk.dim('(' + prettyBytes(dat.stats.bytesTotal) + ')')
+    msg += stats.filesTotal + ' items '
+    msg += chalk.dim('(' + prettyBytes(stats.bytesTotal) + ')')
     log.status(msg + '\n', 0)
   })
 
@@ -37,10 +50,12 @@ module.exports = function (args) {
     if (args.quiet) console.log(ui.keyMsg(key))
   })
 
-  dat.on('file-added', updateStats)
-  dat.on('file-exists', updateStats)
-
-  dat.once('append-ready', updateStats)
+  dat.once('files-counted', function (stats) {
+    // async file counting + appending
+    // wait until all counting is done to print append status
+    dat.on('file-added', updateStats)
+    dat.on('file-exists', updateStats)
+  })
 
   dat.once('archive-finalized', function () {
     addText = 'Added '
@@ -55,12 +70,6 @@ module.exports = function (args) {
   })
 
   dat.on('swarm-update', printSwarm)
-
-  setInterval(function () {
-    printSwarm()
-    log.print()
-  }, args.logspeed)
-  log.print()
 
   function printSwarm () {
     log.status(ui.swarmMsg(dat), 1)
