@@ -213,6 +213,40 @@ test('download transfers files', function (t) {
   }
 })
 
+test('download --temp from share --temp', function (t) {
+  // cmd: dat <link> . --temp
+  var tmpdir = newTestFolder()
+  var link = null
+  var share = spawn(t, dat + ' ' + fixtures + ' --temp', {end: false})
+  share.stderr.empty()
+  share.stdout.match(function (output) {
+    var matches = matchDatLink(output)
+    if (!matches) return false
+    link = matches
+    startDownloader()
+    return true
+  }, 'share started')
+
+  function startDownloader () {
+    // cmd: dat <link> tmpdir --temp
+    var downloader = spawn(t, dat + ' ' + link + ' ' + tmpdir + ' --temp', {end: false})
+    downloader.stdout.match(function (output) {
+      var contains = output.indexOf('Downloaded') > -1
+      if (!contains || !share) return false
+      t.pass('download succeeds')
+      var fileList = fs.readdirSync(tmpdir).join(' ')
+      var hasDatFolder = fileList.indexOf('.dat') > -1
+      t.pass(!hasDatFolder, 'no .dat folder created')
+      downloader.kill()
+      share.kill()
+      return true
+    }, 'download one finished')
+    downloader.end(function () {
+      t.end()
+    })
+  }
+})
+
 process.on('exit', function () {
   console.log('cleaning up')
   rimraf.sync(downloadDir)

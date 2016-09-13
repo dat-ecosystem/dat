@@ -7,6 +7,7 @@ var ui = require('../lib/ui')
 
 module.exports = function (args) {
   if (args && args.exit) args.upload = false
+  if (args.temp) args.db = require('memdb')()
   var dat = Dat(args)
   var log = logger(args)
 

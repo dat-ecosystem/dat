@@ -144,6 +144,26 @@ test('share with . arg defaults to cwd', function (t) {
   st.end()
 })
 
+test('share with temp arg', function (t) {
+  // cmd: dat . --temp
+  var st = spawn(t, dat + ' . --temp', {cwd: fixtures})
+  st.stdout.match(function (output) {
+    var contains = output.indexOf('Sharing') > -1
+    if (!contains) return false
+    var datDir = path.join(fixtures, '.dat')
+    t.pass('shares ok with temp')
+    try {
+      t.notOk(fs.statSync(datDir).isDirectory(), 'not a directory')
+    } catch (e) {
+      t.ok(e.code === 'ENOENT', 'dat dir not created')
+    }
+    st.kill()
+    cleanDat()
+    return true
+  })
+  st.end()
+})
+
 function cleanDat () {
   rimraf.sync(path.join(fixtures, '.dat'))
 }
