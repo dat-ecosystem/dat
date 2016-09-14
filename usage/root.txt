@@ -15,6 +15,7 @@ dat <dat-link> <directory>
 general options
 
   --version, -v         get installed dat version
+  --temp                use in-memory database instead of .dat folder
   --doctor              run dat doctor
   --quiet, -q           output only dat-link, no progress information
   --debug               show debugging output

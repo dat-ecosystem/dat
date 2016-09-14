@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 ### Added
+* `--temp` option. Uses memdb as database instead of `.dat` folder.
 * Print message when download finishes telling user they can exit.
 * Add option for turning off UTP
 * Use dat-js module (includes using hyperdrive-import-files for appending)

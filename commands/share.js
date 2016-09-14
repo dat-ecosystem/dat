@@ -6,6 +6,7 @@ var speedometer = require('speedometer')
 var ui = require('../lib/ui')
 
 module.exports = function (args) {
+  if (args.temp) args.db = require('memdb')()
   var dat = Dat(args)
   var log = logger(args)
 

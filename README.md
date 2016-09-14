@@ -96,6 +96,7 @@ dat <dat-link> <directory>
 general options
 
   --version, -v         get installed dat version
+  --temp                use in-memory database instead of .dat folder
   --doctor              run dat doctor
   --quiet, -q           output only dat-link, no progress information
   --debug               show debugging output
@@ -182,6 +183,10 @@ To create a snapshot when sharing files use the snapshot option: `dat my_data/ -
 ### Dat Metadata Storage
 
 When you run a command, Dat creates a hidden folder, `.dat`, in the directory specified. Similar to git, this folder stores information about your Dat. File metadata and the Dat link are stored to make it easy to continue sharing or downloading the same directory.
+
+#### Temporary Database
+
+Use the `--temp` option to keep the metadata in memory instead of the `.dat` folder.
 
 ## Troubleshooting
 
