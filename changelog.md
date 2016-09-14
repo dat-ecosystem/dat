@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 *Note: unreleased changes are added here.*
+
+## 11.2.0 - 2016-09-14
 ### Added
 * `--temp` option. Uses memdb as database instead of `.dat` folder.
 * Print message when download finishes telling user they can exit.
