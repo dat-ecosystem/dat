@@ -159,7 +159,7 @@ While downloading, you may be connected to more than 1 peer. Anyone who has the 
 
 #### Updating the Downloaded Files
 
-What happens if the files get updated? IfDat auto-syncs new files if it is still running. If you exited the process, you can run the same command you ran before (with the same link and directory) and the files will update!
+What happens if the files get updated? Dat auto-syncs new files if it is still running. If you exited the process, you can run the same command you ran before (with the same link and directory) and the files will update!
 
 #### Download Options
 
