@@ -16,6 +16,7 @@ general options
 
   --version, -v         get installed dat version
   --temp                use in-memory database instead of .dat folder
+  --webrtc              connect to webrtc peers via electron-webrtc
   --doctor              run dat doctor
   --quiet, -q           output only dat-link, no progress information
   --debug               show debugging output

@@ -5,7 +5,7 @@ var mkdirp = require('mkdirp')
 
 var args = require('minimist')(process.argv.splice(2), {
   alias: {p: 'port', q: 'quiet', v: 'version'},
-  boolean: ['snapshot', 'exit', 'list', 'quiet', 'version', 'utp', 'temp'],
+  boolean: ['snapshot', 'exit', 'list', 'quiet', 'version', 'utp', 'temp', 'webrtc'],
   default: {
     logspeed: 200
   }
@@ -24,6 +24,14 @@ if (args.version) {
   var pkg = require('../package.json')
   console.log(pkg.version)
   process.exit(0)
+}
+
+if (args.webrtc) {
+  try {
+    args.webrtc = require('electron-webrtc')({headless: true})
+  } catch (e) {
+    onerror('npm install -g electron-webrtc for webrtc support')
+  }
 }
 
 var isShare = false

@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 *Note: unreleased changes are added here.*
+### Added
+* `--webrtc` option. Uses electron-webrtc to run via webrtc.
 
 ## 11.2.0 - 2016-09-14
 ### Added
