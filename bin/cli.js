@@ -30,7 +30,7 @@ if (args.webrtc) {
   try {
     args.webrtc = require('electron-webrtc')({headless: true})
   } catch (e) {
-    onerror('npm install electron-webrtc for webrtc support (use -g option if that is how you installed dat)')
+    onerror('npm install -g electron-webrtc for webrtc support')
   }
 }
 
