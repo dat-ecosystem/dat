@@ -17,6 +17,7 @@ process.title = 'dat'
 if (args.debug) {
   var debug = args.debug
   if (typeof args.debug === 'boolean') debug = '*' // default
+  args.quiet = true
   process.env.DEBUG = debug
 }
 
