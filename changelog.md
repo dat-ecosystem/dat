@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 *Note: unreleased changes are added here.*
+### Added
+* `--ignore-hidden` option. Ignores hidden files by default.
 
 ## 11.3.1 - 2016-09-21
 ### Fixed

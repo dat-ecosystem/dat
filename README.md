@@ -101,6 +101,7 @@ general options
   --doctor              run dat doctor
   --quiet, -q           output only dat-link, no progress information
   --debug               show debugging output
+  --ignore-hidden       ignore hidden files (true by default)
 ```
 
 ### Sharing Files
