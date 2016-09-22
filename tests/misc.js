@@ -10,6 +10,7 @@ test('webrtc option fails if electron-webrtc not installed', function (t) {
   try {
     require('electron-webrtc')
     t.skip('electron-webrtc installed, skipping fail test. Uninstall to test.')
+    t.end()
   } catch (e) {
     var st = spawn(t, dat + ' ' + fixtures + ' --webrtc')
     st.fails('errors')
