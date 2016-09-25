@@ -6,6 +6,7 @@ var mkdirp = require('mkdirp')
 var args = require('minimist')(process.argv.splice(2), {
   alias: {p: 'port', q: 'quiet', v: 'version'},
   boolean: ['snapshot', 'exit', 'list', 'quiet', 'version', 'utp', 'temp', 'webrtc', 'ignore-hidden'],
+  string: ['signalhub'],
   default: {
     logspeed: 200,
     'ignore-hidden': true
