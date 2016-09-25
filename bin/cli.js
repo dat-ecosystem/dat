@@ -30,7 +30,7 @@ if (args.version) {
 
 if (args.webrtc) {
   try {
-    args.webrtc = require('electron-webrtc')({headless: true})
+    args.webrtc = require('electron-webrtc')()
   } catch (e) {
     onerror('npm install -g electron-webrtc for webrtc support')
   }
