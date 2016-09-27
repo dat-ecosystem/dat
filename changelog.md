@@ -7,6 +7,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 * `--ignore-hidden` option. Ignores hidden files by default.
 
+### Fixed
+* Remove headless option from electron-webrtc. It is detected for us.
+
 ## 11.3.1 - 2016-09-21
 ### Fixed
 * Use `--quiet` mode with `--debug` so output is easier to read.
