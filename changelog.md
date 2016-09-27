@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 *Note: unreleased changes are added here.*
 ### Added
 * `--ignore-hidden` option. Ignores hidden files by default.
+* `--signalhub` option to override default signalhub URL.
 
 ## 11.3.1 - 2016-09-21
 ### Fixed
