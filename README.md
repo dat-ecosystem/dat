@@ -74,7 +74,7 @@ This is the Dat CLI 1.0 release candidate (RC2). We are actively seeking feedbac
 There are two commands in Dat:
 
 1. Share data: `dat <directory>` will share a directory on your computer.
-2. Download data: `dat <dat-link> <download-directory>` will download files from the Dat link to a directory on your computer. 
+2. Download data: `dat <dat-link> <download-directory>` will download files from the Dat link to a directory on your computer.
 
 Running `dat` in the console, with no arguments, will show you the usage guide. You can always use this as a reference for all the commands:
 
@@ -113,7 +113,7 @@ $ dat my_data/
 Sharing /Users/joe/my_data/
 
 Share Link: d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6
-The Share Link is secret and only those you share it with will be able to get the files
+The Share Link is for you to share with others so that they will be able to get the files
 
 [==============>] Added 2 files (1.44 kB/1.44 kB)
 
@@ -134,11 +134,11 @@ A snapshot reads the files and creates a unique link that will always be the sam
 
 `dat <directory> --snapshot`
 
-Share a snapshot of the current files. 
+Share a snapshot of the current files.
 
 `dat <directory> --port=1234`
 
-Set your inbound TCP port. This is useful for debugging or on restrictive networks. 
+Set your inbound TCP port. This is useful for debugging or on restrictive networks.
 
 ### Downloading Files
 
@@ -149,14 +149,14 @@ $ dat d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6 download_
 Downloading in /Users/joe/download_dir
 
 Share Link: d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6
-The Share Link is secret and only those you share it with will be able to get the files
+The Share Link is for you to share with others so that they will be able to get the files
 
 [==============>] Downloaded 3 files (1.44 kB/1.44 kB)
 
 Connected to 1 peers. Downloading 1.44 kB/s. Watching for updates...
 ```
 
-Dat will start downloading the data into the `download_dir` folder. Once the download is finished (a message will print and the bar will turn green), you can safely exit the process with `Ctrl-C` (`Cmd-C` on Mac). 
+Dat will start downloading the data into the `download_dir` folder. Once the download is finished (a message will print and the bar will turn green), you can safely exit the process with `Ctrl-C` (`Cmd-C` on Mac).
 
 While downloading, you may be connected to more than 1 peer. Anyone who has the Dat link will be able to download and re-host a copy of the data. So you may be downloading from (and sharing to) other people that are also downloading that data! You only need one block of data to start helping as a host. It's distributed mad science!
 
@@ -166,19 +166,19 @@ What happens if the files get updated? Dat auto-syncs new files if it is still r
 
 #### Download Options
 
-`dat <dat-link> <directory> --exit` 
+`dat <dat-link> <directory> --exit`
 
 After files are done downloading, exit the process. If you are connected to a live Dat you will not get new files unless you run the command again.
 
 `dat <dat-link> <directory> --port=1234`
 
-Set your inbound TCP port. This is useful for debugging or on restrictive networks. 
+Set your inbound TCP port. This is useful for debugging or on restrictive networks.
 
 ### Live Sync & Snapshots
 
 Dat makes it easy to share a folder and send files as they are changed or added. By default, when you share using Dat you will be in *live sync* mode. Anyone connected to you will receive file changes as you make them.
 
-When downloading a Dat, you do not have to worry about live mode. It will automatically start in the right mode based on the link. 
+When downloading a Dat, you do not have to worry about live mode. It will automatically start in the right mode based on the link.
 
 To create a snapshot when sharing files use the snapshot option: `dat my_data/ --snapshot`. A snapshot reads the files and creates a specific link that will never change (as long as the files don't change).
 
@@ -280,7 +280,7 @@ The contribution guide also has more tips on our [development workflow](https://
 
 download `dat.key` to `dat.dir`
 
-#### dat.share(cb) 
+#### dat.share(cb)
 
 share directory specified in `opts.dir`
 
