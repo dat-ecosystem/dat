@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Fixed
 * Remove headless option from electron-webrtc. It is detected for us.
+* `utp` is true by default
 
 ## 11.3.1 - 2016-09-21
 ### Fixed

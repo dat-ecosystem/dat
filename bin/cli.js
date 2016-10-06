@@ -8,7 +8,8 @@ var args = require('minimist')(process.argv.splice(2), {
   boolean: ['snapshot', 'exit', 'list', 'quiet', 'version', 'utp', 'temp', 'webrtc', 'ignore-hidden'],
   default: {
     logspeed: 200,
-    'ignore-hidden': true
+    'ignore-hidden': true,
+    utp: true
   }
 })
 
