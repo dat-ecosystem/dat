@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## 11.4.0 - 2016-10-06
 ### Added
 * `--ignore-hidden` option. Ignores hidden files by default.
+* `--signalhub` option to override default signalhub URL.
 
 ### Fixed
 * Remove headless option from electron-webrtc. It is detected for us.
