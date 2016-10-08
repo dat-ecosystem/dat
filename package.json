@@ -34,7 +34,7 @@
     "pretty-bytes": "^3.0.0",
     "pump": "^1.0.1",
     "speedometer": "^1.0.0",
-    "status-logger": "^2.0.1"
+    "status-logger": "^3.0.0"
   },
   "bugs": {
     "url": "https://github.com/datproject/dat/issues"
