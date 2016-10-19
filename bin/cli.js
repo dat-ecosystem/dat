@@ -2,6 +2,7 @@
 
 var fs = require('fs')
 var mkdirp = require('mkdirp')
+var usage = require('../usage')
 
 var args = require('minimist')(process.argv.splice(2), {
   alias: {p: 'port', q: 'quiet', v: 'version'},
@@ -52,7 +53,7 @@ function run () {
   else if (isShare) require('../commands/share')(args)
   else if (args.list && isDownload) require('../commands/list')(args)
   else if (isDownload) require('../commands/download')(args)
-  else require('../usage')('root.txt')
+  else usage('root.txt')
 }
 
 function getCommand () {
@@ -65,7 +66,7 @@ function getCommand () {
   if (isShare) run()
   else if (args.dir && isDownload && !isDirectory(args.dir, true)) mkdirp(args.dir, run)
   else if (args.dir && isDownload) run()
-  else if (!args.dir) onerror('Directory required') // TODO: don't require for download
+  else if (!args.dir) usage('root.txt') // TODO: don't require for download
   else onerror('Invalid Command') // Should never get here...
 }
 
