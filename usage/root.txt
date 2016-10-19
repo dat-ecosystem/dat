@@ -3,14 +3,12 @@ dat <directory>
   share directory and create a dat-link
 
   --snapshot            create a snapshot of directory
-  --port, -p            set a specific inbound tcp port
 
 dat <dat-link> <directory>
 
   download a dat-link into directory
 
   --exit                exit process after download finishes
-  --port, -p            set a specific inbound tcp port
 
 general options
 
@@ -21,3 +19,4 @@ general options
   --quiet, -q           output only dat-link, no progress information
   --debug               show debugging output
   --ignore-hidden       ignore hidden files (true by default)
+  --port, -p            set a specific inbound tcp port
