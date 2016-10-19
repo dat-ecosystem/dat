@@ -166,7 +166,7 @@ test('share with temp arg', function (t) {
   st.end()
 })
 
-test.only('sharing existing directory begins sync', function (t) {
+test('sharing existing directory begins sync', function (t) {
   // cmd: dat <link> .  then dat .
   var tmpdir = newTestFolder()
   var link = null
