@@ -1,14 +1,10 @@
 var chalk = require('chalk')
 var prettyBytes = require('pretty-bytes')
-var Dat = require('dat-js')
 var logger = require('status-logger')
 var speedometer = require('speedometer')
 var ui = require('../lib/ui')
 
-module.exports = function (args) {
-  if (args && args.exit) args.upload = false
-  if (args.temp) args.db = require('memdb')()
-  var dat = Dat(args)
+module.exports = function (dat, args) {
   var log = logger(args)
 
   var downloadTxt = 'Downloading '

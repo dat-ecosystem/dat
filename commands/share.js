@@ -1,15 +1,12 @@
 var chalk = require('chalk')
+var download = require('./download')
 var prettyBytes = require('pretty-bytes')
-var Dat = require('dat-js')
 var logger = require('status-logger')
 var speedometer = require('speedometer')
 var ui = require('../lib/ui')
 
-module.exports = function (args) {
-  if (args.temp) args.db = require('memdb')()
-  var dat = Dat(args)
+module.exports = function (dat, args) {
   var log = logger(args)
-
   var addText = 'Adding '
   var updated = false
   var initFileCount = 0
@@ -23,6 +20,7 @@ module.exports = function (args) {
   dat.on('error', onerror)
 
   dat.open(function () {
+    if (dat.archive.key && !dat.archive.owner) return download(dat, args)
     log.message('Sharing ' + dat.dir + '\n')
     dat.share(function (err) {
       if (err) onerror(err)

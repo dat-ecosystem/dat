@@ -1,4 +1,6 @@
 var fs = require('fs')
+var os = require('os')
+var mkdirp = require('mkdirp')
 var path = require('path')
 var test = require('tape')
 var rimraf = require('rimraf')
@@ -163,6 +165,53 @@ test('share with temp arg', function (t) {
   })
   st.end()
 })
+
+test.only('sharing existing directory begins sync', function (t) {
+  // cmd: dat <link> .  then dat .
+  var tmpdir = newTestFolder()
+  var link = null
+  var share = spawn(t, dat + ' ' + fixtures, {end: false})
+  share.stderr.empty()
+  share.stdout.match(function (output) {
+    var matches = matchDatLink(output)
+    if (!matches) return false
+    link = matches
+    startDownloader()
+    return true
+  }, 'share started')
+
+  function startDownloader () {
+    // cmd: dat <link> tmpdir
+    var downloader = spawn(t, dat + ' ' + link + ' ' + tmpdir, {end: false})
+    downloader.stdout.match(function (output) {
+      var contains = output.indexOf('Downloaded') > -1
+      if (!contains || !share) return false
+      downloader.kill()
+      spawnShare()
+      return true
+    }, 'download one started')
+    downloader.end()
+  }
+
+  function spawnShare () {
+    var st = spawn(t, dat + ' ' + tmpdir)
+    st.stdout.match(function (output) {
+      var contains = output.indexOf('Connected to') > -1
+      if (!contains) return false
+      st.kill()
+      cleanDat()
+      return true
+    })
+    st.end()
+  }
+})
+
+function newTestFolder () {
+  var tmpdir = path.join(os.tmpdir(), 'dat-download-folder')
+  rimraf.sync(tmpdir)
+  mkdirp.sync(tmpdir)
+  return tmpdir
+}
 
 function cleanDat () {
   rimraf.sync(path.join(fixtures, '.dat'))

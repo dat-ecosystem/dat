@@ -3,6 +3,7 @@
 var fs = require('fs')
 var mkdirp = require('mkdirp')
 var usage = require('../usage')
+var Dat = require('dat-js')
 
 var args = require('minimist')(process.argv.splice(2), {
   alias: {p: 'port', q: 'quiet', v: 'version'},
@@ -49,10 +50,12 @@ if (args.doctor || !args._[0]) run()
 else getCommand()
 
 function run () {
-  if (args.doctor) require('./doctor')(args)
-  else if (isShare) require('../commands/share')(args)
-  else if (args.list && isDownload) require('../commands/list')(args)
-  else if (isDownload) require('../commands/download')(args)
+  if (args.temp) args.db = require('memdb')()
+  var dat = Dat(args)
+  if (args.doctor) require('./doctor')(dat, args)
+  else if (isShare) require('../commands/share')(dat, args)
+  else if (args.list && isDownload) require('../commands/list')(dat, args)
+  else if (isDownload) require('../commands/download')(dat, args)
   else usage('root.txt')
 }
 
