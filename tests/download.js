@@ -70,7 +70,7 @@ test('errors on new download without directory', function (t) {
   rimraf.sync(path.join(process.cwd(), '.dat')) // in case we have a .dat folder here
   var st = spawn(t, dat + ' 5hz25io80t0m1ttr332awpslmlfn1mc5bf1z8lvhh34a9r1ob3')
   st.stderr.match(function (output) {
-    var gotError = output.indexOf('Directory required') > -1
+    var gotError = output.indexOf('dat <directory>') > -1
     t.ok(gotError, 'got error')
     if (gotError) return true
   })
