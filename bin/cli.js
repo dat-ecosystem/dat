@@ -58,6 +58,9 @@ function run () {
 
 function getCommand () {
   if (args._[0].indexOf('dat://') > -1) args._[0] = args._[0].replace('dat://', '')
+  if (args._[0].indexOf('dat.land') > -1) {
+    args._[0] = args._[0].replace('dat.land/', '').replace(/^(http|https):\/\//, '')
+  }
   if (isDirectory(args._[0], true)) isShare = true
   else if (isDatLink(args._[0])) isDownload = true
   args.dir = isShare ? args._[0] : args._[1]
