@@ -5,6 +5,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 11.5.0 - 2016-10-20
+### Added
+* Accept dat.land links
+* Allow `dat <dir>` to resume a downloaded link
+
+### Fixed
+* Improved error output for incorrect params
+
 ## 11.4.0 - 2016-10-06
 ### Added
 * `--ignore-hidden` option. Ignores hidden files by default.
