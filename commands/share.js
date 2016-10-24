@@ -20,17 +20,19 @@ module.exports = function (dat, args) {
   dat.on('error', onerror)
 
   dat.open(function () {
-    if (dat.archive.key && !dat.archive.owner) return download(dat, args)
-    log.message('Sharing ' + dat.dir + '\n')
-    dat.share(function (err) {
-      if (err) onerror(err)
-    })
+    dat.archive.open(function () {
+      if (dat.archive.key && !dat.archive.owner) return download(dat, args)
+      log.message('Sharing ' + dat.dir + '\n')
+      dat.share(function (err) {
+        if (err) onerror(err)
+      })
 
-    setInterval(function () {
-      printSwarm()
+      setInterval(function () {
+        printSwarm()
+        log.print()
+      }, args.logspeed)
       log.print()
-    }, args.logspeed)
-    log.print()
+    })
   })
 
   dat.on('upload', function (data) {
