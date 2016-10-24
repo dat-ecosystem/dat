@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 11.5.1 - 2016-10-24
+### Fixed
+* Resuming a folder previously shared fixed.
+
 ## 11.5.0 - 2016-10-20
 ### Added
 * Accept dat.land links
