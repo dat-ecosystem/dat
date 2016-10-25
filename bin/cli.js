@@ -51,12 +51,14 @@ else getCommand()
 
 function run () {
   if (args.temp) args.db = require('memdb')()
-  var dat = Dat(args)
-  if (args.doctor) require('./doctor')(dat, args)
-  else if (isShare) require('../commands/share')(dat, args)
-  else if (args.list && isDownload) require('../commands/list')(dat, args)
-  else if (isDownload) require('../commands/download')(dat, args)
-  else usage('root.txt')
+  if (args.doctor) require('./doctor')(args)
+  else {
+    var dat = Dat(args)
+    if (isShare) require('../commands/share')(dat, args)
+    else if (args.list && isDownload) require('../commands/list')(dat, args)
+    else if (isDownload) require('../commands/download')(dat, args)
+    else usage('root.txt')
+  }
 }
 
 function getCommand () {
