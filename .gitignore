@@ -3,3 +3,4 @@ node_modules
 tmp
 .idea
 data
+tests/fixtures/.dat

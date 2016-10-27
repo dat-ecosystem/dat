@@ -1,9 +1,11 @@
 var path = require('path')
 var test = require('tape')
 var spawn = require('./helpers/spawn.js')
+var fs = require('fs')
 
 var dat = path.resolve(path.join(__dirname, '..', 'bin', 'cli.js'))
 var fixtures = path.join(__dirname, 'fixtures')
+var usage = fs.readFileSync(path.join(__dirname, '..', 'usage', 'root.txt'), 'utf8')
 
 test('webrtc option fails if electron-webrtc not installed', function (t) {
   // cmd: dat tests/fixtures --webrtc
@@ -41,6 +43,15 @@ test('doctor option works ', function (t) {
       t.end()
     })
   }
+})
+
+test('prints usage', function (t) {
+  // cmd: dat
+  var d = spawn(t, dat)
+  d.stderr.match(function (stderr) {
+    return stderr === usage + '\n'
+  })
+  d.end()
 })
 
 test('webrtc option works with electron-webrtc installed', function (t) {

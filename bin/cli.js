@@ -53,10 +53,9 @@ function run () {
   if (args.temp) args.db = require('memdb')()
   if (args.doctor) require('./doctor')(args)
   else {
-    var dat = Dat(args)
-    if (isShare) require('../commands/share')(dat, args)
-    else if (args.list && isDownload) require('../commands/list')(dat, args)
-    else if (isDownload) require('../commands/download')(dat, args)
+    if (isShare) require('../commands/share')(Dat(args), args)
+    else if (args.list && isDownload) require('../commands/list')(Dat(args), args)
+    else if (isDownload) require('../commands/download')(Dat(args), args)
     else usage('root.txt')
   }
 }
