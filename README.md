@@ -49,14 +49,14 @@ You should be able to run the `dat` command now. If not, see the [installation t
 
 We have Dat installed, now let's use it! In this quick demo we will download our documentation files using Dat.
 
-You tell Dat what files to download by giving it a Dat link. Dat links are 64 character strings, for example `395e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2`.
+You tell Dat what files to download by giving it a Dat link. Dat links are 64 characters long, for example `acd8aa85a22bc65e3933bcbd785639d6382bcd3b78faff1d22a482c5f9e5a39d`.
 
 Along with the link, you tell Dat where to download the files. All together, you can download files by typing `dat <dat-link> <download-directory>`.
 
 We have our Dat documentation folders being shared by Dat (at the key above). For this example, we can download those files to your computer. In your console, run:
 
 ```
-dat 395e3467bb5b2fa083ee8a4a17a706c5574b740b5e1be6efd65754d4ab7328c2 dat_docs
+dat acd8aa85a22bc65e3933bcbd785639d6382bcd3b78faff1d22a482c5f9e5a39d dat_docs
 ```
 
 You should see the output below. Once the download is finished, the files will be available on your computer in the `dat_docs` folder!
