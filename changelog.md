@@ -5,6 +5,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 11.5.3 - 2016-10-28
+### Fixed
+* Fix `dat` command with no arguments
+
+## 11.5.2 - 2016-10-24
+### Fixed
+* Fix `dat --doctor`
+
 ## 11.5.1 - 2016-10-24
 ### Fixed
 * Resuming a folder previously shared fixed.
