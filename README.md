@@ -81,19 +81,20 @@ Running `dat` in the console, with no arguments, will show you the usage guide. 
 ```
 dat <directory>
 
-  share directory and create a dat-link
+  Share the given directory and create a link which then can be used to
+  download the data. The process will stay open and watch for filesystem changes.
 
+  --watchFiles          watch files for changes (beta: still in development)
   --snapshot            create a snapshot of directory
-  --port, -p            set a specific inbound tcp port
 
-dat <dat-link> <directory>
+dat <link> <directory>
 
-  download a dat-link into directory
+  Download a dat-link into directory. Continues to listen for changes and
+  download them as they are added by the remote peer.
 
   --exit                exit process after download finishes
-  --port, -p            set a specific inbound tcp port
 
-general options
+General options
 
   --version, -v         get installed dat version
   --temp                use in-memory database instead of .dat folder
@@ -102,6 +103,7 @@ general options
   --quiet, -q           output only dat-link, no progress information
   --debug               show debugging output
   --ignore-hidden       ignore hidden files (true by default)
+  --port, -p            set a specific inbound tcp port
 ```
 
 ### Sharing Files
