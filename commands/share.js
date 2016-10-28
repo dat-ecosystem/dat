@@ -8,8 +8,7 @@ var ui = require('../lib/ui')
 module.exports = function (dat, args) {
   var log = logger(args)
   var addText = 'Adding '
-  var updated = false
-  var initFileCount = 0
+  var finalized = false
 
   dat.stats.rateUp = speedometer()
 
@@ -59,14 +58,12 @@ module.exports = function (dat, args) {
   })
 
   dat.once('archive-finalized', function () {
-    addText = 'Added '
-    initFileCount = dat.stats.filesTotal
+    addText = 'Sharing '
+    finalized = true
     updateStats()
   })
 
   dat.on('archive-updated', function () {
-    addText = 'Updating '
-    updated = true
     updateStats()
   })
 
@@ -80,17 +77,12 @@ module.exports = function (dat, args) {
     var stats = dat.stats
     var files = stats.filesTotal
     var bytesTotal = stats.bytesTotal
-    var bytesProgress = stats.bytesProgress
 
-    if (dat.live && updated) {
-      if (stats.filesTotal === stats.filesProgress) addText = 'Updated '
-      files = files - initFileCount
-      bytesTotal = stats.bytesTotal
-    }
-
-    var msg = ui.progress(bytesProgress / bytesTotal)
-    msg += ' ' + addText + chalk.bold(files) + ' items'
-    msg += chalk.dim(' (' + prettyBytes(bytesProgress) + '/' + prettyBytes(bytesTotal) + ')')
+    var msg = ui.progress(stats.bytesProgress / bytesTotal)
+    msg += ' ' + addText
+    if (finalized) msg += chalk.bold(files) + ' '
+    msg += 'items'
+    msg += chalk.dim(' (' + prettyBytes(bytesTotal) + ')')
     log.status(msg + '\n', 0)
   }
 }

@@ -3,6 +3,7 @@ dat <directory>
   Share the given directory and create a link which then can be used to
   download the data. The process will stay open and watch for filesystem changes.
 
+  --watchFiles          watch files for changes (beta: still in development)
   --snapshot            create a snapshot of directory
 
 dat <link> <directory>

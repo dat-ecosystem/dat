@@ -7,12 +7,13 @@ var Dat = require('dat-js')
 
 var args = require('minimist')(process.argv.splice(2), {
   alias: {p: 'port', q: 'quiet', v: 'version'},
-  boolean: ['snapshot', 'exit', 'list', 'quiet', 'version', 'utp', 'temp', 'webrtc', 'ignore-hidden'],
+  boolean: ['watchFiles', 'snapshot', 'exit', 'list', 'quiet', 'version', 'utp', 'temp', 'webrtc', 'ignore-hidden'],
   string: ['signalhub'],
   default: {
     logspeed: 200,
     'ignore-hidden': true,
-    utp: true
+    utp: true,
+    watchFiles: false
   }
 })
 
