@@ -25,6 +25,7 @@ module.exports = function (dat, args) {
       dat.share(function (err) {
         if (err) onerror(err)
       })
+      updateStats() // Update initial stats for resume
 
       setInterval(function () {
         printSwarm()
