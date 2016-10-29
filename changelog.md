@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 11.5.4 - 2016-10-28
+### Changed
+* Turn off `--watchFiles` by default
+* Simplify progress UI
+
 ## 11.5.3 - 2016-10-28
 ### Fixed
 * Fix `dat` command with no arguments
