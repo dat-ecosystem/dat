@@ -54,6 +54,7 @@ module.exports = function (dat, args) {
   dat.once('files-counted', function (stats) {
     // async file counting + appending
     // wait until all counting is done to print append status
+    updateStats()
     dat.on('file-added', updateStats)
     dat.on('file-exists', updateStats)
   })
