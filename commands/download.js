@@ -73,13 +73,12 @@ module.exports = function (dat, args) {
 
   function updateStats () {
     var stats = dat.stats
-    var msg = ui.progress(stats.bytesProgress / stats.bytesTotal)
-    if (finished || stats.filesProgress >= stats.filesTotal) {
+    var msg = ui.progress(stats.blocksProgress / stats.blocksTotal)
+    if (finished || stats.blocksProgress >= stats.blocksTotal) {
       downloadTxt = 'Downloaded '
-      msg = ui.progress(1) // hack to show completed with existing files
     }
     msg += ' ' + downloadTxt + chalk.bold(stats.filesTotal) + ' items'
-    msg += chalk.dim(' (' + prettyBytes(stats.bytesProgress) + '/' + prettyBytes(stats.bytesTotal) + ')')
+    msg += chalk.dim(' (' + prettyBytes(stats.bytesTotal) + ')')
     log.status(msg + '\n', 0)
   }
 }
