@@ -166,7 +166,7 @@ test('share with temp arg', function (t) {
   st.end()
 })
 
-test('sharing existing directory begins sync', function (t) {
+test('sharing downlaoded directory begins download', function (t) {
   // cmd: dat <link> .  then dat .
   var tmpdir = newTestFolder()
   var link = null
@@ -187,21 +187,23 @@ test('sharing existing directory begins sync', function (t) {
       var contains = output.indexOf('Downloaded') > -1
       if (!contains || !share) return false
       downloader.kill()
+      share.kill()
       spawnShare()
       return true
     }, 'download one started')
     downloader.end()
+    share.end()
   }
 
   function spawnShare () {
     var st = spawn(t, dat + ' ' + tmpdir)
     st.stdout.match(function (output) {
-      var contains = output.indexOf('Connected to') > -1
+      var contains = output.indexOf('Downloading') > -1
       if (!contains) return false
       st.kill()
       cleanDat()
       return true
-    })
+    }, 'share becomes download')
     st.end()
   }
 })
