@@ -5,6 +5,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 11.5.5 - 2016-11-07
+### Fixed
+* Better download statistics using blocks instead of bytes
+* Fix share stats on resuming without file changes
+* Fix calculating size UI for large files
+
+### Changed
+* Update status logger. Uses [ansi-diff-stream](https://github.com/mafintosh/ansi-diff-stream) for updating CLI output now.
+
 ## 11.5.4 - 2016-10-28
 ### Changed
 * Turn off `--watchFiles` by default
