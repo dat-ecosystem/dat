@@ -5,7 +5,10 @@ var speedometer = require('speedometer')
 var ui = require('../lib/ui')
 
 module.exports = function (dat, args) {
-  var log = logger(args)
+  var lines = [[], []]
+  var log = logger(lines, {debug: args.debug, quiet: args.quiet})
+  var messages = lines[0] = []
+  var progress = lines[1] = []
 
   var downloadTxt = 'Downloading '
   var finished = false
@@ -13,13 +16,13 @@ module.exports = function (dat, args) {
   dat.stats.rateUp = speedometer()
   dat.stats.rateDown = speedometer()
 
-  log.status('Starting Dat...\n', 0)
-  log.status('Connecting...', 1)
+  progress.push('Starting Dat...\n')
+  progress.push('Connecting...')
 
   dat.on('error', onerror)
 
   dat.open(function () {
-    log.message('Downloading in ' + dat.dir + '\n')
+    messages.push('Downloading in ' + dat.dir + '\n')
     dat.download(function (err) {
       if (err) onerror(err)
     })
@@ -32,7 +35,7 @@ module.exports = function (dat, args) {
   })
 
   dat.once('key', function (key) {
-    log.message(ui.keyMsg(key))
+    messages.push(ui.keyMsg(key))
     if (args.quiet) console.log(ui.keyMsg(key))
   })
 
@@ -50,7 +53,7 @@ module.exports = function (dat, args) {
     finished = false
     dat.stats.rateDown = speedometer()
     updateStats()
-    log.status('', -1) // remove download finished message
+    progress[2] = '' // remove download finished message
   })
   dat.on('file-downloaded', updateStats)
 
@@ -59,16 +62,16 @@ module.exports = function (dat, args) {
     dat.stats.rateDown = 0
     updateStats()
     if (args.exit) {
-      log.status('', 1)
+      progress[1] = '' // clear swarm info before exiting
       process.exit(0)
     }
-    log.status('\nDownload Finished. You may exit the process with Ctrl-C.', -1)
+    progress[2] = '\nDownload Finished. You may exit the process with Ctrl-C.'
   })
 
   dat.on('swarm-update', printSwarm)
 
   function printSwarm () {
-    log.status(ui.swarmMsg(dat), 1)
+    progress[1] = ui.swarmMsg(dat)
   }
 
   function updateStats () {
@@ -79,7 +82,7 @@ module.exports = function (dat, args) {
     }
     msg += ' ' + downloadTxt + chalk.bold(stats.filesTotal) + ' items'
     msg += chalk.dim(' (' + prettyBytes(stats.bytesTotal) + ')')
-    log.status(msg + '\n', 0)
+    progress[0] = msg + '\n'
   }
 }
 
