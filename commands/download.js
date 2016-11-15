@@ -21,7 +21,8 @@ module.exports = function (dat, args) {
 
   dat.on('error', onerror)
 
-  dat.open(function () {
+  dat.open(function (err) {
+    if (err) return onerror(err)
     messages.push('Downloading in ' + dat.dir + '\n')
     dat.download(function (err) {
       if (err) onerror(err)
@@ -80,7 +81,8 @@ module.exports = function (dat, args) {
     if (finished || stats.blocksProgress >= stats.blocksTotal) {
       downloadTxt = 'Downloaded '
     }
-    msg += ' ' + downloadTxt + chalk.bold(stats.filesTotal) + ' items'
+    msg += ' ' + downloadTxt + chalk.bold(stats.filesTotal)
+    msg += (stats.filesTotal === 1) ? ' file' : ' files'
     msg += chalk.dim(' (' + prettyBytes(stats.bytesTotal) + ')')
     progress[0] = msg + '\n'
   }

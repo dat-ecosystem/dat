@@ -102,10 +102,10 @@ test('prints file information (live)', function (t) {
   // cmd: dat tests/fixtures
   var st = spawn(t, dat + ' ' + fixtures + ' --watchFiles')
   st.stdout.match(function (output) {
-    var finished = output.match(/2 items/)
+    var finished = output.match(/2 files/)
     if (!finished) return false
 
-    t.ok(output.match(/2 items/), 'File count correct')
+    t.ok(output.match(/2 files/), 'File count correct')
     t.ok(output.match(/1\.\d{1,2} kB/), 'File size correct')
 
     st.kill()
@@ -119,10 +119,10 @@ test('prints file information (snapshot)', function (t) {
   // cmd: dat tests/fixtures --snapshot
   var st = spawn(t, dat + ' ' + fixtures + ' --snapshot')
   st.stdout.match(function (output) {
-    var finished = output.match(/2 items/)
+    var finished = output.match(/2 files/)
     if (!finished) return false
 
-    t.ok(output.match(/2 items/), 'File count correct')
+    t.ok(output.match(/2 files/), 'File count correct')
     t.ok(output.match(/1\.\d{1,2} kB/), 'File size correct')
 
     st.kill()

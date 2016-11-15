@@ -22,7 +22,8 @@ module.exports = function (dat, args) {
 
   dat.on('error', onerror)
 
-  dat.open(function () {
+  dat.open(function (err) {
+    if (err) return onerror(err)
     dat.archive.open(function () {
       if (dat.archive.key && !dat.archive.owner) return download(dat, args)
       messages.push('Sharing ' + dat.dir + '\n')
@@ -87,7 +88,7 @@ module.exports = function (dat, args) {
     var msg = ui.progress(stats.bytesProgress / bytesTotal)
     msg += ' ' + addText
     if (finalized) msg += chalk.bold(files) + ' '
-    msg += 'items'
+    msg += (files === 1) ? 'file' : 'files'
     msg += chalk.dim(' (' + prettyBytes(bytesTotal) + ')')
     progress[0] = msg + '\n'
   }

@@ -207,7 +207,7 @@ test('download transfers files', function (t) {
       var contains = output.indexOf('Download Finished') > -1
       if (!contains || !share) return false
 
-      var hasFiles = output.indexOf('2 items') > -1
+      var hasFiles = output.indexOf('2 files') > -1
       t.ok(hasFiles, 'file number is 2')
 
       var hasSize = output.indexOf('1.44 kB') > -1
