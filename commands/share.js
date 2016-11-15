@@ -87,8 +87,8 @@ module.exports = function (dat, args) {
 
     var msg = ui.progress(stats.bytesProgress / bytesTotal)
     msg += ' ' + addText
-    if (finalized) msg += chalk.bold(files)
-    msg += (files === 1) ? ' file' : ' files'
+    if (finalized) msg += chalk.bold(files) + ' '
+    msg += (files === 1) ? 'file' : 'files'
     msg += chalk.dim(' (' + prettyBytes(bytesTotal) + ')')
     progress[0] = msg + '\n'
   }
