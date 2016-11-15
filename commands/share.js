@@ -22,7 +22,8 @@ module.exports = function (dat, args) {
 
   dat.on('error', onerror)
 
-  dat.open(function () {
+  dat.open(function (err) {
+    if (err) return onerror(err)
     dat.archive.open(function () {
       if (dat.archive.key && !dat.archive.owner) return download(dat, args)
       messages.push('Sharing ' + dat.dir + '\n')

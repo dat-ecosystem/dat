@@ -21,7 +21,8 @@ module.exports = function (dat, args) {
 
   dat.on('error', onerror)
 
-  dat.open(function () {
+  dat.open(function (err) {
+    if (err) return onerror(err)
     messages.push('Downloading in ' + dat.dir + '\n')
     dat.download(function (err) {
       if (err) onerror(err)
