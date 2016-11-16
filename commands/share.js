@@ -20,15 +20,15 @@ module.exports = function (dat, args) {
   if (args.snapshot) progress.push('Creating Link...')
   else progress.push('Connecting...')
 
-  dat.on('error', onerror)
+  dat.on('error', ui.onerror)
 
   dat.open(function (err) {
-    if (err) return onerror(err)
+    if (err) return ui.onerror(err)
     dat.archive.open(function () {
       if (dat.archive.key && !dat.archive.owner) return download(dat, args)
       messages.push('Sharing ' + dat.dir + '\n')
       dat.share(function (err) {
-        if (err) onerror(err)
+        if (err) ui.onerror(err)
       })
       updateStats() // Update initial stats for resume
 
@@ -92,9 +92,4 @@ module.exports = function (dat, args) {
     msg += chalk.dim(' (' + prettyBytes(bytesTotal) + ')')
     progress[0] = msg + '\n'
   }
-}
-
-function onerror (err) {
-  console.error(err.stack || err)
-  process.exit(1)
 }
