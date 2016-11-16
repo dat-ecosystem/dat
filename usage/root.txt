@@ -17,11 +17,10 @@ General options
 
   --version, -v         get installed dat version
   --temp                use in-memory database instead of .dat folder
-  --webrtc              connect to webrtc peers via electron-webrtc
   --doctor              run dat doctor
   --quiet, -q           output only dat-link, no progress information
   --debug               show debugging output
   --ignore-hidden       ignore hidden files (true by default)
   --port, -p            set a specific inbound tcp port
 
-Learn more at http://docs.dat-data.com
+Learn more at http://docs.datproject.org

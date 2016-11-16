@@ -174,7 +174,7 @@ test('download twice to same dir errors', function (t) {
     // cmd: dat <link> .
     var downloaderTwo = spawn(t, dat + ' 5f6f2ff876519b3f999e21f18f4dc5eb91570cebbcda7725009bdfbe9fdd310f ' + tmpdir, {end: false})
     downloaderTwo.stderr.match(function (output) {
-      var contains = output.indexOf('Another Dat was already downloaded here') > -1
+      var contains = output.indexOf('Error: Destination path already exists') > -1
       if (!contains || !share) return false
       downloaderTwo.kill()
       return true

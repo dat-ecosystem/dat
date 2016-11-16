@@ -4,6 +4,16 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 *Note: unreleased changes are added here.*
+### Removed
+* webrtc support
+
+### Fixed
+* Fail gracefully if another dat is running in directory
+* Handle `dat.open` errors
+* Progress bar incorrectly showing 100% complete and 0 bytes
+
+### Added
+* Use graceful-fs to avoid EMFILE errors
 
 ## 11.5.5 - 2016-11-07
 ### Fixed

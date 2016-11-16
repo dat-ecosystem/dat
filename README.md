@@ -98,7 +98,6 @@ General options
 
   --version, -v         get installed dat version
   --temp                use in-memory database instead of .dat folder
-  --webrtc              connect to webrtc peers via electron-webrtc
   --doctor              run dat doctor
   --quiet, -q           output only dat-link, no progress information
   --debug               show debugging output
@@ -194,7 +193,7 @@ Use the `--temp` option to keep the metadata in memory instead of the `.dat` fol
 
 ### Sharing or Download files with [dat.land](http://dat.land)
 
-You can use the `--webrtc` option to share files to dat.land. You'll need to install `electron-webrtc` in order for this to work.
+Sharing files with dat.land to the CLI is currently not supported. The prototype version of dat.land used WebRTC, which we are no longer supporting (see our [faq](http://docs.datproject.org/faq) for details). We will be using websockets in the next version of dat.land to support transfer across all of our interfaces.
 
 ## Troubleshooting
 
