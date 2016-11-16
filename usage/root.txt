@@ -23,4 +23,4 @@ General options
   --ignore-hidden       ignore hidden files (true by default)
   --port, -p            set a specific inbound tcp port
 
-Learn more at http://docs.dat-data.com
+Learn more at http://docs.datproject.org
