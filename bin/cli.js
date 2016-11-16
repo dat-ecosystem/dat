@@ -34,7 +34,7 @@ if (args.version) {
   process.exit(0)
 }
 
-if (args.webrtc) onerror('webrtc no longer supported')
+if (args.webrtc) onerror('WebRTC is no longer supported. Please see our FAQ for details: http://docs.datproject.org/faq')
 
 var isShare = false
 var isDownload = false

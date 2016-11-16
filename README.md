@@ -193,7 +193,7 @@ Use the `--temp` option to keep the metadata in memory instead of the `.dat` fol
 
 ### Sharing or Download files with [dat.land](http://dat.land)
 
-Sharing files with dat.land to the CLI is currently not supported.
+Sharing files with dat.land to the CLI is currently not supported. The prototype version of dat.land used WebRTC, which we are no longer supporting (see our [faq](http://docs.datproject.org/faq) for details). We will be using websockets in the next version of dat.land to support transfer across all of our interfaces.
 
 ## Troubleshooting
 
