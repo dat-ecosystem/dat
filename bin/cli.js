@@ -9,8 +9,7 @@ var Dat = require('dat-js')
 
 var args = require('minimist')(process.argv.splice(2), {
   alias: {p: 'port', q: 'quiet', v: 'version'},
-  boolean: ['watchFiles', 'snapshot', 'exit', 'list', 'quiet', 'version', 'utp', 'temp', 'webrtc', 'ignore-hidden'],
-  string: ['signalhub'],
+  boolean: ['watchFiles', 'snapshot', 'exit', 'list', 'quiet', 'version', 'utp', 'temp', 'ignore-hidden'],
   default: {
     logspeed: 200,
     'ignore-hidden': true,
@@ -35,13 +34,7 @@ if (args.version) {
   process.exit(0)
 }
 
-if (args.webrtc) {
-  try {
-    args.webrtc = require('electron-webrtc')()
-  } catch (e) {
-    onerror('npm install -g electron-webrtc for webrtc support')
-  }
-}
+if (args.webrtc) onerror('webrtc no longer supported')
 
 var isShare = false
 var isDownload = false
