@@ -208,6 +208,30 @@ test('sharing downlaoded directory begins download', function (t) {
   }
 })
 
+test('sharing in folder already being shared fails gracefully', function (t) {
+  // cmd: dat <link> .  then dat .
+  var share = spawn(t, dat + ' ' + fixtures, {end: false})
+  share.stderr.empty()
+  share.stdout.match(function (output) {
+    var matches = matchDatLink(output)
+    if (!matches) return false
+    shareAgain()
+    return true
+  }, 'share started')
+
+  function shareAgain () {
+    var st = spawn(t, dat + ' ' + fixtures)
+    st.stdout.empty()
+    st.stderr.match(function (output) {
+      var hasErr = output.indexOf('There is a dat process already running in this directory.') > -1
+      if (!hasErr) return false
+      cleanDat()
+      return true
+    }, 'share fails gracefully')
+    st.end()
+  }
+})
+
 function newTestFolder () {
   var tmpdir = path.join(os.tmpdir(), 'dat-download-folder')
   rimraf.sync(tmpdir)
