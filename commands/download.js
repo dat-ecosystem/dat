@@ -19,13 +19,13 @@ module.exports = function (dat, args) {
   progress.push('Starting Dat...\n')
   progress.push('Connecting...')
 
-  dat.on('error', onerror)
+  dat.on('error', ui.onerror)
 
   dat.open(function (err) {
-    if (err) return onerror(err)
+    if (err) return ui.onerror(err)
     messages.push('Downloading in ' + dat.dir + '\n')
     dat.download(function (err) {
-      if (err) onerror(err)
+      if (err) ui.onerror(err)
     })
 
     setInterval(function () {
@@ -86,9 +86,4 @@ module.exports = function (dat, args) {
     msg += chalk.dim(' (' + prettyBytes(stats.bytesTotal) + ')')
     progress[0] = msg + '\n'
   }
-}
-
-function onerror (err) {
-  console.error(err.stack || err)
-  process.exit(1)
 }
