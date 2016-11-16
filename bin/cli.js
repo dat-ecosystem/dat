@@ -1,6 +1,8 @@
 #!/usr/bin/env node
 
-var fs = require('fs')
+var realFs = require('fs')
+var gracefulFs = require('graceful-fs')
+gracefulFs.gracefulify(realFs)
 var mkdirp = require('mkdirp')
 var usage = require('../usage')
 var Dat = require('dat-js')
@@ -87,7 +89,7 @@ function isDatLink (val, quiet) {
 
 function isDirectory (val, quiet) {
   try {
-    return fs.statSync(val).isDirectory() // TODO: support sharing single files
+    return gracefulFs.statSync(val).isDirectory() // TODO: support sharing single files
   } catch (err) {
     if (quiet) return false
     onerror('Directory does not exist')
