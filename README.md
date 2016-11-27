@@ -4,7 +4,7 @@ Dat is a decentralized data tool for distributing data small and large.
 
 [![#dat IRC channel on freenode](https://img.shields.io/badge/irc%20channel-%23dat%20on%20freenode-blue.svg)](http://webchat.freenode.net/?channels=dat)
 [![datproject/discussions](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![docs](https://img.shields.io/badge/Dat%20Project-Docs-green.svg)](http://docs.dat-data.com)
+[![docs](https://img.shields.io/badge/Dat%20Project-Docs-green.svg)](http://docs.datproject.org)
 
 ### Key features:
 
@@ -14,7 +14,7 @@ Dat is a decentralized data tool for distributing data small and large.
   * **Verify data integrity** using strong cryptographic hashes.
   * **Work everywhere**, including on the [command line](https://github.com/datproject/dat), in the [browser](https://github.com/datproject/dat.land), and on the [desktop](https://github.com/juliangruber/dat-desktop).
 
-### [Documentation](http://docs.dat-data.com) | [Video Demo](https://www.youtube.com/watch?v=fxKjSyCoqO4) | [Ecosystem](https://github.com/clkao/awesome-dat)
+### [Documentation](http://docs.datproject.org) | [Video Demo](https://www.youtube.com/watch?v=fxKjSyCoqO4) | [Ecosystem](https://github.com/clkao/awesome-dat)
 
 ---
 
