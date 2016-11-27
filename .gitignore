@@ -4,3 +4,4 @@ tmp
 .idea
 data
 tests/fixtures/.dat
+yarn.lock
