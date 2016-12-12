@@ -5,7 +5,7 @@ var gracefulFs = require('graceful-fs')
 gracefulFs.gracefulify(realFs)
 var mkdirp = require('mkdirp')
 var usage = require('../usage')
-var Dat = require('dat-js')
+var Dat = require('dat-node')
 
 var args = require('minimist')(process.argv.splice(2), {
   alias: {p: 'port', q: 'quiet', v: 'version'},

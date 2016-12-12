@@ -1,4 +1,4 @@
-var Dat = require('dat-js')
+var Dat = require('dat-node')
 
 module.exports = function (args) {
   var dat = Dat(args)

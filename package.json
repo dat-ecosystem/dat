@@ -24,7 +24,7 @@
   "license": "BSD-3-Clause",
   "dependencies": {
     "chalk": "^1.1.1",
-    "dat-js": "^4.0.0",
+    "dat-node": "^0.1.0",
     "datland-swarm-defaults": "^1.0.2",
     "discovery-swarm": "^4.0.2",
     "dns-discovery": "^5.3.4",
@@ -46,7 +46,7 @@
   },
   "devDependencies": {
     "rimraf": "^2.5.3",
-    "standard": "^6.0.7",
+    "standard": "^8.6.0",
     "tap-spec": "^4.1.1",
     "tape": "^4.4.0",
     "tape-spawn": "^1.4.2"
