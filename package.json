@@ -33,7 +33,7 @@
     "minimist": "^1.2.0",
     "mkdirp": "^0.5.1",
     "pretty-bytes": "^3.0.0",
-    "pump": "^1.0.1",
+    "pump": "^1.0.2",
     "speedometer": "^1.0.0",
     "status-logger": "^3.0.0"
   },
