@@ -51,7 +51,6 @@
     "dat-land": "datproject/datfolder",
     "hypercore": "^4.15.1",
     "hyperdiscovery": "^1.0.1",
-    "mkdirp": "^0.5.1",
     "recursive-readdir-sync": "^1.0.6",
     "standard": "^8.6.0",
     "tap-spec": "^4.1.1",
