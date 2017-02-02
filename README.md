@@ -15,9 +15,9 @@ The Dat project is a set of open source applications for sharing data or files l
 With Dat applications you can share files with collaborators, back up data to servers, and automate long-term data preservation.
 The Decentralized Archive Transport (Dat) protocol transfers files in a **secure**, **distributed**, and **fast** network allowing you to focus on the fun work without worrying about moving files around.
 
-* **Secure** - Dat data transfer is encrypted and the content verified on arrival. Changes are written to an append-only log ensuring transparency of updates. [Check out our security and privacy FAQ](#TODO).
-* **Distributed** - With the Dat protocol you'll connect directly to other users or servers sharing or downloading common datasets. Any device can host files to share without the need for centralized servers. [Read about the distrbuted web and Dat](#TODO).
-* **Fast** - Files download from multiple sources. Quickly sync updates by only downloading the new bytes, saving time and bandwidth. [Learn about how the Dat project makes file transfers fast](#TODO).
+* **Secure** - Dat data transfer is encrypted and the content verified on arrival. Changes are written to an append-only log ensuring transparency of updates. [Check out our security and privacy FAQ](http://docs.datproject.org/faq#security-and-privacy).
+* **Distributed** - With the Dat protocol you'll connect directly to other users or servers sharing or downloading common datasets. Any device can host files to share without the need for centralized servers. [Read about the distrbuted web and Dat](http://docs.datproject.org/terms#distributed-web).
+* **Fast** - Files download from multiple sources. Quickly sync updates by only downloading the new bytes, saving time and bandwidth.
 
 ### Key features:
 
