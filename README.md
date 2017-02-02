@@ -346,6 +346,15 @@ Make sure you installed with that option.
 * If you receive an `EACCES` error, you may also install dat with sudo: `sudo npm install -g dat`.
 * Have other installation issues? Let us know, you can [open an issue](https://github.com/datproject/dat/issues/new) or ask us in our [chat room](https://gitter.im/datproject/discussions).
 
+### Debugging Output
+
+If you are having trouble with a specific command, run with the debug environment variable set to `dat` (and optionally also `dat-node`). =
+This will help us debug any issues:
+
+```
+DEBUG=dat,dat-node dat clone dat://<link> dir
+```
+
 ### Networking Issues
 
 Networking capabilities vary widely with each computer, network, and configuration.
