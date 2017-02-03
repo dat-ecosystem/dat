@@ -93,7 +93,7 @@ The `.dat` folder allows you to add new files and update old files on the same D
 
 **Make sure not to share the `.dat` folder with anyone, it contains a private key that allows you to update and add files.**
 
-##### TODO gif
+![share](https://cloud.githubusercontent.com/assets/684965/22603762/91003186-e9fd-11e6-9138-f5c5045e7273.gif)
 
 #### `dat clone dat://<link> <download-dir>`
 
@@ -101,7 +101,7 @@ Use `dat clone` to download files from a remote computers sharing files with Dat
 This will download the files from `dat://<link>` to your `<download-dir>`.
 The download exits after it completes but you can continue to update the files later after the clone is done.
 
-##### TODO gif
+![clone](https://cloud.githubusercontent.com/assets/684965/22602275/67f67be8-e9f7-11e6-889d-40895e50d263.gif)
 
 #### A Brief Primer on `dat://`` links
 
