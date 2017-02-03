@@ -16,6 +16,7 @@ function createServer (port, cb) {
       connection: { filename: path.join(__dirname, '..', 'test-sqlite.db') },
       useNullAsDefault: true
     },
+    cachedb: path.join(__dirname, 'test-cache.db'),
     whitelist: false,
     port: port || 8888
   }
