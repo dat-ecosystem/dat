@@ -1,26 +1,54 @@
-# Dat
+# dat
 
-Dat is a decentralized data tool for distributing data small and large.
+> Dat is the package manager for datasets. Easily share, version control, and archive datasets. Secure, distributed, fast.
+
+[<img src="http://datproject.github.io/design/downloads/dat-data-logo.png" align="right" width="140">](https://datproject.org)
 
 [![#dat IRC channel on freenode](https://img.shields.io/badge/irc%20channel-%23dat%20on%20freenode-blue.svg)](http://webchat.freenode.net/?channels=dat)
 [![datproject/discussions](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![docs](https://img.shields.io/badge/Dat%20Project-Docs-green.svg)](http://docs.datproject.org)
+[![docs](https://img.shields.io/badge/Dat%20Project-Docs-brightgreen.svg)](http://docs.datproject.org)
+[![protocol](https://img.shields.io/badge/Dat-Protocol-lightgrey.svg)](http://www.datprotocol.com)
+
+#### What is all Dat?
+
+The Dat project is a set of open source applications for sharing data or files led by [Code for Science & Society](http://codeforscience.org), a grant funded non-profit, and built on the [Dat Protocol](https://www.datprotocol.com/).
+With Dat applications you can share files with collaborators, back up data to servers, and automate long-term data preservation.
+The Decentralized Archive Transport (Dat) protocol transfers files in a **secure**, **distributed**, and **fast** network allowing you to focus on the fun work without worrying about moving files around.
+
+* **Secure** - Dat data transfer is encrypted and the content verified on arrival. Changes are written to an append-only log ensuring transparency of updates. [Check out our security and privacy FAQ](http://docs.datproject.org/faq#security-and-privacy).
+* **Distributed** - With the Dat protocol you'll connect directly to other users or servers sharing or downloading common datasets. Any device can host files to share without the need for centralized servers. [Read about the distrbuted web and Dat](http://docs.datproject.org/terms#distributed-web).
+* **Fast** - Files download from multiple sources. Quickly sync updates by only downloading the new bytes, saving time and bandwidth.
 
 ### Key features:
 
-  * **Live sync** folders by sharing files as they are added or changed.
-  * **Distribute large files** without copying data to a central server by connecting directly to peers.
-  * **Intelligently sync** by deduplicating data between versions.
-  * **Verify data integrity** using strong cryptographic hashes.
-  * **Work everywhere**, including on the [command line](https://github.com/datproject/dat), in the [browser](https://github.com/datproject/dat.land), and on the [desktop](https://github.com/juliangruber/dat-desktop).
+* **Share files** to colleagues, servers, or long-term archives.
+* **Automatically update** changes by sharing new files and syncing with the network.
+* **Distribute large datasets** without copying data to a central server by connecting directly to peers.
+* **Version history data** by tracking all changes in metadata and easily backing up old versions of files on large storage servers.
+* **Persistent identification** of changing datasets with a unique link.
+* **Instantly host** files through the distributed network and unique identifier.
 
-### [Documentation](http://docs.datproject.org) | [Video Demo](https://www.youtube.com/watch?v=fxKjSyCoqO4) | [Ecosystem](https://github.com/clkao/awesome-dat)
+### Dat Applications
+
+ Visit our site for an [installation guide](http://datproject.org/install) or pick your favorite client application:
+
+* [Dat Command Line](#dat-command-line) - You are here! Scroll down for the details.
+* [Dat Desktop](https://datproject.org/install#desktop) - A desktop app to manage multiple Dats on your desktop machine.
+* [Beaker Browser](http://beakerbrowser.com) - An experimental p2p browser with built-in support for the Dat protocol
+* [Dat Protocol](https://www.datprotocol.com) - Build your own Dat application on the Decentralized Archive Transport (Dat) protocol
 
 ---
 
-## Dat Command Line Tool
+## Dat Command Line
 
-This guide will help you get started with the Dat command line tool. We are also developing [web](https://github.com/datproject/dat.land) and [desktop](https://github.com/juliangruber/dat-desktop) applications for Dat.
+> Share, download, and backup files with the command line! Automatically sync changes to datasets. Never worry about manually transferring files again.
+
+Mac/Linux      | Windows      | Version
+-------------- | ------------ | ------------
+[![Travis](https://travis-ci.org/datproject/dat.svg?branch=master)](https://travis-ci.org/datproject/dat) | [![Build status](https://ci.appveyor.com/api/projects/status/github/datproject/dat?branch=master&svg=true)](https://ci.appveyor.com/project/datproject/dat) | [![NPM version](https://img.shields.io/npm/v/dat.svg)](https://npmjs.org/package/dat)
+
+Have questions or need some guidance?
+You can chat with us in IRC on [#dat](http://webchat.freenode.net/?channels=dat) or [Gitter](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)!
 
 ### Table of Contents
 
@@ -31,13 +59,14 @@ This guide will help you get started with the Dat command line tool. We are also
 
 ## Getting Started
 
-The Dat command line tool can be used to share, download, and sync files across many computers via the command line.
+The Dat command line tool can be installed with `npm`. Make sure you have `node` version 4 or above and `npm` installed.
+You can run `node -v` and `npm -v` to check!
 
-Windows        | Mac/Linux    | Version
--------------- | ------------ | ------------
-[![Build status](https://ci.appveyor.com/api/projects/status/github/datproject/dat?branch=master&svg=true)](https://ci.appveyor.com/project/datproject/dat) | [![Travis](https://api.travis-ci.org/datproject/dat.svg)](https://travis-ci.org/datproject/dat) | [![NPM version](https://img.shields.io/npm/v/dat.svg?style=flat-square)](https://npmjs.org/package/dat)
+Need to install Node? [Start here](https://nodejs.org/en/download/).
 
-### Installation
+### Installing Dat
+
+Install `dat` from npm with the `--global, -g` option:
 
 ```
 npm install -g dat
@@ -45,159 +74,241 @@ npm install -g dat
 
 You should be able to run the `dat` command now. If not, see the [installation troubleshooting](#troubleshooting) for tips.
 
-### Demo
+### Quickstart
 
-We have Dat installed, now let's use it! In this quick demo we will download our documentation files using Dat.
+We have Dat installed, let's use it! Currently, the Dat command line always moves files from a single source to any number of destinations.
+If you are creating files on your computer to share, you will be the source and will use the *share* commands.
+Otherwise, you can *clone* files from remote Dat archives shared to you with a Dat link.
 
-You tell Dat what files to download by giving it a Dat link. Dat links are 64 characters long, for example `acd8aa85a22bc65e3933bcbd785639d6382bcd3b78faff1d22a482c5f9e5a39d`.
+You can mostly get around in the Dat command line world with two commands:
 
-Along with the link, you tell Dat where to download the files. All together, you can download files by typing `dat <dat-link> <download-directory>`.
+#### `dat share <dir>`
 
-We have our Dat documentation folders being shared by Dat (at the key above). For this example, we can download those files to your computer. In your console, run:
+Use `dat share` to send files from your computer to any number of other computers or servers.
+This will share a local `<dir>` and print a `dat://` link.
+Send the printed link to other users so they can download your files.
 
-```
-dat acd8aa85a22bc65e3933bcbd785639d6382bcd3b78faff1d22a482c5f9e5a39d dat_docs
-```
+Dat share will create a `.dat` directory in the folder you share.
+The `.dat` folder allows you to add new files and update old files on the same Dat link.
 
-You should see the output below. Once the download is finished, the files will be available on your computer in the `dat_docs` folder!
+**Make sure not to share the `.dat` folder with anyone, it contains a private key that allows you to update and add files.**
 
-![Download gif](https://raw.githubusercontent.com/datproject/docs/master/assets/cli_download.gif)
+![share](https://cloud.githubusercontent.com/assets/684965/22603762/91003186-e9fd-11e6-9138-f5c5045e7273.gif)
 
-### CLI Development Status
+#### `dat clone dat://<link> <download-dir>`
 
-This is the Dat CLI 1.0 release candidate (RC2). We are actively seeking feedback & developing this release candidate. Follow [this issue](https://github.com/datproject/projects/issues/5) for the Dat CLI road map discussion and see [known RC2 issues](https://github.com/datproject/dat/issues/486).
+Use `dat clone` to download files from a remote computers sharing files with Dat.
+This will download the files from `dat://<link>` to your `<download-dir>`.
+The download exits after it completes but you can continue to update the files later after the clone is done.
 
-**Please note** that previous versions of Dat (alpha, beta) are incompatible with the 1.0 release candidate.
+![clone](https://cloud.githubusercontent.com/assets/684965/22602275/67f67be8-e9f7-11e6-889d-40895e50d263.gif)
 
-## Using Dat
+#### A Brief Primer on `dat://`` links
 
-There are two commands in Dat:
+> You may have seen Dat links around: `dat://ff34725120b2f3c5bd5028e4f61d14a45a22af48a7b12126d5d588becde88a93`. What is with the weird long string of characters? Let's break it down!
 
-1. Share data: `dat <directory>` will share a directory on your computer.
-2. Download data: `dat <dat-link> <download-directory>` will download files from the Dat link to a directory on your computer. 
+##### `dat://` - the protocol
 
-Running `dat` in the console, with no arguments, will show you the usage guide. You can always use this as a reference for all the commands:
+The first part of the link is the link protocol, Dat (read about the Dat protocol at [datprotocol.com](http://www.datprotocol.com)).
+The protocol describes what "language" the link is in and what type of applications can open it.
 
-```
-dat <directory>
+##### `ff34725120b2f3c5bd5028e4f61d14a45a22af48a7b12126d5d588becde88a93` - the unique identifier
 
-  Share the given directory and create a link which then can be used to
-  download the data. The process will stay open and watch for filesystem changes.
+The second part of the link is a 64-character hex strings ([ed25519 public-keys](https://ed25519.cr.yp.to/) to be precise).
+Each Dat archive gets a public key link to identify it.
+With the hex string as a link we can do two things: 1) encrypt the data transfer and 2) give each archive a persistent identifier, an ID that never changes, even as file are updated (as opposed to a checksum which is based on the file contents).
 
-  --watchFiles          watch files for changes (beta: still in development)
-  --snapshot            create a snapshot of directory
+##### `dat://ff34725120b2f3c5bd5028e4f61d14a45a22af48a7b12126d5d588becde88a93`
 
-dat <link> <directory>
+All together, the links can be thought of similarly to a web URL, as a place to get content, but with some extra special properties.
+Links point to a set of files instead of a specific server.
+This means when you run `dat clone dat://<link>` you do not have to worry about who is hosting the files at that link or if the content has changed.
+You'll always get the latest content in the network and the link helps to verify the integrity of the content!
 
-  Download a dat-link into directory. Continues to listen for changes and
-  download them as they are added by the remote peer.
+Try out `dat clone` with the link above to read more about the protocol!
 
-  --exit                exit process after download finishes
+### Demo File Download
 
-General options
-
-  --version, -v         get installed dat version
-  --temp                use in-memory database instead of .dat folder
-  --doctor              run dat doctor
-  --quiet, -q           output only dat-link, no progress information
-  --debug               show debugging output
-  --ignore-hidden       ignore hidden files (true by default)
-  --port, -p            set a specific inbound tcp port
-```
-
-### Sharing Files
-
-Share a directory by typing `dat <directory>`:
+To get started using Dat, we can download files via Dat.
+Similar to git, you do this by running `dat clone`:
 
 ```
-$ dat my_data/
-Sharing /Users/joe/my_data/
+dat clone dat://ff34725120b2f3c5bd5028e4f61d14a45a22af48a7b12126d5d588becde88a93 datprotocol-website
 
-Share Link: d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6
-The Share Link is secret and only those you share it with will be able to get the files
+Cloning Dat Archive: /Users/joe/Desktop/datprotocol-website
+Link: dat://ff34725120b2f3c5bd5028e4f61d14a45a22af48a7b12126d5d588becde88a93
 
-[==============>] Added 2 files (1.44 kB/1.44 kB)
+Metadata: [==================================================>] 100%
+Content:  [=====>---------------------------------------------] 11%
+Total size: 8 files (43.3 kB)
 
-Connected to 1 peers. Uploading 288.2 B/s. Watching for updates...
+2 peers on the Dat Network
+Downloading: 2.68 kB/s
 ```
 
-You are now publishing that data from your computer. It will be publicly accessible as long as your terminal is open and the process is still running. The hash is a **secret hash**, your data is visible to anyone you send the hash to.
+This will download the files shared at that link to a folder named datprotocol-website.
+These files are being shared by a server over Dat (to ensure high availability) but you may connect to any number of peers also hosting the content.
 
-#### Updating Shared Files
+Get started using Dat today with the `share` and `clone` commands or read below for more details.
 
-Dat makes it easy to share a folder and send files as they are added to the folder. By default, when you share using `dat my_data/` you will be in live sync mode. Anyone connected to you will receive new files.
+## Usage
 
-#### Creating a snapshot
+Dat archives have a one to many relationship. There is a single source that can create and write files. There are many peers that can download the files *(in future versions there may be several sources)*.
 
-A snapshot reads the files and creates a unique link that will always be the same for that set of files (if they remain unchanged). To create a snapshot use the snapshot option: `dat my_data/ --snapshot`. Snapshots are automatically created for you in live mode as files update.
+* **Sharing**: If you want to share files from your computer that you will update, you are the *source*.
+* **Downloading**: If your colleague has files they want to share, they will be the source and you'll be downloading from a *remote* archive.
 
-#### Sharing Options
+The first time you run a command, a `.dat` folder to store the Dat metadata.
+Once a Dat is created, you can run all the commands inside that folder, similar to git.
 
-`dat <directory> --snapshot`
+### Sharing
 
-Share a snapshot of the current files. 
-
-`dat <directory> --port=1234`
-
-Set your inbound TCP port. This is useful for debugging or on restrictive networks. 
-
-### Downloading Files
-
-Download files from a Dat link by typing: `dat <dat-link> <download-directory>`:
+The quickest way to get started sharing files is to `share`:
 
 ```
-$ dat d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6 download_dir
-Downloading in /Users/joe/download_dir
+> dat share
 
-Share Link: d6e1875598fae25165eff440ffd01513197ad0db9dbb9898f2a141288b9322c6
-The Share Link is secret and only those you share it with will be able to get the files
+Syncing Dat Archive: /Users/joe/Desktop/datproject-website
+Link: dat://b44a53f3dcad90349ba743e21fca4869cd3fb79d9f8b55a556af04e5ad49bb79
 
-[==============>] Downloaded 3 files (1.44 kB/1.44 kB)
+Archive update finished! Sharing latest files.
+Total Size: 51 files (3.23 MB)
 
-Connected to 1 peers. Downloading 1.44 kB/s. Watching for updates...
+Looking for connections in Dat Network...
 ```
 
-Dat will start downloading the data into the `download_dir` folder. Once the download is finished (a message will print and the bar will turn green), you can safely exit the process with `Ctrl-C` (`Cmd-C` on Mac). 
+You can also do `create` and `sync` in separate steps if you'd like more control over the importing.
 
-While downloading, you may be connected to more than 1 peer. Anyone who has the Dat link will be able to download and re-host a copy of the data. So you may be downloading from (and sharing to) other people that are also downloading that data! You only need one block of data to start helping as a host. It's distributed mad science!
+#### Creating a Dat archive
 
-#### Updating the Downloaded Files
+```
+dat create [<folder>] [--import]
+```
 
-What happens if the files get updated? Dat auto-syncs new files if it is still running. If you exited the process, you can run the same command you ran before (with the same link and directory) and the files will update!
+Create a new Dat Archive in the current directory (or specify `dir`).
+Will automatically import the files in that directory to the archive.
 
-#### Download Options
+* Use `--import` to import files after the archive is created.
 
-`dat <dat-link> <directory> --exit` 
+#### Syncing to Network
 
-After files are done downloading, exit the process. If you are connected to a live Dat you will not get new files unless you run the command again.
+```
+dat sync [<folder>] [--no-import] [--no-watch]
+```
 
-`dat <dat-link> <directory> --port=1234`
+Start sharing your Dat Archive over the network.
+Sync will import new or updated files since you ran `create` or `sync` last.
+Sync watched files for changes and imports updated files.
 
-Set your inbound TCP port. This is useful for debugging or on restrictive networks. 
+* Use `--no-import` to not import any new or updated files.
+* Use `--no-watch` to not watch directory for changes. `--import` must be true for `--watch` to work.
 
-### Live Sync & Snapshots
+#### Snapshot
 
-Dat makes it easy to share a folder and send files as they are changed or added. By default, when you share using Dat you will be in *live sync* mode. Anyone connected to you will receive file changes as you make them.
+A snapshot archive shares a folder with specific content. Content can only be added once and then the link is created. Once a snapshot archive has a link, it cannot be updated.
 
-When downloading a Dat, you do not have to worry about live mode. It will automatically start in the right mode based on the link. 
+```
+dat snapshot [<folder>]
+```
 
-To create a snapshot when sharing files use the snapshot option: `dat my_data/ --snapshot`. A snapshot reads the files and creates a specific link that will never change (as long as the files don't change).
+Snapshot will create the archive in snapshot, `{live: false}`, mode.
 
-### Dat Metadata Storage
 
-When you run a command, Dat creates a hidden folder, `.dat`, in the directory specified. Similar to git, this folder stores information about your Dat. File metadata and the Dat link are stored to make it easy to continue sharing or downloading the same directory.
+### Downloading
 
-#### Temporary Database
+Start downloading by running the `clone` command. This will create a folder, download the content and metadata, and create a `.dat` folder. Once you started the download, you can resume using `clone` or the other download commands.
 
-Use the `--temp` option to keep the metadata in memory instead of the `.dat` folder.
+```
+dat clone <dat-link> [<folder>] [--temp]
+```
 
-### Sharing or Download files with [dat.land](http://dat.land)
+Clone a remote Dat Archive to a local folder.
+This will create a folder with the key name is no folder is specified.
 
-Sharing files with dat.land to the CLI is currently not supported. The prototype version of dat.land used WebRTC, which we are no longer supporting (see our [faq](http://docs.datproject.org/faq) for details). We will be using websockets in the next version of dat.land to support transfer across all of our interfaces.
+##### Options
+
+`--temp`: Creates a temporary database and does not save the metadata to disk.
+
+#### Updating Downloaded Archives
+
+Once a Dat is clone, you can run either `dat pull` or `dat sync` in the folder to update the archive.
+
+```
+dat pull [<folder>]
+```
+
+Update a cloned Dat Archive to latest files and exit.
+
+```
+dat sync [<folder>]
+```
+
+Download latest files and keep connection open to continue updating as remote source is updated.
+
+### Shortcut commands
+
+* `dat <link> {dir}` will run `dat clone` for new dats or resume the exiting dat in `dir`
+* `dat {dir}` is the same as running `dat sync {dir}`
+
+### Dat Registry and Authentication
+
+As part of our [Knight Foundation grant](https://datproject.org/blog/2016-02-01-announcing-publicbits), we are building a registry for Dat archives.
+We will be running a Dat registry at datproject.org, but anyone will be able to create their own.
+Once registered, you will be able to publish Dat archives from our registry.
+Anyone can clone archives published to a registry without registration:
+
+```
+dat clone datproject.org/karissa/more-tweets-more-votes
+```
+
+#### Auth (experimental)
+
+Other auth commands are still in an experimental status.
+New registrations on the Dat archive registry are currently limited.
+
+```
+dat register
+dat login
+dat logout
+dat whoami
+```
+
+Once you are logged in to a server. You can publish a Dat archive:
+
+```
+cd my-data
+dat create
+dat publish
+```
+
+All authentication requests take the `--server` option.
+You can deploy your own compatible [registry server](https://github.com/datproject/datproject.org) if you'd rather use your own service.
+
+### Upgrading from version 11
+
+If you are familiar with the Dat CLI version 11, there will only be minor changes to use dat version 12.
+
+To share files with Dat, you'll need to specify the `share` command now.
+
+```
+cd my-folder
+dat share my-folder
+```
+
+After the Dat archive is created, you can run `dat sync` in the folder to share updates or use the same command as the old dat: `dat my-folder`.
+
+To download files, you can use `dat clone` which will do the same thing as `dat <link>` did before:
+
+```
+dat clone dat://<link> download-folder
+```
+
+Once the initial download is complete, you can use `dat pull` inside to folder to update or use the same command as the old dat: `dat download-folder`.
 
 ## Troubleshooting
 
-We've provided some troubleshooting tips based on issues users have seen. Please [open an issue](https://github.com/datproject/dat/issues/new) or ask us in our [chat room](https://gitter.im/datproject/discussions) if you need help troubleshooting and it is not covered here.
+We've provided some troubleshooting tips based on issues users have seen.
+Please [open an issue](https://github.com/datproject/dat/issues/new) or ask us in our [chat room](https://gitter.im/datproject/discussions) if you need help troubleshooting and it is not covered here.
 
 If you have trouble sharing/downloading in a directory with a `.dat` folder, try deleting it and running the command again.
 
@@ -217,7 +328,9 @@ You should see the Dat semantic version printed, e.g. 11.1.2.
 
 #### Node & npm
 
-To use the Dat command line tool you will need to have [node and npm installed](https://docs.npmjs.com/getting-started/installing-node). Make sure those are installed correctly before installing Dat. You can check the version of each:
+To use the Dat command line tool you will need to have [node and npm installed](https://docs.npmjs.com/getting-started/installing-node).
+Make sure those are installed correctly before installing Dat.
+You can check the version of each:
 
 ```
 node -v
@@ -226,39 +339,62 @@ npm -v
 
 #### Global Install
 
-The `-g` option installs Dat globally allowing you to run it as a command. Make sure you installed with that option.
+The `-g` option installs Dat globally allowing you to run it as a command.
+Make sure you installed with that option.
 
 * If you receive an `EACCES` error, read [this guide](https://docs.npmjs.com/getting-started/fixing-npm-permissions) on fixing npm permissions.
 * If you receive an `EACCES` error, you may also install dat with sudo: `sudo npm install -g dat`.
 * Have other installation issues? Let us know, you can [open an issue](https://github.com/datproject/dat/issues/new) or ask us in our [chat room](https://gitter.im/datproject/discussions).
 
+### Debugging Output
+
+If you are having trouble with a specific command, run with the debug environment variable set to `dat` (and optionally also `dat-node`). =
+This will help us debug any issues:
+
+```
+DEBUG=dat,dat-node dat clone dat://<link> dir
+```
+
 ### Networking Issues
 
-Networking capabilities vary widely with each computer, network, and configuration. Whenever you run a Dat there are several steps to share or download files with peers:
+Networking capabilities vary widely with each computer, network, and configuration.
+Whenever you run a Dat there are several steps to share or download files with peers:
 
 1. Discovering Peers
 2. Connecting to Peers
 3. Sending & Receiving Data
 
-With successful use, Dat will show `Connected to 1 peer` after connection. If you never see a peer connected your network may be restricting discovery or connection. Please try using the `dat --doctor` command (see below) between the two computers not connecting. This will help troubleshoot the networks.
+With successful use, Dat will show `Connected to 1 peer` after connection.
+If you never see a peer connected your network may be restricting discovery or connection.
+Please try using the `dat --doctor` command (see below) between the two computers not connecting. This will help troubleshoot the networks.
 
 * Dat may [have issues](https://github.com/datproject/dat/issues/503) connecting if you are using iptables.
 
 #### Dat Doctor
 
-We've included a tool to identify network issues with Dat, the Dat doctor. You will need to run the command on both the computers you are trying to share data between. On the first computer, run:
+We've included a tool to identify network issues with Dat, the Dat doctor.
+The Dat doctor will run two tests:
+
+1. Attempt to connect to a server running a Dat peer.
+2. Attempt a direct connection between two peers. You will need to run the command on both the computers you are trying to share data between.
+
+Start the doctor by running:
 
 ```
-dat --doctor
+dat doctor
 ```
 
-The doctor will print out a command to run on the other computer, `dat --doctor=<64-character-string>`. The doctor will run through the key steps in the process of sharing data between computers to help identify the issue.
+For direct connection tests, the doctor will print out a command to run on the other computer, `dat doctor <64-character-string>`.
+The doctor will run through the key steps in the process of sharing data between computers to help identify the issue.
 
 ---
 
 ## For Developers
 
 Please see [guidelines on contributing](https://github.com/datproject/dat/blob/master/CONTRIBUTING.md) before submitting an issue or PR.
+
+This command line library uses [dat-node](https://github.com/datproject/dat-node) to create and manage the archives and networking.
+If you'd like to build your own Dat application that is compatible with this command line tool, we suggest using dat-node.
 
 ### Installing from source
 
@@ -268,86 +404,13 @@ Clone this repository and in a terminal inside of the folder you cloned run this
 npm link
 ```
 
-This should add a `dat` command line command to your PATH. Now you can run the `dat` command to try it out.
+This should add a `dat` command line command to your PATH.
+Now you can run the dat command to try it out.
 
 The contribution guide also has more tips on our [development workflow](https://github.com/datproject/dat/blob/master/CONTRIBUTING.md#development-workflow).
 
-
-### Internal API
-
-**Note: we are in the process of moving the js library to a separate module, [joehand/dat-js](https://github.com/joehand/dat-js).**
-
-#### dat.download(cb)
-
-download `dat.key` to `dat.dir`
-
-#### dat.share(cb) 
-
-share directory specified in `opts.dir`
-
-Swarm is automatically joined for key when it is available for share & download (`dat.joinSwarm()`).
-
-#### Events
-
-##### Initialization
-
-* `dat.on('ready')`: db created/read & hyperdrive archive created.
-* `dat.on('error')`: init/database error
-
-##### Swarm
-
-Swarm events and stats are available from `dat.swarm`.
-
-* `dat.on('connecting')`: looking for peers
-* `dat.on('swarm-update')`: peer number changed
-
-##### Share
-
-* `dat.on('key')`: key is available (this is at archive-finalized for snapshots)
-* `dat.on('append-ready')`: file count available (`dat.appendStats`), about to start appending to hyperdrive
-* `dat.on('file-added')`: file added to archive
-* `dat.on('upload', data)`: piece of data uploaded
-* `dat.on('archive-finalized')`: archive finalized, all files appended
-* `dat.on('archive-updated')`: live archive changed
-
-##### Download
-
-* `dat.on('key')`: key is available
-* `dat.on('file-downloaded', file)`: file downloaded
-* `dat.on('download', data)`: piece of data downloaded
-* `dat.on('upload', data)`: piece of data uploaded
-* `dat.on('download-finished')`: archive download finished
-
-#### Other API
-
-* `dat.key`: key
-* `dat.dir`: directory
-* `dat.datPath`: path to .dat folder
-* `dat.db`: database instance
-* `dat.swarm`: hyperdrive-archive-swarm instance
-* `dat.archive`: hyperdrive archive
-* `dat.snapshot` (boolean): sharing snapshot archive
-
-#### Internal Stats
-```javascript
-
-dat.stats = {
-    filesTotal: 0, // Latest archive size
-    bytesTotal: 0,
-    bytesUp: 0,
-    bytesDown: 0,
-    rateUp: speedometer(),
-    rateDown: speedometer()
-}
-
-// Calculated on share before append starts. Used for append progress.
-// Not updated for live.
-dat.appendStats = {
-    files: 0,
-    bytes: 0,
-    dirs: 0
-}
-```
+* `npm run test` to run tests
+* `npm run auth-server` to run a local auth server for testing
 
 ## License
 
