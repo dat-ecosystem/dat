@@ -1,96 +1,107 @@
 #!/usr/bin/env node
 
-var realFs = require('fs')
-var gracefulFs = require('graceful-fs')
-gracefulFs.gracefulify(realFs)
+var fs = require('fs')
 var mkdirp = require('mkdirp')
-var usage = require('../usage')
-var Dat = require('dat-node')
+var subcommand = require('subcommand')
+var encoding = require('dat-encoding')
+var debug = require('debug')('dat')
+var usage = require('../lib/usage')
 
-var args = require('minimist')(process.argv.splice(2), {
-  alias: {p: 'port', q: 'quiet', v: 'version'},
-  boolean: ['watchFiles', 'snapshot', 'exit', 'list', 'quiet', 'version', 'utp', 'temp', 'ignore-hidden'],
-  default: {
-    logspeed: 200,
-    'ignore-hidden': true,
-    utp: true,
-    watchFiles: false
-  }
-})
+process.title = 'dat-next'
 
-process.title = 'dat'
-
-// set debug before requiring other modules
-if (args.debug) {
-  var debug = args.debug
-  if (typeof args.debug === 'boolean') debug = '*' // default
-  args.quiet = true
-  process.env.DEBUG = debug
-}
-
-if (args.version) {
-  var pkg = require('../package.json')
-  console.log(pkg.version)
-  process.exit(0)
-}
-
-if (args.webrtc) onerror('WebRTC is no longer supported. Please see our FAQ for details: http://docs.datproject.org/faq')
-
-var isShare = false
-var isDownload = false
-
-args.logspeed = +args.logspeed
-if (isNaN(args.logspeed)) args.logspeed = 200
-
-if (args.doctor || !args._[0]) run()
-else getCommand()
-
-function run () {
-  if (args.temp) args.db = require('memdb')()
-  if (args.doctor) require('./doctor')(args)
-  else {
-    if (isShare) require('../commands/share')(Dat(args), args)
-    else if (args.list && isDownload) require('../commands/list')(Dat(args), args)
-    else if (isDownload) require('../commands/download')(Dat(args), args)
-    else usage('root.txt')
-  }
-}
-
-function getCommand () {
-  if (args._[0].indexOf('dat://') > -1) args._[0] = args._[0].replace('dat://', '')
-  if (args._[0].indexOf('dat.land') > -1) {
-    args._[0] = args._[0].replace('dat.land/', '').replace(/^(http|https):\/\//, '')
-  }
-  if (isDirectory(args._[0], true)) isShare = true
-  else if (isDatLink(args._[0])) isDownload = true
-  args.dir = isShare ? args._[0] : args._[1]
-  args.key = isDownload ? args._[0] : null
-
-  if (isShare) run()
-  else if (args.dir && isDownload && !isDirectory(args.dir, true)) mkdirp(args.dir, run)
-  else if (args.dir && isDownload) run()
-  else if (!args.dir) usage('root.txt') // TODO: don't require for download
-  else onerror('Invalid Command') // Should never get here...
-}
-
-function isDatLink (val, quiet) {
-  // TODO: switch to using dat-encoding here
-  var isLink = (val.length === 50 || val.length === 64)
-  if (quiet || isLink) return isLink
-  onerror('Invalid Dat Link')
-}
-
-function isDirectory (val, quiet) {
-  try {
-    return gracefulFs.statSync(val).isDirectory() // TODO: support sharing single files
-  } catch (err) {
-    if (quiet) return false
-    onerror('Directory does not exist')
+var config = {
+  defaults: [
+    { name: 'dir', default: process.cwd(), help: 'set the directory for Dat' },
+    { name: 'logspeed', default: 200 },
+    { name: 'port', default: 3282, help: 'port to use for connections' },
+    { name: 'utp', default: true, boolean: true, help: 'use utp for discovery' },
+    { name: 'debug', default: process.env.DEBUG }, // TODO: does not work right now
+    { name: 'quiet', default: false, boolean: true },
+    { name: 'server', default: 'https://datproject.org/api/v1' }
+  ],
+  root: {
+    options: [
+      {
+        name: 'version',
+        boolean: true,
+        default: false,
+        abbr: 'v'
+      }
+    ],
+    command: usage
+  },
+  none: syncShorthand,
+  commands: [
+    require('../lib/commands/clone'),
+    require('../lib/commands/create'),
+    require('../lib/commands/doctor'),
+    require('../lib/commands/publish'),
+    require('../lib/commands/pull'),
+    require('../lib/commands/share'),
+    require('../lib/commands/snapshot'),
+    require('../lib/commands/sync'),
+    require('../lib/commands/auth/register'),
+    require('../lib/commands/auth/whoami'),
+    require('../lib/commands/auth/logout'),
+    require('../lib/commands/auth/login')
+  ],
+  usage: {
+    command: usage,
+    option: {
+      name: 'help',
+      abbr: 'h'
+    }
+  },
+  aliases: {
+    'init': 'create'
   }
 }
 
-function onerror (msg) {
-  console.error(msg + '\n')
-  process.exit(1)
-  // require('../usage')('root.txt')
+var match = subcommand(config)
+match(alias(process.argv.slice(2)))
+
+function alias (argv) {
+  var cmd = argv[0]
+  if (!config.aliases[cmd]) return argv
+  argv[0] = config.aliases[cmd]
+  return argv
+}
+
+function syncShorthand (opts) {
+  if (!opts._.length) return done()
+  debug('Sync shortcut command')
+  debug(opts)
+
+  if (opts._.length > 1) {
+    // dat <link> {dir} - clone/resume <link> in {dir}
+    try {
+      debug('Clone sync')
+      opts.key = encoding.toStr(opts._[0])
+      opts.dir = opts._[1]
+      // make dir & start download
+      debug('mkdirp', opts.dir)
+      // TODO: do I want to mkdirp? or only one child?
+      mkdirp(opts.dir, function () {
+        require('../lib/download')('sync', opts)
+      })
+    } catch (e) { return done() }
+  } else {
+    // dat {dir} - sync existing dat in {dir}
+    try {
+      debug('Share sync')
+      opts.dir = opts._[0]
+      fs.stat(opts.dir, function (err, stat) {
+        if (err || !stat.isDirectory()) return usage(opts)
+
+        // Set default opts. TODO: use default opts in sync
+        opts.watch = opts.watch || true
+        opts.import = opts.import || true
+        require('../lib/commands/sync').command(opts)
+      })
+    } catch (e) { return done() }
+  }
+
+  function done () {
+    return usage(opts)
+  }
 }
