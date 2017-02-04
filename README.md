@@ -12,11 +12,11 @@
 #### What is all Dat?
 
 The Dat project is a set of open source applications for sharing data or files led by [Code for Science & Society](http://codeforscience.org), a grant funded non-profit, and built on the [Dat Protocol](https://www.datprotocol.com/).
-With Dat applications you can share files with collaborators, back up data to servers, and automate long-term data preservation.
+ With Dat applications you can share files with collaborators, back up data to servers, browse remote files on demand, and automate long-term data preservation.
 The Decentralized Archive Transport (Dat) protocol transfers files in a **secure**, **distributed**, and **fast** network allowing you to focus on the fun work without worrying about moving files around.
 
 * **Secure** - Dat data transfer is encrypted and the content verified on arrival. Changes are written to an append-only log ensuring transparency of updates. [Check out our security and privacy FAQ](http://docs.datproject.org/faq#security-and-privacy).
-* **Distributed** - With the Dat protocol you'll connect directly to other users or servers sharing or downloading common datasets. Any device can host files to share without the need for centralized servers. [Read about the distrbuted web and Dat](http://docs.datproject.org/terms#distributed-web).
+* **Distributed** - With the Dat protocol you'll connect directly to other users or servers sharing or downloading common datasets. Any device can host files to share without the need for centralized servers. [Read about the distributed web and Dat](http://docs.datproject.org/terms#distributed-web).
 * **Fast** - Files download from multiple sources. Quickly sync updates by only downloading the new bytes, saving time and bandwidth.
 
 ### Key features:
@@ -53,7 +53,7 @@ You can chat with us in IRC on [#dat](http://webchat.freenode.net/?channels=dat)
 ### Table of Contents
 
 <li><a href="#getting-started">Getting Started</a></li>
-<li><a href="#using-dat">Using Dat</a></li>
+<li><a href="#usage">Using Dat</a></li>
 <li><a href="#troubleshooting">Troubleshooting</a></li>
 <li><a href="#for-developers">For Developers</a></li>
 
