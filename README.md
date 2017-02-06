@@ -1,6 +1,6 @@
 # Dat
 
-Dat is the package manager for datasets. Easily share, version control, and archive datasets. Secure, distributed, fast.
+Dat is the package manager for datasets. Share files with version control, back up data to servers, browse remote files on demand, and automate long-term data preservation. Secure, distributed, fast.
 
 [<img src="http://datproject.github.io/design/downloads/dat-data-logo.png" align="right" width="140">](https://datproject.org)
 
@@ -9,38 +9,19 @@ Dat is the package manager for datasets. Easily share, version control, and arch
 [![docs](https://img.shields.io/badge/Dat%20Project-Docs-brightgreen.svg)](http://docs.datproject.org)
 [![protocol](https://img.shields.io/badge/Dat-Protocol-lightgrey.svg)](http://www.datprotocol.com)
 
-```
-$ npm install -g dat
-```
-
-### Share data with one command
-
-```
-$ dat share /path/to/my/data
-Syncing Dat Archive: /path/to/my/data
-Link: dat://0cf82ef0ccc3d5df696c48378a4e5f32ae3e08f05eeef34d1e9f553624eb921b
-
-Watching for file changes...
-Total Size: 130 files (506 MB)
-
-Looking for connections in Dat Network...
-```
-
 ### Table of Contents
 
-<li><a href="#what-is-all-dat">What is Dat?</a></li>
+<li><a href="#installation">Installation</a></li>
 <li><a href="#getting-started">Getting Started</a></li>
 <li><a href="#usage">Using Dat</a></li>
 <li><a href="#troubleshooting">Troubleshooting</a></li>
 <li><a href="#for-developers">For Developers</a></li>
 
-#### What is Dat?
+### What is Dat?
 
-The [Dat Project](http://datproject.org) is an open source data sharing [protocol](https://www.datprotocol.com/) led by [Code for Science & Society](http://codeforscience.org), a grant-funded non profit. The Decentralized Archive Transport (Dat) protocol transfers files in a **secure**, **distributed**, and **fast** network allowing you to focus on the fun work without worrying about moving files around.
+The [Dat Project](http://datproject.org) is the home to open source data sharing applications led by [Code for Science & Society](http://codeforscience.org), a grant-funded non profit. The Dat Project developed the [Decentralized Archive Transport (Dat) protocol](https://www.datprotocol.com/), which  transfers files in a **secure**, **distributed**, and **fast** network allowing you to focus on the fun work without worrying about moving files around.
 
-Back up data to servers, browse remote files on demand, and automate long-term data preservation using our powerful [commandline tool](#Getting-Started) and [JavaScript library](http://github.com/datproject/dat-node).
-
-### Key features:
+### Key features
 
 * **Secure** - Data is encrypted upon transfer and the content is verified on arrival. Prevents third-party access to metadata and content. [Learn more](http://docs.datproject.org/faq#security-and-privacy).
 * **Transparent** - Changes to data are written in an append-only log, creating a version history that improves transparency and auditability.
@@ -56,7 +37,7 @@ Back up data to servers, browse remote files on demand, and automate long-term d
 * [Dat Desktop](https://datproject.org/install#desktop) - A desktop app to manage multiple Dats on your desktop machine.
 * [Beaker Browser](http://beakerbrowser.com) - An experimental p2p browser with built-in support for the Dat protocol.
 * [Dat Protocol](https://www.datprotocol.com) - Build your own application on the Decentralized Archive Transport (Dat) protocol.
-* [Node.js](http://github.com/datproject/dat-node) - Node.js library for downloading and sharing Dat archives.
+* [require('dat-node')](http://github.com/datproject/dat-node) - Node.js library for downloading and sharing Dat archives.
 
 ---
 
@@ -72,14 +53,11 @@ Have questions or need some guidance?
 You can chat with us in IRC on [#dat](http://webchat.freenode.net/?channels=dat) or [Gitter](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)!
 
 
-## Getting Started
+## Installation
 
-The Dat command line tool can be installed with `npm`. Make sure you have `node` version 4 or above and `npm` installed.
-You can run `node -v` and `npm -v` to check!
+The Dat command line tool can be installed with `npm`. Make sure you have `node` version 4 or above and `npm` installed. You can run `node -v` and `npm -v` to check!
 
 Need to install Node? [Start here](https://nodejs.org/en/download/).
-
-### Installing Dat
 
 Install `dat` from npm with the `--global, -g` option:
 
@@ -89,7 +67,7 @@ npm install -g dat
 
 You should be able to run the `dat` command now. If not, see the [installation troubleshooting](#troubleshooting) for tips.
 
-### Quickstart
+## Getting started
 
 We have Dat installed, let's use it! Currently, the Dat command line always moves files from a single source to any number of destinations.
 If you are creating files on your computer to share, you will be the source and will use the *share* commands.
