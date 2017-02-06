@@ -45,7 +45,7 @@ The Decentralized Archive Transport (Dat) protocol transfers files in a **secure
 
 Mac/Linux      | Windows      | Version
 -------------- | ------------ | ------------
-[![Travis](https://travis-ci.org/datproject/dat.svg?branch=master)](https://travis-ci.org/datproject/dat) | [![Build status](https://ci.appveyor.com/api/projects/status/github/datproject/dat?branch=master&svg=true)](https://ci.appveyor.com/project/datproject/dat) | [![NPM version](https://img.shields.io/npm/v/dat.svg)](https://npmjs.org/package/dat)
+[![Travis](https://travis-ci.org/datproject/dat.svg?branch=master)](https://travis-ci.org/datproject/dat) | [![Build status](https://ci.appveyor.com/api/projects/status/github/datproject/dat?branch=master&svg=true)](https://ci.appveyor.com/project/joehand/dat/branch/master) | [![NPM version](https://img.shields.io/npm/v/dat.svg)](https://npmjs.org/package/dat)
 
 Have questions or need some guidance?
 You can chat with us in IRC on [#dat](http://webchat.freenode.net/?channels=dat) or [Gitter](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)!
