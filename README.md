@@ -26,7 +26,7 @@ The [Dat Project](http://datproject.org) is the home to open source data sharing
 * **Secure** - Data is encrypted upon transfer and the content is verified on arrival. Prevents third-party access to metadata and content. [Learn more](http://docs.datproject.org/faq#security-and-privacy).
 * **Transparent** - Changes to data are written in an append-only log, creating a version history that improves transparency and auditability.
 * **Distributed** - With the Dat protocol you'll connect directly to other users or servers sharing or downloading common datasets. Any device can host files to share without the need for centralized servers. [Read more](http://docs.datproject.org/terms#distributed-web).
-* **Identifiable** - Unique links are generated instantly -- don't wait for the entire archive to be hashed before you can begin uploading to peers.
+* **Future-proof** - Unique links are generated using a public key and thus can be used instantly and forever to verify the dataset from anywhere. You don't need to wait for the entire archive to be hashed before you can begin uploading to peers.
 * **Fast** -  Files download from multiple sources. Quickly sync updates by only downloading the new bytes, saving time and bandwidth.
 
 ### Dat Applications
