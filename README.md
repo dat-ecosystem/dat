@@ -1,6 +1,6 @@
-# dat
+# Dat
 
-> Dat is the package manager for datasets. Easily share, version control, and archive datasets. Secure, distributed, fast.
+Dat is the package manager for datasets. Easily share, version control, and archive datasets. Secure, distributed, fast.
 
 [<img src="http://datproject.github.io/design/downloads/dat-data-logo.png" align="right" width="140">](https://datproject.org)
 
@@ -9,24 +9,44 @@
 [![docs](https://img.shields.io/badge/Dat%20Project-Docs-brightgreen.svg)](http://docs.datproject.org)
 [![protocol](https://img.shields.io/badge/Dat-Protocol-lightgrey.svg)](http://www.datprotocol.com)
 
-#### What is all Dat?
+```
+$ npm install -g dat
+```
 
-The Dat project is a set of open source applications for sharing data or files led by [Code for Science & Society](http://codeforscience.org), a grant funded non-profit, and built on the [Dat Protocol](https://www.datprotocol.com/).
- With Dat applications you can share files with collaborators, back up data to servers, browse remote files on demand, and automate long-term data preservation.
-The Decentralized Archive Transport (Dat) protocol transfers files in a **secure**, **distributed**, and **fast** network allowing you to focus on the fun work without worrying about moving files around.
+### Share data with one command
 
-* **Secure** - Dat data transfer is encrypted and the content verified on arrival. Changes are written to an append-only log ensuring transparency of updates. [Check out our security and privacy FAQ](http://docs.datproject.org/faq#security-and-privacy).
-* **Distributed** - With the Dat protocol you'll connect directly to other users or servers sharing or downloading common datasets. Any device can host files to share without the need for centralized servers. [Read about the distributed web and Dat](http://docs.datproject.org/terms#distributed-web).
-* **Fast** - Files download from multiple sources. Quickly sync updates by only downloading the new bytes, saving time and bandwidth.
+```
+$ dat share /path/to/my/data
+Syncing Dat Archive: /path/to/my/data
+Link: dat://0cf82ef0ccc3d5df696c48378a4e5f32ae3e08f05eeef34d1e9f553624eb921b
+
+Watching for file changes...
+Total Size: 130 files (506 MB)
+
+Looking for connections in Dat Network...
+```
+
+### Table of Contents
+
+<li><a href="#what-is-all-dat">What is Dat?</a></li>
+<li><a href="#getting-started">Getting Started</a></li>
+<li><a href="#usage">Using Dat</a></li>
+<li><a href="#troubleshooting">Troubleshooting</a></li>
+<li><a href="#for-developers">For Developers</a></li>
+
+#### What is Dat?
+
+The [Dat Project](http://datproject.org) is an open source data sharing [protocol](https://www.datprotocol.com/) led by [Code for Science & Society](http://codeforscience.org), a grant-funded non profit. The Decentralized Archive Transport (Dat) protocol transfers files in a **secure**, **distributed**, and **fast** network allowing you to focus on the fun work without worrying about moving files around.
+
+Back up data to servers, browse remote files on demand, and automate long-term data preservation using our powerful [commandline tool](#Getting-Started) and [JavaScript library](http://github.com/datproject/dat-node).
 
 ### Key features:
 
-* **Share files** to colleagues, servers, or long-term archives.
-* **Automatically update** changes by sharing new files and syncing with the network.
-* **Distribute large datasets** without copying data to a central server by connecting directly to peers.
-* **Version history data** by tracking all changes in metadata and easily backing up old versions of files on large storage servers.
-* **Persistent identification** of changing datasets with a unique link.
-* **Instantly host** files through the distributed network and unique identifier.
+* **Secure** - Data is encrypted upon transfer and the content is verified on arrival. Prevents third-party access to metadata and content. [Learn more](http://docs.datproject.org/faq#security-and-privacy).
+* **Transparent** - Changes to data are written in an append-only log, creating a version history that improves transparency and auditability.
+* **Distributed** - With the Dat protocol you'll connect directly to other users or servers sharing or downloading common datasets. Any device can host files to share without the need for centralized servers. [Read more](http://docs.datproject.org/terms#distributed-web).
+* **Identifiable** - Unique links are generated instantly -- don't wait for the entire archive to be hashed before you can begin uploading to peers.
+* **Fast** -  Files download from multiple sources. Quickly sync updates by only downloading the new bytes, saving time and bandwidth.
 
 ### Dat Applications
 
@@ -34,14 +54,15 @@ The Decentralized Archive Transport (Dat) protocol transfers files in a **secure
 
 * [Dat Command Line](#dat-command-line) - You are here! Scroll down for the details.
 * [Dat Desktop](https://datproject.org/install#desktop) - A desktop app to manage multiple Dats on your desktop machine.
-* [Beaker Browser](http://beakerbrowser.com) - An experimental p2p browser with built-in support for the Dat protocol
-* [Dat Protocol](https://www.datprotocol.com) - Build your own Dat application on the Decentralized Archive Transport (Dat) protocol
+* [Beaker Browser](http://beakerbrowser.com) - An experimental p2p browser with built-in support for the Dat protocol.
+* [Dat Protocol](https://www.datprotocol.com) - Build your own application on the Decentralized Archive Transport (Dat) protocol.
+* [Node.js](http://github.com/datproject/dat-node) - Node.js library for downloading and sharing Dat archives.
 
 ---
 
 ## Dat Command Line
 
-> Share, download, and backup files with the command line! Automatically sync changes to datasets. Never worry about manually transferring files again.
+Share, download, and backup files with the command line! Automatically sync changes to datasets. Never worry about manually transferring files again.
 
 Mac/Linux      | Windows      | Version
 -------------- | ------------ | ------------
@@ -50,12 +71,6 @@ Mac/Linux      | Windows      | Version
 Have questions or need some guidance?
 You can chat with us in IRC on [#dat](http://webchat.freenode.net/?channels=dat) or [Gitter](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)!
 
-### Table of Contents
-
-<li><a href="#getting-started">Getting Started</a></li>
-<li><a href="#usage">Using Dat</a></li>
-<li><a href="#troubleshooting">Troubleshooting</a></li>
-<li><a href="#for-developers">For Developers</a></li>
 
 ## Getting Started
 
@@ -105,7 +120,7 @@ The download exits after it completes but you can continue to update the files l
 
 #### A Brief Primer on `dat://`` links
 
-> You may have seen Dat links around: `dat://ff34725120b2f3c5bd5028e4f61d14a45a22af48a7b12126d5d588becde88a93`. What is with the weird long string of characters? Let's break it down!
+You may have seen Dat links around: `dat://ff34725120b2f3c5bd5028e4f61d14a45a22af48a7b12126d5d588becde88a93`. What is with the weird long string of characters? Let's break it down!
 
 ##### `dat://` - the protocol
 
