@@ -13,7 +13,7 @@ script:
 notifications:
   irc:
     channels:
-      - "chat.freenode.net#dat"
+      - "chat.freenode.net#datbots"
     template:
       - "%{repository_slug} - %{commit_subject} - %{result} - %{build_url}"
     skip_join: true
