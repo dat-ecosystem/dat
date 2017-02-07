@@ -5,7 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
-## 12.0.0 - 2016-02-07
+## 12.0.1 - 2016-02-07
+### Fixed
+* Files getting truncated and edited with bad characters - issue [#626](https://github.com/datproject/dat/issues/626) and [#623](https://github.com/datproject/dat/issues/623)
+* Source files getting overwritten (issue [#628](https://github.com/datproject/dat/issues/628))
+* Duplicate files getting imported
+
+## 12.0.0 - 2016-02-06
 Big new release! See the [release notes](https://github.com/datproject/dat/releases/tag/v12.0.0) on Github.
 
 ## 11.6.0 - 2016-11-16
