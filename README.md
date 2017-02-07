@@ -29,11 +29,11 @@ The [Dat Project](http://datproject.org) is the home to open source data sharing
 * **Future-proof** - Unique links are generated using a public key and thus can be used instantly and forever to verify the dataset from anywhere. You don't need to wait for the entire archive to be hashed before you can begin uploading to peers.
 * **Fast** -  Files download from multiple sources. Quickly sync updates by only downloading the new bytes, saving time and bandwidth.
 
-### Dat Applications
+## Installation
 
  Visit our site for an [installation guide](http://datproject.org/install) or pick your favorite client application:
 
-* [Dat Command Line](#dat-command-line) - You are here! Scroll down for the details.
+* [Dat Command Line](#command-line-installation) - You are here! Scroll down for the installation details.
 * [Dat Desktop](https://datproject.org/install#desktop) - A desktop app to manage multiple Dats on your desktop machine.
 * [Beaker Browser](http://beakerbrowser.com) - An experimental p2p browser with built-in support for the Dat protocol.
 * [Dat Protocol](https://www.datprotocol.com) - Build your own application on the Decentralized Archive Transport (Dat) protocol.
@@ -53,7 +53,7 @@ Have questions or need some guidance?
 You can chat with us in IRC on [#dat](http://webchat.freenode.net/?channels=dat) or [Gitter](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)!
 
 
-## Installation
+### Command Line Installation
 
 The Dat command line tool can be installed with `npm`. Make sure you have `node` version 4 or above and `npm` installed. You can run `node -v` and `npm -v` to check!
 
