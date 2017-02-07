@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 12.0.0 - 2016-02-07
+Big new release! See the [release notes](https://github.com/datproject/dat/releases/tag/v12.0.0) on Github.
+
 ## 11.6.0 - 2016-11-16
 ### Removed
 * webrtc support
