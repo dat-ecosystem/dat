@@ -4,9 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 *Note: unreleased changes are added here.*
+
+## 12.0.2 - 2016-02-08
 ### Fixed
 * Remove `hyperdrive-import-files` from dependencies (it is a dependency of `dat-node`). It was accidentally added.
-
+* Always verify on read to avoid replication errors.
 
 ## 12.0.1 - 2016-02-07
 ### Fixed
