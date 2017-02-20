@@ -11,7 +11,8 @@ test('misc - doctor option works ', function (t) {
     var readyPeer = output.indexOf('Waiting for incoming connections') > -1
     if (!readyPeer) return false
 
-    t.ok(output.indexOf('Phase one success!') > -1, 'doctor connects to public peer')
+    t.ok(output.indexOf('UTP') > -1, 'doctor connects to public peer via UTP')
+    t.ok(output.indexOf('TCP') > -1, 'doctor connects to public peer via TCP')
 
     var key = help.matchLink(output)
     startPhysiciansAssistant(key)

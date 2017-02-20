@@ -16,10 +16,11 @@ function createServer (port, cb) {
       connection: { filename: path.join(__dirname, '..', 'test-sqlite.db') },
       useNullAsDefault: true
     },
-    cachedb: path.join(__dirname, 'test-cache.db'),
+    archiver: path.join(__dirname, 'test-archiver'),
     whitelist: false,
     port: port || 8888
   }
+  rimraf.sync(config.archiver)
   rimraf.sync(config.db.connection.filename)
 
   initDb(config.db, function (err, db) {
