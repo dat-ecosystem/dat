@@ -4,6 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 *Note: unreleased changes are added here.*
+### Fixed
+* Content progress for archives with history
+
+### Changed
+* Use two decimals for content progress
 
 ## 12.0.2 - 2016-02-08
 ### Fixed
