@@ -96,7 +96,7 @@ The download exits after it completes but you can continue to update the files l
 
 ![clone](https://cloud.githubusercontent.com/assets/684965/22602275/67f67be8-e9f7-11e6-889d-40895e50d263.gif)
 
-#### A Brief Primer on `dat://`` links
+#### A Brief Primer on `dat://` links
 
 You may have seen Dat links around: `dat://ff34725120b2f3c5bd5028e4f61d14a45a22af48a7b12126d5d588becde88a93`. What is with the weird long string of characters? Let's break it down!
 
