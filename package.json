@@ -31,7 +31,7 @@
     "test": "tests"
   },
   "dependencies": {
-    "dat-doctor": "^1.2.1",
+    "dat-doctor": "^1.2.2",
     "dat-encoding": "^4.0.1",
     "dat-node": "^1.3.3",
     "debug": "^2.4.5",
