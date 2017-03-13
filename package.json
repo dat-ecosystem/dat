@@ -31,11 +31,11 @@
     "test": "tests"
   },
   "dependencies": {
-    "dat-doctor": "^1.2.1",
-    "dat-encoding": "^4.0.1",
-    "dat-node": "^1.3.3",
+    "dat-doctor": "^1.2.3",
+    "dat-encoding": "^4.0.2",
+    "dat-node": "^1.4.0",
     "dat-registry": "^2.1.2",
-    "debug": "^2.4.5",
+    "debug": "^2.6.2",
     "memdb": "^1.3.1",
     "mkdirp": "^0.5.1",
     "nets": "^3.2.0",
@@ -52,7 +52,7 @@
     "hypercore": "^4.15.1",
     "hyperdiscovery": "^1.0.1",
     "recursive-readdir-sync": "^1.0.6",
-    "standard": "^8.6.0",
+    "standard": "^9.0.1",
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3",
     "tape-spawn": "^1.4.2"
