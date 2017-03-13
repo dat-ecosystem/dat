@@ -12,11 +12,12 @@ var baseTestDir = help.testFolder()
 var fixtures = path.join(__dirname, 'fixtures')
 
 var port = process.env.PORT || 3000
-var SERVER = 'http://localhost:' + port + '/api/v1'
+var SERVER = 'http://localhost:' + port
 var config = path.join(__dirname, '.datrc-test')
 var opts = ' --server=' + SERVER + ' --config=' + config
 
 dat += opts
+rimraf.sync(config)
 
 authServer(port, function (err, server, closeServer) {
   if (err) throw err
@@ -24,7 +25,7 @@ authServer(port, function (err, server, closeServer) {
     var cmd = dat + ' whoami '
     var st = spawn(t, cmd, {cwd: baseTestDir})
     st.stderr.match(function (output) {
-      t.same('Not logged in.', output.trim(), 'printed correct output')
+      t.same(output.trim(), 'Not logged in.', 'printed correct output')
       return true
     })
     st.stdout.empty()
@@ -66,6 +67,7 @@ authServer(port, function (err, server, closeServer) {
 
   test('auth - publish before create fails', function (t) {
     var cmd = dat + ' publish'
+    rimraf.sync(path.join(fixtures, '.dat'))
     var st = spawn(t, cmd, {cwd: fixtures})
     st.stdout.empty()
     st.stderr.match(function (output) {
