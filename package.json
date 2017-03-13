@@ -15,7 +15,7 @@
     "auth-server": "DEBUG=* node scripts/auth-server.js",
     "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "standard": "standard",
-    "test": "standard && tape tests/*.js | tap-spec"
+    "test": "standard && tape 'tests/*[!auth].js' | tap-spec"
   },
   "repository": {
     "type": "git",
