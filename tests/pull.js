@@ -18,7 +18,6 @@ test('pull - errors without clone first', function (t) {
     st.kill()
     return true
   })
-  st.stdout.empty()
   st.end()
 })
 
