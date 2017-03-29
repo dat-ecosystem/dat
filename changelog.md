@@ -4,8 +4,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 *Note: unreleased changes are added here.*
+
+## 12.0.3 - 2016-03-29
 ### Fixed
 * Content progress for archives with history
+* Change `process.title` to `dat` from `dat-next`
 
 ### Changed
 * Use two decimals for content progress
