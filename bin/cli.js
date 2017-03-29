@@ -7,7 +7,7 @@ var encoding = require('dat-encoding')
 var debug = require('debug')('dat')
 var usage = require('../lib/usage')
 
-process.title = 'dat-next'
+process.title = 'dat'
 
 var config = {
   defaults: [
