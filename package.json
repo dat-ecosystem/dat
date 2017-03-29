@@ -42,7 +42,7 @@
     "pretty-bytes": "^4.0.2",
     "progress-string": "^1.2.1",
     "prompt": "^1.0.0",
-    "rimraf": "^2.5.4",
+    "rimraf": "^2.6.1",
     "status-logger": "^3.0.0",
     "subcommand": "^2.1.0",
     "xtend": "^4.0.1"
