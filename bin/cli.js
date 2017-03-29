@@ -36,6 +36,7 @@ var config = {
     require('../lib/commands/create'),
     require('../lib/commands/doctor'),
     require('../lib/commands/publish'),
+    require('../lib/commands/unpublish'),
     require('../lib/commands/pull'),
     require('../lib/commands/share'),
     require('../lib/commands/snapshot'),
