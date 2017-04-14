@@ -33,7 +33,7 @@
   "dependencies": {
     "dat-doctor": "^1.2.3",
     "dat-encoding": "^4.0.2",
-    "dat-node": "^1.4.0",
+    "dat-node": "^2.0.0",
     "dat-registry": "^2.1.2",
     "debug": "^2.6.2",
     "memdb": "^1.3.1",
