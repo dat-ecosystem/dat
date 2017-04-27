@@ -38,7 +38,6 @@ var config = {
     require('../lib/commands/publish'),
     require('../lib/commands/pull'),
     require('../lib/commands/share'),
-    require('../lib/commands/snapshot'),
     require('../lib/commands/sync'),
     require('../lib/commands/auth/register'),
     require('../lib/commands/auth/whoami'),
@@ -71,6 +70,9 @@ function syncShorthand (opts) {
   if (!opts._.length) return done()
   debug('Sync shortcut command')
   debug(opts)
+
+  console.error('TODO: use regular commands for now')
+  process.exit(1)
 
   if (opts._.length > 1) {
     // dat <link> {dir} - clone/resume <link> in {dir}
