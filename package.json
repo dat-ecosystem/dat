@@ -34,6 +34,7 @@
     "cli-truncate": "^1.0.0",
     "dat-doctor": "^1.2.3",
     "dat-encoding": "^4.0.2",
+    "dat-link-resolve": "^1.0.0",
     "dat-node": "^2.0.0",
     "dat-registry": "^2.1.2",
     "debug": "^2.6.2",
