@@ -25,13 +25,14 @@ module.exports = {
 }
 
 function pull (opts) {
+  debug('dat pull')
   if (opts._.length && opts.dir === process.cwd()) opts.dir = opts._[0] // use first arg as dir if default set
 
   // Force these options for pull command
   opts.createIfMissing = false
   opts.exit = true
 
-  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet  })
+  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet })
   neat.use(trackArchive)
   neat.use(onExit)
   neat.use(function (state, bus) {

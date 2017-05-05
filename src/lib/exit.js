@@ -6,7 +6,7 @@ function onExit (state, bus) {
   bus.on('exit:warn', function (err) {
     onError(err, true)
   })
-  process.on('SIGINT', function() {
+  process.on('SIGINT', function () {
     state.exiting = true
     bus.render()
     process.exit()

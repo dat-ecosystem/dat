@@ -1,6 +1,5 @@
 var Dat = require('dat-node')
 var neatLog = require('neat-log')
-var output = require('neat-log/output')
 var archiveUI = require('../ui/archive')
 var trackArchive = require('../lib/archive')
 var onExit = require('../lib/exit')
@@ -40,7 +39,7 @@ function create (opts) {
   // Todo
   // debug('Creating Dat archive in', opts.dir)
 
-  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet  })
+  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet })
   neat.use(trackArchive)
   neat.use(onExit)
   neat.use(function (state, bus) {

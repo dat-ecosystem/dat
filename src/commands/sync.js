@@ -45,7 +45,7 @@ function sync (opts) {
 
   // debug('Reading archive in dir', opts.dir)
 
-  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet  })
+  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet })
   neat.use(trackArchive)
   neat.use(onExit)
   neat.use(function (state, bus) {

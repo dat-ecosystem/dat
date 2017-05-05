@@ -7,40 +7,40 @@ module.exports = importUI
 
 function importUI (state) {
   var watch = state.opts.watch
-  var state = state.importer
-  var indexSpeed = state.indexSpeed ? `(${pretty(state.indexSpeed)}/s)` : ''
+  var importState = state.importer
+  var indexSpeed = importState.indexSpeed ? `(${pretty(importState.indexSpeed)}/s)` : ''
 
-  if (state.count && !state.count.done) {
+  if (importState.count && !importState.count.done) {
     // dry run in progress
-    if (!state.count.files) return 'Checking for file updates...'
+    if (!importState.count.files) return 'Checking for file updates...'
     return output`
-      Imported ${state.putDone.files} of ${state.count.files} files ${indexSpeed}
+      Imported ${importState.putDone.files} of ${importState.count.files} files ${indexSpeed}
       (Calculating files to import...)
-      ${fileImport(state.fileImport)}
+      ${fileImport(importState.fileImport)}
     `
-  } else if (state.putDone.files >= state.count.files) {
+  } else if (importState.putDone.files >= importState.count.files) {
     // Initial import done
     if (!watch) return 'All files imported.'
     return liveImport()
   }
 
-  var total = state.count.bytes
+  var total = importState.count.bytes
   var totalBar = bar({
     total: total,
     style: function (a, b) {
-      return `[${a}${b}] ${(100 * state.importedBytes / total).toFixed(0)}%`
+      return `[${a}${b}] ${(100 * importState.importedBytes / total).toFixed(0)}%`
     }
   })
 
   return output`
-    Importing ${state.count.files} files to Archive ${indexSpeed}
-    ${totalBar(state.importedBytes)}
-    ${fileImport(state.fileImport)}
+    Importing ${importState.count.files} files to Archive ${indexSpeed}
+    ${totalBar(importState.importedBytes)}
+    ${fileImport(importState.fileImport)}
   `
 
   function liveImport () {
     // Live import
-    var imports = state.liveImports.slice(1).slice(-7)
+    var imports = importState.liveImports.slice(1).slice(-7)
     return output`
       Watching for file updates
       ${imports.map(function (file) {

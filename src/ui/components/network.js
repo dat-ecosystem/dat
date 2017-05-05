@@ -13,7 +13,7 @@ function networkUI (state) {
     return 'Searching for archive in network...'
   }
   var peers = stats.peers.total
-  var complete = stats.peers.complete
+  // var complete = stats.peers.complete
   return output`
     ${peers} ${pluralize('connection', peers)} ${speedUI()}
   `

@@ -1,5 +1,4 @@
 var output = require('neat-log/output')
-var pretty = require('prettier-bytes')
 var bar = require('progress-string')
 
 module.exports = networkUI
@@ -16,7 +15,6 @@ function networkUI (state) {
       ${state.opts.live ? 'Waiting for changes...' : ''}
     `
   }
-  var stats = state.stats.get()
   if (!stats.downloaded || !stats.length) {
     return '' // no metadata yet
   }
