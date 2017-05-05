@@ -26,7 +26,8 @@ module.exports = {
 
 function pull (opts) {
   debug('dat pull')
-  if (opts._.length && opts.dir === process.cwd()) opts.dir = opts._[0] // use first arg as dir if default set
+  if (opts._.length) opts.dir = opts._[0] // use first arg as dir if default set
+  else if (!opts.dir) opts.dir = process.cwd()
 
   // Force these options for pull command
   opts.createIfMissing = false
