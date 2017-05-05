@@ -1,18 +1,18 @@
 var Dat = require('dat-node')
 var neatLog = require('neat-log')
 var archiveUI = require('../ui/archive')
-var trackArchive = require('../common/archive')
-var onExit = require('../common/exit')
+var trackArchive = require('../lib/archive')
+var onExit = require('../lib/exit')
 var debug = require('debug')('dat')
 
 module.exports = {
-  name: 'share',
-  command: share,
+  name: 'sync',
+  command: sync,
   help: [
-    'Create and share a Dat archive',
-    'Create a dat, import files, and share to the network.',
+    'Sync a Dat archive with the network',
+    'Watch and import file changes (if you created the archive)',
     '',
-    'Usage: dat share'
+    'Usage: dat sync'
   ].join('\n'),
   options: [
     {
@@ -36,22 +36,24 @@ module.exports = {
   ]
 }
 
-function share (opts) {
+function sync (opts) {
   if (opts._.length && opts.dir === process.cwd()) opts.dir = opts._[0] // use first arg as dir if default set
 
-  // TODO: better debug
+  // Set default options (some of these may be exposed to CLI eventually)
+  opts.createIfMissing = false // sync must always be a resumed archive
+  opts.exit = false
+
   // debug('Reading archive in dir', opts.dir)
-  var views = [archiveUI]
-  // if (opts.remote) views.push(peerUI)
-  var neat = neatLog(views, { logspeed: opts.logspeed })
+
+  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet  })
   neat.use(trackArchive)
   neat.use(onExit)
   neat.use(function (state, bus) {
     state.opts = opts
 
     Dat(opts.dir, opts, function (err, dat) {
+      if (err && err.name === 'MissingError') return bus.emit('exit:warn', 'No existing archive in this directory.')
       if (err) return bus.emit('exit:error', err)
-      if (!dat.writable) return bus.emit('exit:warn', 'Archive not writable, cannot use share. Please use sync to resume download.')
 
       state.dat = dat
       bus.emit('dat')

@@ -2,8 +2,8 @@ var Dat = require('dat-node')
 var neatLog = require('neat-log')
 var output = require('neat-log/output')
 var archiveUI = require('../ui/archive')
-var trackArchive = require('../common/archive')
-var onExit = require('../common/exit')
+var trackArchive = require('../lib/archive')
+var onExit = require('../lib/exit')
 var debug = require('debug')('dat')
 
 module.exports = {
@@ -31,7 +31,7 @@ function pull (opts) {
   opts.createIfMissing = false
   opts.exit = true
 
-  var neat = neatLog(archiveUI, { logspeed: opts.logspeed })
+  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet  })
   neat.use(trackArchive)
   neat.use(onExit)
   neat.use(function (state, bus) {

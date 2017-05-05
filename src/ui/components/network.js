@@ -9,21 +9,22 @@ function networkUI (state) {
 
   if (!network) return ''
   if (!network.connected) {
-    if (state.dat.writable) return 'Waiting for Connections...'
+    if (state.dat.writable) return 'Connected to network'
     return 'Searching for archive in network...'
   }
   var peers = stats.peers.total
+  var complete = stats.peers.complete
   return output`
-    ${peers} ${pluralize('source', peers)}
-    ${speedUI()}
+    ${peers} ${pluralize('connection', peers)} ${speedUI()}
   `
 
   function speedUI () {
+    var output = '| '
     var speed = state.stats.network
-    if (!speed) return ''
-    var output = ''
-    if (speed.uploadSpeed) output += `Uploading ${pretty(speed.uploadSpeed)}/s`
-    if (speed.downloadSpeed) output += `Downloading ${pretty(speed.downloadSpeed)}/s`
+    var upSpeed = speed.uploadSpeed || 0
+    var downSpeed = speed.downloadSpeed || 0
+    output += `Download ${pretty(downSpeed)}/s`
+    output += ` Upload ${pretty(upSpeed)}/s `
     return output
   }
 

@@ -7,8 +7,8 @@ var linkResolve = require('dat-link-resolve')
 var neatLog = require('neat-log')
 var output = require('neat-log/output')
 var archiveUI = require('../ui/archive')
-var trackArchive = require('../common/archive')
-var onExit = require('../common/exit')
+var trackArchive = require('../lib/archive')
+var onExit = require('../lib/exit')
 var debug = require('debug')('dat')
 
 module.exports = {
@@ -36,11 +36,16 @@ module.exports = {
 }
 
 function clone (opts) {
-  var neat = neatLog(archiveUI, { logspeed: opts.logspeed })
+  opts.key = opts._[0]
+  opts.dir = opts.dir || opts._[1]
+
+  debug('clone()')
+  debug(Object.assign({}, opts, {key: '<private>', _: null})) // don't show key
+
+  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet })
   neat.use(trackArchive)
   neat.use(onExit)
   neat.use(function (state, bus) {
-    opts.key = opts._[0]
     if (!opts.key) return bus.emit('exit:warn', 'key required to clone')
 
     state.opts = opts
@@ -51,7 +56,7 @@ function clone (opts) {
     // opts.errorIfExists = true // TODO: do we want to force this?
 
     linkResolve(opts.key, function (err, key) {
-      if (err && err.message.indexOf('Invalid key') === -1) return bus.emit('exit:error', e)
+      if (err && err.message.indexOf('Invalid key') === -1) return bus.emit('exit:error', 'Could not resolve link')
       else if (err) return bus.emit('exit:warn', 'Link is not a valid Dat link.')
 
       opts.key = key
@@ -65,9 +70,8 @@ function clone (opts) {
       debug('Creating directory for clone', dir)
       // Create the directory if it doesn't exist
       // If no dir is specified, we put dat in a dir with name = key
-      opts.dir = opts._[1] || opts.dir
-      if (!opts.dir || opts.dir === process.cwd()) { // Don't allow download to cwd for now
-        opts.dir = dir // key or dataset name if using registry shortname
+      if (!opts.dir || opts.dir === process.cwd()) {
+        opts.dir = dir
       }
       try {
         fs.accessSync(opts.dir, fs.F_OK)

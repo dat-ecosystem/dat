@@ -1,6 +1,7 @@
 var doImport = require('./import-progress')
 var stats = require('./stats')
 var network = require('./network')
+var download = require('./download')
 
 module.exports = function (state, bus) {
   bus.once('dat', function () {
@@ -9,7 +10,9 @@ module.exports = function (state, bus) {
 
     stats(state, bus)
     if (state.joinNetwork) network(state, bus)
+
     if (state.writable) doImport(state, bus)
+    else download(state, bus)
 
     if (state.dat.archive.content) return bus.emit('archive:content')
     state.dat.archive.once('content', function () {
