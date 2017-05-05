@@ -37,6 +37,7 @@ module.exports = {
 }
 
 function sync (opts) {
+  debug('dat sync')
   if (opts._.length && opts.dir === process.cwd()) opts.dir = opts._[0] // use first arg as dir if default set
 
   // Set default options (some of these may be exposed to CLI eventually)

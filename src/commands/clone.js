@@ -19,12 +19,6 @@ module.exports = {
   ].join('\n'),
   options: [
     {
-      name: 'temp',
-      boolean: true,
-      default: false,
-      help: 'use an in-memory database for metadata'
-    },
-    {
       name: 'upload',
       boolean: true,
       default: false,

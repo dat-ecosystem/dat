@@ -31,7 +31,9 @@ module.exports = {
 }
 
 function create (opts) {
-  if (opts._.length && opts.dir === process.cwd()) opts.dir = opts._[0] // use first arg as dir if default set
+  debug('dat create')
+  if (opts._.length) opts.dir = opts._[0] // use first arg as dir if default set
+  else if (!opts.dir) opts.dir = process.cwd()
 
   // Force certain options
   opts.errorIfExists = true

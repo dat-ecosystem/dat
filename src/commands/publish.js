@@ -2,7 +2,6 @@ var Dat = require('dat-node')
 var encoding = require('dat-encoding')
 var prompt = require('prompt')
 var Registry = require('../registry')
-// var datJson = require('../dat-json') TODO!
 
 module.exports = {
   name: 'publish',
@@ -18,19 +17,13 @@ function publish (opts) {
   Dat(opts.dir, opts, function (err, dat) {
     if (err) return exitErr(err)
 
-    datJson.read(dat, function (err, body) {
-      if (err && err.code !== 'ENOENT') return exitErr(err)
-      dat.meta = body || {}
-      publish(dat)
-    })
-
     function publish (dat) {
       var datInfo = {
-        name: dat.meta.name || opts.name,
+        name: opts.name,
         url: 'dat://' + encoding.toStr(dat.key),
-        title: dat.meta.title,
-        description: dat.meta.description,
-        keywords: dat.meta.keywords
+        title: opts.title,
+        description: opts.description,
+        keywords: opts.keywords
       }
 
       if (!datInfo.name) {
@@ -55,17 +48,14 @@ function publish (opts) {
 
     function makeRequest (datInfo) {
       console.log(`Publishing archive with name "${datInfo.name}".`)
-      datJson.write(dat, datInfo, function (err) {
-        if (err) return exitErr(err)
-        client.secureRequest({
-          method: 'POST', url: '/dats', body: datInfo, json: true
-        }, function (err, resp, body) {
-          if (err && err.message) exitErr(err.message)
-          else if (err) exitErr(err.toString())
-          if (body.statusCode === 400) return exitErr(new Error(body.message))
-          console.log('Successfully published!')
-          process.exit(0)
-        })
+      client.secureRequest({
+        method: 'POST', url: '/dats', body: datInfo, json: true
+      }, function (err, resp, body) {
+        if (err && err.message) exitErr(err.message)
+        else if (err) exitErr(err.toString())
+        if (body.statusCode === 400) return exitErr(new Error(body.message))
+        console.log('Successfully published!')
+        process.exit(0)
       })
     }
   })
