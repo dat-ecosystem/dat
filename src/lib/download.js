@@ -27,16 +27,23 @@ function trackDownload (state, bus) {
 
     archive.on('sync', function () {
       state.download.nsync = true
-      // if (state.download.modified && !state.opts.live) {
-      //   state.downloadExit = true
-      //   bus.render()
-      //   process.exit()
-      // }
+      if (state.download.modified && state.opts.exit) {
+        return exit()
+      }
       bus.emit('render')
     })
 
     archive.on('update', function () {
       bus.emit('render')
     })
+
+    function exit () {
+      if (state.stats.get().version !== archive.version) {
+        return state.stats.on('update', exit)
+      }
+      state.exiting = true
+      bus.render()
+      process.exit(0)
+    }
   }
 }

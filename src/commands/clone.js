@@ -44,7 +44,7 @@ function clone (opts) {
     var createdDirectory = null // so we can delete directory if we get error
 
     // Force these options for clone command
-    opts.exit = true
+    opts.exit = (opts.exit !== false)
     // opts.errorIfExists = true // TODO: do we want to force this?
 
     linkResolve(opts.key, function (err, key) {
@@ -93,6 +93,7 @@ function clone (opts) {
           if (!dat.network.connected) {
             var msg = output`
               Dat could not find any connections for that link.
+              There may not be any sources online.
 
               Run 'dat doctor' if you keep having trouble.
             `

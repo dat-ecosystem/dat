@@ -8,11 +8,7 @@ function networkUI (state) {
   var stats = state.stats
 
   if (!network) return ''
-  if (!network.connected) {
-    if (state.dat.writable) return 'Connected to network'
-    return 'Searching for archive in network...'
-  }
-  var peers = stats.peers.total
+  var peers = stats.peers.total || 0
   // var complete = stats.peers.complete
   return output`
     ${peers} ${pluralize('connection', peers)} ${speedUI()}

@@ -10,7 +10,7 @@ module.exports = shareUI
 
 function shareUI (state) {
   if (!state.dat) return 'Starting Dat program...'
-  if (!state.writable && !state.hasContent) return 'Searching network for dat archive.'
+  if (!state.writable && !state.hasContent) return 'Connecting to dat network...'
 
   var dat = state.dat
   var stats = dat.stats.get()

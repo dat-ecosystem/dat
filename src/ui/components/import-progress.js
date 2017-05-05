@@ -43,9 +43,9 @@ function importUI (state) {
     var imports = importState.liveImports.slice(1).slice(-7)
     return output`
       Watching for file updates
-      ${imports.map(function (file) {
+      ${imports.reverse().map(function (file) {
         return fileImport(file)
-      }).join('')}
+      }).join('\n')}
     `
   }
 

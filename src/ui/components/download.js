@@ -9,11 +9,9 @@ function networkUI (state) {
 
   if (!stats || !download) return ''
   if (download.nsync) {
-    return output`
-
-      Archive up to date.
-      ${state.opts.live ? 'Waiting for changes...' : ''}
-    `
+    if (!state.opts.exit) return 'Ready to sync updates.'
+    if (!download.modified) return 'Archive synced to latest, waiting for changes.'
+    return `Archive synced, version ${stats.version}.`
   }
   if (!stats.downloaded || !stats.length) {
     return '' // no metadata yet
