@@ -10,7 +10,6 @@ module.exports = function (opts, help, usage) {
   console.error('   dat create [<dir>]          create a local archive')
   console.error('   dat sync                    watch for changes & sync files with the network')
   console.error('   dat share                   create and sync an archive in one command!')
-  console.error('   dat snapshot                create a local snapshot archive')
   console.error('')
   console.error('Downloading Files:')
   console.error('   dat clone <link> [<dir>]    clone a remote archive')
