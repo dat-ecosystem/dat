@@ -42,10 +42,15 @@ function register (opts) {
       username: user.username,
       password: user.password
     }, function (err) {
-      if (err && err.message) ui.exitErr(err.message)
-      else if (err) ui.exitErr(err.toString())
+      if (err && err.message) return exitErr(err.message)
+      else if (err) return exitErr(err.toString())
       console.log('Registered successfully.')
       process.exit(0)
     })
   }
+}
+
+function exitErr (err) {
+  console.error(err)
+  process.exit(1)
 }

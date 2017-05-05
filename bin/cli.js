@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
 var fs = require('fs')
-var mkdirp = require('mkdirp')
 var subcommand = require('subcommand')
 var encoding = require('dat-encoding')
 var debug = require('debug')('dat')
@@ -76,6 +75,7 @@ function syncShorthand (opts) {
       debug('Clone sync')
       opts.key = encoding.toStr(opts._[0])
       opts.dir = opts._[1]
+      opts.exit = false
       require('../src/commands/clone').command(opts)
     } catch (e) { return done() }
   } else {

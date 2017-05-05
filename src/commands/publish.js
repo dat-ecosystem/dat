@@ -16,8 +16,9 @@ function publish (opts) {
   opts.createIfMissing = false // publish must always be a resumed archive
   Dat(opts.dir, opts, function (err, dat) {
     if (err) return exitErr(err)
+    publish()
 
-    function publish (dat) {
+    function publish () {
       var datInfo = {
         name: opts.name,
         url: 'dat://' + encoding.toStr(dat.key),
