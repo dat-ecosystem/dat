@@ -1,4 +1,3 @@
-var ui = require('../../ui')
 var Registry = require('../../registry')
 
 module.exports = {
@@ -10,7 +9,12 @@ module.exports = {
 function whoami (opts) {
   var client = Registry(opts)
   var login = client.whoami()
-  if (!login.token) return ui.exitErr('Not logged in.')
+  if (!login.token) return exitErr('Not logged in.')
   console.log(login.email)
   process.exit(0)
+}
+
+function exitErr (err) {
+  console.error(err)
+  process.exit(1)
 }

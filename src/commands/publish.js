@@ -2,8 +2,6 @@ var Dat = require('dat-node')
 var encoding = require('dat-encoding')
 var prompt = require('prompt')
 var Registry = require('../registry')
-var ui = require('../ui')
-var datJson = require('../dat-json')
 
 module.exports = {
   name: 'publish',
@@ -13,25 +11,20 @@ module.exports = {
 
 function publish (opts) {
   var client = Registry(opts)
-  if (!client.whoami().token) return ui.exitErr('Please login before publishing.')
+  if (!client.whoami().token) return exitErr('Please login before publishing.')
 
   opts.createIfMissing = false // publish must always be a resumed archive
   Dat(opts.dir, opts, function (err, dat) {
-    if (err) return ui.exitErr(err)
+    if (err) return exitErr(err)
+    publish()
 
-    datJson.read(dat, function (err, body) {
-      if (err && err.code !== 'ENOENT') return ui.exitErr(err)
-      dat.meta = body || {}
-      publish(dat)
-    })
-
-    function publish (dat) {
+    function publish () {
       var datInfo = {
-        name: dat.meta.name || opts.name,
+        name: opts.name,
         url: 'dat://' + encoding.toStr(dat.key),
-        title: dat.meta.title,
-        description: dat.meta.description,
-        keywords: dat.meta.keywords
+        title: opts.title,
+        description: opts.description,
+        keywords: opts.keywords
       }
 
       if (!datInfo.name) {
@@ -56,18 +49,20 @@ function publish (opts) {
 
     function makeRequest (datInfo) {
       console.log(`Publishing archive with name "${datInfo.name}".`)
-      datJson.write(dat, datInfo, function (err) {
-        if (err) return ui.exitErr(err)
-        client.secureRequest({
-          method: 'POST', url: '/dats', body: datInfo, json: true
-        }, function (err, resp, body) {
-          if (err && err.message) ui.exitErr(err.message)
-          else if (err) ui.exitErr(err.toString())
-          if (body.statusCode === 400) return ui.exitErr(new Error(body.message))
-          console.log('Successfully published!')
-          process.exit(0)
-        })
+      client.secureRequest({
+        method: 'POST', url: '/dats', body: datInfo, json: true
+      }, function (err, resp, body) {
+        if (err && err.message) exitErr(err.message)
+        else if (err) exitErr(err.toString())
+        if (body.statusCode === 400) return exitErr(new Error(body.message))
+        console.log('Successfully published!')
+        process.exit(0)
       })
     }
   })
+}
+
+function exitErr (err) {
+  console.error(err)
+  process.exit(1)
 }

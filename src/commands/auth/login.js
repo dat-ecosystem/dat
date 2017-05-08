@@ -1,5 +1,4 @@
 var prompt = require('prompt')
-var ui = require('../../ui')
 var Registry = require('../../registry')
 
 module.exports = {
@@ -37,10 +36,15 @@ function login (opts) {
       email: user.email,
       password: user.password
     }, function (err, resp, body) {
-      if (err && err.message) ui.exitErr(err.message)
-      else if (err) ui.exitErr(err.toString())
+      if (err && err.message) return exitErr(err.message)
+      else if (err) return exitErr(err.toString())
       console.log('Logged in successfully.')
       process.exit(0)
     })
   }
+}
+
+function exitErr (err) {
+  console.error(err)
+  process.exit(1)
 }
