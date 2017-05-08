@@ -24,14 +24,13 @@ function shareFixtures (opts, cb) {
   var fixtures = path.join(__dirname, '..', 'fixtures')
   // os x adds this if you view the fixtures in finder and breaks the file count assertions
   try { fs.unlinkSync(path.join(fixtures, '.DS_Store')) } catch (e) { /* ignore error */ }
-
   rimraf.sync(path.join(fixtures, '.dat'))
   Dat(fixtures, {}, function (err, dat) {
     if (err) throw err
     dat.trackStats()
     dat.joinNetwork()
     if (opts.import === false) return cb(null, dat)
-    dat.importFiles(function (err) {
+    dat.importFiles({watch: false}, function (err) {
       if (err) throw err
       cb(null, dat)
     })
