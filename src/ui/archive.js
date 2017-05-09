@@ -16,14 +16,12 @@ function shareUI (state) {
   var stats = dat.stats.get()
   var title
 
-  if (state.writable) {
-    title = output`
-      ${chalk.blue('dat://' + stringKey(dat.key))}
-      ${state.title || 'Sharing'} dat
-    `
-  } else {
-    title = `${state.title || 'Downloading'} dat`
+  if (state.writable || state.opts.showKey) {
+    title = `${chalk.blue('dat://' + stringKey(dat.key))}\n`
   }
+  if (state.title) title += state.title
+  else if (state.writable) title += 'Sharing dat'
+  else title += 'Downloading dat'
   if (stats.version) title += `: ${stats.files} files (${pretty(stats.byteLength)})`
 
   return output`

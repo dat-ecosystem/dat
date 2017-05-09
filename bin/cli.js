@@ -18,11 +18,12 @@ var isDebug = debug.enabled || !!process.env.DEBUG
 
 var config = {
   defaults: [
-    { name: 'dir', help: 'set the directory for Dat' },
+    { name: 'dir', abbr: 'd', help: 'set the directory for Dat' },
     { name: 'logspeed', default: 400 },
     { name: 'port', default: 3282, help: 'port to use for connections' },
     { name: 'utp', default: true, boolean: true, help: 'use utp for discovery' },
-    { name: 'quiet', default: isDebug, boolean: true } // neat-log uses quiet for debug right now
+    { name: 'quiet', default: isDebug, boolean: true }, // neat-log uses quiet for debug right now
+    { name: 'showKey', abbr: 'show-key', default: false, boolean: true }
   ],
   root: {
     options: [
