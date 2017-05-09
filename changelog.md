@@ -5,7 +5,22 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
-## 12.0.3 - 2016-03-29
+## 13.1.0 - 2017-05-09
+### Fixed
+* Cleanup dat <link> shortcut + directory creation
+* Check for any swarm.connecting before doing discovery failure.
+
+### Added
+* Check node version, fail for anything older than node v4 (#669)
+* Add show-key option to display key on downloading cmds
+* `dat status` command to show key, file count, dir size, and archive version
+
+## 13.0.0 - 2017-05-08
+### Changed
+* Upgrade to Hyperdrive v8/9 (SLEEP archive format) and Dat-node v2/3. See [dat-node release docs](https://github.com/datproject/dat-node/releases/tag/v2.0.0) for more info.
+* UI updates
+
+## 12.0.3 - 2017-03-29
 ### Fixed
 * Content progress for archives with history
 * Change `process.title` to `dat` from `dat-next`
@@ -13,18 +28,18 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Changed
 * Use two decimals for content progress
 
-## 12.0.2 - 2016-02-08
+## 12.0.2 - 2017-02-08
 ### Fixed
 * Remove `hyperdrive-import-files` from dependencies (it is a dependency of `dat-node`). It was accidentally added.
 * Always verify on read to avoid replication errors.
 
-## 12.0.1 - 2016-02-07
+## 12.0.1 - 2017-02-07
 ### Fixed
 * Files getting truncated and edited with bad characters - issue [#626](https://github.com/datproject/dat/issues/626) and [#623](https://github.com/datproject/dat/issues/623)
 * Source files getting overwritten (issue [#628](https://github.com/datproject/dat/issues/628))
 * Duplicate files getting imported
 
-## 12.0.0 - 2016-02-06
+## 12.0.0 - 2017-02-06
 Big new release! See the [release notes](https://github.com/datproject/dat/releases/tag/v12.0.0) on Github.
 
 ## 11.6.0 - 2016-11-16
