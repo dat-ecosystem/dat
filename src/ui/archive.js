@@ -6,9 +6,9 @@ var downloadUI = require('./components/download')
 var importUI = require('./components/import-progress')
 var networkUI = require('./components/network')
 
-module.exports = shareUI
+module.exports = archiveUI
 
-function shareUI (state) {
+function archiveUI (state) {
   if (!state.dat) return 'Starting Dat program...'
   if (!state.writable && !state.hasContent) return 'Connecting to dat network...'
 

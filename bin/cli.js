@@ -74,7 +74,7 @@ function alias (argv) {
 }
 
 function syncShorthand (opts) {
-  if (!opts._.length) return usage()
+  if (!opts._.length) return usage(opts)
   debug('Sync shortcut command')
   
   // Check if first argument is a key, if not assume dir
@@ -99,7 +99,7 @@ function syncShorthand (opts) {
     debug('Share sync')
     opts.dir = opts._[0]
     fs.stat(opts.dir, function (err, stat) {
-      if (err || !stat.isDirectory()) return usage()
+      if (err || !stat.isDirectory()) return usage(opts)
 
       // Set default opts. TODO: use default opts in sync
       opts.watch = opts.watch || true
