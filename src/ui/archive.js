@@ -14,7 +14,7 @@ function archiveUI (state) {
 
   var dat = state.dat
   var stats = dat.stats.get()
-  var title
+  var title = ''
 
   if (state.writable || state.opts.showKey) {
     title = `${chalk.blue('dat://' + stringKey(dat.key))}\n`
