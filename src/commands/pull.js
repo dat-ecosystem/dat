@@ -1,6 +1,5 @@
 var Dat = require('dat-node')
 var neatLog = require('neat-log')
-var output = require('neat-log/output')
 var archiveUI = require('../ui/archive')
 var trackArchive = require('../lib/archive')
 var discoveryExit = require('../lib/discovery-exit')

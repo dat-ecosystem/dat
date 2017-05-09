@@ -76,11 +76,11 @@ function alias (argv) {
 function syncShorthand (opts) {
   if (!opts._.length) return usage(opts)
   debug('Sync shortcut command')
-  
+
   // Check if first argument is a key, if not assume dir
   try {
     opts.key = encoding.toStr(opts._[0])
-  } catch (err) { 
+  } catch (err) {
     if (err && err.message !== 'Invalid key') {
       // catch non-key errors
       console.error(err)
