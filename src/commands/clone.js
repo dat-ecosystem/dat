@@ -23,6 +23,12 @@ module.exports = {
       boolean: true,
       default: false,
       help: 'upload data to other peers while cloning'
+    },
+    {
+      name: 'show-key',
+      boolean: true,
+      default: false,
+      help: 'print out the dat key'
     }
   ]
 }
@@ -30,6 +36,7 @@ module.exports = {
 function clone (opts) {
   opts.key = opts._[0]
   opts.dir = opts.dir || opts._[1]
+  opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
 
   debug('clone()')
   debug(Object.assign({}, opts, {key: '<private>', _: null})) // don't show key

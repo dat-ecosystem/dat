@@ -20,6 +20,12 @@ module.exports = {
       boolean: true,
       default: false,
       help: 'upload data to other peers while pulling'
+    },
+    {
+      name: 'show-key',
+      boolean: true,
+      default: false,
+      help: 'print out the dat key'
     }
   ]
 }
@@ -28,6 +34,7 @@ function pull (opts) {
   debug('dat pull')
   if (opts._.length) opts.dir = opts._[0] // use first arg as dir if default set
   else if (!opts.dir) opts.dir = process.cwd()
+  opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
 
   // Force these options for pull command
   opts.createIfMissing = false

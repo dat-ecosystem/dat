@@ -19,7 +19,7 @@ module.exports = {
       name: 'import',
       boolean: true,
       default: true,
-      help: 'Import files from the directory to the database.'
+      help: '(Dat Writable) Import files from the directory to the database (Dat Writable).'
     },
     {
       name: 'ignoreHidden',
@@ -31,7 +31,13 @@ module.exports = {
       name: 'watch',
       boolean: true,
       default: true,
-      help: 'Watch for changes and import updated files.'
+      help: 'Watch for changes and import updated files (Dat Writable).'
+    },
+    {
+      name: 'show-key',
+      boolean: true,
+      default: false,
+      help: 'Print out the dat key (Dat Not Writable).'
     }
   ]
 }
@@ -40,11 +46,11 @@ function sync (opts) {
   debug('dat sync')
   if (opts._.length) opts.dir = opts._[0] // use first arg as dir if default set
   else if (!opts.dir) opts.dir = process.cwd()
+  opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
 
   // Set default options (some of these may be exposed to CLI eventually)
   opts.createIfMissing = false // sync must always be a resumed archive
   opts.exit = false
-
   // debug('Reading archive in dir', opts.dir)
 
   var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet })
