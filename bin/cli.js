@@ -8,7 +8,13 @@ var usage = require('../src/usage')
 
 process.title = 'dat'
 
-var isDebug = debug.enabled || !!process.env.DEBUG // neat-log uses quiet for debug right now
+// Check node version to make sure we support
+var NODE_VERSION_SUPPORTED = 4
+var nodeMajorVer = process.version.match(/^v([0-9]+)\./)[1]
+var invalidNode = nodeMajorVer < NODE_VERSION_SUPPORTED
+if (invalidNode) exitInvalidNode()
+
+var isDebug = debug.enabled || !!process.env.DEBUG
 
 var config = {
   defaults: [
@@ -16,7 +22,7 @@ var config = {
     { name: 'logspeed', default: 400 },
     { name: 'port', default: 3282, help: 'port to use for connections' },
     { name: 'utp', default: true, boolean: true, help: 'use utp for discovery' },
-    { name: 'quiet', default: isDebug, boolean: true }
+    { name: 'quiet', default: isDebug, boolean: true } // neat-log uses quiet for debug right now
   ],
   root: {
     options: [
@@ -97,4 +103,11 @@ function syncShorthand (opts) {
   function done () {
     return usage(opts)
   }
+}
+
+function exitInvalidNode () {
+  console.error('Node Version:', process.version)
+  console.error('Unfortunately, we only support Node >= v4. Please upgrade to use Dat.')
+  console.error('You can find the latest version at https://nodejs.org/')
+  process.exit(1)
 }
