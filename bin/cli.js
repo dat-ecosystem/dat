@@ -44,6 +44,7 @@ var config = {
     require('../src/commands/publish'),
     require('../src/commands/pull'),
     require('../src/commands/share'),
+    require('../src/commands/status'),
     require('../src/commands/sync'),
     require('../src/commands/auth/register'),
     require('../src/commands/auth/whoami'),
