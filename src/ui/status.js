@@ -14,6 +14,6 @@ function statusUI (state) {
   return output`
     ${chalk.blue('dat://' + stringKey(dat.key))}
     ${stats.files} files (${pretty(stats.byteLength)})
-    Version: ${stats.version}
+    Version: ${chalk.bold(stats.version)}
   `
 }
