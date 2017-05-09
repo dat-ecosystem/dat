@@ -58,21 +58,20 @@ function clone (opts) {
       })
     })
 
-    function createDir (dir, cb) {
-      debug('Creating directory for clone', dir)
+    function createDir (key, cb) {
+      debug('Checking directory for clone')
       // Create the directory if it doesn't exist
       // If no dir is specified, we put dat in a dir with name = key
-      if (!opts.dir || opts.dir === process.cwd()) {
-        opts.dir = dir
-      }
-      try {
-        fs.accessSync(opts.dir, fs.F_OK)
-        createdDirectory = false
-      } catch (e) {
+      if (!opts.dir) opts.dir = key
+      fs.access(opts.dir, fs.F_OK, function (err) {
+        if (!err) {
+          createdDirectory = false
+          return cb()
+        }
+        debug('No existing directory, creating it.')
         createdDirectory = true
-        fs.mkdirSync(opts.dir)
-      }
-      cb()
+        fs.mkdir(opts.dir, cb)
+      })
     }
 
     function runDat () {

@@ -73,36 +73,38 @@ function alias (argv) {
 }
 
 function syncShorthand (opts) {
-  if (!opts._.length) return done()
+  if (!opts._.length) return usage()
   debug('Sync shortcut command')
-
-  if (opts._.length > 1) {
-    // dat <link> {dir} - clone/resume <link> in {dir}
-    try {
-      debug('Clone sync')
-      opts.key = encoding.toStr(opts._[0])
-      opts.dir = opts._[1]
-      opts.exit = false
-      require('../src/commands/clone').command(opts)
-    } catch (e) { return done() }
-  } else {
-    // dat {dir} - sync existing dat in {dir}
-    try {
-      debug('Share sync')
-      opts.dir = opts._[0]
-      fs.stat(opts.dir, function (err, stat) {
-        if (err || !stat.isDirectory()) return usage(opts)
-
-        // Set default opts. TODO: use default opts in sync
-        opts.watch = opts.watch || true
-        opts.import = opts.import || true
-        require('../src/commands/sync').command(opts)
-      })
-    } catch (e) { return done() }
+  
+  // Check if first argument is a key, if not assume dir
+  try {
+    opts.key = encoding.toStr(opts._[0])
+  } catch (err) { 
+    if (err && err.message !== 'Invalid key') {
+      // catch non-key errors
+      console.error(err)
+      process.exit(1)
+    }
   }
 
-  function done () {
-    return usage(opts)
+  if (opts._.length > 1 || opts.key) {
+    // dat <link> [dir] - clone/resume <link> in [dir]
+    debug('Clone sync')
+    opts.dir = opts._[1] || process.cwd()
+    opts.exit = false
+    require('../src/commands/clone').command(opts)
+  } else {
+    // dat {dir} - sync existing dat in {dir}
+    debug('Share sync')
+    opts.dir = opts._[0]
+    fs.stat(opts.dir, function (err, stat) {
+      if (err || !stat.isDirectory()) return usage()
+
+      // Set default opts. TODO: use default opts in sync
+      opts.watch = opts.watch || true
+      opts.import = opts.import || true
+      require('../src/commands/sync').command(opts)
+    })
   }
 }
 
