@@ -3,9 +3,9 @@ var rimraf = require('rimraf')
 var Dat = require('dat-node')
 var linkResolve = require('dat-link-resolve')
 var neatLog = require('neat-log')
-var output = require('neat-log/output')
 var archiveUI = require('../ui/archive')
 var trackArchive = require('../lib/archive')
+var discoveryExit = require('../lib/discovery-exit')
 var onExit = require('../lib/exit')
 var debug = require('debug')('dat')
 
@@ -36,6 +36,7 @@ function clone (opts) {
 
   var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet })
   neat.use(trackArchive)
+  neat.use(discoveryExit)
   neat.use(onExit)
   neat.use(function (state, bus) {
     if (!opts.key) return bus.emit('exit:warn', 'key required to clone')
@@ -58,21 +59,20 @@ function clone (opts) {
       })
     })
 
-    function createDir (dir, cb) {
-      debug('Creating directory for clone', dir)
+    function createDir (key, cb) {
+      debug('Checking directory for clone')
       // Create the directory if it doesn't exist
       // If no dir is specified, we put dat in a dir with name = key
-      if (!opts.dir || opts.dir === process.cwd()) {
-        opts.dir = dir
-      }
-      try {
-        fs.accessSync(opts.dir, fs.F_OK)
-        createdDirectory = false
-      } catch (e) {
+      if (!opts.dir) opts.dir = key
+      fs.access(opts.dir, fs.F_OK, function (err) {
+        if (!err) {
+          createdDirectory = false
+          return cb()
+        }
+        debug('No existing directory, creating it.')
         createdDirectory = true
-        fs.mkdirSync(opts.dir)
-      }
-      cb()
+        fs.mkdir(opts.dir, cb)
+      })
     }
 
     function runDat () {
@@ -88,18 +88,6 @@ function clone (opts) {
         state.title = 'Cloning'
         bus.emit('dat')
         bus.emit('render')
-
-        bus.once('network:callback', function () {
-          if (!dat.network.connected) {
-            var msg = output`
-              Dat could not find any connections for that link.
-              There may not be any sources online.
-
-              Run 'dat doctor' if you keep having trouble.
-            `
-            bus.emit('exit:warn', msg)
-          }
-        })
       })
     }
   })

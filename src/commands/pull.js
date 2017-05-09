@@ -1,8 +1,8 @@
 var Dat = require('dat-node')
 var neatLog = require('neat-log')
-var output = require('neat-log/output')
 var archiveUI = require('../ui/archive')
 var trackArchive = require('../lib/archive')
+var discoveryExit = require('../lib/discovery-exit')
 var onExit = require('../lib/exit')
 var debug = require('debug')('dat')
 
@@ -35,6 +35,7 @@ function pull (opts) {
 
   var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet })
   neat.use(trackArchive)
+  neat.use(discoveryExit)
   neat.use(onExit)
   neat.use(function (state, bus) {
     state.opts = opts
@@ -47,17 +48,6 @@ function pull (opts) {
       state.dat = dat
       bus.emit('dat')
       bus.emit('render')
-
-      bus.once('network:callback', function () {
-        if (!dat.network.connected) {
-          var msg = output`
-            Dat could not find any connections for that link.
-
-            Run 'dat doctor' if you keep having trouble.
-          `
-          bus.emit('exit:warn', msg)
-        }
-      })
     })
   })
 }

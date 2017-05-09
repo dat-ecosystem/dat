@@ -17,6 +17,7 @@ module.exports = function (opts, help, usage) {
   console.error('   dat sync                    sync files with the network')
   console.error('')
   console.error('Help & Troubleshooting:')
+  console.error('   dat status                  get key & info about a local dat')
   console.error('   dat doctor                  run the dat network doctor')
   console.error('   dat [<command>] --help, -h  print help for a command')
   console.error('   dat --version, -v           print your dat version')
