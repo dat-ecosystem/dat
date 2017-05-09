@@ -4,6 +4,8 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 *Note: unreleased changes are added here.*
+### Changed
+* Improve `--show-key` help output
 
 ## 13.1.0 - 2017-05-09
 ### Fixed
