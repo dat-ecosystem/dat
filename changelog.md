@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 13.3.0 - 2017-05-10
+### Added
+* Add `--sources` option for debugging network issues
+
 ## 13.2.0 - 2017-05-10
 ### Added
 * Dat-* extensions ([#740](https://github.com/datproject/dat/pull/740))
