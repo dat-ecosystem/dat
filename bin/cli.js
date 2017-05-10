@@ -59,7 +59,8 @@ var config = {
   },
   aliases: {
     'init': 'create'
-  }
+  },
+  extensions: ['ls'] // whitelist extensions for now
 }
 
 var match = subcommand(config)
@@ -103,7 +104,8 @@ function syncShorthand (opts) {
 
   trySync(function () {
     // Try running extension if we don't reconize key or dir
-    return require('../src/extensions')(opts)
+    if (config.extensions.indexOf(opts._[0]) > -1) return require('../src/extensions')(opts)
+    usage(opts)
   })
 
   // Sync dir
