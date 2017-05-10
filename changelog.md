@@ -4,8 +4,14 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 *Note: unreleased changes are added here.*
+
+## 13.1.1 - 2017-05-10
+### Fixed
+* Set directory for publish command
+
 ### Changed
 * Improve `--show-key` help output
+* Always show download progress bar and make language more clear.
 
 ## 13.1.0 - 2017-05-09
 ### Fixed
@@ -206,7 +212,7 @@ Big new release! See the [release notes](https://github.com/datproject/dat/relea
 
 ### Changed
 * Update to hyperdrive 6.0
-* Update API to RC2 candidate 
+* Update API to RC2 candidate
 
 ## 9.x.x and earlier
 
