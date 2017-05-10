@@ -6,9 +6,9 @@ module.exports = peersUI
 
 function peersUI (state) {
   if (!state.network) return ''
-  if (Object.keys(state.peers).length === 0) return ''
+  if (Object.keys(state.sources).length === 0) return ''
 
-  var peers = state.peers
+  var peers = state.sources
   // var stats = state.stats
   // var peerCount = stats.peers.total || 0
   // var complete = stats.peers.complete

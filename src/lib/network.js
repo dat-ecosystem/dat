@@ -21,7 +21,7 @@ function trackNetwork (state, bus) {
       })
     })
 
-    if (state.opts.peers) trackPeers()
+    if (state.opts.sources) trackSources()
     if (state.stats) return trackSpeed()
     bus.once('dat:stats', trackSpeed)
 
@@ -31,37 +31,37 @@ function trackNetwork (state, bus) {
       }, state.opts.logspeed)
     }
 
-    function trackPeers () {
-      state.peers = state.peers || {}
+    function trackSources () {
+      state.sources = state.sources || {}
       network.on('connection', function (conn, info) {
         var id = info.id.toString('hex')
         var peerSpeed = speed()
 
-        state.peers[id] = info
-        state.peers[id].speed = peerSpeed()
-        state.peers[id].getProgress = function () {
+        state.sources[id] = info
+        state.sources[id].speed = peerSpeed()
+        state.sources[id].getProgress = function () {
 
           // TODO: how to get right peer from archive.content?
           // var remote = conn.feeds[1].remoteLength
-          // // state.dat.archive.content.peers[0].feed.id.toString('hex')
+          // // state.dat.archive.content.sources[0].feed.id.toString('hex')
           // if (!remote) return
           // return remote / dat.archive.content.length
         }
 
         conn.feeds.map(function (feed) {
           feed.stream.on('data', function (data) {
-            state.peers[id].speed = peerSpeed(data.length)
+            state.sources[id].speed = peerSpeed(data.length)
             bus.emit('render')
           })
           feed.stream.on('error', function (err) {
-            state.peers[id].error = err
+            state.sources[id].error = err
           })
         })
         bus.emit('render')
 
         conn.on('close', function () {
-          state.peers[id].speed = 0
-          state.peers[id].closed = true
+          state.sources[id].speed = 0
+          state.sources[id].closed = true
           bus.emit('render')
         })
       })
