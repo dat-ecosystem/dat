@@ -13,6 +13,9 @@ function publish (opts) {
   var client = Registry(opts)
   if (!client.whoami().token) return exitErr('Please login before publishing.')
 
+  if (opts._.length) opts.dir = opts._[0] // use first arg as dir if default set
+  else if (!opts.dir) opts.dir = process.cwd()
+
   opts.createIfMissing = false // publish must always be a resumed archive
   Dat(opts.dir, opts, function (err, dat) {
     if (err) return exitErr(err)
