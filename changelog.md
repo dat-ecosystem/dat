@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 13.2.0 - 2017-05-10
+### Added
+* Dat-* extensions ([#740](https://github.com/datproject/dat/pull/740))
+* Ignore directories in import (dat-node v3.3.0)
+
 ## 13.1.1 - 2017-05-10
 ### Fixed
 * Set directory for publish command
