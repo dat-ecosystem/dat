@@ -72,6 +72,11 @@ function alias (argv) {
   return argv
 }
 
+// CLI Shortcuts
+// dat dat://key - clone/sync a key
+// dat dir - share a dir
+// dat extension
+
 function syncShorthand (opts) {
   if (!opts._.length) return usage(opts)
   debug('Sync shortcut command')
@@ -87,19 +92,28 @@ function syncShorthand (opts) {
     }
   }
 
-  if (opts._.length > 1 || opts.key) {
+  // Download Key
+  if (opts.key) {
     // dat <link> [dir] - clone/resume <link> in [dir]
     debug('Clone sync')
     opts.dir = opts._[1] || process.cwd()
     opts.exit = false
-    require('../src/commands/clone').command(opts)
-  } else {
-    // dat {dir} - sync existing dat in {dir}
-    debug('Share sync')
+    return require('../src/commands/clone').command(opts)
+  }
+
+  trySync(function () {
+    // Try running extension if we don't reconize key or dir
+    return require('../src/extensions')(opts)
+  })
+
+  // Sync dir
+  // dat {dir} - sync existing dat in {dir}
+  function trySync (cb) {
     opts.dir = opts._[0]
     fs.stat(opts.dir, function (err, stat) {
-      if (err || !stat.isDirectory()) return usage(opts)
+      if (err || !stat.isDirectory()) return cb()
 
+      debug('Share sync')
       // Set default opts. TODO: use default opts in sync
       opts.watch = opts.watch || true
       opts.import = opts.import || true
