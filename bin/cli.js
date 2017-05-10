@@ -22,7 +22,7 @@ var config = {
     { name: 'logspeed', default: 400 },
     { name: 'port', default: 3282, help: 'port to use for connections' },
     { name: 'utp', default: true, boolean: true, help: 'use utp for discovery' },
-    { name: 'quiet', default: isDebug, boolean: true }, // neat-log uses quiet for debug right now
+    { name: 'quiet', default: isDebug, boolean: true } // neat-log uses quiet for debug right now
   ],
   root: {
     options: [
