@@ -5,6 +5,7 @@ var chalk = require('chalk')
 var downloadUI = require('./components/download')
 var importUI = require('./components/import-progress')
 var networkUI = require('./components/network')
+var peerUI = require('./components/peers')
 
 module.exports = archiveUI
 
@@ -29,7 +30,7 @@ function archiveUI (state) {
     ${state.joinNetwork ? '\n' + networkUI(state) : ''}
 
     ${state.writable ? importUI(state) : downloadUI(state)}
-
+    ${state.opts.peers ? peerUI(state) : ''}
     ${state.exiting ? 'Exiting the Dat program...' : chalk.dim('Ctrl+C to Exit')}
   `
 }
