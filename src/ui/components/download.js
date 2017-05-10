@@ -6,18 +6,25 @@ module.exports = networkUI
 function networkUI (state) {
   var stats = state.stats.get()
   var download = state.download
-
   if (!stats || !download) return ''
-  if (download.nsync) {
-    if (!state.opts.exit) return 'Ready to sync updates.'
-    if (!download.modified) return 'Archive synced to latest, waiting for changes.'
-    return `Archive synced, version ${stats.version}.`
-  }
   if (!stats.downloaded || !stats.length) {
     return '' // no metadata yet
   }
+
+  var title = 'Downloading updates...'
   var downBar = makeBar()
+
+  if (download.nsync) {
+    if (state.opts.exit && download.modified) return `dat sync complete.\nVersion ${stats.version}`
+
+    if (!download.modified) {
+      if (state.opts.exit) title = `dat already in sync, waiting for updates.`
+      else title = `dat synced, waiting for updates.`
+    }
+  }
+
   return output`
+    ${title}
     ${downBar(stats.downloaded)}
   `
 
