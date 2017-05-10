@@ -40,7 +40,7 @@ function trackNetwork (state, bus) {
         state.peers[id] = info
         state.peers[id].speed = peerSpeed()
         state.peers[id].getProgress = function () {
-          return
+
           // TODO: how to get right peer from archive.content?
           // var remote = conn.feeds[1].remoteLength
           // // state.dat.archive.content.peers[0].feed.id.toString('hex')

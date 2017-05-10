@@ -2,9 +2,9 @@ var debug = require('debug')('dat')
 
 module.exports = runExtension
 
-function runExtension(opts) {
+function runExtension (opts) {
   debug('Trying Extenion', opts._[0])
-  
+
   var extName = opts._.shift()
   trySpawn(function () {
     console.error('We could not run the extension. Please make sure it is installed:')
@@ -21,7 +21,7 @@ function runExtension(opts) {
       if (err.code === 'ENOENT') return cb()
       throw err
     })
-    child.on('close', function(code) {
+    child.on('close', function (code) {
       process.exit(code)
     })
   }

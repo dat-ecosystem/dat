@@ -6,23 +6,19 @@ module.exports = peersUI
 
 function peersUI (state) {
   if (!state.network) return ''
-
-  var network = state.network
-  var stats = state.stats
-  var archive = state.dat.archive
-
   if (Object.keys(state.peers).length === 0) return ''
 
   var peers = state.peers
-  var peerCount = stats.peers.total || 0
-  var complete = stats.peers.complete
+  // var stats = state.stats
+  // var peerCount = stats.peers.total || 0
+  // var complete = stats.peers.complete
   var info = Object.keys(peers).map(function (id, i) {
     return peerUI(peers[id], i)
   }).join('\n')
 
   return `\n${info}\n`
 
-  function peerUI(peer, i) {
+  function peerUI (peer, i) {
     var progress = peer.getProgress()
     var bar = makeBar({
       total: 100,
