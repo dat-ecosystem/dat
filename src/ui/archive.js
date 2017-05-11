@@ -24,6 +24,7 @@ function archiveUI (state) {
   else if (state.writable) title += 'Sharing dat'
   else title += 'Downloading dat'
   if (stats.version) title += `: ${stats.files} files (${pretty(stats.byteLength)})`
+  if (state.http && state.http.listening) title += `\nServing files over http at http://localhost:${state.http.port}`
 
   return output`
     ${title}
