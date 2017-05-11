@@ -5,6 +5,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 13.4.0 - 2017-05-11
+### Added
+* Serve dat over http with `--http` option
+
 ## 13.3.0 - 2017-05-10
 ### Added
 * Add `--sources` option for debugging network issues
