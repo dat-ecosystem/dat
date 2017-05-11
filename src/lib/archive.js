@@ -2,6 +2,7 @@ var doImport = require('./import-progress')
 var stats = require('./stats')
 var network = require('./network')
 var download = require('./download')
+var serve = require('./serve-http')
 
 module.exports = function (state, bus) {
   bus.once('dat', function () {
@@ -10,6 +11,7 @@ module.exports = function (state, bus) {
 
     stats(state, bus)
     if (state.joinNetwork) network(state, bus)
+    if (state.opts.http) serve(state, bus)
 
     if (state.writable) doImport(state, bus)
     else download(state, bus)
