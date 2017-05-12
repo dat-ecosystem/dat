@@ -124,10 +124,10 @@ function syncShorthand (opts) {
       if (err || !stat.isDirectory()) return cb()
 
       debug('Share sync')
-      // Set default opts. TODO: use default opts in sync
+      // Set default opts. TODO: use default opts in share
       opts.watch = opts.watch || true
       opts.import = opts.import || true
-      require('../src/commands/sync').command(opts)
+      require('../src/commands/share').command(opts)
     })
   }
 }
