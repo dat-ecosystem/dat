@@ -6,8 +6,8 @@ var rimraf = require('rimraf')
 var encoding = require('dat-encoding')
 var recursiveReadSync = require('recursive-readdir-sync')
 var Dat = require('dat-node')
+var ram = require('random-access-memory')
 var hypercore = require('hypercore')
-var memdb = require('memdb')
 var swarm = require('hyperdiscovery')
 
 module.exports.matchLink = matchDatLink
@@ -81,13 +81,15 @@ function isDir (dir) {
 }
 
 function shareFeed (cb) {
-  var core = hypercore(memdb())
-  var feed = core.createFeed()
+  var sw
+  var feed = hypercore(ram)
   feed.append('hello world', function (err) {
     if (err) throw err
     cb(null, encoding.toStr(feed.key), close)
   })
-  var sw = swarm(feed)
+  feed.ready(function () {
+    sw = swarm(feed)
+  })
 
   function close (cb) {
     feed.close(function () {
