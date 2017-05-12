@@ -64,6 +64,13 @@ var config = {
   extensions: ['ls'] // whitelist extensions for now
 }
 
+if (debug.enabled) {
+  var pkg = require('../package.json')
+  debug('dat', pkg.version)
+  debug('node', process.version)
+}
+
+// Match Args + Run command
 var match = subcommand(config)
 match(alias(process.argv.slice(2)))
 
@@ -75,10 +82,10 @@ function alias (argv) {
 }
 
 // CLI Shortcuts
-// dat dat://key - clone/sync a key
-// dat dir - share a dir
-// dat extension
-
+// Commands:
+//   dat [dat://key] - clone/sync a key
+//   dat [dir] - create dat + share a directory
+//   dat [extension]
 function syncShorthand (opts) {
   if (!opts._.length) return usage(opts)
   debug('Sync shortcut command')
