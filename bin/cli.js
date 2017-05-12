@@ -106,7 +106,7 @@ function syncShorthand (opts) {
     // dat <link> [dir] - clone/resume <link> in [dir]
     debug('Clone sync')
     opts.dir = opts._[1] || process.cwd()
-    opts.exit = false
+    opts.exit = opts.exit || false
     return require('../src/commands/clone').command(opts)
   }
 
