@@ -24,7 +24,7 @@ var config = {
     { name: 'utp', default: true, boolean: true, help: 'use utp for discovery' },
     { name: 'http', help: 'serve dat over http (default port: 8080)' },
     { name: 'quiet', default: isDebug, boolean: true }, // neat-log uses quiet for debug right now
-    { name: 'sparse', default: false, boolean: true }
+    { name: 'sparse', default: false, boolean: true, help: 'download only requested only (use with --http)' }
   ],
   root: {
     options: [
