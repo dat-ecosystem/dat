@@ -1,7 +1,6 @@
 var path = require('path')
 var test = require('tape')
 var tempDir = require('temporary-directory')
-var Dat = require('dat-node')
 var spawn = require('./helpers/spawn.js')
 var help = require('./helpers')
 
@@ -211,7 +210,6 @@ test('clone - invalid link', function (t) {
   })
 })
 
-
 test('clone - shortcut/stateless clone', function (t) {
   help.shareFixtures(function (_, shareDat) {
     var key = shareDat.key.toString('hex')
@@ -254,7 +252,6 @@ test('clone - shortcut/stateless clone', function (t) {
 test('clone - hypercore link', function (t) {
   help.shareFeed(function (_, key, close) {
     tempDir(function (_, dir, cleanup) {
-      console.log(key)
       var cmd = dat + ' clone ' + key
       var st = spawn(t, cmd, {cwd: dir})
       var datDir = path.join(dir, key)

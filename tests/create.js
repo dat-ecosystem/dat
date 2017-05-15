@@ -2,6 +2,7 @@ var fs = require('fs')
 var path = require('path')
 var test = require('tape')
 var rimraf = require('rimraf')
+var tempDir = require('temporary-directory')
 var spawn = require('./helpers/spawn.js')
 var help = require('./helpers')
 
@@ -15,23 +16,23 @@ try { fs.unlinkSync(path.join(fixtures, '.DS_Store')) } catch (e) { /* ignore er
 try { fs.unlinkSync(path.join(fixtures, 'dat.json')) } catch (e) { /* ignore error */ }
 
 test('create - default opts no import', function (t) {
-  rimraf.sync(path.join(fixtures, '.dat'))
+  tempDir(function (_, dir, cleanup) {
+    var cmd = dat + ' create'
+    var st = spawn(t, cmd, {cwd: dir})
 
-  var cmd = dat + ' create'
-  var st = spawn(t, cmd, {cwd: fixtures})
+    st.stdout.match(function (output) {
+      var datCreated = output.indexOf('All files') > -1
+      if (!datCreated) return false
 
-  st.stdout.match(function (output) {
-    var datCreated = output.indexOf('created') > -1
-    if (!datCreated) return false
+      t.ok(help.isDir(path.join(fixtures, '.dat')), 'creates dat directory')
 
-    t.ok(help.isDir(path.join(fixtures, '.dat')), 'creates dat directory')
-
-    st.kill()
-    return true
+      st.kill()
+      return true
+    })
+    st.succeeds('exits after create finishes')
+    st.stderr.empty()
+    st.end(cleanup)
   })
-  st.succeeds('exits after create finishes')
-  st.stderr.empty()
-  st.end()
 })
 
 test('create - default opts with import', function (t) {
