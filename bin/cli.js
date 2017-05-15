@@ -42,6 +42,7 @@ var config = {
     require('../src/commands/clone'),
     require('../src/commands/create'),
     require('../src/commands/doctor'),
+    require('../src/commands/keep'),
     require('../src/commands/publish'),
     require('../src/commands/pull'),
     require('../src/commands/share'),
