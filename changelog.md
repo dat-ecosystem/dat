@@ -4,6 +4,15 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## [Unreleased]
 *Note: unreleased changes are added here.*
+### Added
+* Document sparse option in cli help
+* add node/dat version to debug
+
+### Changed
+* Use share for shortcut (create new dat if not created)
+
+### Fixed
+* use exit option on clone shortcut if specified
 
 ## 13.4.0 - 2017-05-11
 ### Added
