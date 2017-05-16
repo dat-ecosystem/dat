@@ -1,3 +1,4 @@
+var debug = require('debug')('dat')
 var xtend = Object.assign
 
 module.exports = trackDownload
@@ -10,10 +11,12 @@ function trackDownload (state, bus) {
     var archive = state.dat.archive
 
     state.download = xtend({
-      modified: false
+      modified: false,
+      nsync: false
     }, {})
 
     archive.content.on('clear', function () {
+      debug('archive clear')
       state.download.modified = true
     })
 
@@ -22,18 +25,24 @@ function trackDownload (state, bus) {
     })
 
     archive.on('syncing', function () {
+      debug('archive syncing')
       state.download.nsync = false
     })
 
     archive.on('sync', function () {
+      debug('archive sync', state.stats.get())
       state.download.nsync = true
-      if (state.download.modified && state.opts.exit) {
-        return exit()
+      var shouldExit = (state.download.modified && state.opts.exit)
+      if (shouldExit) return exit()
+      if (state.dat.archive.version === 0) {
+        // TODO: deal with this.
+        // Sync sometimes fires early when it should wait for update.
       }
       bus.emit('render')
     })
 
     archive.on('update', function () {
+      debug('archive update')
       bus.emit('render')
     })
 
