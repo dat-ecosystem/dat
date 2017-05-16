@@ -111,16 +111,17 @@ function syncShorthand (opts) {
     return require('../src/commands/clone').command(opts)
   }
 
-  trySync(function () {
-    // Try running extension if we don't reconize key or dir
+  trySyncDir(function () {
+    // If directory sync fails, finally run extension
     if (config.extensions.indexOf(opts._[0]) > -1) return require('../src/extensions')(opts)
     usage(opts)
   })
 
   // Sync dir
   // dat {dir} - sync existing dat in {dir}
-  function trySync (cb) {
+  function trySyncDir (cb) {
     opts.dir = opts._[0]
+    opts.shortcut = true
     fs.stat(opts.dir, function (err, stat) {
       if (err || !stat.isDirectory()) return cb()
 
