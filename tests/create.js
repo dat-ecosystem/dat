@@ -3,6 +3,7 @@ var path = require('path')
 var test = require('tape')
 var rimraf = require('rimraf')
 var tempDir = require('temporary-directory')
+var Dat = require('dat-node')
 var spawn = require('./helpers/spawn.js')
 var help = require('./helpers')
 
@@ -21,10 +22,10 @@ test('create - default opts no import', function (t) {
     var st = spawn(t, cmd, {cwd: dir})
 
     st.stdout.match(function (output) {
-      var datCreated = output.indexOf('All files') > -1
+      var datCreated = output.indexOf('All files imported') > -1
       if (!datCreated) return false
 
-      t.ok(help.isDir(path.join(fixtures, '.dat')), 'creates dat directory')
+      t.ok(help.isDir(path.join(dir, '.dat')), 'creates dat directory')
 
       st.kill()
       return true
@@ -36,125 +37,107 @@ test('create - default opts no import', function (t) {
 })
 
 test('create - default opts with import', function (t) {
-  rimraf.sync(path.join(fixtures, '.dat'))
-  // cmd: dat create
-  var cmd = dat + ' create --import'
-  var st = spawn(t, cmd, {cwd: fixtures})
+  tempDir(function (_, dir, cleanup) {
+    var cmd = dat + ' create --import'
+    var st = spawn(t, cmd, {cwd: dir})
 
-  st.stdout.match(function (output) {
-    var importFinished = output.indexOf('import finished') > -1
-    if (!importFinished) return false
+    st.stdout.match(function (output) {
+      var importFinished = output.indexOf('All files imported') > -1
+      if (!importFinished) return false
 
-    t.ok(help.isDir(path.join(fixtures, '.dat')), 'creates dat directory')
+      t.ok(help.isDir(path.join(dir, '.dat')), 'creates dat directory')
+      t.ok(help.matchLink(output), 'prints link')
+      t.skip(help.datJson(fixtures).title, 'fixtures', 'dat.json: has title')
 
-    var fileRe = new RegExp('3 files')
-    var bytesRe = new RegExp(/1\.\d{1,2} kB/)
-
-    t.ok(help.matchLink(output), 'prints link')
-    t.ok(output.indexOf('tests/fixtures') > -1, 'prints dir')
-    t.ok(output.match(fileRe), 'total size: files okay')
-    t.ok(output.match(bytesRe), 'total size: bytes okay')
-
-    t.same(help.datJson(fixtures).title, 'fixtures', 'dat.json: has title')
-
-    st.kill()
-    return true
+      st.kill()
+      return true
+    })
+    st.succeeds('exits after create finishes')
+    st.stderr.empty()
+    st.end(cleanup)
   })
-  st.succeeds('exits after create finishes')
-  st.stderr.empty()
-  st.end()
 })
 
 test('create - errors on existing archive', function (t) {
-  // cmd: dat create
-  var cmd = dat + ' create'
-  var st = spawn(t, cmd, {cwd: fixtures})
-
-  st.stderr.match(function (output) {
-    t.ok(output.indexOf('Archive already exists') > -1, 'already exists error')
-    st.kill()
-    return true
+  tempDir(function (_, dir, cleanup) {
+    Dat(dir, function (err, dat) {
+      t.error(err, 'no error')
+      dat.close(function () {
+        var cmd = dat + ' create'
+        var st = spawn(t, cmd, {cwd: dir})
+        st.stderr.match(function (output) {
+          t.ok(output, 'errors')
+          st.kill()
+          return true
+        })
+        st.end()
+      })
+    })
   })
-  st.end()
-})
-
-test('pull - pull fails on created archive', function (t) {
-  // cmd: dat create
-  var cmd = dat + ' pull'
-  var st = spawn(t, cmd, {cwd: fixtures})
-
-  st.stderr.match(function (output) {
-    t.ok(output.indexOf('Cannot pull an archive that you own.') > -1, 'cannot pull on create error')
-    st.kill()
-    return true
-  })
-  st.end()
 })
 
 test('create - sync after create ok', function (t) {
-  // cmd: dat sync
-  var cmd = dat + ' sync '
-  var st = spawn(t, cmd, {cwd: fixtures})
+  tempDir(function (_, dir, cleanup) {
+    var cmd = dat + ' create'
+    var st = spawn(t, cmd, {cwd: dir, end: false})
+    st.stdout.match(function (output) {
+      var connected = output.indexOf('All files imported') > -1
+      if (!connected) return false
+      doSync()
+      return true
+    })
 
-  st.stdout.match(function (output) {
-    var connected = output.indexOf('Looking for connections') > -1
-    if (!connected) return false
-    t.ok('Dat Network', 'Shares over dat network')
-    st.kill()
-    return true
+    function doSync () {
+      var cmd = dat + ' sync '
+      var st = spawn(t, cmd, {cwd: dir})
+
+      st.stdout.match(function (output) {
+        var connected = output.indexOf('Sharing') > -1
+        if (!connected) return false
+        st.kill()
+        return true
+      })
+      st.stderr.empty()
+      st.end(cleanup)
+    }
   })
-  st.stderr.empty()
-  st.end()
 })
 
-test('create - quiet only prints link', function (t) {
-  rimraf.sync(path.join(fixtures, '.dat'))
-  var cmd = dat + ' create --quiet'
-  var st = spawn(t, cmd, {cwd: fixtures})
+test('create - init alias', function (t) {
+  tempDir(function (_, dir, cleanup) {
+    var cmd = dat + ' init'
+    var st = spawn(t, cmd, {cwd: dir})
 
-  st.stderr.empty()
-  st.stdout.match(function (output) {
-    var link = help.matchLink(output)
-    if (!link) return false
-    t.ok(link, 'prints link')
-    st.kill()
-    return true
+    st.stdout.match(function (output) {
+      var datCreated = output.indexOf('All files imported') > -1
+      if (!datCreated) return false
+
+      t.ok(help.isDir(path.join(dir, '.dat')), 'creates dat directory')
+
+      st.kill()
+      return true
+    })
+    st.succeeds('exits after create finishes')
+    st.stderr.empty()
+    st.end(cleanup)
   })
-  st.end()
-})
-
-test('create - init alias okay', function (t) {
-  rimraf.sync(path.join(fixtures, '.dat'))
-  var cmd = dat + ' init --import'
-  var st = spawn(t, cmd, {cwd: fixtures})
-
-  st.stderr.empty()
-  st.stdout.match(function (output) {
-    var importFinished = output.indexOf('import finished') > -1
-    if (!importFinished) return false
-    t.pass('init did create')
-    st.kill()
-    return true
-  })
-  st.end()
 })
 
 test('create - with path', function (t) {
-  rimraf.sync(path.join(fixtures, '.dat'))
-  var cmd = dat + ' create --import ' + fixtures
-  var st = spawn(t, cmd)
+  tempDir(function (_, dir, cleanup) {
+    var cmd = dat + ' init ' + dir
+    var st = spawn(t, cmd)
+    st.stdout.match(function (output) {
+      var datCreated = output.indexOf('All files imported') > -1
+      if (!datCreated) return false
 
-  st.stderr.empty()
-  st.stdout.match(function (output) {
-    var importFinished = output.indexOf('import finished') > -1
-    if (!importFinished) return false
-    t.ok(output.indexOf('dat-next/tests/fixtures'), 'prints correct dir')
-    st.kill()
-    return true
+      t.ok(help.isDir(path.join(dir, '.dat')), 'creates dat directory')
+
+      st.kill()
+      return true
+    })
+    st.succeeds('exits after create finishes')
+    st.stderr.empty()
+    st.end(cleanup)
   })
-  st.end()
-})
-
-test.onFinish(function () {
-  rimraf.sync(path.join(fixtures, '.dat'))
 })
