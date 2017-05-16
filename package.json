@@ -36,7 +36,7 @@
     "dat-doctor": "^1.2.4",
     "dat-encoding": "^4.0.2",
     "dat-link-resolve": "^1.0.0",
-    "dat-node": "^3.3.0",
+    "dat-node": "^3.3.1",
     "dat-registry": "^2.1.2",
     "debug": "^2.6.6",
     "hyperdrive-http": "^4.1.0",
