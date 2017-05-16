@@ -1,42 +1,58 @@
 var path = require('path')
 var test = require('tape')
 var rimraf = require('rimraf')
+var tempDir = require('temporary-directory')
 var spawn = require('./helpers/spawn.js')
 var help = require('./helpers')
 
 var dat = path.resolve(path.join(__dirname, '..', 'bin', 'cli.js'))
-var baseTestDir = help.testFolder()
-var shareDat
-var shareKey
 
 test('pull - errors without clone first', function (t) {
-  // cmd: dat pull
-  var cmd = dat + ' pull'
-  var st = spawn(t, cmd, {cwd: baseTestDir})
-  st.stderr.match(function (output) {
-    t.ok('No existing archive', 'Error: no existing archive')
-    st.kill()
-    return true
-  })
-  st.end()
-})
-
-test('pull - clone so we can pull', function (t) {
-  // cmd: dat clone <link>
-  // import false so we can pull files later
-  help.shareFixtures({import: false}, function (_, fixturesDat) {
-    shareDat = fixturesDat
-    shareKey = shareDat.key.toString('hex')
-    var cmd = dat + ' clone ' + shareKey
-    var st = spawn(t, cmd, {cwd: baseTestDir})
-    st.stdout.match(function (output) {
-      var downloadFinished = output.indexOf('Download Finished') > -1
-      if (!downloadFinished) return false
+  tempDir(function (_, dir, cleanup) {
+    var cmd = dat + ' pull'
+    var st = spawn(t, cmd, {cwd: dir})
+    st.stderr.match(function (output) {
+      t.ok('No existing archive', 'Error: no existing archive')
       st.kill()
       return true
     })
-    st.stderr.empty()
-    st.end()
+    st.end(cleanup)
+  })
+})
+
+test('pull - default opts', function (t) {
+  // import false so we can pull files later
+  help.shareFixtures({import: false}, function (_, fixturesDat) {
+    tempDir(function (_, dir, cleanup) {
+      // clone initial dat
+      var cmd = dat + ' clone ' + fixturesDat.key.toString('hex') + ' ' + dir
+      var st = spawn(t, cmd)
+      st.stdout.match(function (output) {
+        var synced = output.indexOf('dat synced') > -1
+        if (!synced) return false
+        st.kill()
+        fixturesDat.close(doPull)
+        return true
+      })
+
+      function doPull () {
+        // TODO: Finish this one. Need some bug fixes on empty pulls =(
+        help.shareFixtures({resume: true, import: true}, function (_, fixturesDat) {
+          var cmd = dat + ' pull'
+          var st = spawn(t, cmd, {cwd: dir})
+          st.stdout.match(function (output) {
+            console.log(output)
+            var downloadFinished = output.indexOf('Download Finished') > -1
+            if (!downloadFinished) return false
+            st.kill()
+            return true
+          })
+          st.succeeds('exits after finishing download')
+          st.stderr.empty()
+          st.end()
+        })
+      }
+    })
   })
 })
 
