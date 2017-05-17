@@ -93,7 +93,7 @@ function create (opts) {
         prompt.get(schema, writeDatJson)
 
         function writeDatJson (err, results) {
-          if (err) return console.log(err.message) // prompt error
+          if (err) return bus.emit('exit:error', err) // prompt error
           if (results.doImport[0] === 'y') state.opts.import = true
           if (!results.title && !results.description) return done()
           delete results.doImport // don't want this in dat.json
