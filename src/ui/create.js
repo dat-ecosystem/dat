@@ -7,9 +7,11 @@ var importUI = require('./components/import-progress')
 module.exports = createUI
 
 function createUI (state) {
-  if (!state.dat) return output`
+  if (!state.dat) {
+    return output`
     Creating a Dat! Add information to your dat.json file:
   `
+  }
 
   var dat = state.dat
   var stats = dat.stats.get()

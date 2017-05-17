@@ -56,9 +56,8 @@ function create (opts) {
       if (err && err.name === 'ExistsError') return bus.emit('exit:warn', 'Archive already exists.')
       if (err) return bus.emit('exit:error', err)
 
-
       // create before import
-      datjson = DatJson(dat.archive, { file: path.join(opts.dir, 'dat.json') })
+      var datjson = DatJson(dat.archive, { file: path.join(opts.dir, 'dat.json') })
       fs.readFile(path.join(opts.dir, 'dat.json'), 'utf-8', function (err, data) {
         if (err) return doPrompt()
         data = JSON.parse(data)
@@ -66,7 +65,7 @@ function create (opts) {
         doPrompt(data)
       })
 
-      function doPrompt(data) {
+      function doPrompt (data) {
         if (!data) data = {}
 
         var schema = {
@@ -74,8 +73,8 @@ function create (opts) {
             title: {
               description: chalk.magenta('Dat Title'),
               default: data.title || '',
-              pattern: /^[a-zA-Z\s\-]+$/,
-              message: 'Name must be only letters, spaces, or dashes',
+              // pattern: /^[a-zA-Z\s\-]+$/,
+              // message: 'Name must be only letters, spaces, or dashes',
               required: false
             },
             description: {
@@ -89,7 +88,7 @@ function create (opts) {
           }
         }
         prompt.message = chalk.green('> ')
-        prompt.delimiter = '' //chalk.cyan('')
+        prompt.delimiter = '' // chalk.cyan('')
         prompt.start()
         prompt.get(schema, writeDatJson)
 
