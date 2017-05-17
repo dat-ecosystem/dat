@@ -38,7 +38,7 @@
     "dat-link-resolve": "^1.0.0",
     "dat-node": "^3.3.0",
     "dat-registry": "^2.1.2",
-    "debug": "^2.6.6",
+    "debug": "^2.6.7",
     "hyperdrive-http": "^4.1.0",
     "mkdirp": "^0.5.1",
     "neat-log": "^1.1.0",
