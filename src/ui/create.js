@@ -15,14 +15,19 @@ function createUI (state) {
 
   var dat = state.dat
   var stats = dat.stats.get()
-  var title = ''
+  var title = '\n'
   var progressView
   var exitMsg = `
     Your dat is created! Run ${chalk.green('dat sync')} to share:
     ${chalk.blue('dat://' + stringKey(dat.key))}
   `
+  if (!state.opts.import) {
+    // set exiting right away
+    state.exiting = true
+  }
 
-  if (state.writable || state.opts.showKey) {
+  if (!state.exiting) {
+    // Only show key if not about to exit
     title = `${chalk.blue('dat://' + stringKey(dat.key))}\n`
   }
   if (state.title) title += state.title
@@ -31,16 +36,15 @@ function createUI (state) {
   else if (stats.version === 0) title += ': (empty archive)'
 
   if (state.opts.import) {
-    progressView = importUI(state)
+    progressView = importUI(state) + '\n'
   } else {
-    state.exiting = true
     progressView = 'Not importing files.'
   }
+
   return output`
     ${title}
 
     ${progressView}
-
     ${state.exiting ? exitMsg : chalk.dim('Ctrl+C to Exit')}
   `
 
