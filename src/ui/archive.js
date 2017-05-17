@@ -1,11 +1,12 @@
 var output = require('neat-log/output')
-var stringKey = require('dat-encoding').toStr
 var pretty = require('prettier-bytes')
 var chalk = require('chalk')
 var downloadUI = require('./components/download')
 var importUI = require('./components/import-progress')
 var networkUI = require('./components/network')
 var sourcesUI = require('./components/sources')
+var keyEl = require('./elements/key')
+var pluralize = require('./elements/pluralize')
 
 module.exports = archiveUI
 
@@ -19,7 +20,7 @@ function archiveUI (state) {
   var progressView
 
   if (state.writable || state.opts.showKey) {
-    title = `${chalk.blue('dat://' + stringKey(dat.key))}\n`
+    title = `${keyEl(dat.key)}\n`
   }
   if (state.title) title += state.title
   else if (state.writable) title += 'Sharing dat'
@@ -46,8 +47,4 @@ function archiveUI (state) {
     ${state.opts.sources ? sourcesUI(state) : ''}
     ${state.exiting ? 'Exiting the Dat program...' : chalk.dim('Ctrl+C to Exit')}
   `
-
-  function pluralize (str, val) {
-    return `${str}${val === 1 ? '' : 's'}`
-  }
 }

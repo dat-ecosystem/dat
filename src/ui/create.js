@@ -1,8 +1,9 @@
 var output = require('neat-log/output')
-var stringKey = require('dat-encoding').toStr
 var pretty = require('prettier-bytes')
 var chalk = require('chalk')
 var importUI = require('./components/import-progress')
+var keyEl = require('./elements/key')
+var pluralize = require('./elements/pluralize')
 
 module.exports = createUI
 
@@ -19,7 +20,7 @@ function createUI (state) {
   var progressView
   var exitMsg = `
     Your dat is created! Run ${chalk.green('dat sync')} to share:
-    ${chalk.blue('dat://' + stringKey(dat.key))}
+    ${keyEl(dat.key)}
   `
   if (!state.opts.import) {
     // set exiting right away
@@ -28,7 +29,7 @@ function createUI (state) {
 
   if (!state.exiting) {
     // Only show key if not about to exit
-    title = `${chalk.blue('dat://' + stringKey(dat.key))}\n`
+    title = `${keyEl(dat.key)}\n`
   }
   if (state.title) title += state.title
 
@@ -47,8 +48,4 @@ function createUI (state) {
     ${progressView}
     ${state.exiting ? exitMsg : chalk.dim('Ctrl+C to Exit')}
   `
-
-  function pluralize (str, val) {
-    return `${str}${val === 1 ? '' : 's'}`
-  }
 }

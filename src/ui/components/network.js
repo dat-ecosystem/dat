@@ -1,5 +1,6 @@
 var output = require('neat-log/output')
 var pretty = require('prettier-bytes')
+var pluralize = require('../elements/pluralize')
 
 module.exports = networkUI
 
@@ -22,9 +23,5 @@ function networkUI (state) {
     output += `Download ${pretty(downSpeed)}/s`
     output += ` Upload ${pretty(upSpeed)}/s `
     return output
-  }
-
-  function pluralize (str, val) {
-    return `${str}${val === 1 ? '' : 's'}`
   }
 }
