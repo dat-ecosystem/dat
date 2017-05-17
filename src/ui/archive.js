@@ -24,7 +24,7 @@ function archiveUI (state) {
   if (state.title) title += state.title
   else if (state.writable) title += 'Sharing dat'
   else title += 'Downloading dat'
-  if (stats.version > 0) title += `: ${stats.files} files (${pretty(stats.byteLength)})`
+  if (stats.version > 0) title += `: ${stats.files} ${pluralize('file', stats.file)} (${pretty(stats.byteLength)})`
   else if (stats.version === 0) title += ': (empty archive)'
   if (state.http && state.http.listening) title += `\nServing files over http at http://localhost:${state.http.port}`
 
@@ -46,4 +46,8 @@ function archiveUI (state) {
     ${state.opts.sources ? sourcesUI(state) : ''}
     ${state.exiting ? 'Exiting the Dat program...' : chalk.dim('Ctrl+C to Exit')}
   `
+
+  function pluralize (str, val) {
+    return `${str}${val === 1 ? '' : 's'}`
+  }
 }
