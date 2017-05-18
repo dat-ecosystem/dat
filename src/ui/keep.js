@@ -8,7 +8,7 @@ module.exports = statusUI
 function statusUI (state) {
   if (!state.dat) return 'Starting Dat program...'
   if (state.importing) return 'importing files...'
-  if (state.history) {
+  if (state.keep) {
     return output`
       ${chalk.blue('dat://' + stringKey(state.dat.key))}
       Dat saved to local history.

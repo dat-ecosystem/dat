@@ -1,14 +1,13 @@
 var Dat = require('dat-node')
+var createBackup = require('dat-backup')
 var neatLog = require('neat-log')
 var keepUI = require('../ui/keep')
-// var trackArchive = require('../lib/archive')
 var onExit = require('../lib/exit')
-var history = require('../history')
 var debug = require('debug')('dat')
 
 module.exports = {
   name: 'keep',
-  command: keep,
+  command: keepCommand,
   help: [
     'keep a Dat archive with the network',
     'Watch and import file changes (if you created the archive)',
@@ -19,31 +18,34 @@ module.exports = {
     {
       name: 'import',
       boolean: true,
-      default: false,
-      help: '(Dat Writable) Import files from the directory to the database (Dat Writable).'
+      default: true,
+      help: 'Import files from the directory before putting in storage.'
     },
     {
       name: 'ignoreHidden',
       boolean: true,
       default: false,
       abbr: 'ignore-hidden'
+    },
+    {
+      name: 'list',
+      boolean: true,
+      default: false,
+      abbr: 'l',
+      help: 'List all files in local storage.'
     }
   ]
 }
 
-function keep (opts) {
+function keepCommand (opts) {
   debug('dat keep')
   if (opts._.length) opts.dir = opts._[0] // use first arg as dir if default set
   else if (!opts.dir) opts.dir = process.cwd()
-  opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
 
-  // Set default options (some of these may be exposed to CLI eventually)
+  // Force options
   opts.createIfMissing = false // keep must always be a resumed archive
-  // opts.exit = true
-  // debug('Reading archive in dir', opts.dir)
 
   var neat = neatLog(keepUI, { logspeed: opts.logspeed, quiet: opts.quiet })
-  // neat.use(trackArchive)
   neat.use(onExit)
   neat.use(function (state, bus) {
     state.opts = opts
@@ -56,18 +58,40 @@ function keep (opts) {
       bus.emit('dat')
       bus.emit('render')
 
-      if (dat.writable) return importKeep()
-      history(dat, {serve: opts.serve})
+      var backup = createBackup(dat) // , {serve: opts.serve, list: opts.list})
+      backup.create(function (err) {
+        if (err) throw new Error(err)
+
+        if (opts.list) {
+          var stream = backup.list()
+          stream.on('data', function (data) {
+            console.log(data.name, new Date(data.value.mtime).toLocaleString(), '(version:', data.version, ')')
+          })
+          stream.on('error', function (err) {
+            console.error('err', err)
+          })
+        } else {
+          if (opts.tag) {
+            // TODO: save tag to ndjson file/hypercore?
+            // version is archive version, everything else optional
+            // {version: 23, name: 'v1.1.1', description: 'asfd', whatever: 'cat'}
+          }
+
+          if (dat.writable && opts.import) return importKeep()
+          backup.add({live: opts.live})
+        }
+      })
 
       function importKeep () {
+        // Import and then keep
         state.importing = true
         dat.importFiles(function (err) {
           state.importing = false
-          history(dat, {serve: opts.serve}, function () {
-            state.history = true
+          backup.add({live: opts.live}, function (err) {
+            if (err) return bus.emit('exit:err', err)
+            state.keep = true
             bus.emit('render')
           })
-          bus.emit('render')
         })
         bus.emit('render')
       }

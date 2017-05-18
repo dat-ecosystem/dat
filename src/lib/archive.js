@@ -3,7 +3,7 @@ var stats = require('./stats')
 var network = require('./network')
 var download = require('./download')
 var serve = require('./serve-http')
-var history = require('../history')
+var keep = require('../keep')
 
 module.exports = function (state, bus) {
   bus.once('dat', function () {
@@ -13,7 +13,7 @@ module.exports = function (state, bus) {
     stats(state, bus)
     if (state.joinNetwork) network(state, bus)
     if (state.opts.http) serve(state, bus)
-    if (state.opts.keep) history(state.dat, {live: state.opts.watch && state.writable})
+    if (state.opts.keep) keep(state.dat, {live: (state.opts.watch && state.writable) || !state.opts.exit })
 
     if (state.writable && state.opts.import) doImport(state, bus)
     else download(state, bus)

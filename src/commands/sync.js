@@ -3,7 +3,6 @@ var neatLog = require('neat-log')
 var archiveUI = require('../ui/archive')
 var trackArchive = require('../lib/archive')
 var onExit = require('../lib/exit')
-var history = require('../history')
 var debug = require('debug')('dat')
 
 module.exports = {
@@ -20,7 +19,7 @@ module.exports = {
       name: 'import',
       boolean: true,
       default: true,
-      help: '(Dat Writable) Import files from the directory to the database (Dat Writable).'
+      help: 'Import files from the directory to the database (Dat Writable).'
     },
     {
       name: 'ignoreHidden',
@@ -63,9 +62,6 @@ function sync (opts) {
     Dat(opts.dir, opts, function (err, dat) {
       if (err && err.name === 'MissingError') return bus.emit('exit:warn', 'No existing archive in this directory.')
       if (err) return bus.emit('exit:error', err)
-      if (opts.history) {
-        history(dat)
-      }
 
       state.dat = dat
       bus.emit('dat')
