@@ -59,7 +59,7 @@ function keepCommand (opts) {
       bus.emit('render')
 
       var backup = createBackup(dat) // , {serve: opts.serve, list: opts.list})
-      backup.create(function (err) {
+      backup.ready(function (err) {
         if (err) throw new Error(err)
 
         if (opts.list) {
