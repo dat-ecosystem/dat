@@ -1,6 +1,5 @@
 var path = require('path')
 var test = require('tape')
-var rimraf = require('rimraf')
 var tempDir = require('temporary-directory')
 var spawn = require('./helpers/spawn.js')
 var help = require('./helpers')
