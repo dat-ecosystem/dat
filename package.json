@@ -52,6 +52,7 @@
   },
   "devDependencies": {
     "dat-land": "datproject/datfolder",
+    "dependency-check": "^2.8.0",
     "hypercore": "^6.2.4",
     "hyperdiscovery": "^6.0.1",
     "mkdirp": "^0.5.1",
