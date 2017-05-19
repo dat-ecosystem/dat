@@ -15,7 +15,8 @@
     "auth-server": "DEBUG=* node scripts/auth-server.js",
     "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "standard": "standard",
-    "test": "standard && tape 'test/*[!auth].js' | tap-spec"
+    "deps": "dependency-check . && dependency-check . --extra --no-dev",
+    "test": "standard && npm run deps && tape 'test/*[!auth].js' | tap-spec"
   },
   "repository": {
     "type": "git",
@@ -40,9 +41,7 @@
     "dat-registry": "^2.1.2",
     "debug": "^2.6.6",
     "hyperdrive-http": "^4.1.0",
-    "mkdirp": "^0.5.1",
     "neat-log": "^1.1.0",
-    "nets": "^3.2.0",
     "prettier-bytes": "^1.0.3",
     "progress-string": "^1.2.1",
     "prompt": "^1.0.0",
@@ -55,6 +54,8 @@
     "dat-land": "datproject/datfolder",
     "hypercore": "^6.2.4",
     "hyperdiscovery": "^6.0.1",
+    "mkdirp": "^0.5.1",
+    "random-access-memory": "^2.4.0",
     "recursive-readdir-sync": "^1.0.6",
     "standard": "*",
     "tap-spec": "^4.1.1",
