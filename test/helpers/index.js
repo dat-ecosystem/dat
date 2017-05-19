@@ -6,8 +6,8 @@ var rimraf = require('rimraf')
 var encoding = require('dat-encoding')
 var recursiveReadSync = require('recursive-readdir-sync')
 var Dat = require('dat-node')
+var ram = require('random-access-memory')
 var hypercore = require('hypercore')
-var memdb = require('memdb')
 var swarm = require('hyperdiscovery')
 
 module.exports.matchLink = matchDatLink
@@ -24,14 +24,13 @@ function shareFixtures (opts, cb) {
   var fixtures = path.join(__dirname, '..', 'fixtures')
   // os x adds this if you view the fixtures in finder and breaks the file count assertions
   try { fs.unlinkSync(path.join(fixtures, '.DS_Store')) } catch (e) { /* ignore error */ }
-
-  rimraf.sync(path.join(fixtures, '.dat'))
+  if (opts.resume !== true) rimraf.sync(path.join(fixtures, '.dat'))
   Dat(fixtures, {}, function (err, dat) {
     if (err) throw err
     dat.trackStats()
     dat.joinNetwork()
     if (opts.import === false) return cb(null, dat)
-    dat.importFiles(function (err) {
+    dat.importFiles({watch: false}, function (err) {
       if (err) throw err
       cb(null, dat)
     })
@@ -82,13 +81,15 @@ function isDir (dir) {
 }
 
 function shareFeed (cb) {
-  var core = hypercore(memdb())
-  var feed = core.createFeed()
+  var sw
+  var feed = hypercore(ram)
   feed.append('hello world', function (err) {
     if (err) throw err
     cb(null, encoding.toStr(feed.key), close)
   })
-  var sw = swarm(feed)
+  feed.ready(function () {
+    sw = swarm(feed)
+  })
 
   function close (cb) {
     feed.close(function () {
