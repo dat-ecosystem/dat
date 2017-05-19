@@ -1,9 +1,9 @@
+var createBackup = require('dat-backup')
 var doImport = require('./import-progress')
 var stats = require('./stats')
 var network = require('./network')
 var download = require('./download')
 var serve = require('./serve-http')
-var keep = require('../keep')
 
 module.exports = function (state, bus) {
   bus.once('dat', function () {
@@ -13,7 +13,12 @@ module.exports = function (state, bus) {
     stats(state, bus)
     if (state.joinNetwork) network(state, bus)
     if (state.opts.http) serve(state, bus)
-    if (state.opts.keep) keep(state.dat, {live: (state.opts.watch && state.writable) || !state.opts.exit })
+    if (state.opts.keep) {
+      var backup = createBackup(state.dat)
+      backup.add({live: (state.opts.watch && state.writable) || !state.opts.exit}, function (err) {
+        if (err) return cb.emit('exit:error', err)
+      })
+    }
 
     if (state.writable && state.opts.import) doImport(state, bus)
     else download(state, bus)

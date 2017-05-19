@@ -10,6 +10,8 @@ function trackImport (state, bus) {
     var progress = state.dat.importFiles(state.opts, function (err) {
       if (err) return bus.emit('exit:error', err)
       state.importer.fileImport = null
+      state.importer.finished = true
+      bus.emit('import:finished')
       bus.emit('render')
     })
     state.importer = xtend({

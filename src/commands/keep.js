@@ -2,6 +2,7 @@ var Dat = require('dat-node')
 var createBackup = require('dat-backup')
 var neatLog = require('neat-log')
 var keepUI = require('../ui/keep')
+var trackImport = require('../lib/import-progress')
 var onExit = require('../lib/exit')
 var debug = require('debug')('dat')
 
@@ -32,7 +33,20 @@ module.exports = {
       boolean: true,
       default: false,
       abbr: 'l',
-      help: 'List all files in local storage.'
+      help: 'List all files in local backup.'
+    },
+    {
+      name: 'remove',
+      abbr: 'd',
+      default: false,
+      help: 'Remove local backups, specify single version -d 12 or a version range -d 22..54'
+    },
+    {
+      name: 'serve',
+      boolean: true,
+      default: false,
+      abbr: 's',
+      help: 'Serve archive from backups.'
     }
   ]
 }
@@ -58,42 +72,82 @@ function keepCommand (opts) {
       bus.emit('dat')
       bus.emit('render')
 
-      var backup = createBackup(dat) // , {serve: opts.serve, list: opts.list})
+      var backup = createBackup(dat)
+      state.backup = Object.assign({
+        ready: false
+      }, backup)
+
       backup.ready(function (err) {
-        if (err) throw new Error(err)
+        if (err) return bus.emit('exit:error', err)
+        state.backup.ready = true
 
         if (opts.list) {
+          if (backup.dat.archive.version < 1) {
+            return bus.emit('exit:warn', 'No data in local backup. Use `dat keep` to backup data.')
+          }
+          state.backup.list = []
           var stream = backup.list()
           stream.on('data', function (data) {
-            console.log(data.name, new Date(data.value.mtime).toLocaleString(), '(version:', data.version, ')')
+            state.backup.list.push(data)
+            bus.emit('render')
+          })
+          stream.on('end', function () {
+            state.exiting = true
+            bus.emit('render')
           })
           stream.on('error', function (err) {
-            console.error('err', err)
+            bus.emit('exit:error', err)
           })
-        } else {
-          if (opts.tag) {
-            // TODO: save tag to ndjson file/hypercore?
-            // version is archive version, everything else optional
-            // {version: 23, name: 'v1.1.1', description: 'asfd', whatever: 'cat'}
+        } else if (opts.remove) {
+          var start = {}
+          var end = {}
+          if (typeof opts.remove === 'string') {
+            // remove range
+            start.version = +opts.remove.split('..')[0]
+            end.version = +opts.remove.split('..')[1]
+          } else {
+            // remove single version
+            start.version = opts.remove
           }
-
+          state.backup.removeRange = [start.version]
+          if (end.version) state.backup.removeRange.push(end.version)
+          state.backup.remove(start, end, function (err) {
+            if (err) return bus.emit('exit:error')
+            state.exiting = true
+            bus.emit('render')
+          })
+        } else if (opts.serve) {
+          if (backup.dat.archive.version < 1) {
+            return bus.emit('exit:warn', 'No data in local backup. Use `dat keep` to backup data.')
+          }
+          backup.serve()
+          bus.emit('render')
+        } else {
+          state.backup.running = true
+          bus.emit('render')
           if (dat.writable && opts.import) return importKeep()
-          backup.add({live: opts.live})
+          backup.add(function (err) {
+            if (err) return bus.emit('exit:error', err)
+            state.exiting = true
+            bus.emit('render')
+          })
         }
       })
 
       function importKeep () {
         // Import and then keep
-        state.importing = true
-        dat.importFiles(function (err) {
-          state.importing = false
-          backup.add({live: opts.live}, function (err) {
+        neat.use(trackImport)
+        if (state.importer.finished) return doBackup()
+        bus.once('import:finished', doBackup)
+
+        function doBackup () {
+          backup.add(function (err) {
             if (err) return bus.emit('exit:err', err)
-            state.keep = true
-            bus.emit('render')
+            state.backup.running = false
+            state.exiting = true
+            bus.render()
           })
-        })
-        bus.emit('render')
+        }
       }
     })
   })
