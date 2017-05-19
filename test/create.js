@@ -17,7 +17,7 @@ try { fs.unlinkSync(path.join(fixtures, 'dat.json')) } catch (e) { /* ignore err
 
 test('create - default opts no import', function (t) {
   tempDir(function (_, dir, cleanup) {
-    var cmd = dat + ' create'
+    var cmd = dat + ' create --title data --description thing'
     var st = spawn(t, cmd, {cwd: dir})
 
     st.stdout.match(function (output) {
@@ -37,7 +37,7 @@ test('create - default opts no import', function (t) {
 
 test('create - default opts with import', function (t) {
   tempDir(function (_, dir, cleanup) {
-    var cmd = dat + ' create --import'
+    var cmd = dat + ' create --title data --description thing --import'
     var st = spawn(t, cmd, {cwd: dir})
 
     st.stdout.match(function (output) {
@@ -62,7 +62,7 @@ test('create - errors on existing archive', function (t) {
     Dat(dir, function (err, dat) {
       t.error(err, 'no error')
       dat.close(function () {
-        var cmd = dat + ' create'
+        var cmd = dat + ' create --title data --description thing'
         var st = spawn(t, cmd, {cwd: dir})
         st.stderr.match(function (output) {
           t.ok(output, 'errors')
@@ -77,7 +77,7 @@ test('create - errors on existing archive', function (t) {
 
 test('create - sync after create ok', function (t) {
   tempDir(function (_, dir, cleanup) {
-    var cmd = dat + ' create'
+    var cmd = dat + ' create --title data --description thing'
     var st = spawn(t, cmd, {cwd: dir, end: false})
     st.stdout.match(function (output) {
       var connected = output.indexOf('Not importing files') > -1
@@ -104,7 +104,7 @@ test('create - sync after create ok', function (t) {
 
 test('create - init alias', function (t) {
   tempDir(function (_, dir, cleanup) {
-    var cmd = dat + ' init'
+    var cmd = dat + ' init --title data --description thing'
     var st = spawn(t, cmd, {cwd: dir})
 
     st.stdout.match(function (output) {
@@ -124,7 +124,7 @@ test('create - init alias', function (t) {
 
 test('create - with path', function (t) {
   tempDir(function (_, dir, cleanup) {
-    var cmd = dat + ' init ' + dir
+    var cmd = dat + ' init ' + dir + ' --title data --description thing'
     var st = spawn(t, cmd)
     st.stdout.match(function (output) {
       var datCreated = output.indexOf('Not importing files') > -1

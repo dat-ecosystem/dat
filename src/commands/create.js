@@ -59,7 +59,7 @@ function create (opts) {
       // create before import
       var datjson = DatJson(dat.archive, { file: path.join(opts.dir, 'dat.json') })
       fs.readFile(path.join(opts.dir, 'dat.json'), 'utf-8', function (err, data) {
-        if (err) return doPrompt()
+        if (err || !data) return doPrompt()
         data = JSON.parse(data)
         debug('read existing dat.json data', data)
         doPrompt(data)
@@ -86,6 +86,11 @@ function create (opts) {
               default: 'yes'
             }
           }
+        }
+        if (opts.title || opts.description) {
+          // avoid setting import unless these title/desc are set
+          var doImport = opts.import ? 'yes' : 'no'
+          prompt.override = { title: opts.title, description: opts.description, doImport: doImport }
         }
         prompt.message = chalk.green('> ')
         prompt.delimiter = '' // chalk.cyan('')
