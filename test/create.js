@@ -21,7 +21,7 @@ test('create - default opts no import', function (t) {
     var st = spawn(t, cmd, {cwd: dir})
 
     st.stdout.match(function (output) {
-      var datCreated = output.indexOf('All files imported') > -1
+      var datCreated = output.indexOf('Not importing files') > -1
       if (!datCreated) return false
 
       t.ok(help.isDir(path.join(dir, '.dat')), 'creates dat directory')
@@ -80,7 +80,7 @@ test('create - sync after create ok', function (t) {
     var cmd = dat + ' create'
     var st = spawn(t, cmd, {cwd: dir, end: false})
     st.stdout.match(function (output) {
-      var connected = output.indexOf('All files imported') > -1
+      var connected = output.indexOf('Not importing files') > -1
       if (!connected) return false
       doSync()
       return true
@@ -108,7 +108,7 @@ test('create - init alias', function (t) {
     var st = spawn(t, cmd, {cwd: dir})
 
     st.stdout.match(function (output) {
-      var datCreated = output.indexOf('All files imported') > -1
+      var datCreated = output.indexOf('Not importing files') > -1
       if (!datCreated) return false
 
       t.ok(help.isDir(path.join(dir, '.dat')), 'creates dat directory')
@@ -127,7 +127,7 @@ test('create - with path', function (t) {
     var cmd = dat + ' init ' + dir
     var st = spawn(t, cmd)
     st.stdout.match(function (output) {
-      var datCreated = output.indexOf('All files imported') > -1
+      var datCreated = output.indexOf('Not importing files') > -1
       if (!datCreated) return false
 
       t.ok(help.isDir(path.join(dir, '.dat')), 'creates dat directory')
