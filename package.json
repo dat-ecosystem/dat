@@ -53,7 +53,7 @@
   },
   "devDependencies": {
     "dat-land": "datproject/datfolder",
-    "hypercore": "^6.2.4",
+    "hypercore": "^6.3.4",
     "hyperdiscovery": "^6.0.1",
     "recursive-readdir-sync": "^1.0.6",
     "standard": "*",
