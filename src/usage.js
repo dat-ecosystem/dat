@@ -22,7 +22,7 @@ module.exports = function (opts, help, usage) {
   console.error('')
   console.error('Troubleshooting & Help:')
   console.error('   dat doctor                  run the dat network doctor')
-  console.error('   dat help                   print this usage guide')
+  console.error('   dat help                    print this usage guide')
   console.error('   dat <command> --help, -h    print help for a command')
   console.error('   dat --version, -v           print the dat version')
   console.error('')
