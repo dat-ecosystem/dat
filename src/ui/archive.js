@@ -1,11 +1,12 @@
 var output = require('neat-log/output')
-var stringKey = require('dat-encoding').toStr
 var pretty = require('prettier-bytes')
 var chalk = require('chalk')
 var downloadUI = require('./components/download')
 var importUI = require('./components/import-progress')
 var networkUI = require('./components/network')
 var sourcesUI = require('./components/sources')
+var keyEl = require('./elements/key')
+var pluralize = require('./elements/pluralize')
 
 module.exports = archiveUI
 
@@ -19,12 +20,12 @@ function archiveUI (state) {
   var progressView
 
   if (state.writable || state.opts.showKey) {
-    title = `${chalk.blue('dat://' + stringKey(dat.key))}\n`
+    title = `${keyEl(dat.key)}\n`
   }
   if (state.title) title += state.title
   else if (state.writable) title += 'Sharing dat'
   else title += 'Downloading dat'
-  if (stats.version > 0) title += `: ${stats.files} files (${pretty(stats.byteLength)})`
+  if (stats.version > 0) title += `: ${stats.files} ${pluralize('file', stats.file)} (${pretty(stats.byteLength)})`
   else if (stats.version === 0) title += ': (empty archive)'
   if (state.http && state.http.listening) title += `\nServing files over http at http://localhost:${state.http.port}`
 
