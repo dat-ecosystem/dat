@@ -1,6 +1,6 @@
 # Dat
 
-Dat is the package manager for datasets. Share files with version control, back up data to servers, browse remote files on demand, and automate long-term data preservation. Secure, distributed, fast.
+Dat is the distributed data sharing tool. Share files with version control, back up data to servers, browse remote files on demand, and automate long-term data preservation. Secure, distributed, fast.
 
 [<img src="http://datproject.github.io/design/downloads/dat-data-logo.png" align="right" width="140">](https://datproject.org)
 
@@ -15,17 +15,18 @@ Dat is the package manager for datasets. Share files with version control, back 
 <li><a href="#getting-started">Getting Started</a></li>
 <li><a href="#usage">Using Dat</a></li>
 <li><a href="#troubleshooting">Troubleshooting</a></li>
+<li><a href="#js-api">JS API</a></li>
 <li><a href="#for-developers">For Developers</a></li>
 
 ### What is Dat?
 
-The [Dat Project](http://datproject.org) is the home to open source data sharing applications led by [Code for Science & Society](http://codeforscience.org), a grant-funded non profit. The Dat Project developed the [Decentralized Archive Transport (Dat) protocol](https://www.datprotocol.com/), which  transfers files in a **secure**, **distributed**, and **fast** network allowing you to focus on the fun work without worrying about moving files around.
+[Dat Project](http://datproject.org) is the home to open source data sharing applications led by [Code for Science & Society](http://codeforscience.org), a grant-funded nonprofit. The Dat Project developed the [Decentralized Archive Transport (Dat) protocol](https://www.datprotocol.com/), which  transfers files in a **secure**, **distributed**, and **fast** network allowing you to focus on the fun work without worrying about moving files around.
 
 ### Key features
 
-* **Secure** - Data is encrypted upon transfer and the content is verified on arrival. Prevents third-party access to metadata and content. [Learn more](http://docs.datproject.org/faq#security-and-privacy).
+* **Secure** - Data is encrypted upon transfer and the content is verified on arrival, preventing third-party access to metadata and content corruption. [Learn more](http://docs.datproject.org/faq#security-and-privacy).
 * **Transparent** - Changes to data are written in an append-only log, creating a version history that improves transparency and auditability.
-* **Distributed** - With the Dat protocol you'll connect directly to other users or servers sharing or downloading common datasets. Any device can host files to share without the need for centralized servers. [Read more](http://docs.datproject.org/terms#distributed-web).
+* **Distributed** - Connect directly to other users or servers sharing or downloading common datasets. Any device can host files to share without the need for centralized servers. [Read more](http://docs.datproject.org/terms#distributed-web).
 * **Future-proof** - Unique links are generated using a public key and thus can be used instantly and forever to verify the dataset from anywhere. You don't need to wait for the entire archive to be hashed before you can begin uploading to peers.
 * **Fast** -  Files download from multiple sources. Quickly sync updates by only downloading the new bytes, saving time and bandwidth.
 
@@ -83,8 +84,6 @@ Send the printed link to other users so they can download your files.
 
 Dat share will create a `.dat` directory in the folder you share.
 The `.dat` folder allows you to add new files and update old files on the same Dat link.
-
-**Make sure not to share the `.dat` folder with anyone, it contains a private key that allows you to update and add files.**
 
 ![share](https://cloud.githubusercontent.com/assets/684965/22603762/91003186-e9fd-11e6-9138-f5c5045e7273.gif)
 
