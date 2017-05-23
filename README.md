@@ -49,7 +49,7 @@ The Dat Project developed the [Decentralized Archive Transport (Dat) protocol](h
 
 Share, download, and backup files with the command line!
 Automatically sync changes to datasets.
-Never worry about manually transferring files again.
+Never worry about manually transferring or verifying files again.
 
 Mac/Linux      | Windows      | Version
 -------------- | ------------ | ------------
@@ -77,7 +77,8 @@ If not, see the [installation troubleshooting](#troubleshooting) for tips.
 
 ## Getting started
 
-We have Dat installed, let's use it! Currently, the Dat command line always moves files from a single source to any number of destinations.
+We have Dat installed, let's use it!
+Currently, the Dat command line always moves files from a single source to any number of destinations.
 If you are creating files on your computer to share, you will be the source and will use the *share* commands.
 Otherwise, you can *clone* files from remote Dat archives shared to you with a Dat link.
 
@@ -198,6 +199,12 @@ Sync watched files for changes and imports updated files.
 
 * Use `--no-import` to not import any new or updated files.
 * Use `--no-watch` to not watch directory for changes. `--import` must be true for `--watch` to work.
+
+#### Ignoring Files
+
+By default, dat will ignore any files in a `.datignore` file, similar to git. Dat also ignores all hidden folders and files.
+
+Dat uses [dat-ignore](https://github.com/joehand/dat-ignore) to decide if a file should be ignored.
 
 ### Downloading
 
