@@ -18,7 +18,7 @@ module.exports = function (opts, help, usage) {
   console.error('')
   console.error('Information:')
   console.error('   dat status                  get key & info about a local dat')
-  console.error('   dat ls                      list changes for a dat')
+  console.error('   dat log                     log history for a dat')
   console.error('')
   console.error('Troubleshooting & Help:')
   console.error('   dat doctor                  run the dat network doctor')
