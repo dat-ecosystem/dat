@@ -8,7 +8,7 @@
     "decentralized",
     "file sharing"
   ],
-  "main" : "index.js",
+  "main": "index.js",
   "bin": {
     "dat": "bin/cli.js"
   },
@@ -16,7 +16,7 @@
     "auth-server": "DEBUG=* node scripts/auth-server.js",
     "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "standard": "standard",
-    "deps": "dependency-check . && dependency-check . --extra --no-dev",
+    "deps": "dependency-check . -i dat-log && dependency-check . --extra --no-dev -i dat-log",
     "test": "standard && npm run deps && tape 'test/*[!auth].js' | tap-spec"
   },
   "repository": {
@@ -39,6 +39,7 @@
     "dat-encoding": "^4.0.2",
     "dat-json": "^1.0.0",
     "dat-link-resolve": "^1.0.0",
+    "dat-log": "^1.0.0",
     "dat-node": "^3.3.0",
     "dat-registry": "^2.1.2",
     "debug": "^2.6.6",

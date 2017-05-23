@@ -62,7 +62,7 @@ var config = {
   aliases: {
     'init': 'create'
   },
-  extensions: ['ls'] // whitelist extensions for now
+  extensions: ['log'] // whitelist extensions for now
 }
 
 if (debug.enabled) {
