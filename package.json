@@ -16,7 +16,7 @@
     "auth-server": "DEBUG=* node scripts/auth-server.js",
     "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "standard": "standard",
-    "deps": "dependency-check . -i dat-log && dependency-check . --extra --no-dev -i dat-log",
+    "deps": "dependency-check . && dependency-check . --extra --no-dev",
     "test": "standard && npm run deps && tape 'test/*[!auth].js' | tap-spec"
   },
   "repository": {
