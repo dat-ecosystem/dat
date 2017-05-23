@@ -14,13 +14,13 @@ function importUI (state) {
     // dry run in progress
     if (!importState.count.files) return 'Checking for file updates...'
     return output`
-      Imported ${importState.putDone.files} of ${importState.count.files} files ${indexSpeed}
-      (Calculating files to import...)
+      Metadata created for ${importState.putDone.files} of ${importState.count.files} files ${indexSpeed}
+      (Calculating file count...)
       ${fileImport(importState.fileImport)}
     `
   } else if (importState.putDone.files >= importState.count.files) {
     // Initial import done
-    if (!watch) return 'All files imported.'
+    if (!watch) return 'Archive metadata updated for all files.'
     return liveImport()
   }
 
@@ -33,7 +33,7 @@ function importUI (state) {
   })
 
   return output`
-    Importing ${importState.count.files} files to Archive ${indexSpeed}
+    Creating metadata for ${importState.count.files} files ${indexSpeed}
     ${totalBar(importState.importedBytes)}
     ${fileImport(importState.fileImport)}
   `
