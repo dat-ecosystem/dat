@@ -37,7 +37,7 @@ The [Dat Project](http://datproject.org) is the home to open source data sharing
 * [Dat Desktop](https://datproject.org/install#desktop) - A desktop app to manage multiple Dats on your desktop machine.
 * [Beaker Browser](http://beakerbrowser.com) - An experimental p2p browser with built-in support for the Dat protocol.
 * [Dat Protocol](https://www.datprotocol.com) - Build your own application on the Decentralized Archive Transport (Dat) protocol.
-* [require('dat-node')](http://github.com/datproject/dat-node) - Node.js library for downloading and sharing Dat archives.
+* [require('dat')](http://github.com/datproject/dat-node) - Node.js library for downloading and sharing Dat archives.
 
 ---
 
@@ -381,6 +381,20 @@ For direct connection tests, the doctor will print out a command to run on the o
 The doctor will run through the key steps in the process of sharing data between computers to help identify the issue.
 
 ---
+
+## JS API
+
+You can use Dat in your javascript application:
+
+```js
+var Dat = require('dat')
+
+Dat('/data', function (err, dat) {
+  // use dat
+})
+```
+
+**[Read more](https://github.com/datproject/dat-node) about the JS usage provided via `dat-node`.**
 
 ## For Developers
 
