@@ -8,6 +8,7 @@
     "decentralized",
     "file sharing"
   ],
+  "main" : "index.js",
   "bin": {
     "dat": "bin/cli.js"
   },

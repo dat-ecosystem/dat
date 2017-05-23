@@ -40,8 +40,8 @@ The Dat Project developed the [Decentralized Archive Transport (Dat) protocol](h
 * [Dat Command Line](#command-line-installation) - You are here! Scroll down for the installation details.
 * [Dat Desktop](https://datproject.org/install#desktop) - A desktop app to manage multiple Dats on your desktop machine.
 * [Beaker Browser](http://beakerbrowser.com) - An experimental p2p browser with built-in support for the Dat protocol.
-* [Dat Protocol](https://www.datprotocol.com) - Build your own application on the Decentralized Archive Transport (dat) protocol.
-* [require('dat-node')](http://github.com/datproject/dat-node) - Node.js library for building applications on top of Dat.
+* [Dat Protocol](https://www.datprotocol.com) - Build your own application on the Decentralized Archive Transport (Dat) protocol.
+* [require('dat')](http://github.com/datproject/dat-node) -  Node.js library for building applications on top of Dat.
 
 ---
 
@@ -350,6 +350,20 @@ For direct connection tests, the doctor will print out a command to run on the o
 The doctor will run through the key steps in the process of sharing data between computers to help identify the issue.
 
 ---
+
+## JS API
+
+You can use Dat in your javascript application:
+
+```js
+var Dat = require('dat')
+
+Dat('/data', function (err, dat) {
+  // use dat
+})
+```
+
+**[Read more](https://github.com/datproject/dat-node) about the JS usage provided via `dat-node`.**
 
 ## For Developers
 
