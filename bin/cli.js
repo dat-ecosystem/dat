@@ -42,6 +42,7 @@ var config = {
     require('../src/commands/clone'),
     require('../src/commands/create'),
     require('../src/commands/doctor'),
+    require('../src/commands/log'),
     require('../src/commands/publish'),
     require('../src/commands/pull'),
     require('../src/commands/share'),
@@ -62,7 +63,7 @@ var config = {
   aliases: {
     'init': 'create'
   },
-  extensions: ['ls'] // whitelist extensions for now
+  extensions: [] // whitelist extensions for now
 }
 
 if (debug.enabled) {
