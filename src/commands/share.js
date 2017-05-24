@@ -9,7 +9,7 @@ module.exports = {
   name: 'share',
   command: share,
   help: [
-    'Create and share a Dat archive',
+    'Create and share a dat',
     'Create a dat, import files, and share to the network.',
     '',
     'Usage: dat share'

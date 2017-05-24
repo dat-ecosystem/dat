@@ -4,28 +4,30 @@ module.exports = function (opts, help, usage) {
     console.error(pkg.version)
     process.exit(1)
   }
-  console.error('Usage: dat <cmd> [options]')
-  console.error('')
-  console.error('Sharing Files:')
-  console.error('   dat create [<dir>]          create a local archive')
-  console.error('   dat sync                    watch for changes & sync files')
-  console.error('   dat share                   create & sync archive in one command!')
-  console.error('')
-  console.error('Downloading Files:')
-  console.error('   dat clone <link> [<dir>]    clone a remote archive')
-  console.error('   dat pull                    update from remote archive & exit')
-  console.error('   dat sync                    sync files with the network')
-  console.error('')
-  console.error('Information:')
-  console.error('   dat status                  get key & info about a local dat')
-  console.error('   dat log                     log history for a dat')
-  console.error('')
-  console.error('Troubleshooting & Help:')
-  console.error('   dat doctor                  run the dat network doctor')
-  console.error('   dat help                    print this usage guide')
-  console.error('   dat <command> --help, -h    print help for a command')
-  console.error('   dat --version, -v           print the dat version')
-  console.error('')
+  var msg = `
+Usage: dat <cmd> [<dir>] [options]
+
+Sharing Files:
+   dat share                   create dat, import files, share to network
+   dat create                  create empty dat and dat.json
+   dat sync                    import files to existing dat & sync with network
+
+Downloading Files:
+   dat clone <link> [<dir>]    download a dat via link to <dir>
+   dat pull                    update dat & exit
+   dat sync                    live sync files with the network (upload + download)
+
+Info:
+   dat log                     log history for a dat
+   dat status                  get key & info about a local dat
+
+Troubleshooting & Help:
+   dat doctor                  run the dat network doctor
+   dat help                    print this usage guide
+   dat <command> --help, -h    print help for a specific command
+   dat --version, -v           print the dat version
+  `
+  console.error(msg)
   if (usage) {
     console.error('General Options:')
     console.error(usage)
