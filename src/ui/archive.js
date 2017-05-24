@@ -16,11 +16,11 @@ function archiveUI (state) {
 
   var dat = state.dat
   var stats = dat.stats.get()
-  var title = ''
+  var title = (state.dat.resumed) ? '' : `Created new dat in ${dat.path}/.dat\n`
   var progressView
 
   if (state.writable || state.opts.showKey) {
-    title = `${keyEl(dat.key)}\n`
+    title += `${keyEl(dat.key)}\n`
   }
   if (state.title) title += state.title
   else if (state.writable) title += 'Sharing dat'
