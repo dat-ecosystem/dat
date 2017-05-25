@@ -3,6 +3,7 @@ var neatLog = require('neat-log')
 var archiveUI = require('../ui/archive')
 var trackArchive = require('../lib/archive')
 var onExit = require('../lib/exit')
+var parseArgs = require('../parse-args')
 var debug = require('debug')('dat')
 
 module.exports = {
@@ -37,8 +38,9 @@ module.exports = {
 }
 
 function share (opts) {
-  if (opts._.length) opts.dir = opts._[0] // use first arg as dir if default set
-  else if (!opts.dir) opts.dir = process.cwd()
+  if (!opts.dir) {
+    opts.dir = parseArgs(opts).dir || process.cwd()
+  }
 
   debug('Sharing archive', opts)
 

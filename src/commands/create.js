@@ -5,6 +5,7 @@ var output = require('neat-log/output')
 var DatJson = require('dat-json')
 var prompt = require('prompt')
 var chalk = require('chalk')
+var parseArgs = require('../parse-args')
 var debug = require('debug')('dat')
 
 module.exports = {
@@ -28,8 +29,9 @@ module.exports = {
 
 function create (opts) {
   debug('dat create')
-  if (opts._.length) opts.dir = opts._[0] // use first arg as dir if default set
-  else if (!opts.dir) opts.dir = process.cwd()
+  if (!opts.dir) {
+    opts.dir = parseArgs(opts).dir || process.cwd()
+  }
 
   var welcome = `Welcome to ${chalk.green(`dat`)} program!`
   var intro = output`

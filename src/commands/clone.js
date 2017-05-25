@@ -7,6 +7,7 @@ var archiveUI = require('../ui/archive')
 var trackArchive = require('../lib/archive')
 var discoveryExit = require('../lib/discovery-exit')
 var onExit = require('../lib/exit')
+var parseArgs = require('../parse-args')
 var debug = require('debug')('dat')
 
 module.exports = {
@@ -28,14 +29,16 @@ module.exports = {
       name: 'show-key',
       boolean: true,
       default: false,
+      abbr: 'k',
       help: 'print out the dat key'
     }
   ]
 }
 
 function clone (opts) {
-  opts.key = opts._[0]
-  opts.dir = opts.dir || opts._[1]
+  var parsed = parseArgs(opts)
+  opts.key = parsed.key || opts._[0] // pass other links to resolver
+  opts.dir = parsed.dir
   opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
 
   debug('clone()')
