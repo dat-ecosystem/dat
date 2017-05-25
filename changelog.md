@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 13.5.0 - 2017-05-25
 ### Added
 * Dat version number is printed in header (https://github.com/datproject/dat/pull/788)
 * Add prompt and introduction to `dat create` command (https://github.com/datproject/dat/pull/782) and create dat.json file (https://github.com/datproject/dat/pull/765).
