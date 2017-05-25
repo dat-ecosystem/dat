@@ -1,5 +1,7 @@
 # Dat
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/datproject/dat.svg)](https://greenkeeper.io/)
+
 Dat is the package manager for datasets. Share files with version control, back up data to servers, browse remote files on demand, and automate long-term data preservation. Secure, distributed, fast.
 
 [<img src="https://datproject.github.io/design/downloads/dat-data-logo.png" align="right" width="140">](https://datproject.org)
