@@ -10,7 +10,7 @@ module.exports = {
   command: sync,
   help: [
     'Sync a Dat archive with the network',
-    'Watch and import file changes (if you created the archive)',
+    'Watch and import file changes (if archive is writable)',
     '',
     'Usage: dat sync'
   ].join('\n'),
@@ -19,7 +19,7 @@ module.exports = {
       name: 'import',
       boolean: true,
       default: true,
-      help: '(Dat Writable) Import files from the directory to the database (Dat Writable).'
+      help: 'Import files from the directory to the database (Dat Writable).'
     },
     {
       name: 'ignoreHidden',
@@ -37,6 +37,7 @@ module.exports = {
       name: 'show-key',
       boolean: true,
       default: false,
+      abbr: 'k',
       help: 'Print out the dat key (Dat Not Writable).'
     }
   ]

@@ -21,32 +21,10 @@ test('create - default opts no import', function (t) {
     var st = spawn(t, cmd, {cwd: dir})
 
     st.stdout.match(function (output) {
-      var datCreated = output.indexOf('Not importing files') > -1
+      var datCreated = output.indexOf('Created empty Dat') > -1
       if (!datCreated) return false
 
       t.ok(help.isDir(path.join(dir, '.dat')), 'creates dat directory')
-
-      st.kill()
-      return true
-    })
-    st.succeeds('exits after create finishes')
-    st.stderr.empty()
-    st.end(cleanup)
-  })
-})
-
-test('create - default opts with import', function (t) {
-  tempDir(function (_, dir, cleanup) {
-    var cmd = dat + ' create --title data --description thing --import'
-    var st = spawn(t, cmd, {cwd: dir})
-
-    st.stdout.match(function (output) {
-      var importFinished = output.indexOf('All files imported') > -1
-      if (!importFinished) return false
-
-      t.ok(help.isDir(path.join(dir, '.dat')), 'creates dat directory')
-      t.ok(help.matchLink(output), 'prints link')
-      t.skip(help.datJson(fixtures).title, 'fixtures', 'dat.json: has title')
 
       st.kill()
       return true
@@ -80,7 +58,7 @@ test('create - sync after create ok', function (t) {
     var cmd = dat + ' create --title data --description thing'
     var st = spawn(t, cmd, {cwd: dir, end: false})
     st.stdout.match(function (output) {
-      var connected = output.indexOf('Not importing files') > -1
+      var connected = output.indexOf('Created empty Dat') > -1
       if (!connected) return false
       doSync()
       return true
@@ -108,7 +86,7 @@ test('create - init alias', function (t) {
     var st = spawn(t, cmd, {cwd: dir})
 
     st.stdout.match(function (output) {
-      var datCreated = output.indexOf('Not importing files') > -1
+      var datCreated = output.indexOf('Created empty Dat') > -1
       if (!datCreated) return false
 
       t.ok(help.isDir(path.join(dir, '.dat')), 'creates dat directory')
@@ -127,7 +105,7 @@ test('create - with path', function (t) {
     var cmd = dat + ' init ' + dir + ' --title data --description thing'
     var st = spawn(t, cmd)
     st.stdout.match(function (output) {
-      var datCreated = output.indexOf('Not importing files') > -1
+      var datCreated = output.indexOf('Created empty Dat') > -1
       if (!datCreated) return false
 
       t.ok(help.isDir(path.join(dir, '.dat')), 'creates dat directory')
