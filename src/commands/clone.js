@@ -21,8 +21,8 @@ module.exports = {
     {
       name: 'upload',
       boolean: true,
-      default: false,
-      help: 'upload data to other peers while cloning'
+      default: true,
+      help: 'announce your address on link (improves connection capability) and upload data to other downloaders.'
     },
     {
       name: 'show-key',
