@@ -15,11 +15,15 @@ Sharing Files:
 Downloading Files:
    dat clone <link> [<dir>]    download a dat via link to <dir>
    dat pull                    update dat & exit
-   dat sync                    live sync files with the network (upload + download)
+   dat sync                    live sync files with the network
 
 Info:
    dat log                     log history for a dat
    dat status                  get key & info about a local dat
+
+Stateless/Shortcut Commands:
+   dat <link> [<dir>]          clone or sync link to <dir>
+   dat <dir>                   create and sync dat in directory
 
 Troubleshooting & Help:
    dat doctor                  run the dat network doctor
