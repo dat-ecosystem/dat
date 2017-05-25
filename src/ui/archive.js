@@ -7,6 +7,8 @@ var networkUI = require('./components/network')
 var sourcesUI = require('./components/sources')
 var keyEl = require('./elements/key')
 var pluralize = require('./elements/pluralize')
+var version = require('./elements/version')
+var pkg = require('../../package.json')
 
 module.exports = archiveUI
 
@@ -40,6 +42,7 @@ function archiveUI (state) {
   }
 
   return output`
+    ${version(pkg.version)}
     ${title}
     ${state.joinNetwork ? '\n' + networkUI(state) : ''}
 
