@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 13.5.1 - 2017-05-30
+### Changed
+* Big documentation update!
+* Force bump dat-node for a deletion bug that was a bit overzealous in deleting files (https://github.com/mafintosh/hyperdrive/issues/167).
+
 ## 13.5.0 - 2017-05-25
 ### Added
 * Dat version number is printed in header (https://github.com/datproject/dat/pull/788)
