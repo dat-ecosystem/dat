@@ -7,6 +7,8 @@ var networkUI = require('./components/network')
 var sourcesUI = require('./components/sources')
 var keyEl = require('./elements/key')
 var pluralize = require('./elements/pluralize')
+var version = require('./elements/version')
+var pkg = require('../../package.json')
 
 module.exports = archiveUI
 
@@ -16,11 +18,11 @@ function archiveUI (state) {
 
   var dat = state.dat
   var stats = dat.stats.get()
-  var title = ''
+  var title = (state.dat.resumed) ? '' : `Created new dat in ${dat.path}/.dat\n`
   var progressView
 
   if (state.writable || state.opts.showKey) {
-    title = `${keyEl(dat.key)}\n`
+    title += `${keyEl(dat.key)}\n`
   }
   if (state.title) title += state.title
   else if (state.writable) title += 'Sharing dat'
@@ -40,6 +42,7 @@ function archiveUI (state) {
   }
 
   return output`
+    ${version(pkg.version)}
     ${title}
     ${state.joinNetwork ? '\n' + networkUI(state) : ''}
 

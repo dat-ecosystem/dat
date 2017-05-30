@@ -1,119 +1,129 @@
 var path = require('path')
 var fs = require('fs')
 var Dat = require('dat-node')
-var neatLog = require('neat-log')
+var output = require('neat-log/output')
 var DatJson = require('dat-json')
 var prompt = require('prompt')
 var chalk = require('chalk')
-var createUI = require('../ui/create')
-var trackArchive = require('../lib/archive')
-var onExit = require('../lib/exit')
+var parseArgs = require('../parse-args')
 var debug = require('debug')('dat')
 
 module.exports = {
   name: 'create',
   command: create,
   help: [
-    'Create a local Dat archive to share',
+    'Create an empty dat and dat.json',
     '',
     'Usage: dat create [directory]'
   ].join('\n'),
   options: [
     {
-      name: 'import',
+      name: 'yes',
       boolean: true,
       default: false,
-      help: 'Import files from the directory'
-    },
-    {
-      name: 'ignoreHidden',
-      boolean: true,
-      default: true,
-      abbr: 'ignore-hidden'
+      abbr: 'y',
+      help: 'Skip dat.json creation.'
     }
   ]
 }
 
 function create (opts) {
   debug('dat create')
-  if (opts._.length) opts.dir = opts._[0] // use first arg as dir if default set
-  else if (!opts.dir) opts.dir = process.cwd()
+  if (!opts.dir) {
+    opts.dir = parseArgs(opts).dir || process.cwd()
+  }
+
+  var welcome = `Welcome to ${chalk.green(`dat`)} program!`
+  var intro = output`
+    You can turn any folder on your computer into a Dat.
+    A Dat is a folder with some magic.
+
+    Your dat is ready!
+    We will walk you creating a 'dat.json' file.
+    (You can skip dat.json and get started now.)
+
+    Learn more about dat.json: ${chalk.blue(`https://github.com/datprotocol/dat.json`)}
+
+    ${chalk.dim('Ctrl+C to exit at any time')}
+
+  `
+  var outro
 
   // Force certain options
   opts.errorIfExists = true
 
-  // Todo
-  // debug('Creating Dat archive in', opts.dir)
+  console.log(welcome)
+  Dat(opts.dir, opts, function (err, dat) {
+    if (err && err.name === 'ExistsError') return exitErr('\nArchive already exists.\nYou can use `dat sync` to update.')
+    if (err) return exitErr(err)
 
-  var neat = neatLog(createUI, { logspeed: opts.logspeed, quiet: opts.quiet })
-  neat.use(trackArchive)
-  neat.use(onExit)
-  neat.use(function (state, bus) {
-    state.opts = opts
-    state.joinNetwork = false
+    outro = output`
 
-    Dat(opts.dir, opts, function (err, dat) {
-      if (err && err.name === 'ExistsError') return bus.emit('exit:warn', 'Archive already exists.')
-      if (err) return bus.emit('exit:error', err)
+      Created empty Dat in ${dat.path}/.dat
 
-      // create before import
-      var datjson = DatJson(dat.archive, { file: path.join(opts.dir, 'dat.json') })
-      fs.readFile(path.join(opts.dir, 'dat.json'), 'utf-8', function (err, data) {
-        if (err || !data) return doPrompt()
-        data = JSON.parse(data)
-        debug('read existing dat.json data', data)
-        doPrompt(data)
-      })
+      Now you can add files and share:
+      * Run ${chalk.green(`dat share`)} to create metadata and sync.
+      * Copy the unique dat link and securly share it.
 
-      function doPrompt (data) {
-        if (!data) data = {}
+      ${chalk.blue(`dat://${dat.key.toString('hex')}`)}
+    `
 
-        var schema = {
-          properties: {
-            title: {
-              description: chalk.magenta('Dat Title'),
-              default: data.title || '',
-              // pattern: /^[a-zA-Z\s\-]+$/,
-              // message: 'Name must be only letters, spaces, or dashes',
-              required: false
-            },
-            description: {
-              description: chalk.magenta('Dat Description'),
-              default: data.description || ''
-            },
-            doImport: {
-              description: chalk.magenta('Would you like to import your files?'),
-              default: 'yes'
-            }
+    if (opts.yes) return done()
+
+    console.log(intro)
+    var datjson = DatJson(dat.archive, { file: path.join(opts.dir, 'dat.json') })
+    fs.readFile(path.join(opts.dir, 'dat.json'), 'utf-8', function (err, data) {
+      if (err || !data) return doPrompt()
+      data = JSON.parse(data)
+      debug('read existing dat.json data', data)
+      doPrompt(data)
+    })
+
+    function doPrompt (data) {
+      if (!data) data = {}
+
+      var schema = {
+        properties: {
+          title: {
+            description: chalk.magenta('Title'),
+            default: data.title || '',
+            // pattern: /^[a-zA-Z\s\-]+$/,
+            // message: 'Name must be only letters, spaces, or dashes',
+            required: false
+          },
+          description: {
+            description: chalk.magenta('Description'),
+            default: data.description || ''
           }
         }
-        if (opts.title || opts.description) {
-          // avoid setting import unless these title/desc are set
-          var doImport = opts.import ? 'yes' : 'no'
-          prompt.override = { title: opts.title, description: opts.description, doImport: doImport }
-        }
-        prompt.message = chalk.green('> ')
-        prompt.delimiter = '' // chalk.cyan('')
-        prompt.start()
-        prompt.get(schema, writeDatJson)
-
-        function writeDatJson (err, results) {
-          if (err) return bus.emit('exit:error', err) // prompt error
-          if (results.doImport[0] === 'y') state.opts.import = true
-          if (!results.title && !results.description) return done()
-          delete results.doImport // don't want this in dat.json
-          datjson.create(results, done)
-        }
-
-        function done (err) {
-          if (err) return bus.emit('exit:error', err)
-          state.title = 'Creating a new dat'
-          state.dat = dat
-          bus.emit('dat')
-          bus.emit('render')
-        }
       }
-      bus.emit('render')
-    })
+
+      prompt.override = { title: opts.title, description: opts.description }
+      prompt.message = chalk.green('> ')
+      prompt.delimiter = ''
+      prompt.start()
+      prompt.get(schema, writeDatJson)
+
+      function writeDatJson (err, results) {
+        if (err) return exitErr(err) // prompt error
+        if (!results.title && !results.description) return done()
+        datjson.create(results, done)
+      }
+    }
+
+    function done (err) {
+      if (err) return exitErr(err)
+      console.log(outro)
+    }
   })
+
+  function exitErr (err) {
+    if (err && err.message === 'canceled') {
+      console.log('')
+      console.log(outro)
+      process.exit(0)
+    }
+    console.error(err)
+    process.exit(1)
+  }
 }

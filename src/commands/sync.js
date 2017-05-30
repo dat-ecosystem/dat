@@ -3,6 +3,7 @@ var neatLog = require('neat-log')
 var archiveUI = require('../ui/archive')
 var trackArchive = require('../lib/archive')
 var onExit = require('../lib/exit')
+var parseArgs = require('../parse-args')
 var debug = require('debug')('dat')
 
 module.exports = {
@@ -10,7 +11,7 @@ module.exports = {
   command: sync,
   help: [
     'Sync a Dat archive with the network',
-    'Watch and import file changes (if you created the archive)',
+    'Watch and import file changes (if archive is writable)',
     '',
     'Usage: dat sync'
   ].join('\n'),
@@ -19,7 +20,7 @@ module.exports = {
       name: 'import',
       boolean: true,
       default: true,
-      help: '(Dat Writable) Import files from the directory to the database (Dat Writable).'
+      help: 'Import files from the directory to the database (Dat Writable).'
     },
     {
       name: 'ignoreHidden',
@@ -37,6 +38,7 @@ module.exports = {
       name: 'show-key',
       boolean: true,
       default: false,
+      abbr: 'k',
       help: 'Print out the dat key (Dat Not Writable).'
     }
   ]
@@ -44,14 +46,14 @@ module.exports = {
 
 function sync (opts) {
   debug('dat sync')
-  if (opts._.length) opts.dir = opts._[0] // use first arg as dir if default set
-  else if (!opts.dir) opts.dir = process.cwd()
+  var parsed = parseArgs(opts)
+  opts.key = parsed.key
+  opts.dir = parsed.dir || process.cwd()
   opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
 
-  // Set default options (some of these may be exposed to CLI eventually)
+  // Force options
   opts.createIfMissing = false // sync must always be a resumed archive
   opts.exit = false
-  // debug('Reading archive in dir', opts.dir)
 
   var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet })
   neat.use(trackArchive)

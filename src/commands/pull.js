@@ -4,6 +4,7 @@ var archiveUI = require('../ui/archive')
 var trackArchive = require('../lib/archive')
 var discoveryExit = require('../lib/discovery-exit')
 var onExit = require('../lib/exit')
+var parseArgs = require('../parse-args')
 var debug = require('debug')('dat')
 
 module.exports = {
@@ -18,13 +19,14 @@ module.exports = {
     {
       name: 'upload',
       boolean: true,
-      default: false,
-      help: 'upload data to other peers while pulling'
+      default: true,
+      help: 'announce your address on link (improves connection capability) and upload data to other downloaders.'
     },
     {
       name: 'show-key',
       boolean: true,
       default: false,
+      abbr: 'k',
       help: 'print out the dat key'
     }
   ]
@@ -32,8 +34,12 @@ module.exports = {
 
 function pull (opts) {
   debug('dat pull')
-  if (opts._.length) opts.dir = opts._[0] // use first arg as dir if default set
-  else if (!opts.dir) opts.dir = process.cwd()
+  if (!opts.dir) {
+    var parsed = parseArgs(opts)
+    opts.key = parsed.key
+    opts.dir = parsed.dir || process.cwd()
+  }
+
   opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
 
   // Force these options for pull command

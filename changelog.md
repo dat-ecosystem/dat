@@ -5,6 +5,21 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 13.5.0 - 2017-05-25
+### Added
+* Dat version number is printed in header (https://github.com/datproject/dat/pull/788)
+* Add prompt and introduction to `dat create` command (https://github.com/datproject/dat/pull/782) and create dat.json file (https://github.com/datproject/dat/pull/765).
+* Tell user if new `.dat` was initialized.
+* Add `dat log` command to print archive history and size information (https://github.com/datproject/dat/pull/781).
+* Use `require('dat')` to get `dat-node` JS API (https://github.com/datproject/dat/pull/778).
+
+### Changed
+* Default to upload true for `dat clone` and `dat pull`, enables better hole-punching (https://github.com/datproject/dat/pull/787).
+
+### Fixed
+* Make argument parsing more consistent across commands (https://github.com/datproject/dat/pull/789)
+* Fix usage and help text (various).
+
 ## 13.4.1 - 2017-05-16
 ### Added
 * Document sparse option in cli help

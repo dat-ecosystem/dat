@@ -1,10 +1,9 @@
 #!/usr/bin/env node
 
-var fs = require('fs')
 var subcommand = require('subcommand')
-var encoding = require('dat-encoding')
 var debug = require('debug')('dat')
 var usage = require('../src/usage')
+var parseArgs = require('../src/parse-args')
 
 process.title = 'dat'
 
@@ -24,7 +23,7 @@ var config = {
     { name: 'utp', default: true, boolean: true, help: 'use utp for discovery' },
     { name: 'http', help: 'serve dat over http (default port: 8080)' },
     { name: 'quiet', default: isDebug, boolean: true }, // neat-log uses quiet for debug right now
-    { name: 'sparse', default: false, boolean: true, help: 'download only requested only (use with --http)' }
+    { name: 'sparse', default: false, boolean: true, help: 'download only requested data' }
   ],
   root: {
     options: [
@@ -42,6 +41,7 @@ var config = {
     require('../src/commands/clone'),
     require('../src/commands/create'),
     require('../src/commands/doctor'),
+    require('../src/commands/log'),
     require('../src/commands/publish'),
     require('../src/commands/pull'),
     require('../src/commands/share'),
@@ -62,7 +62,7 @@ var config = {
   aliases: {
     'init': 'create'
   },
-  extensions: ['ls'] // whitelist extensions for now
+  extensions: [] // whitelist extensions for now
 }
 
 if (debug.enabled) {
@@ -84,54 +84,41 @@ function alias (argv) {
 
 // CLI Shortcuts
 // Commands:
-//   dat [dat://key] - clone/sync a key
-//   dat [dir] - create dat + share a directory
-//   dat [extension]
+//   dat <dat://key> [<dir>] - clone/sync a key
+//   dat <dir> - create dat + share a directory
+//   dat <extension>
 function syncShorthand (opts) {
   if (!opts._.length) return usage(opts)
   debug('Sync shortcut command')
 
-  // Check if first argument is a key, if not assume dir
-  try {
-    opts.key = encoding.toStr(opts._[0])
-  } catch (err) {
-    if (err && err.message !== 'Invalid key') {
-      // catch non-key errors
-      console.error(err)
-      process.exit(1)
-    }
-  }
+  var parsed = parseArgs(opts)
 
   // Download Key
-  if (opts.key) {
-    // dat <link> [dir] - clone/resume <link> in [dir]
+  if (parsed.key) {
+    // dat  <dat://key> [<dir>] - clone/resume <link> in [dir]
     debug('Clone sync')
-    opts.dir = opts._[1] || process.cwd()
+    opts.dir = parsed.dir || parsed.key // put in `process.cwd()/key` if no dir
     opts.exit = opts.exit || false
     return require('../src/commands/clone').command(opts)
   }
 
-  trySyncDir(function () {
-    // If directory sync fails, finally run extension
-    if (config.extensions.indexOf(opts._[0]) > -1) return require('../src/extensions')(opts)
-    usage(opts)
-  })
-
   // Sync dir
-  // dat {dir} - sync existing dat in {dir}
-  function trySyncDir (cb) {
-    opts.dir = opts._[0]
+  // dat <dir> - sync existing dat in {dir}
+  if (parsed.dir) {
     opts.shortcut = true
-    fs.stat(opts.dir, function (err, stat) {
-      if (err || !stat.isDirectory()) return cb()
+    debug('Share sync')
 
-      debug('Share sync')
-      // Set default opts. TODO: use default opts in share
-      opts.watch = opts.watch || true
-      opts.import = opts.import || true
-      require('../src/commands/share').command(opts)
-    })
+    // Set default opts. TODO: use default opts in share
+    opts.watch = opts.watch || true
+    opts.import = opts.import || true
+    return require('../src/commands/share').command(opts)
   }
+
+  // If directory sync fails, finally try extension
+  if (config.extensions.indexOf(opts._[0]) > -1) return require('../src/extensions')(opts)
+
+  // All else fails, show usage
+  return usage(opts)
 }
 
 function exitInvalidNode () {
