@@ -2,12 +2,13 @@
 
 > npm install -g dat
 
-
 Dat is the distributed data sharing tool.
 Share files with version control, back up data to servers, browse remote files on demand, and automate long-term data preservation.
 Secure, distributed, fast.
 
 [<img src="https://datproject.github.io/design/downloads/dat-data-logo.png" align="right" width="140">](https://datproject.org)
+
+Have questions? Join our chat via IRC or Gitter:
 
 [![#dat IRC channel on freenode](https://img.shields.io/badge/irc%20channel-%23dat%20on%20freenode-blue.svg)](http://webchat.freenode.net/?channels=dat)
 [![datproject/discussions](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
@@ -265,7 +266,7 @@ Once registered, you will be able to publish Dat archives from our registry.
 Anyone can clone archives published to a registry without registration:
 
 ```
-dat clone datproject.org/karissa/more-tweets-more-votes
+dat clone datproject.org/jhand/cli-demo
 ```
 
 #### Auth (experimental)
@@ -285,7 +286,7 @@ Once you are logged in to a server. You can publish a Dat archive:
 ```
 cd my-data
 dat create
-dat publish
+dat publish --name my-dataset
 ```
 
 All authentication requests take the `--server` option.
