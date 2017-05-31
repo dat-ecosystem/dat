@@ -44,6 +44,7 @@ function unpublish (opts) {
   Dat(opts.dir, opts, function (err, dat) {
     if (err) return exitErr(err)
     // TODO better error msg for non-existing archive
+    if (!dat.writable) return exitErr('Your dat must be writable to publish it.')
 
     var datjson = DatJson(dat.archive, {file: path.join(dat.path, 'dat.json')})
     datjson.read(function (err, data) {
