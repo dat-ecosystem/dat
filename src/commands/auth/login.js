@@ -6,36 +6,44 @@ var Registry = require('../../registry')
 module.exports = {
   name: 'login',
   command: login,
-  options: []
+  help: [
+    'Login to a Dat registry server',
+    '',
+    'Publish your dats so other users can discovery them.',
+    'Register with datproject.org or any other registry servers.'
+  ].join('\n'),
+  options: [
+    {
+      name: 'server',
+      help: 'Your Dat registry server (must be registered to login).'
+    }
+  ]
 }
 
 function login (opts) {
-  if (opts.email && opts.password) return makeRequest(opts)
-
+  if (opts._[0]) opts.server = opts._[0]
   var welcome = output`
     Welcome to ${chalk.green(`dat`)} program!
-    Login to get started publishing your dats.
+    Login to publish your dats.
 
   `
-  var outro = output`
-
-    Logged you in to ${chalk.green('datproject.org')}!
-
-    Now you can publish dats and share:
-    * Run ${chalk.green(`dat publish`)} to publish a dat!
-    * View & Share your dat at datproject.org/<username>/<dat-name>
-  `
-
   console.log(welcome)
 
   var schema = {
     properties: {
+      server: {
+        description: chalk.magenta('Dat registry'),
+        default: opts.server || 'datproject.org',
+        required: true
+      },
       email: {
         description: chalk.magenta('Email'),
+        message: 'Email required',
         required: true
       },
       password: {
         description: chalk.magenta('Password'),
+        message: 'Password required',
         required: true,
         hidden: true,
         replace: '*'
@@ -48,19 +56,26 @@ function login (opts) {
   prompt.start()
   prompt.get(schema, function (err, results) {
     if (err) return exitErr(err)
+    opts.server = results.server
     makeRequest(results)
   })
 
   function makeRequest (user) {
     var client = Registry(opts)
-
     client.login({
       email: user.email,
       password: user.password
     }, function (err, resp, body) {
       if (err && err.message) return exitErr(err.message)
       else if (err) return exitErr(err.toString())
-      console.log(outro)
+
+      console.log(output`
+        Logged you in to ${chalk.green(opts.server)}!
+
+        Now you can publish dats and share:
+        * Run ${chalk.green(`dat publish`)} to publish a dat!
+        * View & Share your dats at ${opts.server}
+      `)
       process.exit(0)
     })
   }

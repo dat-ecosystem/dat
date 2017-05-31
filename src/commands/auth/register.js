@@ -1,36 +1,67 @@
 var prompt = require('prompt')
+var output = require('neat-log/output')
+var chalk = require('chalk')
 var Registry = require('../../registry')
 
 module.exports = {
   name: 'register',
   command: register,
-  options: []
+  help: [
+    'Register with a public Dat registry',
+    '',
+    'Register with datproject.org or any other registry to publish your dats.'
+  ].join('\n'),
+  options: [
+    {
+      name: 'server',
+      help: 'Your Dat registry.'
+    }
+  ]
 }
 
 function register (opts) {
-  if (opts.email && opts.username && opts.password) return makeRequest(opts)
+  // TODO: check if logged in?
+  if (opts._[0]) opts.server = opts._[0]
+  var welcome = output`
+    Welcome to ${chalk.green(`dat`)} program!
+    Create a new account with a Dat registry.
 
+  `
+  console.log(welcome)
+
+  var schema = {
+    properties: {
+      server: {
+        description: chalk.magenta('Dat registry'),
+        default: opts.server || 'datproject.org',
+        required: true
+      },
+      username: {
+        description: chalk.magenta('Username'),
+        message: 'Username required',
+        required: true
+      },
+      email: {
+        description: chalk.magenta('Email'),
+        message: 'Email required',
+        required: true
+      },
+      password: {
+        description: chalk.magenta('Password'),
+        message: 'Password required',
+        required: true,
+        hidden: true,
+        replace: '*'
+      }
+    }
+  }
+
+  prompt.override = opts
   prompt.message = ''
-  prompt.colors = false
   prompt.start()
-  prompt.get([{
-    name: 'email',
-    description: 'Email',
-    required: true
-  },
-  {
-    name: 'username',
-    description: 'Username',
-    required: true
-  },
-  {
-    name: 'password',
-    description: 'Password',
-    required: true,
-    hidden: true,
-    replace: '*'
-  }], function (err, results) {
-    if (err) return console.log(err.message)
+  prompt.get(schema, function (err, results) {
+    if (err) return exitErr(err)
+    opts.server = results.server
     makeRequest(results)
   })
 
@@ -44,7 +75,11 @@ function register (opts) {
     }, function (err) {
       if (err && err.message) return exitErr(err.message)
       else if (err) return exitErr(err.toString())
-      console.log('Registered successfully.')
+      console.log(output`
+        Created account on ${chalk.green(opts.server)}!
+
+        Login to start publishing: ${chalk.green(`dat login`)}
+      `)
       process.exit(0)
     })
   }
