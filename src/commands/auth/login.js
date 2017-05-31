@@ -1,4 +1,6 @@
 var prompt = require('prompt')
+var output = require('neat-log/output')
+var chalk = require('chalk')
 var Registry = require('../../registry')
 
 module.exports = {
@@ -10,22 +12,42 @@ module.exports = {
 function login (opts) {
   if (opts.email && opts.password) return makeRequest(opts)
 
+  var welcome = output`
+    Welcome to ${chalk.green(`dat`)} program!
+    Login to get started publishing your dats.
+
+  `
+  var outro = output`
+
+    Logged you in to ${chalk.green('datproject.org')}!
+
+    Now you can publish dats and share:
+    * Run ${chalk.green(`dat publish`)} to publish a dat!
+    * View & Share your dat at datproject.org/<username>/<dat-name>
+  `
+
+  console.log(welcome)
+
+  var schema = {
+    properties: {
+      email: {
+        description: chalk.magenta('Email'),
+        required: true
+      },
+      password: {
+        description: chalk.magenta('Password'),
+        required: true,
+        hidden: true,
+        replace: '*'
+      }
+    }
+  }
+
+  prompt.override = opts
   prompt.message = ''
-  prompt.colors = false
   prompt.start()
-  prompt.get([{
-    name: 'email',
-    description: 'Email',
-    required: true
-  },
-  {
-    name: 'password',
-    description: 'Password',
-    required: true,
-    hidden: true,
-    replace: '*'
-  }], function (err, results) {
-    if (err) return console.log(err.message)
+  prompt.get(schema, function (err, results) {
+    if (err) return exitErr(err)
     makeRequest(results)
   })
 
@@ -38,7 +60,7 @@ function login (opts) {
     }, function (err, resp, body) {
       if (err && err.message) return exitErr(err.message)
       else if (err) return exitErr(err.toString())
-      console.log('Logged in successfully.')
+      console.log(outro)
       process.exit(0)
     })
   }

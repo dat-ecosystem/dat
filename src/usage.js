@@ -21,6 +21,13 @@ Info:
    dat log                     log history for a dat
    dat status                  get key & info about a local dat
 
+Dat project registry:
+   dat register                register a new account on datproject.org
+   dat login                   login to datproject.org account
+   dat publish <dir>           publish a dat to datproject.org
+   dat whoami
+   dat logout
+
 Stateless/Shortcut Commands:
    dat <link> [<dir>]          clone or sync link to <dir>
    dat <dir>                   create and sync dat in directory
@@ -30,6 +37,7 @@ Troubleshooting & Help:
    dat help                    print this usage guide
    dat <command> --help, -h    print help for a specific command
    dat --version, -v           print the dat version
+
   `
   console.error(msg)
   if (usage) {

@@ -99,8 +99,8 @@ function create (opts) {
       }
 
       prompt.override = { title: opts.title, description: opts.description }
-      prompt.message = chalk.green('> ')
-      prompt.delimiter = ''
+      prompt.message = '' // chalk.green('> ')
+      // prompt.delimiter = ''
       prompt.start()
       prompt.get(schema, writeDatJson)
 

@@ -47,6 +47,7 @@ var config = {
     require('../src/commands/share'),
     require('../src/commands/status'),
     require('../src/commands/sync'),
+    require('../src/commands/unpublish'),
     require('../src/commands/auth/register'),
     require('../src/commands/auth/whoami'),
     require('../src/commands/auth/logout'),
