@@ -8,9 +8,10 @@ module.exports = {
   command: login,
   help: [
     'Login to a Dat registry server',
+    'Usage: dat login [<registry>]',
     '',
     'Publish your dats so other users can discovery them.',
-    'Register with datproject.org or any other registry servers.'
+    'Please register before trying to login.'
   ].join('\n'),
   options: [
     {

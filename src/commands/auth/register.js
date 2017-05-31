@@ -8,8 +8,9 @@ module.exports = {
   command: register,
   help: [
     'Register with a public Dat registry',
+    'Usage: dat register [<registry>]',
     '',
-    'Register with datproject.org or any other registry to publish your dats.'
+    'Register with datproject.org or other registries to publish your dats.'
   ].join('\n'),
   options: [
     {

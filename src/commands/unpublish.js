@@ -8,13 +8,29 @@ var Registry = require('../registry')
 
 module.exports = {
   name: 'unpublish',
-  options: [],
-  command: unpublish
+  command: unpublish,
+  options: [
+    {
+      name: 'server',
+      help: 'Unpublish dat from this Registry.'
+    },
+    {
+      name: 'confirm',
+      default: false,
+      boolean: true,
+      abbr: 'y',
+      help: 'Confirm you want to unpublish'
+    }
+  ]
 }
 
 function unpublish (opts) {
+  if (opts._[0]) opts.server = opts._[0]
+  if (!opts.dir) opts.dir = process.cwd() // run in dir for `dat unpublish`
+
   var client = Registry(opts)
-  if (!client.whoami().token) {
+  var whoami = client.whoami()
+  if (!whoami || !whoami.token) {
     var loginErr = output`
       Welcome to ${chalk.green(`dat`)} program!
 
@@ -23,9 +39,6 @@ function unpublish (opts) {
     `
     return exitErr(loginErr)
   }
-  if (opts._[0]) return confirm(opts._[0])
-
-  if (!opts.dir) opts.dir = process.cwd() // run in dir for `dat unpublish`
 
   opts.createIfMissing = false // unpublish dont try to create new one
   Dat(opts.dir, opts, function (err, dat) {
@@ -41,7 +54,7 @@ function unpublish (opts) {
   })
 
   function confirm (name) {
-    console.log(`Unpublishing '${chalk.bold(name)}'.`)
+    console.log(`Unpublishing '${chalk.bold(name)}' from ${chalk.green(whoami.server)}.`)
     prompt.message = ''
     prompt.colors = false
     prompt.start()
@@ -59,13 +72,11 @@ function unpublish (opts) {
   }
 
   function makeRequest (name) {
-    client.secureRequest({
-      method: 'DELETE', url: '/dats', body: {name: name}, json: true
-    }, function (err, resp, body) {
+    client.dats.delete({name: name}, function (err, resp, body) {
       if (err && err.message) exitErr(err.message)
       else if (err) exitErr(err.toString())
       if (body.statusCode === 400) return exitErr(new Error(body.message))
-      console.log('Done.')
+      console.log(`Removed your dat from ${whoami.server}`)
       process.exit(0)
     })
   }

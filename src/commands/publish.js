@@ -10,30 +10,44 @@ var Registry = require('../registry')
 
 module.exports = {
   name: 'publish',
-  options: [],
-  command: publish
+  command: publish,
+  help: [
+    'Publish your dat to a Dat registry',
+    'Usage: dat publish [<registry>]',
+    '',
+    'By default it will publish to your active registry.',
+    'Specify the server to change where the dat is published.'
+  ].join('\n'),
+  options: [
+    {
+      name: 'server',
+      help: 'Publish dat to this registry. Defaults to active login.'
+    }
+  ]
 }
 
 function publish (opts) {
+  if (!opts.dir) opts.dir = process.cwd()
+  if (opts._[0]) opts.server = opts._[0]
+  if (!opts.server) opts.server = 'datproject.org' // nicer error message if not logged in
+
   var client = Registry(opts)
-  if (!client.whoami().token) {
+  var whoami = client.whoami()
+  if (!whoami || !whoami.token) {
     var loginErr = output`
       Welcome to ${chalk.green(`dat`)} program!
-      Publish your dats to datproject.org.
+      Publish your dats to ${chalk.green(opts.server)}.
 
       ${chalk.bold('Please login before publishing')}
       ${chalk.green('dat login')}
 
-      New to datproject.org and need an account?
+      New to ${chalk.green(opts.server)} and need an account?
       ${chalk.green('dat register')}
 
       Explore public dats at ${chalk.blue('datproject.org/explore')}
     `
     return exitErr(loginErr)
   }
-
-  if (opts._.length) opts.dir = opts._[0] // use first arg as dir if default set
-  else if (!opts.dir) opts.dir = process.cwd()
 
   opts.createIfMissing = false // publish must always be a resumed archive
   Dat(opts.dir, opts, function (err, dat) {
@@ -54,8 +68,7 @@ function publish (opts) {
         description: opts.description
       }, data)
       var welcome = output`
-        Publishing your dat to ${chalk.green(`datproject.org`)}!
-        ${chalk.dim('datproject.org/<username>/<dat-name>')}
+        Publishing dat to ${chalk.green(opts.server)}!
 
       `
       console.log(welcome)
@@ -82,22 +95,40 @@ function publish (opts) {
 
     function makeRequest (datInfo) {
       console.log(`'${chalk.bold(datInfo.name)}' will soon be ready for its great unveiling.`)
-      client.secureRequest({
-        method: 'POST', url: '/dats', body: datInfo, json: true
-      }, function (err, resp, body) {
-        if (err) return exitErr(err)
+      client.dats.create(datInfo, function (err, resp, body) {
+        if (err) {
+          if (err.message) return exitErr('ERROR: ' + err.message) // node error
+
+          // server response errors
+          if (err.toString().trim() === 'jwt expired') return exitErr(`Session expired, please ${chalk.green('dat login')} again`)
+          return exitErr('ERROR: ' + err.toString())
+        }
         if (body.statusCode === 400) return exitErr(new Error(body.message))
 
         datjson.write(datInfo, function (err) {
           if (err) return exitErr(err)
+          // TODO: write published url to dat.json (need spec)
           var msg = output`
 
-            We published your dat!
+            We ${body.updated === 1 ? 'updated' : 'published'} your dat!
+            ${chalk.blue.underline(`${opts.server}/${whoami.username}/${datInfo.name}`)}
+          `// TODO: get url back? it'd be better to confirm link than guess username/datname structure
 
-            datproject.org will live update when you are syncing your dat.
-            You only need to publish again if your dat link changes.
-          ` // TODO: get url back? it'd be nice to link it
           console.log(msg)
+          if (body.updated === 1) {
+            console.log(output`
+
+              ${chalk.dim.green('Cool fact #21')}
+              ${opts.server} will live update when you are sharing your dat!
+              You only need to publish again if your dat link changes.
+            `)
+          } else {
+            console.log(output`
+
+              Remember to use ${chalk.green('dat share')} before sharing.
+              This will make sure your dat is available.
+            `)
+          }
           process.exit(0)
         })
       })
