@@ -5,7 +5,7 @@ module.exports = function (opts) {
   var townshipOpts = {
     server: opts.server,
     config: {
-      filepath: opts.config || '.datrc'
+      filepath: opts.config // defaults to ~/.datrc via dat-registry
     }
   }
   var defaults = {
