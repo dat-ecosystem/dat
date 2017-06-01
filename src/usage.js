@@ -21,12 +21,13 @@ Info:
    dat log                     log history for a dat
    dat status                  get key & info about a local dat
 
-Dat project registry:
-   dat register                register a new account on datproject.org
-   dat login                   login to datproject.org account
-   dat publish <dir>           publish a dat to datproject.org
-   dat whoami
-   dat logout
+Dat public registries:
+   dat <cmd> [<registry>]      All commands take <registry> option
+   dat register                register new account
+   dat login                   login to your account
+   dat publish                 publish a dat
+   dat whoami                  print active login information
+   dat logout                  logout from active login
 
 Stateless/Shortcut Commands:
    dat <link> [<dir>]          clone or sync link to <dir>
