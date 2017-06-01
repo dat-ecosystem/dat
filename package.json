@@ -41,7 +41,7 @@
     "dat-link-resolve": "^1.0.0",
     "dat-log": "^1.1.0",
     "dat-node": "^3.3.2",
-    "dat-registry": "^2.1.2",
+    "dat-registry": "^3.0.2",
     "debug": "^2.6.6",
     "hyperdrive-http": "^4.1.0",
     "neat-log": "^1.1.0",

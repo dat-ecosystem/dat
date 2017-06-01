@@ -1,65 +1,136 @@
+var path = require('path')
 var Dat = require('dat-node')
 var encoding = require('dat-encoding')
+var output = require('neat-log/output')
 var prompt = require('prompt')
+var chalk = require('chalk')
+var DatJson = require('dat-json')
+var xtend = require('xtend')
 var Registry = require('../registry')
 
 module.exports = {
   name: 'publish',
-  options: [],
-  command: publish
+  command: publish,
+  help: [
+    'Publish your dat to a Dat registry',
+    'Usage: dat publish [<registry>]',
+    '',
+    'By default it will publish to your active registry.',
+    'Specify the server to change where the dat is published.'
+  ].join('\n'),
+  options: [
+    {
+      name: 'server',
+      help: 'Publish dat to this registry. Defaults to active login.'
+    }
+  ]
 }
 
 function publish (opts) {
-  var client = Registry(opts)
-  if (!client.whoami().token) return exitErr('Please login before publishing.')
+  if (!opts.dir) opts.dir = process.cwd()
+  if (opts._[0]) opts.server = opts._[0]
+  if (!opts.server) opts.server = 'datproject.org' // nicer error message if not logged in
 
-  if (opts._.length) opts.dir = opts._[0] // use first arg as dir if default set
-  else if (!opts.dir) opts.dir = process.cwd()
+  var client = Registry(opts)
+  var whoami = client.whoami()
+  if (!whoami || !whoami.token) {
+    var loginErr = output`
+      Welcome to ${chalk.green(`dat`)} program!
+      Publish your dats to ${chalk.green(opts.server)}.
+
+      ${chalk.bold('Please login before publishing')}
+      ${chalk.green('dat login')}
+
+      New to ${chalk.green(opts.server)} and need an account?
+      ${chalk.green('dat register')}
+
+      Explore public dats at ${chalk.blue('datproject.org/explore')}
+    `
+    return exitErr(loginErr)
+  }
 
   opts.createIfMissing = false // publish must always be a resumed archive
   Dat(opts.dir, opts, function (err, dat) {
     if (err) return exitErr(err)
-    publish()
+    // TODO better error msg for non-existing archive
 
-    function publish () {
-      var datInfo = {
+    var datjson = DatJson(dat.archive, {file: path.join(dat.path, 'dat.json')})
+    datjson.read(publish)
+
+    function publish (_, data) {
+      // ignore datjson.read() err, we'll prompt for name
+
+      // xtend dat.json with opts
+      var datInfo = xtend({
         name: opts.name,
-        url: 'dat://' + encoding.toStr(dat.key),
+        url: 'dat://' + encoding.toStr(dat.key), // force correct url in publish? what about non-dat urls?
         title: opts.title,
-        description: opts.description,
-        keywords: opts.keywords
-      }
+        description: opts.description
+      }, data)
+      var welcome = output`
+        Publishing dat to ${chalk.green(opts.server)}!
 
-      if (!datInfo.name) {
-        prompt.message = ''
-        prompt.colors = false
-        prompt.start()
-        prompt.get([{
-          name: 'name',
-          pattern: /^[a-zA-Z\s-]+$/,
-          message: 'Name must be only letters, spaces, or dashes',
-          required: true
-        }], function (err, results) {
-          if (err) return console.log(err.message)
-          console.log(results.name)
-          datInfo.name = results.name
-          makeRequest(datInfo)
-        })
-      } else {
+      `
+      console.log(welcome)
+
+      if (datInfo.name) return makeRequest(datInfo)
+
+      prompt.message = ''
+      prompt.start()
+      prompt.get({
+        properties: {
+          name: {
+            description: chalk.magenta('dat name'),
+            pattern: /^[a-zA-Z0-9-]+$/,
+            message: `A dat name can only have letters, numbers, or dashes.\n Like ${chalk.bold('cool-cats-12meow')}`,
+            required: true
+          }
+        }
+      }, function (err, results) {
+        if (err) return exitErr(err)
+        datInfo.name = results.name
         makeRequest(datInfo)
-      }
+      })
     }
 
     function makeRequest (datInfo) {
-      console.log(`Publishing archive with name "${datInfo.name}".`)
-      client.secureRequest({
-        method: 'POST', url: '/dats', body: datInfo, json: true
-      }, function (err, resp, body) {
-        if (err && err.message) exitErr(err.message)
-        else if (err) exitErr(err.toString())
+      console.log(`'${chalk.bold(datInfo.name)}' will soon be ready for its great unveiling.`)
+      client.dats.create(datInfo, function (err, resp, body) {
+        if (err) {
+          if (err.message) return exitErr('ERROR: ' + err.message) // node error
+
+          // server response errors
+          if (err.toString().trim() === 'jwt expired') return exitErr(`Session expired, please ${chalk.green('dat login')} again`)
+          return exitErr('ERROR: ' + err.toString())
+        }
         if (body.statusCode === 400) return exitErr(new Error(body.message))
-        console.log('Successfully published!')
-        process.exit(0)
+
+        datjson.write(datInfo, function (err) {
+          if (err) return exitErr(err)
+          // TODO: write published url to dat.json (need spec)
+          var msg = output`
+
+            We ${body.updated === 1 ? 'updated' : 'published'} your dat!
+            ${chalk.blue.underline(`${opts.server}/${whoami.username}/${datInfo.name}`)}
+          `// TODO: get url back? it'd be better to confirm link than guess username/datname structure
+
+          console.log(msg)
+          if (body.updated === 1) {
+            console.log(output`
+
+              ${chalk.dim.green('Cool fact #21')}
+              ${opts.server} will live update when you are sharing your dat!
+              You only need to publish again if your dat link changes.
+            `)
+          } else {
+            console.log(output`
+
+              Remember to use ${chalk.green('dat share')} before sharing.
+              This will make sure your dat is available.
+            `)
+          }
+          process.exit(0)
+        })
       })
     }
   })
