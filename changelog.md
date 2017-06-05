@@ -5,6 +5,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 13.6.0 - 2017-06-05
+Full support for Dat registries! See our [full release notes](https://github.com/datproject/dat/releases/tag/v13.6.0).
+### Added
+* Improved support for public Dat registries (https://github.com/datproject/dat/pull/794)
+* Add unpublish command
+
 ## 13.5.1 - 2017-05-30
 ### Changed
 * Big documentation update!
