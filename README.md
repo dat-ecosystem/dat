@@ -24,15 +24,24 @@ Have questions? Join our chat via IRC or Gitter:
 
 #### What is Dat?
 
-The [Dat Project](http://datproject.org) is the home to open source data sharing applications led by [Code for Science & Society](http://codeforscience.org), a grant-funded non profit. The Dat Protocol transfers files in a **secure**, **distributed**, and **fast** network allowing you to focus on the fun work without worrying about moving files around.
+Share, backup, and publish your filesystem. You can turn any folder on your computer into a dat. Dat scans your folder, allowing you to:
+
+* Track your files with automatic version history.
+* Share files with others over a secure peer to peer network.
+* Automate live backups to external hds or remote servers.
+* Publish and share files with built in HTTP server.
+
+Dat allows you to focus on the fun work without worrying about moving files around. **Secure**, **distributed**, **fast**.
+
+The [Dat Project](http://datproject.org) is the home to open source data sharing applications led by [Code for Science & Society](http://codeforscience.org), a nonprofit.
 
 * Documentation: [docs.datproject.org](http://docs.datproject.org)
 * Dat Protocol: [datprotocol.com](http://www.datprotocol.com)
 * [Dat white paper](https://github.com/datproject/docs/blob/master/papers/dat-paper.pdf)
 
-##### Other Apps
+##### Other Applications
 
-Rather not use the command line? Visit our [installation guide](http://datproject.org/install) or check out these options:
+Rather not use the command line? Check out these options:
 
 * [Dat Desktop](https://datproject.org/install#desktop) - A desktop app to manage multiple Dats on your desktop machine.
 * [Beaker Browser](http://beakerbrowser.com) - An experimental p2p browser with built-in support for the Dat protocol.
@@ -50,27 +59,33 @@ You can chat with us in IRC on [#dat](http://webchat.freenode.net/?channels=dat)
 
 ## Installation
 
+Dat can be used as a command line tool or as javascript library:
+
 * `npm install -g dat` - Install `dat` globally to use in the command line.
 * [require('dat')](http://github.com/datproject/dat-node) - dat-node, a library for downloading and sharing Dat archives in javascript apps.
-* [Dat Protocol](https://www.datprotocol.com) - Build your own application on the Dat Protocol.
 
-### `npm install -g dat`
+### Installing via npm
 
-The Dat command line tool can be installed with `npm`. Dat needs `node` version 4 or above and `npm` installed. You can run `node -v` to check!
-
-Need to install Node or npm? [Start here](https://nodejs.org/en/download/). 
-
-Install `dat` from npm with the `--global, -g` option:
+The Dat command line tool can be installed with `npm`:
 
 ```
 npm install -g dat
 ```
 
-You should be able to run the `dat` command now. If not, see the [installation troubleshooting](#troubleshooting) for tips.
+Make sure you have `node` and `npm` installed first. If not, see the prerequisites section below.
 
-### `require('dat')`
+Once `npm install` finishes, you should be able to run the `dat` command. If not, see the [installation troubleshooting](#troubleshooting) for tips.
 
-Dat exports the [dat-node](http://github.com/datproject/dat-node) API via `require('dat')`. Use it in your javascript applications! Dat Desktop and dat command line both use dat-node to share and download dats.
+#### Prerequisites
+
+* **Node**: You'll need to [install Node](https://nodejs.org/en/download/) before installing Dat. Dat needs `node` version 4 or above and `npm` installed. You can run `node -v` to check your version.
+* **npm**: `npm` is installed with node. You can run `npm -v` to make sure it is installed.
+
+Once you have `npm` ready, install `dat` from npm with the `--global, -g` option, `npm install -g dat`.
+
+### JS Library
+
+Add Dat to your `package.json`, `npm install dat --save`. Dat exports the [dat-node](http://github.com/datproject/dat-node) API via `require('dat')`. Use it in your javascript applications! Dat Desktop and dat command line both use dat-node to share and download dats.
 
 Full API documentation is available in the dat-node repository on Github.
 
@@ -78,18 +93,13 @@ Full API documentation is available in the dat-node repository on Github.
 
 We have Dat installed, let's use it!
 
-Dat command line is a powerful tool for distributed file syncing. Dat's unique design works wherever you store your data. Create a new dat from any folder on your computer. Then use your new dat to:
-
-* automatically version history your files
-* efficiently live sync files to many destinations (backups, friends, servers)
-* host files over http, from anywhere, with built-in live reload and version history
-* encrypted transfer and content verification
+Dat's unique design works wherever you store your data. You can create a new dat from any folder on your computer.
 
 A dat is some files from your computer and a `.dat` folder. Each dat has unique `dat://` link. With your dat link, other users can download your files and live sync any updates.
 
-***New to Dat? Try the `dat create` command, it walks you through creating a new dat and dat.json file.***
-
 ### Sharing Data
+
+You can start sharing your files with a single command. Unlike `git`, you do not have to initialize a repository first, `dat share` will do that for you:
 
 ```
 dat share <dir>
@@ -115,7 +125,7 @@ Try out `dat clone` with the link above to read more about the protocol!
 
 A few other highlights. Run `dat help` to see the full usage guide.
 
-* `dat create` - Create a new dat and dat.json file.
+* `dat create` - Create a empty dat and dat.json file.
 * `dat doctor` - Dat network doctor! The doctor tries to connect to a public peer. The doctor also creates a key to test direct connections.
 * `dat log ~/data/dat-folder/` or `dat log dat://<key>` - view the history and metadata information for a dat.
 
@@ -271,17 +281,17 @@ dat clone datproject.org/jhand/cli-demo
 
 #### Auth (experimental)
 
-Other auth commands are still in an experimental status.
-New registrations on the Dat archive registry are currently limited.
+You can also use the `dat` command line to register and publish to Dat registries. Dat plans to support any registry. Currently, `datproject.org` is the only available and the default.
+
+To register and login you can use the following commands:
 
 ```
-dat register
+dat register [<registry>]
 dat login
-dat logout
 dat whoami
 ```
 
-Once you are logged in to a server. You can publish a Dat archive:
+Once you are logged in to a registry. You can publish a Dat archive:
 
 ```
 cd my-data
@@ -289,7 +299,7 @@ dat create
 dat publish --name my-dataset
 ```
 
-All authentication requests take the `--server` option.
+All registry requests take the `<registry>` option if you'd like to publish to a different registry than datproject.org.
 You can deploy your own compatible [registry server](https://github.com/datproject/datproject.org) if you'd rather use your own service.
 
 ## Troubleshooting
