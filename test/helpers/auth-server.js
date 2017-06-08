@@ -1,16 +1,21 @@
 var path = require('path')
-var Server = require('dat-land/server')
-var initDb = require('dat-land/server/database/init')
 var rimraf = require('rimraf')
-var mockTransport = require('nodemailer-mock-transport')
+var Server, initDb
+try {
+  Server = require('dat-registry-api/server')
+  initDb = require('dat-registry-api/server/database/init')
+} catch (e) {
+  console.log('Disabling auth tests, run `npm install dat-registry-api` to enable them.')
+}
 
 module.exports = createServer
 
 function createServer (port, cb) {
+  if (!Server || !initDb) return cb(null)
   var config = {
+    mixpanel: 'nothing',
     email: {
-      fromEmail: 'hi@example.com',
-      transport: mockTransport()
+      fromEmail: 'hi@example.com'
     },
     township: {
       secret: 'very secret code',

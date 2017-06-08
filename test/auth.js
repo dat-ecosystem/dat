@@ -21,6 +21,7 @@ rimraf.sync(config)
 
 authServer(port, function (err, server, closeServer) {
   if (err) throw err
+  if (!server) return
   test('auth - whoami works when not logged in', function (t) {
     var cmd = dat + ' whoami '
     var st = spawn(t, cmd, {cwd: baseTestDir})

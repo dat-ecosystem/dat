@@ -17,7 +17,7 @@
     "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "standard": "standard",
     "deps": "dependency-check . && dependency-check . --extra --no-dev",
-    "test": "standard && npm run deps && tape 'test/*[!auth].js' | tap-spec"
+    "test": "standard && npm run deps && tape 'test/*.js' | tap-spec"
   },
   "repository": {
     "type": "git",
@@ -54,9 +54,8 @@
     "xtend": "^4.0.1"
   },
   "devDependencies": {
-    "dat-land": "datproject/datfolder",
     "dependency-check": "^2.8.0",
-    "hypercore": "^6.2.4",
+    "hypercore": "^6.5.0",
     "hyperdiscovery": "^6.0.1",
     "mkdirp": "^0.5.1",
     "random-access-memory": "^2.4.0",
