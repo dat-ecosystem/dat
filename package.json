@@ -54,7 +54,7 @@
     "xtend": "^4.0.1"
   },
   "devDependencies": {
-    "dat-land": "datproject/datfolder",
+    "dat-registry-api": "^2.0.0",
     "dependency-check": "^2.8.0",
     "hypercore": "^6.2.4",
     "hyperdiscovery": "^6.0.1",
