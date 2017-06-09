@@ -17,8 +17,7 @@
     "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "standard": "standard",
     "deps": "dependency-check . && dependency-check . --extra --no-dev",
-    "test": "standard && npm run deps && tape 'test/*[!auth].js' | tap-spec",
-    "preinstall": "npm config set package-lock false"
+    "test": "standard && npm run deps && tape 'test/*[!auth].js' | tap-spec"
   },
   "repository": {
     "type": "git",

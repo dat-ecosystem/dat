@@ -9,3 +9,4 @@ tests/fixtures/.dat
 tests/fixtures/dat.json
 tests/**.db
 tests/.datrc-test
+package-lock.json
