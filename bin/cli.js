@@ -25,7 +25,7 @@ var config = {
     { name: 'quiet', default: isDebug, boolean: true }, // neat-log uses quiet for debug right now
     { name: 'sparse', default: false, boolean: true, help: 'download only requested data' },
     { name: 'up', help: 'throttle upload bandwidth' },
-    { name: 'down', help: 'throttle download bandwidth' },
+    { name: 'down', help: 'throttle download bandwidth' }
   ],
   root: {
     options: [
