@@ -23,7 +23,9 @@ var config = {
     { name: 'utp', default: true, boolean: true, help: 'use utp for discovery' },
     { name: 'http', help: 'serve dat over http (default port: 8080)' },
     { name: 'quiet', default: isDebug, boolean: true }, // neat-log uses quiet for debug right now
-    { name: 'sparse', default: false, boolean: true, help: 'download only requested data' }
+    { name: 'sparse', default: false, boolean: true, help: 'download only requested data' },
+    { name: 'up', help: 'throttle upload bandwidth (1024, 1kb, 2mb, etc.)' },
+    { name: 'down', help: 'throttle download bandwidth (1024, 1kb, 2mb, etc.)' }
   ],
   root: {
     options: [

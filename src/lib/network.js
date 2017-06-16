@@ -1,4 +1,7 @@
+var bytes = require('bytes').parse
 var speed = require('speedometer')
+var throttle = require('throttle')
+var pump = require('pump')
 var xtend = Object.assign
 
 module.exports = trackNetwork
@@ -8,7 +11,18 @@ function trackNetwork (state, bus) {
   bus.once('dat', track)
 
   function track () {
-    var network = state.dat.joinNetwork(state.opts, function () {
+    var opts = state.opts
+    if (state.opts.up || state.opts.down) {
+      opts = xtend({}, opts, {
+        connect: function (local, remote) {
+          var streams = [local, remote, local]
+          if (state.opts.up) streams.splice(1, 0, throttle(bytes(state.opts.up)))
+          if (state.opts.down) streams.splice(-1, 0, throttle(bytes(state.opts.down)))
+          pump(streams)
+        }
+      })
+    }
+    var network = state.dat.joinNetwork(opts, function () {
       bus.emit('network:callback')
     })
     state.network = xtend(network, state.network)
