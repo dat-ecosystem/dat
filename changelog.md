@@ -5,6 +5,12 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## Added
+* Throttling - sometimes Dat goes too fast, so you can limit the upload + download speeds. (https://github.com/datproject/dat/pull/806)
+
+## Fixed
+* Use npm package for registry testing.
+
 ## 13.6.0 - 2017-06-05
 Full support for Dat registries! See our [full release notes](https://github.com/datproject/dat/releases/tag/v13.6.0).
 ### Added
