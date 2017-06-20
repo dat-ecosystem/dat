@@ -95,13 +95,21 @@ function publish (opts) {
     }
 
     function makeRequest (datInfo) {
-      console.log(`'${chalk.bold(datInfo.name)}' will soon be ready for its great unveiling.`)
+      console.log(`Please wait, '${chalk.bold(datInfo.name)}' will soon be ready for its great unveiling...`)
       client.dats.create(datInfo, function (err, resp, body) {
         if (err) {
-          if (err.message) return exitErr('ERROR: ' + err.message) // node error
+          if (err.message) {
+            if (err.message === 'timed out') {
+              return exitErr(output`${chalk.red('\nERROR: ' + opts.server + ' could not connect to your computer.')}
+              Troubleshoot here: ${chalk.green('https://docs.datproject.org/troubleshooting#networking-issues')}
+              `)
+            }
+            return exitErr('ERROR: ' + err.message) // node error
+          }
 
           // server response errors
-          if (err.toString().trim() === 'jwt expired') return exitErr(`Session expired, please ${chalk.green('dat login')} again`)
+          var str = err.toString().trim()
+          if (str === 'jwt expired') return exitErr(`Session expired, please ${chalk.green('dat login')} again`)
           return exitErr('ERROR: ' + err.toString())
         }
         if (body.statusCode === 400) return exitErr(new Error(body.message))
