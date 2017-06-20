@@ -53,6 +53,7 @@ function publish (opts) {
   Dat(opts.dir, opts, function (err, dat) {
     if (err) return exitErr(err)
     // TODO better error msg for non-existing archive
+    dat.joinNetwork()
 
     var datjson = DatJson(dat.archive, {file: path.join(dat.path, 'dat.json')})
     datjson.read(publish)
