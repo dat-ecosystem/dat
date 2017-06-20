@@ -51,9 +51,10 @@ function publish (opts) {
 
   opts.createIfMissing = false // publish must always be a resumed archive
   Dat(opts.dir, opts, function (err, dat) {
-    if (err) return exitErr(err)
-    // TODO better error msg for non-existing archive
-    dat.joinNetwork()
+    if (err && err.name === 'MissingError') return exitErr('No existing dat in this directory. Create a dat before publishing.')
+    else if (err) return exitErr(err)
+
+    dat.joinNetwork() // join network to upload metadata
 
     var datjson = DatJson(dat.archive, {file: path.join(dat.path, 'dat.json')})
     datjson.read(publish)
