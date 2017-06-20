@@ -104,12 +104,12 @@ function publish (opts) {
               Troubleshoot here: ${chalk.green('https://docs.datproject.org/troubleshooting#networking-issues')}
               `)
             }
+            var str = err.message.trim()
+            if (str === 'jwt expired') return exitErr(`Session expired, please ${chalk.green('dat login')} again`)
             return exitErr('ERROR: ' + err.message) // node error
           }
 
           // server response errors
-          var str = err.toString().trim()
-          if (str === 'jwt expired') return exitErr(`Session expired, please ${chalk.green('dat login')} again`)
           return exitErr('ERROR: ' + err.toString())
         }
         if (body.statusCode === 400) return exitErr(new Error(body.message))
