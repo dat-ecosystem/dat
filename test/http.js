@@ -1,10 +1,8 @@
-var fs = require('fs')
 var path = require('path')
 var test = require('tape')
 var rimraf = require('rimraf')
 var request = require('request')
 var spawn = require('./helpers/spawn.js')
-var help = require('./helpers')
 
 var dat = path.resolve(path.join(__dirname, '..', 'bin', 'cli.js'))
 var fixtures = path.join(__dirname, 'fixtures')
@@ -37,4 +35,3 @@ test('http - share with http', function (t) {
   st.stderr.empty()
   st.end()
 })
-
