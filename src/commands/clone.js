@@ -1,8 +1,11 @@
 var fs = require('fs')
+var path = require('path')
+var tmpdir = require('os').tmpdir
 var rimraf = require('rimraf')
 var Dat = require('dat-node')
 var linkResolve = require('dat-link-resolve')
 var neatLog = require('neat-log')
+var DatJson = require('dat-json')
 var archiveUI = require('../ui/archive')
 var trackArchive = require('../lib/archive')
 var discoveryExit = require('../lib/discovery-exit')
@@ -63,23 +66,45 @@ function clone (opts) {
       else if (err) return bus.emit('exit:warn', 'Link is not a valid Dat link.')
 
       opts.key = key
-      createDir(opts.key, function () {
-        bus.emit('key', key)
-        runDat()
-      })
+      fetchDatInfo()
     })
 
-    function createDir (key, cb) {
+    function fetchDatInfo () {
+      Dat(path.join(tmpdir(), `${Date.now()}`), {key: opts.key, sparse: true}, function (err, dat) {
+        if (err) return bus.emit('exit:error', err)
+
+        state.dat = dat
+        state.title = 'Cloning'
+
+        dat.joinNetwork()
+        dat.archive.metadata.update(function () {
+          var datjson = DatJson(dat.archive)
+          datjson.read(function (_, data) {
+            // ignore errors
+            console.log(_)
+            debug('dat.json read', data)
+            var dir = data.name || opts.key // slugify key? also could slugify title?
+            createDir(dir, function () {
+              bus.emit('key', opts.key)
+              runDat()
+            })
+          })
+        })
+      })
+    }
+
+    function createDir (name, cb) {
       debug('Checking directory for clone')
       // Create the directory if it doesn't exist
       // If no dir is specified, we put dat in a dir with name = key
-      if (!opts.dir) opts.dir = key
+      console.log('this one')
+      if (!opts.dir) opts.dir = name
       fs.access(opts.dir, fs.F_OK, function (err) {
         if (!err) {
           createdDirectory = false
           return cb()
         }
-        debug('No existing directory, creating it.')
+        debug('No existing directory, creating it.', opts.dir)
         createdDirectory = true
         fs.mkdir(opts.dir, cb)
       })
@@ -95,7 +120,6 @@ function clone (opts) {
         if (dat.writable) return bus.emit('exit:warn', 'Archive is writable. Cannot clone your own archive =).')
 
         state.dat = dat
-        state.title = 'Cloning'
         bus.emit('dat')
         bus.emit('render')
       })
