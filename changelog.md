@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ## Added
 * Throttling - sometimes Dat goes too fast, so you can limit the upload + download speeds. (https://github.com/datproject/dat/pull/806)
+* Publish metadata to registry when publishing (https://github.com/datproject/dat/pull/812)
+
+## Changed
+* Use dat-node http support directly (https://github.com/datproject/dat/pull/817)
 
 ## Fixed
 * Use npm package for registry testing.
