@@ -5,6 +5,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 13.7.0 - 2017-06-28
 ## Added
 * Throttling - sometimes Dat goes too fast, so you can limit the upload + download speeds. (https://github.com/datproject/dat/pull/806)
 * Publish metadata to registry when publishing (https://github.com/datproject/dat/pull/812)
