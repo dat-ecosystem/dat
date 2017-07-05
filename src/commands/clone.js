@@ -1,15 +1,3 @@
-var fs = require('fs')
-var rimraf = require('rimraf')
-var Dat = require('dat-node')
-var linkResolve = require('dat-link-resolve')
-var neatLog = require('neat-log')
-var archiveUI = require('../ui/archive')
-var trackArchive = require('../lib/archive')
-var discoveryExit = require('../lib/discovery-exit')
-var onExit = require('../lib/exit')
-var parseArgs = require('../parse-args')
-var debug = require('debug')('dat')
-
 module.exports = {
   name: 'clone',
   command: clone,
@@ -36,6 +24,18 @@ module.exports = {
 }
 
 function clone (opts) {
+  var fs = require('fs')
+  var rimraf = require('rimraf')
+  var Dat = require('dat-node')
+  var linkResolve = require('dat-link-resolve')
+  var neatLog = require('neat-log')
+  var archiveUI = require('../ui/archive')
+  var trackArchive = require('../lib/archive')
+  var discoveryExit = require('../lib/discovery-exit')
+  var onExit = require('../lib/exit')
+  var parseArgs = require('../parse-args')
+  var debug = require('debug')('dat')
+
   var parsed = parseArgs(opts)
   opts.key = parsed.key || opts._[0] // pass other links to resolver
   opts.dir = parsed.dir

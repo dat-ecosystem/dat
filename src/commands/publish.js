@@ -1,13 +1,3 @@
-var path = require('path')
-var Dat = require('dat-node')
-var encoding = require('dat-encoding')
-var output = require('neat-log/output')
-var prompt = require('prompt')
-var chalk = require('chalk')
-var DatJson = require('dat-json')
-var xtend = require('xtend')
-var Registry = require('../registry')
-
 module.exports = {
   name: 'publish',
   command: publish,
@@ -27,6 +17,16 @@ module.exports = {
 }
 
 function publish (opts) {
+  var path = require('path')
+  var Dat = require('dat-node')
+  var encoding = require('dat-encoding')
+  var output = require('neat-log/output')
+  var prompt = require('prompt')
+  var chalk = require('chalk')
+  var DatJson = require('dat-json')
+  var xtend = require('xtend')
+  var Registry = require('../registry')
+
   if (!opts.dir) opts.dir = process.cwd()
   if (opts._[0]) opts.server = opts._[0]
   if (!opts.server) opts.server = 'datproject.org' // nicer error message if not logged in

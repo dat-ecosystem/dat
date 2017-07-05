@@ -1,8 +1,3 @@
-var prompt = require('prompt')
-var output = require('neat-log/output')
-var chalk = require('chalk')
-var Registry = require('../../registry')
-
 module.exports = {
   name: 'register',
   command: register,
@@ -21,6 +16,11 @@ module.exports = {
 }
 
 function register (opts) {
+  var prompt = require('prompt')
+  var output = require('neat-log/output')
+  var chalk = require('chalk')
+  var Registry = require('../../registry')
+
   // TODO: check if logged in?
   if (opts._[0]) opts.server = opts._[0]
   var welcome = output`

@@ -1,12 +1,3 @@
-var Dat = require('dat-node')
-var neatLog = require('neat-log')
-var archiveUI = require('../ui/archive')
-var trackArchive = require('../lib/archive')
-var discoveryExit = require('../lib/discovery-exit')
-var onExit = require('../lib/exit')
-var parseArgs = require('../parse-args')
-var debug = require('debug')('dat')
-
 module.exports = {
   name: 'pull',
   command: pull,
@@ -33,6 +24,15 @@ module.exports = {
 }
 
 function pull (opts) {
+  var Dat = require('dat-node')
+  var neatLog = require('neat-log')
+  var archiveUI = require('../ui/archive')
+  var trackArchive = require('../lib/archive')
+  var discoveryExit = require('../lib/discovery-exit')
+  var onExit = require('../lib/exit')
+  var parseArgs = require('../parse-args')
+  var debug = require('debug')('dat')
+
   debug('dat pull')
   if (!opts.dir) {
     var parsed = parseArgs(opts)

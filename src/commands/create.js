@@ -1,13 +1,3 @@
-var path = require('path')
-var fs = require('fs')
-var Dat = require('dat-node')
-var output = require('neat-log/output')
-var DatJson = require('dat-json')
-var prompt = require('prompt')
-var chalk = require('chalk')
-var parseArgs = require('../parse-args')
-var debug = require('debug')('dat')
-
 module.exports = {
   name: 'create',
   command: create,
@@ -28,6 +18,16 @@ module.exports = {
 }
 
 function create (opts) {
+  var path = require('path')
+  var fs = require('fs')
+  var Dat = require('dat-node')
+  var output = require('neat-log/output')
+  var DatJson = require('dat-json')
+  var prompt = require('prompt')
+  var chalk = require('chalk')
+  var parseArgs = require('../parse-args')
+  var debug = require('debug')('dat')
+
   debug('dat create')
   if (!opts.dir) {
     opts.dir = parseArgs(opts).dir || process.cwd()

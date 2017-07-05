@@ -1,7 +1,3 @@
-var output = require('neat-log/output')
-var chalk = require('chalk')
-var Registry = require('../../registry')
-
 module.exports = {
   name: 'whoami',
   command: whoami,
@@ -20,6 +16,10 @@ module.exports = {
 }
 
 function whoami (opts) {
+  var output = require('neat-log/output')
+  var chalk = require('chalk')
+  var Registry = require('../../registry')
+
   if (opts._[0]) opts.server = opts._[0]
 
   var client = Registry(opts)
