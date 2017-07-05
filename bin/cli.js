@@ -3,7 +3,6 @@
 var subcommand = require('subcommand')
 var debug = require('debug')('dat')
 var usage = require('../src/usage')
-var parseArgs = require('../src/parse-args')
 
 process.title = 'dat'
 
@@ -94,7 +93,7 @@ function syncShorthand (opts) {
   if (!opts._.length) return usage(opts)
   debug('Sync shortcut command')
 
-  var parsed = parseArgs(opts)
+  var parsed = require('../src/parse-args')(opts)
 
   // Download Key
   if (parsed.key) {
