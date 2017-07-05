@@ -1,11 +1,3 @@
-var Dat = require('dat-node')
-var neatLog = require('neat-log')
-var archiveUI = require('../ui/archive')
-var trackArchive = require('../lib/archive')
-var onExit = require('../lib/exit')
-var parseArgs = require('../parse-args')
-var debug = require('debug')('dat')
-
 module.exports = {
   name: 'sync',
   command: sync,
@@ -45,6 +37,14 @@ module.exports = {
 }
 
 function sync (opts) {
+  var Dat = require('dat-node')
+  var neatLog = require('neat-log')
+  var archiveUI = require('../ui/archive')
+  var trackArchive = require('../lib/archive')
+  var onExit = require('../lib/exit')
+  var parseArgs = require('../parse-args')
+  var debug = require('debug')('dat')
+
   debug('dat sync')
   var parsed = parseArgs(opts)
   opts.key = parsed.key

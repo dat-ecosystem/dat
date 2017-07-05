@@ -1,11 +1,3 @@
-var prompt = require('prompt')
-var path = require('path')
-var Dat = require('dat-node')
-var output = require('neat-log/output')
-var chalk = require('chalk')
-var DatJson = require('dat-json')
-var Registry = require('../registry')
-
 module.exports = {
   name: 'unpublish',
   command: unpublish,
@@ -25,6 +17,14 @@ module.exports = {
 }
 
 function unpublish (opts) {
+  var prompt = require('prompt')
+  var path = require('path')
+  var Dat = require('dat-node')
+  var output = require('neat-log/output')
+  var chalk = require('chalk')
+  var DatJson = require('dat-json')
+  var Registry = require('../registry')
+
   if (opts._[0]) opts.server = opts._[0]
   if (!opts.dir) opts.dir = process.cwd() // run in dir for `dat unpublish`
 

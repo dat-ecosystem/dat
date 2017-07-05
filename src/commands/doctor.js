@@ -1,5 +1,3 @@
-var doctor = require('dat-doctor')
-
 module.exports = {
   name: 'doctor',
   help: [
@@ -11,6 +9,8 @@ module.exports = {
   ].join('\n'),
   options: [],
   command: function (opts) {
+    var doctor = require('dat-doctor')
+
     opts.id = opts._[0]
     doctor(opts)
   }

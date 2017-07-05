@@ -1,6 +1,3 @@
-var chalk = require('chalk')
-var Registry = require('../../registry')
-
 module.exports = {
   name: 'logout',
   command: logout,
@@ -20,6 +17,9 @@ module.exports = {
 }
 
 function logout (opts) {
+  var chalk = require('chalk')
+  var Registry = require('../../registry')
+
   if (opts._[0]) opts.server = opts._[0]
 
   var client = Registry(opts)

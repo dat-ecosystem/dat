@@ -1,8 +1,3 @@
-var prompt = require('prompt')
-var output = require('neat-log/output')
-var chalk = require('chalk')
-var Registry = require('../../registry')
-
 module.exports = {
   name: 'login',
   command: login,
@@ -22,6 +17,11 @@ module.exports = {
 }
 
 function login (opts) {
+  var prompt = require('prompt')
+  var output = require('neat-log/output')
+  var chalk = require('chalk')
+  var Registry = require('../../registry')
+
   if (opts._[0]) opts.server = opts._[0]
   var welcome = output`
     Welcome to ${chalk.green(`dat`)} program!

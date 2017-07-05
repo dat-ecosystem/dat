@@ -1,4 +1,3 @@
-var log = require('dat-log')
 
 module.exports = {
   name: 'log',
@@ -15,5 +14,8 @@ module.exports = {
       help: 'View live updates to history.'
     }
   ],
-  command: log
+  command: function (opts) {
+    var log = require('dat-log')
+    log(opts)
+  }
 }
