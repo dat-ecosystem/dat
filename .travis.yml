@@ -7,9 +7,6 @@ node_js:
 
 sudo: false
 
-before_script:
- - npm install dat-registry-api
-
 script:
  - npm test
 
