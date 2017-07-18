@@ -13,6 +13,8 @@ function statusUI (state) {
 
   return output`
     ${chalk.blue('dat://' + stringKey(dat.key))}
+    Discovery Key: ${dat.archive.discoveryKey.toString('hex')}
+    ${dat.writable ? 'You can write to this dat.' : 'You cannot write to this dat.'}
     ${stats.files} files (${pretty(stats.byteLength)})
     Version: ${chalk.bold(stats.version)}
   `
