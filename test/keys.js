@@ -49,7 +49,7 @@ test('keys - export & import secret key', function (t) {
         var secretKey = null
 
         var exportKey = dat + ' keys export'
-        var st = spawn(t, exportKey, {cwd: fixtures, end: true})
+        var st = spawn(t, exportKey, {cwd: fixtures, end: false})
         st.stdout.match(function (output) {
           if (!output) return false
           secretKey = output.trim()
@@ -58,7 +58,6 @@ test('keys - export & import secret key', function (t) {
           return true
         })
         st.stderr.empty()
-        st.end()
 
         function importKey () {
           var exportKey = dat + ' keys import'
