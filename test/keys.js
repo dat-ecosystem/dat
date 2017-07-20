@@ -2,7 +2,7 @@
 var path = require('path')
 var test = require('tape')
 // var rimraf = require('rimraf')
-// var tempDir = require('temporary-directory')
+var tempDir = require('temporary-directory')
 var spawn = require('./helpers/spawn.js')
 var help = require('./helpers')
 
@@ -28,56 +28,55 @@ test('keys - print keys', function (t) {
   })
 })
 
-// test('keys - export & import secret key', function (t) {
-//   help.shareFixtures(function (_, shareDat) {
-//     var key = shareDat.key.toString('hex')
-//     tempDir(function (_, dir, cleanup) {
-//       var cmd = dat + ' clone ' + key
-//       var st = spawn(t, cmd, {cwd: dir, end: false})
-//       var datDir = path.join(dir, key)
+test('keys - export & import secret key', function (t) {
+  help.shareFixtures(function (_, shareDat) {
+    var key = shareDat.key.toString('hex')
+    tempDir(function (_, dir, cleanup) {
+      var cmd = dat + ' clone ' + key
+      var st = spawn(t, cmd, {cwd: dir, end: false})
+      // var datDir = path.join(dir, key)
 
-//       st.stdout.match(function (output) {
-//         var downloadFinished = output.indexOf('Exiting') > -1
-//         if (!downloadFinished) return false
-//         shareDat.close()
-//         st.kill()
-//         exchangeKeys()
-//         return true
-//       })
-//       st.stderr.empty()
+      st.stdout.match(function (output) {
+        var downloadFinished = output.indexOf('Exiting') > -1
+        if (!downloadFinished) return false
+        shareDat.close(exchangeKeys)
+        st.kill()
+        return true
+      })
+      st.stderr.empty()
 
-//       function exchangeKeys () {
-//         var secretKey = null
+      function exchangeKeys () {
+        // var secretKey = null
 
-//         var exportKey = dat + ' keys export'
-//         var st = spawn(t, exportKey, {cwd: fixtures, end: false})
-//         st.stdout.match(function (output) {
-//           if (!output) return false
-//           secretKey = output.trim()
-//           st.kill()
-//           importKey()
-//           return true
-//         })
-//         st.stderr.empty()
+        var exportKey = dat + ' keys export'
+        var st = spawn(t, exportKey, {cwd: fixtures, end: true})
+        st.stdout.match(function (output) {
+          if (!output) return false
+          // secretKey = output.trim()
+          st.kill()
+          // importKey()
+          return true
+        })
+        st.stderr.empty()
 
-//         function importKey () {
-//           var exportKey = dat + ' keys import'
-//           var st = spawn(t, exportKey, {cwd: datDir})
-//           st.stdout.match(function (output) {
-//             if (!output.indexOf('secret key') === -1) return false
-//             st.stdin.write(secretKey + '\r')
-//             if (output.indexOf('Successful import') === -1) return false
-//             t.ok(fs.statSync(path.join(datDir, '.dat', 'metadata.ogd')), 'original dat file exists')
-//             st.kill()
-//             return true
-//           })
-//           st.stderr.empty()
-//           st.end(function () {
-//             rimraf.sync(path.join(fixtures, '.dat'))
-//             cleanup()
-//           })
-//         }
-//       }
-//     })
-//   })
-// })
+        // function importKey () {
+        //   var exportKey = dat + ' keys import'
+        //   var st = spawn(t, exportKey, {cwd: datDir})
+        //   st.stdout.match(function (output) {
+        //     if (!output.indexOf('secret key') === -1) return false
+        //     st.stdin.write(secretKey + '\r')
+        //     if (output.indexOf('Successful import') === -1) return false
+        //     t.ok(fs.statSync(path.join(datDir, '.dat', 'metadata.ogd')), 'original dat file exists')
+        //     st.kill()
+        //     return true
+        //   })
+        //   st.stderr.empty()
+        //   st.end(function () {
+        //     rimraf.sync(path.join(fixtures, '.dat'))
+        //     cleanup()
+        //   })
+        // }
+      }
+    })
+  })
+})
