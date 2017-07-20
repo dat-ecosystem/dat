@@ -11,20 +11,20 @@ var fixtures = path.join(__dirname, 'fixtures')
 
 test('keys - print keys', function (t) {
   help.shareFixtures(function (_, shareDat) {
-    shareDat.close()
+    shareDat.close(function () {
+      var cmd = dat + ' keys '
+      var st = spawn(t, cmd, {cwd: fixtures})
 
-    var cmd = dat + ' keys '
-    var st = spawn(t, cmd, {cwd: fixtures})
-
-    st.stdout.match(function (output) {
-      if (output.indexOf('Discovery') === -1) return false
-      t.ok(output.indexOf(shareDat.key.toString('hex') > -1), 'prints key')
-      t.ok(output.indexOf(shareDat.archive.discoveryKey.toString('hex') > -1), 'prints discovery key')
-      st.kill()
-      return true
+      st.stdout.match(function (output) {
+        if (output.indexOf('Discovery') === -1) return false
+        t.ok(output.indexOf(shareDat.key.toString('hex') > -1), 'prints key')
+        t.ok(output.indexOf(shareDat.archive.discoveryKey.toString('hex') > -1), 'prints discovery key')
+        st.kill()
+        return true
+      })
+      st.stderr.empty()
+      st.end()
     })
-    st.stderr.empty()
-    st.end()
   })
 })
 
