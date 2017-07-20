@@ -58,6 +58,7 @@ test('keys - export & import secret key', function (t) {
           return true
         })
         st.stderr.empty()
+        st.end()
 
         // function importKey () {
         //   var exportKey = dat + ' keys import'
