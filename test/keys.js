@@ -39,8 +39,8 @@ test('keys - export & import secret key', function (t) {
       st.stdout.match(function (output) {
         var downloadFinished = output.indexOf('Exiting') > -1
         if (!downloadFinished) return false
-        shareDat.close(exchangeKeys)
         st.kill()
+        shareDat.close(exchangeKeys)
         return true
       })
       st.stderr.empty()
