@@ -59,6 +59,7 @@
     "dependency-check": "^2.8.0",
     "hypercore": "^6.5.0",
     "hyperdiscovery": "^6.0.1",
+    "leaked-handles": "^5.2.0",
     "mkdirp": "^0.5.1",
     "random-access-memory": "^2.4.0",
     "recursive-readdir-sync": "^1.0.6",
@@ -67,7 +68,6 @@
     "tap-spec": "^4.1.1",
     "tape": "^4.6.3",
     "tape-spawn": "^1.4.2",
-    "stackup": "^1.0.1",
     "temporary-directory": "^1.0.2"
   }
 }
