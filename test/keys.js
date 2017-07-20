@@ -1,3 +1,4 @@
+require('stackup')
 var fs = require('fs')
 var path = require('path')
 var test = require('tape')
