@@ -29,14 +29,6 @@ function keys (opts) {
     if (err && err.name === 'MissingError') return exit('Sorry, could not find a dat in this directory.')
     if (err) return exit(err)
     run(dat, opts)
-
-    function exit (err) {
-      if (err) {
-        console.error(err)
-        process.exit(1)
-      }
-      process.exit(0)
-    }
   })
 }
 
@@ -55,20 +47,14 @@ function run (dat, opts) {
       {
         name: 'export',
         command: function foo (args) {
-          if (!dat.writable) {
-            console.error('Dat must be writable to export.')
-            process.exit(1)
-          }
+          if (!dat.writable) return exit('Dat must be writable to export.')
           console.log(dat.archive.metadata.secretKey.toString('hex'))
         }
       },
       {
         name: 'import',
         command: function bar (args) {
-          if (dat.writable) {
-            console.error('Dat is already writable.')
-            process.exit(1)
-          }
+          if (dat.writable) return exit('Dat is already writable.')
           importKey()
         }
       }
@@ -102,11 +88,17 @@ function run (dat, opts) {
     })
 
     function done (err) {
-      if (err) {
-        console.error(err)
-        process.exit(1)
-      }
+      if (err) return exit(err)
       console.log('Successful import. Dat is now writable.')
+      exit()
     }
   }
+}
+
+function exit (err) {
+  if (err) {
+    console.error(err)
+    process.exit(1)
+  }
+  process.exit(0)
 }
