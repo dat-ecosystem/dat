@@ -159,7 +159,7 @@ You can also also view the files online: [datproject.org/778f8d955175c92e4ced5e4
 
 Dat can share files from your computer to anywhere. If you have a friend going through this demo with you, try sharing to them! If not we'll see what we can do.
 
-Find a folder on your computer to share. Inside the folder can be anything, Dat can handle all sorts of files (Dat works with really big folders too!). 
+Find a folder on your computer to share. Inside the folder can be anything, Dat can handle all sorts of files (Dat works with really big folders too!).
 
 First, you can create a new dat inside that folder. Using the `dat create` command also walks us through making a `dat.json` file:
 
@@ -187,7 +187,7 @@ Get started using Dat today with the `share` and `clone` commands or read below 
 ## Usage
 
 The first time you run a command, a `.dat` folder to store the Dat metadata.
-Once a Dat is created, you can run all the commands inside that folder, similar to git. 
+Once a Dat is created, you can run all the commands inside that folder, similar to git.
 
 Dat keep secret keys in the `~/.dat/secret_keys` folder. These are required to write to any dats you create.
 
@@ -232,9 +232,14 @@ Sync watched files for changes and imports updated files.
 
 #### Ignoring Files
 
-By default, dat will ignore any files in a `.datignore` file, similar to git. Dat also ignores all hidden folders and files.
+By default, dat will ignore any files in a `.datignore` file, similar to git. Each file should separated by a newline. Dat also ignores all hidden folders and files.
 
 Dat uses [dat-ignore](https://github.com/joehand/dat-ignore) to decide if a file should be ignored.
+
+#### Selecting Files
+
+By default, dat will download all files. If you want to only download a subset, you can create a `.datdownload` file which downloads only the files and folders specified. Each should be separated by a newline.
+
 
 ### Downloading
 
