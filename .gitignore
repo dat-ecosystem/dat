@@ -3,10 +3,9 @@ node_modules
 tmp
 .idea
 data
-tests/fixtures/.dat
 yarn.lock
-tests/fixtures/.dat
-tests/fixtures/dat.json
-tests/**.db
-tests/.datrc-test
+test/fixtures/.dat
+test/fixtures/dat.json
+test/**.db
+test/.datrc-test
 package-lock.json
