@@ -8,6 +8,7 @@ var download = require('./download')
 var serve = require('./serve-http')
 
 module.exports = function (state, bus) {
+  state.warnings = state.warnings || []
   bus.once('dat', function () {
     state.writable = state.dat.writable
     state.joinNetwork = !(state.joinNetwork === false)
