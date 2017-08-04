@@ -59,7 +59,6 @@
     "dependency-check": "^2.8.0",
     "hypercore": "^6.5.0",
     "hyperdiscovery": "^6.0.1",
-    "leaked-handles": "^5.2.0",
     "mkdirp": "^0.5.1",
     "random-access-memory": "^2.4.0",
     "recursive-readdir-sync": "^1.0.6",
