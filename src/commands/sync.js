@@ -21,6 +21,19 @@ module.exports = {
       abbr: 'ignore-hidden'
     },
     {
+      name: 'selectFromFile',
+      boolean: false,
+      default: '.datdownload',
+      help: 'Sync only the list of selected files or directories in the given file.',
+      abbr: 'select-from-file'
+    },
+    {
+      name: 'select',
+      boolean: false,
+      default: false,
+      help: 'Sync only the list of selected files or directories.'
+    },
+    {
       name: 'watch',
       boolean: true,
       default: true,
@@ -40,6 +53,7 @@ function sync (opts) {
   var Dat = require('dat-node')
   var neatLog = require('neat-log')
   var archiveUI = require('../ui/archive')
+  var selectiveSync = require('../lib/selective-sync')
   var trackArchive = require('../lib/archive')
   var onExit = require('../lib/exit')
   var parseArgs = require('../parse-args')
@@ -60,7 +74,7 @@ function sync (opts) {
   neat.use(onExit)
   neat.use(function (state, bus) {
     state.opts = opts
-
+    selectiveSync(state, opts)
     Dat(opts.dir, opts, function (err, dat) {
       if (err && err.name === 'MissingError') return bus.emit('exit:warn', 'No existing archive in this directory.')
       if (err) return bus.emit('exit:error', err)

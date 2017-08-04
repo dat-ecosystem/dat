@@ -8,6 +8,12 @@ module.exports = {
   ].join('\n'),
   options: [
     {
+      name: 'empty',
+      boolean: false,
+      default: false,
+      help: 'Do not download files by default. Files must be synced manually.'
+    },
+    {
       name: 'upload',
       boolean: true,
       default: true,
@@ -40,6 +46,7 @@ function clone (opts) {
   opts.key = parsed.key || opts._[0] // pass other links to resolver
   opts.dir = parsed.dir
   opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
+  opts.sparse = opts.empty
 
   debug('clone()')
   debug(Object.assign({}, opts, {key: '<private>', _: null})) // don't show key
