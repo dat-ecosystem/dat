@@ -5,6 +5,11 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 13.8.1 - 2017-08-04
+
+### Fixes
+* Error not being handled (https://github.com/datproject/dat/issues/838)
+
 ## 13.8.0 - 2017-08-04
 
 With this release, we are adding an exciting feature that really showcases how powerful Dat is, selective sync. Using the CLI you can now specify which files you want to download either with an option or using the `.datdownload` file. `dat sync` will download and keep updated on the selected files. This means you can put large datasets into Dat but have control over what files you download where.
