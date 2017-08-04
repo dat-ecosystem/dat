@@ -5,6 +5,19 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## 13.8.0 - 2017-08-04
+
+With this release, we are adding an exciting feature that really showcases how powerful Dat is, selective sync. Using the CLI you can now specify which files you want to download either with an option or using the `.datdownload` file. `dat sync` will download and keep updated on the selected files. This means you can put large datasets into Dat but have control over what files you download where.
+
+[Full release notes](https://github.com/datproject/dat/releases/tag/v13.8.0)
+
+## Added
+* Selective Sync (https://github.com/datproject/dat/pull/834)
+* Key management (https://github.com/datproject/dat/pull/828)
+
+## Changed
+* Commands run faster via lazy required modules (https://github.com/datproject/dat/pull/821)
+
 ## 13.7.0 - 2017-06-28
 ## Added
 * Throttling - sometimes Dat goes too fast, so you can limit the upload + download speeds. (https://github.com/datproject/dat/pull/806)
