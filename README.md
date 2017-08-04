@@ -307,6 +307,20 @@ dat publish --name my-dataset
 All registry requests take the `<registry>` option if you'd like to publish to a different registry than datproject.org.
 You can deploy your own compatible [registry server](https://github.com/datproject/datproject.org) if you'd rather use your own service.
 
+### Key Management & Moving Dats
+
+`dat keys` provides a few commands to help you move or backup your dats.
+
+Writing to a dat requires the secret key, stored in the `~/.dat` folder. You can export and import these keys between dats. First, clone your dat to the new location:
+
+* (original) `dat share`
+* (duplicate) `dat clone <key>`
+
+Then transfer the secret key:
+
+* (original) `dat keys export` - copy the secret key printed out.
+* (duplicate) `dat keys import` - this will prompt you for the secret key, paste it in here.
+
 ## Troubleshooting
 
 We've provided some troubleshooting tips based on issues users have seen.

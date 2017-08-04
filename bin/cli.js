@@ -43,6 +43,7 @@ var config = {
     require('../src/commands/create'),
     require('../src/commands/doctor'),
     require('../src/commands/log'),
+    require('../src/commands/keys'),
     require('../src/commands/publish'),
     require('../src/commands/pull'),
     require('../src/commands/share'),
