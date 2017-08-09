@@ -41,9 +41,23 @@ function clone (opts) {
   var onExit = require('../lib/exit')
   var parseArgs = require('../parse-args')
   var debug = require('debug')('dat')
-
   var parsed = parseArgs(opts)
+  var path = require('path')
+
   opts.key = parsed.key || opts._[0] // pass other links to resolver
+
+  // Resolves dat.json path and parses dat url from it.
+  // Null doesn't work yet. May have something to do with ../parse-args. Will submit issue.
+  if (opts.key === '.' || opts.key === null || path.basename(opts.key) === 'dat.json') {
+    var datPath = null
+    if (opts.key === '.' || opts.key === null) {
+      datPath = path.resolve('dat.json')
+    } else {
+      datPath = path.resolve(opts.key)
+    }
+    opts.key = JSON.parse(fs.readFileSync(datPath, 'utf8')).url
+  }
+
   opts.dir = parsed.dir
   opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
   opts.sparse = opts.empty
