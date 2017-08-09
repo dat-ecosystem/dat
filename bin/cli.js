@@ -12,7 +12,9 @@ var nodeMajorVer = process.version.match(/^v([0-9]+)\./)[1]
 var invalidNode = nodeMajorVer < NODE_VERSION_SUPPORTED
 if (invalidNode) exitInvalidNode()
 
-var isDebug = debug.enabled || !!process.env.DEBUG
+if (debug.enabled) {
+  debug('DEBUG enabled, enabling quiet mode')
+}
 
 var config = {
   defaults: [
@@ -21,7 +23,7 @@ var config = {
     { name: 'port', default: 3282, help: 'port to use for connections' },
     { name: 'utp', default: true, boolean: true, help: 'use utp for discovery' },
     { name: 'http', help: 'serve dat over http (default port: 8080)' },
-    { name: 'quiet', default: isDebug, boolean: true }, // neat-log uses quiet for debug right now
+    { name: 'quiet', default: debug.enabled, boolean: true }, // neat-log uses quiet for debug right now
     { name: 'sparse', default: false, boolean: true, help: 'download only requested data' },
     { name: 'up', help: 'throttle upload bandwidth (1024, 1kb, 2mb, etc.)' },
     { name: 'down', help: 'throttle download bandwidth (1024, 1kb, 2mb, etc.)' }
