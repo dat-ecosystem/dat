@@ -49,7 +49,7 @@ function clone (opts) {
 
   // Resolves dat.json path and parses dat url from it.
   if (opts.key === '.' || opts.key === undefined || path.basename(opts.key) === 'dat.json') {
-    var datPath = undefined
+    var datPath
     if (opts.key === '.' || opts.key === undefined) {
       datPath = path.resolve('dat.json')
     } else {
