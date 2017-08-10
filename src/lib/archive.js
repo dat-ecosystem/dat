@@ -71,9 +71,11 @@ function selectiveSync (state, bus) {
   emitter.on('download', download)
   if (state.opts.selectedFiles) state.opts.selectedFiles.forEach(download)
 
-  archive.metadata.update(function () {
-    return bus.emit('exit:warn', `Dat successfully created in empty mode. Download files using pull or sync.`)
-  })
+  if (state.opts.empty) {
+    archive.metadata.update(function () {
+      return bus.emit('exit:warn', `Dat successfully created in empty mode. Download files using pull or sync.`)
+    })
+  }
 
   archive.on('update', function () {
     debug('archive update')
