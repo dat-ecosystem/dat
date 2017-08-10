@@ -45,7 +45,7 @@ function share (opts) {
   debug('Sharing archive', opts)
 
   var views = [archiveUI]
-  var neat = neatLog(views, { logspeed: opts.logspeed, quiet: opts.quiet })
+  var neat = neatLog(views, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
   neat.use(trackArchive)
   neat.use(onExit)
   neat.use(function (state, bus) {

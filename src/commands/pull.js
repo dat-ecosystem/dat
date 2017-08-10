@@ -60,7 +60,7 @@ function pull (opts) {
   opts.createIfMissing = false
   opts.exit = true
 
-  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet })
+  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
   neat.use(trackArchive)
   neat.use(discoveryExit)
   neat.use(onExit)

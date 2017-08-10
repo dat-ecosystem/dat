@@ -13,7 +13,7 @@ var invalidNode = nodeMajorVer < NODE_VERSION_SUPPORTED
 if (invalidNode) exitInvalidNode()
 
 if (debug.enabled) {
-  debug('DEBUG enabled, enabling quiet mode')
+  debug('Dat DEBUG mode engaged, enabling quiet mode')
 }
 
 var config = {
@@ -23,7 +23,8 @@ var config = {
     { name: 'port', default: 3282, help: 'port to use for connections' },
     { name: 'utp', default: true, boolean: true, help: 'use utp for discovery' },
     { name: 'http', help: 'serve dat over http (default port: 8080)' },
-    { name: 'quiet', default: debug.enabled, boolean: true }, // neat-log uses quiet for debug right now
+    { name: 'debug', default: !!process.env.DEBUG && !debug.enabled, boolean: true },
+    { name: 'quiet', default: debug.enabled, boolean: true }, // use quiet for dat debugging
     { name: 'sparse', default: false, boolean: true, help: 'download only requested data' },
     { name: 'up', help: 'throttle upload bandwidth (1024, 1kb, 2mb, etc.)' },
     { name: 'down', help: 'throttle download bandwidth (1024, 1kb, 2mb, etc.)' }
