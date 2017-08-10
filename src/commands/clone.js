@@ -31,6 +31,7 @@ module.exports = {
 
 function clone (opts) {
   var fs = require('fs')
+  var path = require('path')
   var rimraf = require('rimraf')
   var Dat = require('dat-node')
   var linkResolve = require('dat-link-resolve')
@@ -42,7 +43,6 @@ function clone (opts) {
   var parseArgs = require('../parse-args')
   var debug = require('debug')('dat')
   var parsed = parseArgs(opts)
-  var path = require('path')
   var isDatLink = require('dat-is-link')
 
   opts.key = parsed.key || opts._[0] // pass other links to resolver
@@ -58,7 +58,7 @@ function clone (opts) {
         datPath = path.resolve('dat.json')
         opts.dir = opts.key
       } else if (fs.existsSync(path.resolve(opts.key + '/dat.json'))) {
-        datPath = path.resolve(opts.key + 'dat.son')
+        datPath = path.resolve(opts.key + 'dat.json')
       } else if (path.basename(opts.key) === 'dat.json') {
         datPath = path.resolve(opts.key)
       }
