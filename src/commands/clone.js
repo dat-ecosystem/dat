@@ -43,28 +43,32 @@ function clone (opts) {
   var parseArgs = require('../parse-args')
   var debug = require('debug')('dat')
   var parsed = parseArgs(opts)
-  var isDatLink = require('dat-is-link')
 
   opts.key = parsed.key || opts._[0] // pass other links to resolver
   opts.dir = parsed.dir
 
   // Resolves dat.json path and parses dat url from it.
-  if (!isDatLink(opts.key)) {
+  if (fs.existsSync(opts.key)) {
     var datPath
-    if (opts.key === '.' || opts.key === undefined) { // handles paths for 'dat clone' & 'dat clone .'
-      datPath = path.resolve('dat.json')
-    } else if (fs.existsSync(opts.key)) {
-      if (fs.lstatSync(opts.key).isDirectory() && opts.dir === undefined && fs.existsSync('dat.json')) {
-        datPath = path.resolve('dat.json')
-        opts.dir = opts.key
-      } else if (fs.existsSync(path.resolve(opts.key + '/dat.json'))) {
-        datPath = path.resolve(opts.key + 'dat.json')
-      } else if (path.basename(opts.key) === 'dat.json') {
-        datPath = path.resolve(opts.key)
-      }
+    var neatPath = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet })
+    neatPath.use(trackArchive)
+    neatPath.use(discoveryExit)
+    neatPath.use(onExit)
+    if (path.basename(opts.key) === 'dat.json') { // handles paths for 'dat clone' & 'dat clone .'
+      datPath = path.resolve(opts.key)
+    } else if (fs.lstatSync(opts.key).isDirectory()) {
+      datPath = path.resolve(opts.key + '/dat.json')
     } else {
-      return console.error("Could not resolve link from 'dat.json'.")
+      neatPath.use(function (state, bus) {
+        return bus.emit('exit:error', 'Could not resolve link from dat.json on path: ' + path.resolve(opts.key))
+      })
     }
+    if (!fs.existsSync(datPath)) {
+      neatPath.use(function (state, bus) {
+        return bus.emit('exit:error', 'Could not resolve link from dat.json on path: ' + path.resolve(opts.key))
+      })
+    }
+    if (parsed.keyToDirSwitch) opts.dir = undefined
     opts.dir = opts.dir || path.resolve('.') // if needed changes output directory from undefined to current.
     opts.key = JSON.parse(fs.readFileSync(datPath, 'utf8')).url
   }
