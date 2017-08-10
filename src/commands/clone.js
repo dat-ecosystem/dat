@@ -45,20 +45,20 @@ function clone (opts) {
   var path = require('path')
 
   opts.key = parsed.key || opts._[0] // pass other links to resolver
+  opts.dir = parsed.dir
 
   // Resolves dat.json path and parses dat url from it.
-  // Null doesn't work yet. May have something to do with ../parse-args. Will submit issue.
-  if (opts.key === '.' || opts.key === null || path.basename(opts.key) === 'dat.json') {
-    var datPath = null
-    if (opts.key === '.' || opts.key === null) {
+  if (opts.key === '.' || opts.key === undefined || path.basename(opts.key) === 'dat.json') {
+    var datPath = undefined
+    if (opts.key === '.' || opts.key === undefined) {
       datPath = path.resolve('dat.json')
     } else {
       datPath = path.resolve(opts.key)
     }
+    opts.dir = opts.dir || path.resolve('.') // if needed changes output directory from undefined to current.
     opts.key = JSON.parse(fs.readFileSync(datPath, 'utf8')).url
   }
 
-  opts.dir = parsed.dir
   opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
   opts.sparse = opts.empty
 
