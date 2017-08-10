@@ -43,17 +43,27 @@ function clone (opts) {
   var debug = require('debug')('dat')
   var parsed = parseArgs(opts)
   var path = require('path')
+  var isDatLink = require('dat-is-link')
 
   opts.key = parsed.key || opts._[0] // pass other links to resolver
   opts.dir = parsed.dir
 
   // Resolves dat.json path and parses dat url from it.
-  if (opts.key === '.' || opts.key === undefined || path.basename(opts.key) === 'dat.json') {
+  if (!isDatLink(opts.key)) {
     var datPath
-    if (opts.key === '.' || opts.key === undefined) {
+    if (opts.key === '.' || opts.key === undefined) { // handles paths for 'dat clone' & 'dat clone .'
       datPath = path.resolve('dat.json')
+    } else if (fs.existsSync(opts.key)) {
+      if (fs.lstatSync(opts.key).isDirectory() && opts.dir === undefined && fs.existsSync('dat.json')) {
+        datPath = path.resolve('dat.json')
+        opts.dir = opts.key
+      } else if (fs.existsSync(path.resolve(opts.key + '/dat.json'))) {
+        datPath = path.resolve(opts.key + 'dat.son')
+      } else if (path.basename(opts.key) === 'dat.json') {
+        datPath = path.resolve(opts.key)
+      }
     } else {
-      datPath = path.resolve(opts.key)
+      return console.error("Could not resolve link from 'dat.json'.")
     }
     opts.dir = opts.dir || path.resolve('.') // if needed changes output directory from undefined to current.
     opts.key = JSON.parse(fs.readFileSync(datPath, 'utf8')).url
