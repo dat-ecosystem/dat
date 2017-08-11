@@ -5,6 +5,9 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
+## Fixed
+* Set `opts.debug` properly when using `DEBUG` that isn't `dat`.
+
 ## 13.8.1 - 2017-08-04
 
 ### Fixes
