@@ -39,10 +39,11 @@ module.exports = function (opts) {
   }
 
   try {
-    if (fs.statSync(opts._[0]).isDirectory() && opts._.length !== 2) {
-      parsed.dir = opts._[0]
-    } else if (fs.statSync(opts._[0]).isFile() && opts._.length !== 2) {
+    var stat = fs.statSync(opts._[0])
+    if (stat.isFile()) {
       parsed.dir = path.resolve(path.dirname(opts._[0]))
+    } else {
+      parsed.dir = opts._[0]
     }
   } catch (err) {
     if (err && !err.name === 'ENOENT') {
