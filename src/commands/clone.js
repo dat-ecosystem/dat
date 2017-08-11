@@ -47,9 +47,6 @@ function clone (opts) {
   opts.key = parsed.key || opts._[0] // pass other links to resolver
   opts.dir = parsed.dir
 
-  // corrects parse-args.js default output for when no second argument for output directory is provided.
-  if (parsed.keyCloneSwitch) opts.dir = path.resolve('.')
-
   // variables needed to check if opts.key is on system and leads to a dat.json file.
   var datPath = opts.key
   var onSystem = fs.existsSync(datPath)
