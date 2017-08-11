@@ -1,4 +1,5 @@
 var fs = require('fs')
+var path = require('path')
 var encoding = require('dat-encoding')
 
 module.exports = function (opts) {
@@ -38,7 +39,10 @@ module.exports = function (opts) {
   }
 
   try {
-    if (fs.statSync(opts._[0]).isDirectory()) {
+    var stat = fs.statSync(opts._[0])
+    if (stat.isFile()) {
+      parsed.dir = path.resolve(path.dirname(opts._[0]))
+    } else {
       parsed.dir = opts._[0]
     }
   } catch (err) {

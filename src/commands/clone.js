@@ -31,6 +31,7 @@ module.exports = {
 
 function clone (opts) {
   var fs = require('fs')
+  var path = require('path')
   var rimraf = require('rimraf')
   var Dat = require('dat-node')
   var linkResolve = require('dat-link-resolve')
@@ -49,6 +50,16 @@ function clone (opts) {
   opts.sparse = opts.empty
 
   debug('clone()')
+
+  // cmd: dat /path/to/dat.json (opts.key is path to dat.json)
+  if (fs.existsSync(opts.key)) {
+    try {
+      opts.key = getDatJsonKey()
+    } catch (e) {
+      debug('error reading dat.json key', e)
+    }
+  }
+
   debug(Object.assign({}, opts, {key: '<private>', _: null})) // don't show key
 
   var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
@@ -108,4 +119,19 @@ function clone (opts) {
       })
     }
   })
+
+  function getDatJsonKey () {
+    var datPath = opts.key
+    var stat = fs.lstatSync(datPath)
+
+    if (stat.isDirectory()) datPath = path.join(datPath, 'dat.json')
+
+    if (!fs.existsSync(datPath) || path.basename(datPath) !== 'dat.json') {
+      if (stat.isFile()) throw new Error('must specify existing dat.json file to read key')
+      throw new Error('directory must contain a dat.json')
+    }
+
+    debug('reading key from dat.json:', datPath)
+    return JSON.parse(fs.readFileSync(datPath, 'utf8')).url
+  }
 }

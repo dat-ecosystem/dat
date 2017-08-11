@@ -252,6 +252,17 @@ dat clone <dat-link> [<folder>] [--temp]
 Clone a remote Dat Archive to a local folder.
 This will create a folder with the key name is no folder is specified.
 
+#### Downloading via `dat.json` key
+
+You can use a `dat.json` file to clone also. This is useful when combining dat and git, for example. To clone a dat you can specify the path to a folder containing a `dat.json`:
+
+```
+git clone git@github.com:joehand/dat-clone-sparse-test.git
+dat clone ./dat-clone-sparse-test
+```
+
+This will download the dat specified in the `dat.json` file.
+
 #### Updating Downloaded Archives
 
 Once a Dat is clone, you can run either `dat pull` or `dat sync` in the folder to update the archive.
