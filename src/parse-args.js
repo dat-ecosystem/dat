@@ -40,7 +40,9 @@ module.exports = function (opts) {
   try {
     if (fs.statSync(opts._[0]).isDirectory()) {
       parsed.dir = opts._[0]
-      parsed.keyToDirSwitch = true // switch for clone dat.json resolution.
+      parsed.keyCloneSwitch = true // switch for clone dat.json resolution.
+    } else if (fs.statSync(opts._[0]).isFile() && opts._.length !== 2) {
+      parsed.keyCloneSwitch = true
     }
   } catch (err) {
     if (err && !err.name === 'ENOENT') {
