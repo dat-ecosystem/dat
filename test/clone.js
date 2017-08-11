@@ -1,3 +1,4 @@
+var fs = require('fs')
 var path = require('path')
 var test = require('tape')
 var tempDir = require('temporary-directory')
@@ -271,3 +272,203 @@ test('clone - shortcut/stateless clone', function (t) {
 //     })
 //   })
 // })
+
+test('clone - specify directory containing dat.json', function (t) {
+  help.shareFixtures(function (_, shareDat) {
+    tempDir(function (_, dir, cleanup) {
+      fs.writeFileSync(path.join(dir, 'dat.json'), JSON.stringify({url: shareDat.key.toString('hex')}), 'utf8')
+
+      // dat clone /dir
+      var cmd = dat + ' clone ' + dir
+      var st = spawn(t, cmd)
+      var datDir = dir
+
+      st.stdout.match(function (output) {
+        var downloadFinished = output.indexOf('Exiting') > -1
+        if (!downloadFinished) return false
+
+        var fileList = help.fileList(datDir).join(' ')
+        var hasCsvFile = fileList.indexOf('all_hour.csv') > -1
+        t.ok(hasCsvFile, 'csv file downloaded')
+        var hasDatFolder = fileList.indexOf('.dat') > -1
+        t.ok(hasDatFolder, '.dat folder created')
+        var hasSubDir = fileList.indexOf('folder') > -1
+        t.ok(hasSubDir, 'folder created')
+        var hasNestedDir = fileList.indexOf('nested') > -1
+        t.ok(hasNestedDir, 'nested folder created')
+        var hasHelloFile = fileList.indexOf('hello.txt') > -1
+        t.ok(hasHelloFile, 'hello.txt file downloaded')
+
+        st.kill()
+        return true
+      })
+      st.succeeds('exits after finishing download')
+      st.stderr.empty()
+      st.end(function () {
+        cleanup()
+        shareDat.close()
+      })
+    })
+  })
+})
+
+test('clone - specify directory containing dat.json with cwd', function (t) {
+  help.shareFixtures(function (_, shareDat) {
+    tempDir(function (_, dir, cleanup) {
+      fs.writeFileSync(path.join(dir, 'dat.json'), JSON.stringify({url: shareDat.key.toString('hex')}), 'utf8')
+
+      // cd dir && dat clone /dir/dat.json
+      var cmd = dat + ' clone ' + dir
+      var st = spawn(t, cmd, {cwd: dir})
+      var datDir = dir
+
+      st.stdout.match(function (output) {
+        var downloadFinished = output.indexOf('Exiting') > -1
+        if (!downloadFinished) return false
+
+        var fileList = help.fileList(datDir).join(' ')
+        var hasCsvFile = fileList.indexOf('all_hour.csv') > -1
+        t.ok(hasCsvFile, 'csv file downloaded')
+        var hasDatFolder = fileList.indexOf('.dat') > -1
+        t.ok(hasDatFolder, '.dat folder created')
+        var hasSubDir = fileList.indexOf('folder') > -1
+        t.ok(hasSubDir, 'folder created')
+        var hasNestedDir = fileList.indexOf('nested') > -1
+        t.ok(hasNestedDir, 'nested folder created')
+        var hasHelloFile = fileList.indexOf('hello.txt') > -1
+        t.ok(hasHelloFile, 'hello.txt file downloaded')
+
+        st.kill()
+        return true
+      })
+      st.succeeds('exits after finishing download')
+      st.stderr.empty()
+      st.end(function () {
+        cleanup()
+        shareDat.close()
+      })
+    })
+  })
+})
+
+test('clone - specify dat.json path', function (t) {
+  help.shareFixtures(function (_, shareDat) {
+    tempDir(function (_, dir, cleanup) {
+      var datJsonPath = path.join(dir, 'dat.json')
+      fs.writeFileSync(datJsonPath, JSON.stringify({url: shareDat.key.toString('hex')}), 'utf8')
+
+      // dat clone /dir/dat.json
+      var cmd = dat + ' clone ' + datJsonPath
+      var st = spawn(t, cmd)
+      var datDir = dir
+
+      st.stdout.match(function (output) {
+        var downloadFinished = output.indexOf('Exiting') > -1
+        if (!downloadFinished) return false
+
+        var fileList = help.fileList(datDir).join(' ')
+        var hasCsvFile = fileList.indexOf('all_hour.csv') > -1
+        t.ok(hasCsvFile, 'csv file downloaded')
+        var hasDatFolder = fileList.indexOf('.dat') > -1
+        t.ok(hasDatFolder, '.dat folder created')
+        var hasSubDir = fileList.indexOf('folder') > -1
+        t.ok(hasSubDir, 'folder created')
+        var hasNestedDir = fileList.indexOf('nested') > -1
+        t.ok(hasNestedDir, 'nested folder created')
+        var hasHelloFile = fileList.indexOf('hello.txt') > -1
+        t.ok(hasHelloFile, 'hello.txt file downloaded')
+
+        st.kill()
+        return true
+      })
+      st.succeeds('exits after finishing download')
+      st.stderr.empty()
+      st.end(function () {
+        cleanup()
+        shareDat.close()
+      })
+    })
+  })
+})
+
+test('clone - specify dat.json path with cwd', function (t) {
+  help.shareFixtures(function (_, shareDat) {
+    tempDir(function (_, dir, cleanup) {
+      var datJsonPath = path.join(dir, 'dat.json')
+      fs.writeFileSync(datJsonPath, JSON.stringify({url: shareDat.key.toString('hex')}), 'utf8')
+
+      // cd /dir && dat clone /dir/dat.json
+      var cmd = dat + ' clone ' + datJsonPath
+      var st = spawn(t, cmd, {cwd: dir})
+      var datDir = dir
+
+      st.stdout.match(function (output) {
+        var downloadFinished = output.indexOf('Exiting') > -1
+        if (!downloadFinished) return false
+
+        var fileList = help.fileList(datDir).join(' ')
+        var hasCsvFile = fileList.indexOf('all_hour.csv') > -1
+        t.ok(hasCsvFile, 'csv file downloaded')
+        var hasDatFolder = fileList.indexOf('.dat') > -1
+        t.ok(hasDatFolder, '.dat folder created')
+        var hasSubDir = fileList.indexOf('folder') > -1
+        t.ok(hasSubDir, 'folder created')
+        var hasNestedDir = fileList.indexOf('nested') > -1
+        t.ok(hasNestedDir, 'nested folder created')
+        var hasHelloFile = fileList.indexOf('hello.txt') > -1
+        t.ok(hasHelloFile, 'hello.txt file downloaded')
+
+        st.kill()
+        return true
+      })
+      st.succeeds('exits after finishing download')
+      st.stderr.empty()
+      st.end(function () {
+        cleanup()
+        shareDat.close()
+      })
+    })
+  })
+})
+
+test('clone - specify dat.json + directory', function (t) {
+  help.shareFixtures(function (_, shareDat) {
+    tempDir(function (_, dir, cleanup) {
+      var datDir = path.join(dir, 'clone-dest')
+      var datJsonPath = path.join(dir, 'dat.json') // make dat.json in different dir
+
+      fs.mkdirSync(datDir)
+      fs.writeFileSync(datJsonPath, JSON.stringify({url: shareDat.key.toString('hex')}), 'utf8')
+
+      // dat clone /dir/dat.json /dir/clone-dest
+      var cmd = dat + ' clone ' + datJsonPath + ' ' + datDir
+      var st = spawn(t, cmd)
+
+      st.stdout.match(function (output) {
+        var downloadFinished = output.indexOf('Exiting') > -1
+        if (!downloadFinished) return false
+
+        var fileList = help.fileList(datDir).join(' ')
+        var hasCsvFile = fileList.indexOf('all_hour.csv') > -1
+        t.ok(hasCsvFile, 'csv file downloaded')
+        var hasDatFolder = fileList.indexOf('.dat') > -1
+        t.ok(hasDatFolder, '.dat folder created')
+        var hasSubDir = fileList.indexOf('folder') > -1
+        t.ok(hasSubDir, 'folder created')
+        var hasNestedDir = fileList.indexOf('nested') > -1
+        t.ok(hasNestedDir, 'nested folder created')
+        var hasHelloFile = fileList.indexOf('hello.txt') > -1
+        t.ok(hasHelloFile, 'hello.txt file downloaded')
+
+        st.kill()
+        return true
+      })
+      st.succeeds('exits after finishing download')
+      st.stderr.empty()
+      st.end(function () {
+        cleanup()
+        shareDat.close()
+      })
+    })
+  })
+})
