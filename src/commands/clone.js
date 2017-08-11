@@ -121,20 +121,17 @@ function clone (opts) {
   })
 
   function getDatJsonKey () {
-     // variables needed to check if opts.key is on system and leads to a dat.json file.
     var datPath = opts.key
     var stat = fs.lstatSync(datPath)
-    var isDir = stat.isDirectory()
-    var isDatJson = (fs.lstatSync(datPath).isFile() && (path.basename(datPath) === 'dat.json'))
 
-    // if file is a dat.json resolve absolute path. else if directory try to resolve path to dat.json.
-    if (isDatJson) {
-      datPath = path.resolve(datPath)
-    } else if (isDir) {
-      datPath = path.join(datPath, 'dat.json')
+    if (stat.isDirectory()) datPath = path.join(datPath, 'dat.json')
+
+    if (!fs.existsSync(datPath) || path.basename(datPath) !== 'dat.json') {
+      if (stat.isFile()) throw new Error('must specify existing dat.json file to read key')
+      throw new Error('directory must contain a dat.json')
     }
 
-    // if the datPath is valid parse it for a url key and set opts.key to the parsed url key.
+    debug('reading key from dat.json:', datPath)
     return JSON.parse(fs.readFileSync(datPath, 'utf8')).url
   }
 }
