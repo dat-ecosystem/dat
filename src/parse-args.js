@@ -39,7 +39,7 @@ module.exports = function (opts) {
   }
 
   try {
-    if (fs.statSync(opts._[0]).isDirectory()) {
+    if (fs.statSync(opts._[0]).isDirectory() && opts._.length !== 2) {
       parsed.dir = opts._[0]
     } else if (fs.statSync(opts._[0]).isFile() && opts._.length !== 2) {
       parsed.dir = path.resolve(path.dirname(opts._[0]))
