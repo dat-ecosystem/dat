@@ -42,10 +42,14 @@ function clone (opts) {
   var onExit = require('../lib/exit')
   var parseArgs = require('../parse-args')
   var debug = require('debug')('dat')
-  var parsed = parseArgs(opts)
 
+  var parsed = parseArgs(opts)
   opts.key = parsed.key || opts._[0] // pass other links to resolver
   opts.dir = parsed.dir
+  opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
+  opts.sparse = opts.empty
+
+  debug('clone()')
 
   // variables needed to check if opts.key is on system and leads to a dat.json file.
   var datPath = opts.key
@@ -69,10 +73,6 @@ function clone (opts) {
   // if the datPath is valid parse it for a url key and set opts.key to the parsed url key.
   if (fs.existsSync(datPath)) opts.key = JSON.parse(fs.readFileSync(datPath, 'utf8')).url
 
-  opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
-  opts.sparse = opts.empty
-
-  debug('clone()')
   debug(Object.assign({}, opts, {key: '<private>', _: null})) // don't show key
 
   var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet })
