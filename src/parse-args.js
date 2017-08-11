@@ -1,4 +1,5 @@
 var fs = require('fs')
+var path = require('path')
 var encoding = require('dat-encoding')
 
 module.exports = function (opts) {
@@ -40,9 +41,8 @@ module.exports = function (opts) {
   try {
     if (fs.statSync(opts._[0]).isDirectory()) {
       parsed.dir = opts._[0]
-      parsed.keyCloneSwitch = true // switch for clone dat.json resolution.
     } else if (fs.statSync(opts._[0]).isFile() && opts._.length !== 2) {
-      parsed.keyCloneSwitch = true
+      parsed.dir = path.resolve(path.dirname(opts._[0]))
     }
   } catch (err) {
     if (err && !err.name === 'ENOENT') {
