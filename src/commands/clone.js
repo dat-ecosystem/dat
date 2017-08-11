@@ -63,7 +63,7 @@ function clone (opts) {
   if (isDatJson) {
     datPath = path.resolve(datPath)
   } else if (isDir) {
-    datPath = path.join(datPath + '/dat.json')
+    datPath = path.join(datPath, 'dat.json')
   }
 
   // if the datPath is valid parse it for a url key and set opts.key to the parsed url key.
