@@ -51,27 +51,14 @@ function clone (opts) {
 
   debug('clone()')
 
-  // variables needed to check if opts.key is on system and leads to a dat.json file.
-  var datPath = opts.key
-  var onSystem = fs.existsSync(datPath)
-  var isDir = false
-  var isDatJson = false
-
-  // if the file or directory is on system check to see whether the path is to a dat.json file or directory.
-  if (onSystem) {
-    isDir = fs.lstatSync(datPath).isDirectory()
-    isDatJson = (fs.lstatSync(datPath).isFile() && (path.basename(datPath) === 'dat.json'))
+  // cmd: dat /path/to/dat.json (opts.key is path to dat.json)
+  if (fs.existsSync(opts.key)) {
+    try {
+      opts.key = getDatJsonKey()
+    } catch (e) {
+      debug('error reading dat.json key', e)
+    }
   }
-
-  // if file is a dat.json resolve absolute path. else if directory try to resolve path to dat.json.
-  if (isDatJson) {
-    datPath = path.resolve(datPath)
-  } else if (isDir) {
-    datPath = path.join(datPath, 'dat.json')
-  }
-
-  // if the datPath is valid parse it for a url key and set opts.key to the parsed url key.
-  if (fs.existsSync(datPath)) opts.key = JSON.parse(fs.readFileSync(datPath, 'utf8')).url
 
   debug(Object.assign({}, opts, {key: '<private>', _: null})) // don't show key
 
@@ -132,4 +119,22 @@ function clone (opts) {
       })
     }
   })
+
+  function getDatJsonKey () {
+     // variables needed to check if opts.key is on system and leads to a dat.json file.
+    var datPath = opts.key
+    var stat = fs.lstatSync(datPath)
+    var isDir = stat.isDirectory()
+    var isDatJson = (fs.lstatSync(datPath).isFile() && (path.basename(datPath) === 'dat.json'))
+
+    // if file is a dat.json resolve absolute path. else if directory try to resolve path to dat.json.
+    if (isDatJson) {
+      datPath = path.resolve(datPath)
+    } else if (isDir) {
+      datPath = path.join(datPath, 'dat.json')
+    }
+
+    // if the datPath is valid parse it for a url key and set opts.key to the parsed url key.
+    return JSON.parse(fs.readFileSync(datPath, 'utf8')).url
+  }
 }
