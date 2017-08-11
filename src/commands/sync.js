@@ -69,7 +69,7 @@ function sync (opts) {
   opts.createIfMissing = false // sync must always be a resumed archive
   opts.exit = false
 
-  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet })
+  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
   neat.use(trackArchive)
   neat.use(onExit)
   neat.use(function (state, bus) {

@@ -51,7 +51,7 @@ function clone (opts) {
   debug('clone()')
   debug(Object.assign({}, opts, {key: '<private>', _: null})) // don't show key
 
-  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet })
+  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
   neat.use(trackArchive)
   neat.use(discoveryExit)
   neat.use(onExit)
