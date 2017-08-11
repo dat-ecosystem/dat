@@ -47,31 +47,30 @@ function clone (opts) {
   opts.key = parsed.key || opts._[0] // pass other links to resolver
   opts.dir = parsed.dir
 
-  // Resolves dat.json path and parses dat url from it.
-  if (fs.existsSync(opts.key)) {
-    var datPath
-    var neatPath = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet })
-    neatPath.use(trackArchive)
-    neatPath.use(discoveryExit)
-    neatPath.use(onExit)
-    if (path.basename(opts.key) === 'dat.json') { // handles paths for 'dat clone' & 'dat clone .'
-      datPath = path.resolve(opts.key)
-    } else if (fs.lstatSync(opts.key).isDirectory()) {
-      datPath = path.resolve(opts.key + '/dat.json')
-    } else {
-      neatPath.use(function (state, bus) {
-        return bus.emit('exit:error', 'Could not resolve link from dat.json on path: ' + path.resolve(opts.key))
-      })
-    }
-    if (!fs.existsSync(datPath)) {
-      neatPath.use(function (state, bus) {
-        return bus.emit('exit:error', 'Could not resolve link from dat.json on path: ' + path.resolve(opts.key))
-      })
-    }
-    if (parsed.keyToDirSwitch) opts.dir = undefined
-    opts.dir = opts.dir || path.resolve('.') // if needed changes output directory from undefined to current.
-    opts.key = JSON.parse(fs.readFileSync(datPath, 'utf8')).url
+  // corrects parse-args.js default output for when no second argument for output directory is provided.
+  if (parsed.keyToDirSwitch) opts.dir = path.resolve('.')
+
+  // variables needed to check if opts.key is on system and leads to a dat.json file.
+  var datPath = opts.key
+  var onSystem = fs.existsSync(datPath)
+  var isDir = false
+  var isDatJson = false
+
+  // if the file or directory is on system check to see whether the path is to a dat.json file or directory.
+  if (onSystem) {
+    isDir = fs.lstatSync(datPath).isDirectory()
+    isDatJson = (fs.lstatSync(datPath).isFile() && (path.basename(datPath) === 'dat.json'))
   }
+
+  // if file is a dat.json resolve absolute path. else if directory try to resolve path to dat.json.
+  if (isDatJson) {
+    datPath = path.resolve(datPath)
+  } else if (isDir) {
+    datPath = path.join(datPath + '/dat.json')
+  }
+
+  // if the datPath is valid parse it for a url key and set opts.key to the parsed url key.
+  if (fs.existsSync(datPath)) opts.key = JSON.parse(fs.readFileSync(datPath, 'utf8')).url
 
   opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
   opts.sparse = opts.empty
