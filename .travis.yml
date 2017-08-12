@@ -29,3 +29,4 @@ deploy:
   file: dist/*
   on:
     repo: datproject/dat
+    node: '8'
