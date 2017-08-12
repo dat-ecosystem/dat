@@ -19,9 +19,9 @@ notifications:
     on_success: change
     on_failure: always
 
+before_deploy: npm run package
 deploy:
   provider: releases
-  script: npm run package
   api_key:
     secure: GF+Ehh9kDu2m+KqSzciZRQmUfubnVGDEfxZKVX+psesKoxxDSq8/wkl7g1yR2H8DO0dg3lW8opbsKbfOOUWztyIfFxFukgwKIawUd7Krtr4XQLyywq49NdYARKP6bSxeEb8N3xVTo5fuq104KT0mMUB9di/iunsO/ITOzbCZyWE=
   skip_cleanup: true
