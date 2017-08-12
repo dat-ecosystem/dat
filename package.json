@@ -17,7 +17,8 @@
     "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "standard": "standard",
     "deps": "dependency-check . && dependency-check . --extra --no-dev",
-    "test": "standard && npm run deps && tape 'test/*.js' | tap-spec"
+    "test": "standard && npm run deps && tape 'test/*.js' | tap-spec",
+    "package": "pkg package.json -o dist/dat"
   },
   "repository": {
     "type": "git",
@@ -60,6 +61,7 @@
     "hypercore": "^6.5.0",
     "hyperdiscovery": "^6.0.1",
     "mkdirp": "^0.5.1",
+    "pkg": "^4.2.2",
     "random-access-memory": "^2.4.0",
     "recursive-readdir-sync": "^1.0.6",
     "request": "^2.81.0",
@@ -68,5 +70,16 @@
     "tape": "^4.6.3",
     "tape-spawn": "^1.4.2",
     "temporary-directory": "^1.0.2"
+  },
+  "pkg": {
+    "assets": [
+      "node_modules/utp-native/prebuilds/**",
+      "node_modules/sodium-native/prebuilds/**"
+    ],
+    "targets": [
+      "node8-linux-x64",
+      "node8-macos-x64",
+      "node8-win-x64"
+    ]
   }
 }
