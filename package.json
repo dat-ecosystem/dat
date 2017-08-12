@@ -68,5 +68,11 @@
     "tape": "^4.6.3",
     "tape-spawn": "^1.4.2",
     "temporary-directory": "^1.0.2"
+  },
+  "pkg": {
+    "assets": [
+      "node_modules/utp-native/prebuilds/**",
+      "node_modules/sodium-native/prebuilds/**"
+    ]
   }
 }
