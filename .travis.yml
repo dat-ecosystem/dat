@@ -1,22 +1,30 @@
 language: node_js
 
 node_js:
-  - "4"
-  - "6"
-  - "8"
-
+  - '4'
+  - '6'
+  - '8'
 sudo: false
 
 script:
- - npm test
+  - npm test
 
 notifications:
   irc:
     channels:
-      - "chat.freenode.net#datbots"
+      - chat.freenode.net#datbots
     template:
-      - "%{repository_slug} - %{commit_subject} - %{result} - %{build_url}"
+      - '%{repository_slug} - %{commit_subject} - %{result} - %{build_url}'
     skip_join: true
     on_success: change
     on_failure: always
 
+deploy:
+  provider: releases
+  script: npm run package
+  api_key:
+    secure: GF+Ehh9kDu2m+KqSzciZRQmUfubnVGDEfxZKVX+psesKoxxDSq8/wkl7g1yR2H8DO0dg3lW8opbsKbfOOUWztyIfFxFukgwKIawUd7Krtr4XQLyywq49NdYARKP6bSxeEb8N3xVTo5fuq104KT0mMUB9di/iunsO/ITOzbCZyWE=
+  skip_cleanup: true
+  file: dist/*
+  on:
+    repo: datproject/dat
