@@ -3,6 +3,7 @@
 var subcommand = require('subcommand')
 var debug = require('debug')('dat')
 var usage = require('../src/usage')
+var versionCheck = require('../src/version-check')
 
 process.title = 'dat'
 
@@ -83,6 +84,7 @@ match(alias(process.argv.slice(2)))
 
 function alias (argv) {
   var cmd = argv[0]
+  versionCheck()
   if (!config.aliases[cmd]) return argv
   argv[0] = config.aliases[cmd]
   return argv
