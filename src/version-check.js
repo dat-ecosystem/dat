@@ -1,14 +1,9 @@
 var fs = require('fs')
 var chalk = require('chalk')
-var npmview = require('npmview')
+var latestVersion = require('latest-version')
 
 module.exports = function () {
-  npmview('dat', function (err, version, moduleInfo) {
-    if (err) {
-      console.error(err)
-      return
-    }
-
+  latestVersion('dat').then(function (version) {
     fs.writeFile('../.dat-version', version, function (err) {
       if (err) {
         console.error(err)
@@ -17,12 +12,12 @@ module.exports = function () {
   })
 
   if (fs.existsSync('../.dat-version')) {
-    var latestVersion = fs.readFileSync('../.dat-version', 'utf8')
+    var newestVersion = fs.readFileSync('../.dat-version', 'utf8')
     var pkg = require('../package.json')
-    if (pkg.version !== latestVersion) {
+    if (pkg.version !== newestVersion) {
       console.log(chalk.yellow('warning') + ' your version of Dat is ' +
                'out of date. The latest version is "' +
-                latestVersion + '" while you are on "' + pkg.version + '".\n' +
+                newestVersion + '" while you are on "' + pkg.version + '".\n' +
                 chalk.cyan('info') + ' To upgrade, run the following command:\n' +
                 chalk.gray('$ npm install dat -g '))
     }
