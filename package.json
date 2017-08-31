@@ -34,7 +34,7 @@
     "test": "tests"
   },
   "dependencies": {
-    "bytes": "^2.5.0",
+    "bytes": "^3.0.0",
     "chalk": "^2.0.0",
     "cli-truncate": "^1.0.0",
     "dat-doctor": "^1.2.5",
