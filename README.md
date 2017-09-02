@@ -102,10 +102,10 @@ A dat is some files from your computer and a `.dat` folder. Each dat has a uniqu
 You can start sharing your files with a single command. Unlike `git`, you do not have to initialize a repository first, `dat share` will do that for you:
 
 ```
-dat share <folder>
+dat share <dir>
 ```
 
-Use `dat share` to create a dat and sync your files from your computer to other users. Dat scans your files inside `<folder>`, creating metadata in `<folder>/.dat`. Dat stores the public link, version history, and file information inside the dat folder.
+Use `dat share` to create a dat and sync your files from your computer to other users. Dat scans your files inside `<dir>`, creating metadata in `<dir>/.dat`. Dat stores the public link, version history, and file information inside the dat folder.
 
 ![share](https://raw.githubusercontent.com/datproject/docs/master/assets/cli-share.gif)
 
@@ -211,7 +211,7 @@ ADD: data/expn_cd.csv (403 MB / 920 MB)
 #### Creating a dat & dat.json
 
 ```
-dat create [<folder>]
+dat create [<dir>]
 ```
 
 The create command prompts you to make a `dat.json` file and creates a new dat. Import the files with sync or share.
@@ -220,7 +220,7 @@ The create command prompts you to make a `dat.json` file and creates a new dat. 
 #### Syncing to Network
 
 ```
-dat sync [<folder>] [--no-import] [--no-watch]
+dat sync [<dir>] [--no-import] [--no-watch]
 ```
 
 Start sharing your dat archive over the network.
@@ -246,7 +246,7 @@ By default, Dat will download all files. If you want to only download a subset, 
 Start downloading by running the `clone` command. This creates a folder, downloads the content and metadata, and a `.dat` folder inside. Once you started the download, you can resume using `clone` or the other download commands.
 
 ```
-dat clone <link> [<folder>] [--temp]
+dat clone <link> [<dir>] [--temp]
 ```
 
 Clone a remote dat archive to a local folder.
@@ -268,21 +268,21 @@ This will download the dat specified in the `dat.json` file.
 Once a dat is clone, you can run either `dat pull` or `dat sync` in the folder to update the archive.
 
 ```
-dat pull [<folder>]
+dat pull [<dir>]
 ```
 
 Update a cloned dat archive with the latest files and exit.
 
 ```
-dat sync [<folder>]
+dat sync [<dir>]
 ```
 
 Download latest files and keep connection open to continue updating as remote source is updated.
 
 ### Shortcut commands
 
-* `dat <link> <folder>` will run `dat clone` for new dats or resume the existing dat in `<folder>`
-* `dat <folder>` is the same as running `dat sync <folder>`
+* `dat <link> <dir>` will run `dat clone` for new dats or resume the existing dat in `<dir>`
+* `dat <dir>` is the same as running `dat sync <dir>`
 
 ### Dat Registry and Authentication
 
