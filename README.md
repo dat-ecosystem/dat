@@ -6,12 +6,12 @@ Dat is the distributed data sharing tool.
 Share files with version control, back up data to servers, browse remote files on demand, and automate long-term data preservation.
 Secure, distributed, fast.
 
-[<img src="https://datproject.github.io/design/downloads/dat-data-logo.png" align="right" width="140">](https://datproject.org)
+[<img src="https://datproject.github.io/design/downloads/dat-data-logo.png" align="right" width="140">][Dat Project]
 
 Have questions? Join our chat via IRC or Gitter:
 
-[![#dat IRC channel on freenode](https://img.shields.io/badge/irc%20channel-%23dat%20on%20freenode-blue.svg)](https://webchat.freenode.net/?channels=dat)
-[![datproject/discussions](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+[![#dat IRC channel on freenode][irc-badge]][irc-channel]
+[![datproject/discussions][gitter-badge]][gitter-chat]
 
 ### Table of Contents
 
@@ -33,18 +33,18 @@ Share, backup, and publish your filesystem. You can turn any folder on your comp
 
 Dat allows you to focus on the fun work without worrying about moving files around. **Secure**, **distributed**, **fast**.
 
-The [Dat Project](https://datproject.org) is the home to open source data sharing applications led by [Code for Science & Society](https://codeforscience.org), a nonprofit.
+The [Dat Project] is the home to open source data sharing applications led by [Code for Science & Society], a nonprofit.
 
 * Documentation: [docs.datproject.org](https://docs.datproject.org)
 * Dat Protocol: [datprotocol.com](https://www.datprotocol.com)
-* [Dat white paper](https://github.com/datproject/docs/blob/master/papers/dat-paper.pdf)
+* [Dat white paper]
 
 ##### Other Applications
 
 Rather not use the command line? Check out these options:
 
-* [Dat Desktop](https://datproject.org/install#desktop) - A desktop app to manage multiple dats on your desktop machine.
-* [Beaker Browser](https://beakerbrowser.com) - An experimental p2p browser with built-in support for the Dat protocol.
+* [Dat Desktop] - A desktop app to manage multiple dats on your desktop machine.
+* [Beaker Browser] - An experimental p2p browser with built-in support for the Dat protocol.
 
 ## dat command line
 
@@ -52,17 +52,17 @@ Share, download, and backup files with the command line! Automatically sync chan
 
 Mac/Linux      | Windows      | Version
 -------------- | ------------ | ------------
-[![Travis](https://travis-ci.org/datproject/dat.svg?branch=master)](https://travis-ci.org/datproject/dat) | [![Build status](https://ci.appveyor.com/api/projects/status/github/datproject/dat?branch=master&svg=true)](https://ci.appveyor.com/project/joehand/dat/branch/master) | [![NPM version](https://img.shields.io/npm/v/dat.svg)](https://npmjs.org/package/dat)
+[![Travis][travis-badge]][travis-build] | [![Build status][appveyor-badge]][appveyor-build] | [![NPM version][npm-badge]][npm-package]
 
 Have questions or need some guidance?
-You can chat with us in IRC on [#dat](https://webchat.freenode.net/?channels=dat) or [Gitter](https://gitter.im/datproject/discussions?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)!
+You can chat with us in IRC on [#dat][irc-channel] or [Gitter][gitter-chat]!
 
 ## Installation
 
 Dat can be used as a command line tool or a javascript library:
 
 * `npm install -g dat` - Install `dat` globally to use in the command line.
-* [require('dat')](https://github.com/datproject/dat-node) - dat-node, a library for downloading and sharing dat archives in javascript apps.
+* [require('dat')][dat-node] - dat-node, a library for downloading and sharing dat archives in javascript apps.
 
 ### Installing via npm
 
@@ -78,16 +78,16 @@ Once `npm install` finishes, you should be able to run the `dat` command. If not
 
 #### Prerequisites
 
-* **Node**: You'll need to [install Node](https://nodejs.org/en/download/) before installing Dat. Dat needs `node` version 4 or above and `npm` installed. You can run `node -v` to check your version.
+* **Node**: You'll need to [install Node JS][install-node] before installing Dat. Dat needs `node` version 4 or above and `npm` installed. You can run `node -v` to check your version.
 * **npm**: `npm` is installed with node. You can run `npm -v` to make sure it is installed.
 
 Once you have `npm` ready, install `dat` from npm with the `--global, -g` option, `npm install -g dat`.
 
 ### JS Library
 
-Add Dat to your `package.json`, `npm install dat --save`. Dat exports the [dat-node](https://github.com/datproject/dat-node) API via `require('dat')`. Use it in your javascript applications! Dat Desktop and Dat command line both use dat-node to share and download dats.
+Add Dat to your `package.json`, `npm install dat --save`. Dat exports the [dat-node] API via `require('dat')`. Use it in your javascript applications! Dat Desktop and Dat command line both use dat-node to share and download dats.
 
-Full API documentation is available in the [dat-node](https://github.com/datproject/dat-node) repository on Github.
+Full API documentation is available in the [dat-node] repository on Github.
 
 ## Getting started
 
@@ -107,17 +107,17 @@ dat share <dir>
 
 Use `dat share` to create a dat and sync your files from your computer to other users. Dat scans your files inside `<dir>`, creating metadata in `<dir>/.dat`. Dat stores the public link, version history, and file information inside the dat folder.
 
-![share](https://raw.githubusercontent.com/datproject/docs/master/assets/cli-share.gif)
+![share-gif]
 
 ### Downloading Data
 
 ```
-dat clone dat://<link> <download-folder>
+dat clone dat://<link> <download-dir>
 ```
 
-Use `dat clone` to download files from a remote computer sharing files with Dat. This will download the files from `dat://<link>` to your `<download-folder>`. The download exits after it completes but you can continue to update the files later after the clone is done. Use `dat pull` to update new files or `dat sync` to live sync changes.
+Use `dat clone` to download files from a remote computer sharing files with Dat. This will download the files from `dat://<link>` to your `<download-dir>`. The download exits after it completes but you can continue to update the files later after the clone is done. Use `dat pull` to update new files or `dat sync` to live sync changes.
 
-![clone](https://raw.githubusercontent.com/datproject/docs/master/assets/cli-clone.gif)
+![clone-gif]
 
 Try out `dat clone` with the link above to read more about the protocol!
 
@@ -234,7 +234,7 @@ Sync watches files for changes and imports updated files.
 
 By default, Dat will ignore any files in a `.datignore` file, similar to git. Each file should be separated by a newline. Dat also ignores all hidden folders and files.
 
-Dat uses [dat-ignore](https://github.com/joehand/dat-ignore) to decide if a file should be ignored.
+Dat uses [dat-ignore] to decide if a file should be ignored.
 
 #### Selecting Files
 
@@ -286,7 +286,7 @@ Download latest files and keep connection open to continue updating as remote so
 
 ### Dat Registry and Authentication
 
-As part of our [Knight Foundation grant](https://datproject.org/blog/2016-02-01-announcing-publicbits), we are building a registry for dat archives.
+As part of our [Knight Foundation grant], we are building a registry for dat archives.
 We will be running a dat registry at datproject.org, but anyone will be able to create their own.
 Once registered, you will be able to publish dat archives from our registry.
 Anyone can clone archives published to a registry without registration:
@@ -316,7 +316,7 @@ dat publish --name my-dataset
 ```
 
 All registry requests take the `<registry>` option if you'd like to publish to a different registry than datproject.org.
-You can deploy your own compatible [registry server](https://github.com/datproject/datproject.org) if you'd rather use your own service.
+You can deploy your own compatible [registry server] if you'd rather use your own service.
 
 ### Key Management & Moving dats
 
@@ -335,7 +335,7 @@ Then transfer the secret key:
 ## Troubleshooting
 
 We've provided some troubleshooting tips based on issues users have seen.
-Please [open an issue](https://github.com/datproject/dat/issues/new) or ask us in our [chat room](https://gitter.im/datproject/discussions) if you need help troubleshooting and it is not covered here.
+Please [open an issue][new-issue] or ask us in our [chat room][gitter-chat] if you need help troubleshooting and it is not covered here.
 
 If you have trouble sharing/downloading in a directory with a `.dat` folder, try deleting it and running the command again.
 
@@ -355,7 +355,7 @@ You should see the Dat semantic version printed, e.g. `13.1.2`.
 
 #### Node & npm
 
-To use the Dat command line tool you will need to have [node and npm installed](https://docs.npmjs.com/getting-started/installing-node).
+To use the Dat command line tool you will need to have [node and npm installed][install-node-npm].
 Make sure those are installed correctly before installing Dat.
 You can check the version of each:
 
@@ -369,9 +369,9 @@ npm -v
 The `-g` option installs Dat globally, allowing you to run it as a command.
 Make sure you installed with that option.
 
-* If you receive an `EACCES` error, read [this guide](https://docs.npmjs.com/getting-started/fixing-npm-permissions) on fixing npm permissions.
+* If you receive an `EACCES` error, read [this guide][fixing-npm-permissions] on fixing npm permissions.
 * If you receive an `EACCES` error, you may also install Dat with sudo: `sudo npm install -g dat`.
-* Have other installation issues? Let us know, you can [open an issue](https://github.com/datproject/dat/issues/new) or ask us in our [chat room](https://gitter.im/datproject/discussions).
+* Have other installation issues? Let us know, you can [open an issue][new-issue] or ask us in our [chat room][gitter-chat].
 
 ### Debugging Output
 
@@ -395,7 +395,7 @@ With successful use, Dat will show `Connected to 1 peer` after connection.
 If you never see a peer connected, your network may be restricting discovery or connection.
 Please try using the `dat --doctor` command (see below) between the two computers not connecting. This will help troubleshoot the networks.
 
-* Dat may [have issues](https://github.com/datproject/dat/issues/503) connecting if you are using iptables.
+* Dat may [have issues][dat#503] connecting if you are using iptables.
 
 #### Dat Doctor
 
@@ -428,13 +428,13 @@ Dat('/data', function (err, dat) {
 })
 ```
 
-**[Read more](https://github.com/datproject/dat-node) about the JS usage provided via `dat-node`.**
+**[Read more][dat-node] about the JS usage provided via `dat-node`.**
 
 ## For Developers
 
-Please see [guidelines on contributing](https://github.com/datproject/dat/blob/master/CONTRIBUTING.md) before submitting an issue or PR.
+Please see [guidelines on contributing] before submitting an issue or PR.
 
-This command line library uses [dat-node](https://github.com/datproject/dat-node) to create and manage the archives and networking.
+This command line library uses [dat-node] to create and manage the archives and networking.
 If you'd like to build your own Dat application that is compatible with this command line tool, we suggest using dat-node.
 
 ### Installing from source
@@ -448,7 +448,7 @@ npm link
 This should add a `dat` command line command to your PATH.
 Now you can run the `dat` command to try it out.
 
-The contribution guide also has more tips on our [development workflow](https://github.com/datproject/dat/blob/master/CONTRIBUTING.md#development-workflow).
+The contribution guide also has more tips on our [development workflow].
 
 * `npm run test` to run tests
 * `npm run auth-server` to run a local auth server for testing
@@ -456,3 +456,32 @@ The contribution guide also has more tips on our [development workflow](https://
 ## License
 
 BSD-3-Clause
+
+[Dat Project]: https://datproject.org
+[Code for Science & Society]: https://codeforscience.org
+[Dat white paper]: https://github.com/datproject/docs/blob/master/papers/dat-paper.pdf
+[Dat Desktop]: https://datproject.org/install#desktop
+[Beaker Browser]: https://beakerbrowser.com
+[registry server]: https://github.com/datproject/datproject.org
+[share-gif]: https://raw.githubusercontent.com/datproject/docs/master/assets/cli-share.gif
+[clone-gif]: https://raw.githubusercontent.com/datproject/docs/master/assets/cli-clone.gif
+[Knight Foundation grant]: https://datproject.org/blog/2016-02-01-announcing-publicbits
+[dat-node]: https://github.com/datproject/dat-node
+[dat-ignore]: https://github.com/joehand/dat-ignore
+[new-issue]: https://github.com/datproject/dat/issues/new
+[dat#503]: https://github.com/datproject/dat/issues/503
+[install-node]: https://nodejs.org/en/download/
+[install-node-npm]: https://docs.npmjs.com/getting-started/installing-node
+[fixing-npm-permissions]: https://docs.npmjs.com/getting-started/fixing-npm-permissions
+[guidelines on contributing]: https://github.com/datproject/dat/blob/master/CONTRIBUTING.md
+[development workflow]: https://github.com/datproject/dat/blob/master/CONTRIBUTING.md#development-workflow
+[travis-badge]: https://travis-ci.org/datproject/dat.svg?branch=master
+[travis-build]: https://travis-ci.org/datproject/dat
+[appveyor-badge]: https://ci.appveyor.com/api/projects/status/github/datproject/dat?branch=master&svg=true
+[appveyor-build]: https://ci.appveyor.com/project/joehand/dat/branch/master
+[npm-badge]: https://img.shields.io/npm/v/dat.svg
+[npm-package]: https://npmjs.org/package/dat
+[irc-badge]: https://img.shields.io/badge/irc%20channel-%23dat%20on%20freenode-blue.svg
+[irc-channel]: https://webchat.freenode.net/?channels=dat
+[gitter-badge]: https://badges.gitter.im/Join%20Chat.svg
+[gitter-chat]: https://gitter.im/datproject/discussions
