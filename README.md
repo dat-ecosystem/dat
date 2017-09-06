@@ -15,12 +15,12 @@ Have questions? Join our chat via IRC or Gitter:
 
 ### Table of Contents
 
-<li><a href="#installation">Installation</a></li>
-<li><a href="#getting-started">Getting Started</a></li>
-<li><a href="#usage">Using Dat</a></li>
-<li><a href="#troubleshooting">Troubleshooting</a></li>
-<li><a href="#js-api">Javascript API</a></li>
-<li><a href="#for-developers">For Developers</a></li>
+- [Installation](#installation)
+- [Getting Started](#getting-started)
+- [Using Dat](#usage)
+- [Troubleshooting](#troubleshooting)
+- [Javascript API](#js-api)
+- [For Developers](#for-developers)
 
 #### What is Dat?
 
