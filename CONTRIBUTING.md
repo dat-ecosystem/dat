@@ -2,9 +2,9 @@
 
 Please take a second to read over this before opening an issue. Providing complete information upfront will help us address any issue (and ship new features!) faster. Our time is limited, please respect it and create complete issues.
 
-We are available to chat in IRC at #dat. You can join [via Gitter](https://gitter.im/datproject/discussions). You can also [view and search](botbot.me/freenode/dat/) chat logs.
+We are available to chat in IRC at #dat. You can join [via Gitter](https://gitter.im/datproject/discussions). You can also [view and search](https://botbot.me/freenode/dat/) chat logs.
 
-We have a [faq](docs.datproject.org/faq) section on our docs that may address non-bug questions.
+We have a [faq](https://docs.datproject.org/faq) section on our docs that may address non-bug questions.
 
 ## Opening an Issue
 
