@@ -11,7 +11,14 @@ module.exports = {
     '  dat keys import       import dat secret key to make a dat writable',
     ''
   ].join('\n'),
-  options: []
+  options: [
+    {
+      name: 'discovery',
+      boolean: true,
+      default: false,
+      help: 'Print Discovery Key'
+    }
+  ]
 }
 
 function keys (opts) {
@@ -40,7 +47,8 @@ function run (dat, opts) {
     root: {
       command: function () {
         console.log(`dat://${dat.key.toString('hex')}`)
-        console.log(`Discovery key: ${dat.archive.discoveryKey.toString('hex')}`)
+        if (opts.discovery) console.log(`Discovery key: ${dat.archive.discoveryKey.toString('hex')}`)
+        process.exit()
       }
     },
     commands: [
