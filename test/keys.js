@@ -16,6 +16,24 @@ test('keys - print keys', function (t) {
       var st = spawn(t, cmd, {cwd: fixtures})
 
       st.stdout.match(function (output) {
+        if (output.indexOf('dat://') === -1) return false
+        t.ok(output.indexOf(shareDat.key.toString('hex') > -1), 'prints key')
+        st.kill()
+        return true
+      })
+      st.stderr.empty()
+      st.end()
+    })
+  })
+})
+
+test('keys - print discovery key', function (t) {
+  help.shareFixtures(function (_, shareDat) {
+    shareDat.close(function () {
+      var cmd = dat + ' keys --discovery'
+      var st = spawn(t, cmd, {cwd: fixtures})
+
+      st.stdout.match(function (output) {
         if (output.indexOf('Discovery') === -1) return false
         t.ok(output.indexOf(shareDat.key.toString('hex') > -1), 'prints key')
         t.ok(output.indexOf(shareDat.archive.discoveryKey.toString('hex') > -1), 'prints discovery key')
