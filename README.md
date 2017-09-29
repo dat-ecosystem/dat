@@ -33,7 +33,7 @@ Share, backup, and publish your filesystem. You can turn any folder on your comp
 
 Dat allows you to focus on the fun work without worrying about moving files around. **Secure**, **distributed**, **fast**.
 
-The [Dat Project] is the home to open source data sharing applications led by [Code for Science & Society], a nonprofit.
+The [Dat Project] is the home to open source data sharing applications led by [Code for Science & Society], a nonprofit supporting open source tools that benefit science and society. Dat also has a vibrant global community of developers building apps on the Dat protocol.
 
 * Documentation: [docs.datproject.org](https://docs.datproject.org)
 * Dat Protocol: [datprotocol.com](https://www.datprotocol.com)
