@@ -2,9 +2,10 @@
 
 > npm install -g dat
 
-Dat is the distributed data sharing tool.
-Share files with version control, back up data to servers, browse remote files on demand, and automate long-term data preservation.
-Secure, distributed, fast.
+A distributed data community.
+Dat is a nonprofit-backed community & open protocol for building apps of the future.
+
+Use Dat command line to share files with version control, back up data to servers, browse remote files on demand, and automate long-term data preservation.
 
 [<img src="https://datproject.github.io/design/downloads/dat-data-logo.png" align="right" width="140">][Dat Project]
 
@@ -33,10 +34,8 @@ Share, backup, and publish your filesystem. You can turn any folder on your comp
 
 Dat allows you to focus on the fun work without worrying about moving files around. **Secure**, **distributed**, **fast**.
 
-The [Dat Project] is the home to open source data sharing applications led by [Code for Science & Society], a nonprofit.
-
 * Documentation: [docs.datproject.org](https://docs.datproject.org)
-* Dat Protocol: [datprotocol.com](https://www.datprotocol.com)
+* [DatBase](https://datbase.org)
 * [Dat white paper]
 
 ##### Other Applications
@@ -55,7 +54,7 @@ Mac/Linux      | Windows      | Version
 [![Travis][travis-badge]][travis-build] | [![Build status][appveyor-badge]][appveyor-build] | [![NPM version][npm-badge]][npm-package]
 
 Have questions or need some guidance?
-You can chat with us in IRC on [#dat][irc-channel] or [Gitter][gitter-chat]!
+You can [chat with us](http://chat.datproject.org) in IRC on [#dat][irc-channel] or [Gitter][gitter-chat]!
 
 ## Installation
 
@@ -153,7 +152,7 @@ Version 4
 
 This will download our demo files to the `~/Downloads/dat-demo` folder. These files are being shared by a server over Dat (to ensure high availability) but you may connect to any number of users also hosting the content.
 
-You can also also view the files online: [datproject.org/778f8d955175c92e4ced5e4f5563f69bfec0c86cc6f670352c457943666fe639](https://datproject.org/778f8d955175c92e4ced5e4f5563f69bfec0c86cc6f670352c457943666fe639/). datproject.org can download files over Dat and display them on HTTP as long as someone is hosting it. The website temporarily caches data for any visited links (do not view your dat on datproject.org if you do not want us to cache your data).
+You can also also view the files online: [datbase.org/778f8d955175c92e4ced5e4f5563f69bfec0c86cc6f670352c457943666fe639](https://datbase.org/778f8d955175c92e4ced5e4f5563f69bfec0c86cc6f670352c457943666fe639/). datbase.org can download files over Dat and display them on HTTP as long as someone is hosting it. The website temporarily caches data for any visited links (do not view your dat on datbase.org if you do not want us to cache your data).
 
 #### Sharing Demo
 
@@ -174,7 +173,7 @@ This will create a new (empty) dat. Dat will print a link, share this link to gi
 
 Once we have our dat, run `dat share` to scan your files and sync them to the network. Share the link with your friend to instantly start downloading files.
 
-You can also try viewing your files online. Go to [datproject.org](https://datproject.org/explore) and enter your link to preview on the top right. *(Some users, including me when writing this, may have trouble connecting to datproject.org initially. Don't be alarmed! It is something we are working on. Thanks.)*
+You can also try viewing your files online. Go to [datbase.org](https://datbase.org) and enter your link to preview on the top left. *(Some users, including me when writing this, may have trouble connecting to datbase.org initially. Don't be alarmed! It is something we are working on. Thanks.)*
 
 #### Bonus HTTP Demo
 
@@ -287,17 +286,17 @@ Download latest files and keep connection open to continue updating as remote so
 ### Dat Registry and Authentication
 
 As part of our [Knight Foundation grant], we are building a registry for dat archives.
-We will be running a dat registry at datproject.org, but anyone will be able to create their own.
+We will be running a dat registry at datbase.org, but anyone will be able to create their own.
 Once registered, you will be able to publish dat archives from our registry.
 Anyone can clone archives published to a registry without registration:
 
 ```
-dat clone datproject.org/jhand/cli-demo
+dat clone datbase.org/jhand/cli-demo
 ```
 
 #### Auth (experimental)
 
-You can also use the `dat` command line to register and publish to dat registries. Dat plans to support any registry. Currently, `datproject.org` is the only one available and the default.
+You can also use the `dat` command line to register and publish to dat registries. Dat plans to support any registry. Currently, `datbase.org` is the only one available and the default.
 
 To register and login you can use the following commands:
 
@@ -315,7 +314,7 @@ dat create
 dat publish --name my-dataset
 ```
 
-All registry requests take the `<registry>` option if you'd like to publish to a different registry than datproject.org.
+All registry requests take the `<registry>` option if you'd like to publish to a different registry than datbase.org.
 You can deploy your own compatible [registry server] if you'd rather use your own service.
 
 ### Key Management & Moving dats
@@ -460,12 +459,12 @@ BSD-3-Clause
 [Dat Project]: https://datproject.org
 [Code for Science & Society]: https://codeforscience.org
 [Dat white paper]: https://github.com/datproject/docs/blob/master/papers/dat-paper.pdf
-[Dat Desktop]: https://datproject.org/install#desktop
+[Dat Desktop]: https://docs.datproject.org/install#desktop-application
 [Beaker Browser]: https://beakerbrowser.com
-[registry server]: https://github.com/datproject/datproject.org
+[registry server]: https://github.com/datproject/datbase
 [share-gif]: https://raw.githubusercontent.com/datproject/docs/master/assets/cli-share.gif
 [clone-gif]: https://raw.githubusercontent.com/datproject/docs/master/assets/cli-clone.gif
-[Knight Foundation grant]: https://datproject.org/blog/2016-02-01-announcing-publicbits
+[Knight Foundation grant]: https://blog.datproject.org/2016/02/01/announcing-publicbits-org/
 [dat-node]: https://github.com/datproject/dat-node
 [dat-ignore]: https://github.com/joehand/dat-ignore
 [new-issue]: https://github.com/datproject/dat/issues/new

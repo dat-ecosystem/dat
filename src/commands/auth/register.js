@@ -5,7 +5,7 @@ module.exports = {
     'Register with a public Dat registry',
     'Usage: dat register [<registry>]',
     '',
-    'Register with datproject.org or other registries to publish your dats.'
+    'Register with datbase.org or other registries to publish your dats.'
   ].join('\n'),
   options: [
     {
@@ -34,7 +34,7 @@ function register (opts) {
     properties: {
       server: {
         description: chalk.magenta('Dat registry'),
-        default: opts.server || 'datproject.org',
+        default: opts.server || 'datbase.org',
         required: true
       },
       username: {

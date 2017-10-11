@@ -34,7 +34,7 @@ function login (opts) {
     properties: {
       server: {
         description: chalk.magenta('Dat registry'),
-        default: opts.server || 'datproject.org',
+        default: opts.server || 'datbase.org',
         required: true
       },
       email: {
