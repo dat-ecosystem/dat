@@ -43,7 +43,7 @@
     "dat-link-resolve": "^1.0.0",
     "dat-log": "^1.1.0",
     "dat-node": "^3.5.0",
-    "dat-registry": "^3.0.3",
+    "dat-registry": "^4.0.0",
     "debug": "^3.0.0",
     "neat-log": "^1.1.0",
     "prettier-bytes": "^1.0.3",
