@@ -1,0 +1,23 @@
+name: dat
+version: master
+summary: Share & live sync files anywhere via command line
+description: |
+  A distributed data community. Dat is a nonprofit-backed community & open
+  protocol for building apps of the future.
+
+  Use Dat command line to share files with version control, back up data to
+  servers, browse remote files on demand, and automate long-term data
+  preservation.
+
+grade: devel # must be 'stable' to release into candidate/stable channels
+confinement: devmode # use 'strict' once you have the right plugs and slots
+
+apps:
+  dat:
+    command: dat
+    plugs: [home, network, network-bind]
+
+parts:
+  dat:
+    source: .
+    plugin: nodejs
