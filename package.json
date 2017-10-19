@@ -17,7 +17,7 @@
     "install-precommit": "echo ./node_modules/.bin/standard > .git/hooks/pre-commit && chmod +x .git/hooks/pre-commit",
     "standard": "standard",
     "deps": "dependency-check . && dependency-check . --extra --no-dev",
-    "test": "standard && npm run deps && tape 'test/*.js' | tap-spec",
+    "test": "standard && npm run deps && tape 'test/*.js'",
     "test-only": "tape 'test/*.js'",
     "package": "pkg package.json -o dist/dat"
   },
@@ -67,7 +67,6 @@
     "recursive-readdir-sync": "^1.0.6",
     "request": "^2.81.0",
     "standard": "*",
-    "tap-spec": "^4.1.1",
     "tape": "^4.6.3",
     "tape-spawn": "^1.4.2",
     "temporary-directory": "^1.0.2"
