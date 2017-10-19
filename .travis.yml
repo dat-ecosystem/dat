@@ -30,3 +30,4 @@ deploy:
   on:
     repo: datproject/dat
     node: '8'
+    tags: true
