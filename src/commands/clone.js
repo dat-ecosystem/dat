@@ -92,6 +92,9 @@ function clone (opts) {
       // Create the directory if it doesn't exist
       // If no dir is specified, we put dat in a dir with name = key
       if (!opts.dir) opts.dir = key
+      if (!Buffer.isBuffer(opts.dir) || typeof opts.dir !== 'string') {
+        return bus.emit('exit:error', 'Directory path must be a string or Buffer')
+      }
       fs.access(opts.dir, fs.F_OK, function (err) {
         if (!err) {
           createdDirectory = false
