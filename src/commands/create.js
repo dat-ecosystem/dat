@@ -63,7 +63,7 @@ function create (opts) {
 
       Now you can add files and share:
       * Run ${chalk.green(`dat share`)} to create metadata and sync.
-      * Copy the unique dat link and securly share it.
+      * Copy the unique dat link and securely share it.
 
       ${chalk.blue(`dat://${dat.key.toString('hex')}`)}
     `
