@@ -50,7 +50,7 @@
     "prettier-bytes": "^1.0.3",
     "progress-string": "^1.2.1",
     "prompt": "^1.0.0",
-    "pump": "^1.0.2",
+    "pump": "1.0.2",
     "rimraf": "^2.6.1",
     "speedometer": "^1.0.0",
     "subcommand": "^2.1.0",
