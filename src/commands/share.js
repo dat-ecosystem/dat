@@ -30,6 +30,8 @@ module.exports = {
 }
 
 function share (opts) {
+  var path = require('path')
+  var fs = require('fs')
   var Dat = require('dat-node')
   var neatLog = require('neat-log')
   var archiveUI = require('../ui/archive')
@@ -55,6 +57,18 @@ function share (opts) {
       if (err && err.name === 'IncompatibleError') return bus.emit('exit:warn', 'Directory contains incompatible dat metadata. Please remove your old .dat folder (rm -rf .dat)')
       else if (err) return bus.emit('exit:error', err)
       if (!dat.writable && !opts.shortcut) return bus.emit('exit:warn', 'Archive not writable, cannot use share. Please use sync to resume download.')
+
+      fs.readFile(path.join(opts.dir, 'dat.json'), 'utf-8', (err, data) => {
+        if (err || !data) return setMetadata()
+        data = JSON.parse(data)
+        debug('read existing dat.json data', data)
+        setMetadata(data)
+      })
+
+      function setMetadata (data) {
+        if (!data) data = {}
+        else if (data.url) dat.metadata = data // valid dat file found, and assigned
+      }
 
       state.dat = dat
       bus.emit('dat')

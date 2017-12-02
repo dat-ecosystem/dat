@@ -7,6 +7,7 @@ var warningsUI = require('./components/warnings')
 var networkUI = require('./components/network')
 var sourcesUI = require('./components/sources')
 var keyEl = require('./elements/key')
+var metadata = require('./elements/metadata')
 var pluralize = require('./elements/pluralize')
 var version = require('./elements/version')
 var pkg = require('../../package.json')
@@ -27,8 +28,10 @@ function archiveUI (state) {
     title += `${keyEl(dat.key)}\n`
   }
   if (state.title) title += state.title
-  else if (state.writable) title += 'Sharing dat'
-  else title += 'Downloading dat'
+  else if (state.writable) {
+    title += 'Sharing dat'
+    if (dat.metadata) title += `: ${metadata(dat.metadata)}\nFiles`
+  } else title += 'Downloading dat'
   if (state.opts.sparse) title += `: ${state.opts.selectedFiles.length} ${pluralize('file', state.opts.selectedFiles.length)} (${pretty(state.selectedByteLength)})`
   else if (stats.version > 0) title += `: ${stats.files} ${pluralize('file', stats.file)} (${pretty(stats.byteLength)})`
   else if (stats.version === 0) title += ': (empty archive)'
