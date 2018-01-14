@@ -41,7 +41,7 @@
     "dat-doctor": "^1.2.5",
     "dat-encoding": "^4.0.2",
     "dat-json": "^1.0.0",
-    "dat-link-resolve": "^1.0.0",
+    "dat-link-resolve": "^2.0.0",
     "dat-log": "^1.1.0",
     "dat-node": "^3.5.5",
     "dat-registry": "^4.0.0",
