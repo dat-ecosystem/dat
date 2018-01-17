@@ -19,7 +19,8 @@
     "deps": "dependency-check . && dependency-check . --extra --no-dev",
     "test": "standard && npm run deps && tape 'test/*.js'",
     "test-only": "tape 'test/*.js'",
-    "package": "pkg package.json -o dist/dat"
+    "package": "rm -rf builds && npm run pkg && ./package.sh",
+    "pkg": "pkg package.json -o builds/dat"
   },
   "repository": {
     "type": "git",
@@ -58,6 +59,7 @@
     "xtend": "^4.0.1"
   },
   "devDependencies": {
+    "cross-zip-cli": "^1.0.0",
     "dependency-check": "^2.8.0",
     "hypercore": "^6.5.0",
     "hyperdiscovery": "^7.0.0",
