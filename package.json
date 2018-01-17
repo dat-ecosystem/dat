@@ -62,7 +62,7 @@
     "hypercore": "^6.5.0",
     "hyperdiscovery": "^7.0.0",
     "mkdirp": "^0.5.1",
-    "pkg": "^4.2.2",
+    "pkg": "^4.2.6",
     "random-access-memory": "^2.4.0",
     "recursive-readdir-sync": "^1.0.6",
     "request": "^2.81.0",
@@ -73,8 +73,8 @@
   },
   "pkg": {
     "assets": [
-      "node_modules/utp-native/prebuilds/**",
-      "node_modules/sodium-native/prebuilds/**"
+      "./node_modules/blake2b-wasm/blake2b.wasm",
+      "./node_modules/siphash24/siphash24.wasm"
     ],
     "targets": [
       "node8-linux-x64",
