@@ -10,3 +10,4 @@ test/**.db
 test/.datrc-test
 package-lock.json
 dist
+builds
