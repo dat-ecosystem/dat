@@ -11,9 +11,9 @@ function networkUI (state) {
   if (!network) return ''
   var peers = stats.peers.total || 0
   // var complete = stats.peers.complete
-  return output`
+  return output(`
     ${peers} ${pluralize('connection', peers)} ${speedUI()}
-  `
+  `)
 
   function speedUI () {
     var output = '| '

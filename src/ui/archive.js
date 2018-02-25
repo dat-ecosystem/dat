@@ -45,7 +45,7 @@ function archiveUI (state) {
     }
   }
 
-  return output`
+  return output(`
     ${version(pkg.version)}
     ${title}
     ${state.joinNetwork ? '\n' + networkUI(state) : ''}
@@ -54,5 +54,5 @@ function archiveUI (state) {
     ${state.opts.sources ? sourcesUI(state) : ''}
     ${state.warnings ? warningsUI(state) : ''}
     ${state.exiting ? 'Exiting the Dat program...' : chalk.dim('Ctrl+C to Exit')}
-  `
+  `)
 }

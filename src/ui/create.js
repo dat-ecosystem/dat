@@ -9,9 +9,9 @@ module.exports = createUI
 
 function createUI (state) {
   if (!state.dat) {
-    return output`
+    return output(`
     Creating a Dat! Add information to your dat.json file:
-  `
+  `)
   }
 
   var dat = state.dat
@@ -42,10 +42,10 @@ function createUI (state) {
     progressView = 'Not importing files.'
   }
 
-  return output`
+  return output(`
     ${title}
 
     ${progressView}
     ${state.exiting ? exitMsg : chalk.dim('Ctrl+C to Exit')}
-  `
+  `)
 }
