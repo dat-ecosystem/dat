@@ -19,6 +19,7 @@ Have questions? Join our chat via IRC or Gitter:
 - [Installation](#installation)
 - [Getting Started](#getting-started)
 - [Using Dat](#usage)
+- [Using Dat from Docker](#dockerusage)
 - [Troubleshooting](#troubleshooting)
 - [Javascript API](#js-api)
 - [For Developers](#for-developers)
@@ -189,6 +190,34 @@ The first time you run a command, a `.dat` folder is created to store the dat me
 Once a dat is created, you can run all the commands inside that folder, similar to git.
 
 Dat keeps secret keys in the `~/.dat/secret_keys` folder. These are required to write to any dats you create.
+
+## Docker Usage
+
+To get a dat dataset using a Docker container, you can either do it directly:
+
+```
+docker run -d --name demo-data \
+		-e DATAURL=dat://778f8d955175c92e4ced5e4f5563f69bfec0c86cc6f670352c457943666fe639 \
+		-e DATADIR=/data \
+		-v $(pwd)/data:/data \
+		--entrypoint /compose-sync.yml
+		dat
+```
+
+or use `compose-sync.yml` from Docker swarm mode:
+
+```
+$ docker stack up -c compose-sync.yml demo-data
+Creating network demo-data_default
+Creating service demo-data_dat-sync
+
+$ docker run --rm -v demo-data_sync:/data alpine ls /data
+dat.json
+dat_intro.gif
+```
+
+The Docker image uses `DATADIR` and `DATAURL` if there is no dat data already available, but both environment variables
+are optional if there is already dat data in the `/data` dir.
 
 ### Sharing
 

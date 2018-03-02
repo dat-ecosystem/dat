@@ -1,0 +1,15 @@
+version: "3.4"
+services:
+  dat-sync:
+    image: svendowideit/dat
+    #command: clone dat://f6d022942d14f3a27c9c09af8c7e673038652a6f11626efbd38f0308f6b47bbf /data
+    entrypoint: /compose-sync.sh
+    environment:
+      - DATAURL=dat://778f8d955175c92e4ced5e4f5563f69bfec0c86cc6f670352c457943666fe639
+      - DATADIR=/data
+    volumes:
+      - sync:/data
+
+
+volumes:
+  sync:
