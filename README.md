@@ -197,6 +197,7 @@ To get a dat dataset using a Docker container, you can either do it directly:
 
 ```
 docker run -d --name demo-data \
+		-p 3282:3282/tcp -p 3282:3282/udp \
 		-e DATAURL=dat://778f8d955175c92e4ced5e4f5563f69bfec0c86cc6f670352c457943666fe639 \
 		-e DATADIR=/data \
 		-v $(pwd)/data:/data \

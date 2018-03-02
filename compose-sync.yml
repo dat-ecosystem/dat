@@ -7,6 +7,9 @@ services:
     environment:
       - DATAURL=dat://778f8d955175c92e4ced5e4f5563f69bfec0c86cc6f670352c457943666fe639
       - DATADIR=/data
+    ports:
+      - "3282:3282/tcp"
+      - "3282:3282/udp"
     volumes:
       - sync:/data
 
