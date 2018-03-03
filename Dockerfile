@@ -16,8 +16,3 @@ COPY . /usr/src/app
 RUN npm link
 COPY compose-sync.sh /
 ENTRYPOINT ["dat"]
-#RUN npm run build-js-prod && npm run build-css && npm run minify && npm run version
-
-# do docker exec: npm run database
-
-#CMD npm run database && DEBUG=dat-registry npm run server
