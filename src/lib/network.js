@@ -25,6 +25,19 @@ function trackNetwork (state, bus) {
     var network = state.dat.joinNetwork(opts, function () {
       bus.emit('network:callback')
     })
+
+    network.on('errorport', function (err) {
+      if (err.code === 'EADDRINUSE') {
+        if (opts.port) {
+          console.error('Error: specified port ' + opts.port + ' is in use')
+          process.exit(1)
+        } else {
+          console.error(err.message + ' trying random port')
+        }
+      } else {
+        console.error(err)
+      }
+    })
     state.network = xtend(network, state.network)
     bus.emit('dat:network')
 

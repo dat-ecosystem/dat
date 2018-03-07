@@ -20,7 +20,7 @@ var config = {
   defaults: [
     { name: 'dir', abbr: 'd', help: 'set the directory for Dat' },
     { name: 'logspeed', default: 400 },
-    { name: 'port', default: 3282, help: 'port to use for connections' },
+    { name: 'port', help: 'port to use for connections (tries 3282 by default)' },
     { name: 'utp', default: true, boolean: true, help: 'use utp for discovery' },
     { name: 'http', help: 'serve dat over http (default port: 8080)' },
     { name: 'debug', default: !!process.env.DEBUG && !debug.enabled, boolean: true },
