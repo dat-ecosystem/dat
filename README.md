@@ -23,6 +23,42 @@ Have questions? Join our chat via IRC or Gitter:
 - [Javascript API](#js-api)
 - [For Developers](#for-developers)
 
+## Installation
+
+Dat can be used as a command line tool or a javascript library:
+
+* Install the `$ dat` CLI to use in the command line.
+* [require('dat')][dat-node] - dat-node, a library for downloading and sharing dat archives in javascript apps.
+
+### Installing the `$ dat` command line tool
+
+The recommended way to install the Dat command line tool is with `npm`:
+
+```
+npm install -g dat
+```
+
+Make sure you have `node` and `npm` installed first. If not, see the prerequisites section below. We recommend `npm` because it makes it easy to install new versions of `dat` when they get released.
+
+Once `npm install` finishes, you should be able to run the `$ dat` command. If not, see the [installation troubleshooting](#troubleshooting) for tips.
+
+#### Installing without npm
+
+If you are unable to use `npm` to install dat, you can also download a single file binary distribution version of `dat` using the one line install command below. The binary includes a copy of node and dat packaged inside a single file, so you just have to download one file in order to start sharing data, with no other dependencies needed on your system:
+
+```
+wget -qO- https://raw.githubusercontent.com/datproject/dat/master/bin/download.sh | bash
+```
+
+#### NPM Prerequisites
+
+* **Node**: You'll need to [install Node JS][install-node] before installing Dat. Dat needs `node` version 4 or above and `npm` installed. You can run `node -v` to check your version.
+* **npm**: `npm` is installed with node. You can run `npm -v` to make sure it is installed.
+
+Once you have `npm` ready, install `dat` from npm with the `--global, -g` option, `npm install -g dat`.
+
+## Getting started
+
 #### What is Dat?
 
 Share, backup, and publish your filesystem. You can turn any folder on your computer into a dat. Dat scans your folder, allowing you to:
@@ -56,39 +92,11 @@ Mac/Linux      | Windows      | Version
 Have questions or need some guidance?
 You can [chat with us](http://chat.datproject.org) in IRC on [#dat][irc-channel] or [Gitter][gitter-chat]!
 
-## Installation
-
-Dat can be used as a command line tool or a javascript library:
-
-* `npm install -g dat` - Install `dat` globally to use in the command line.
-* [require('dat')][dat-node] - dat-node, a library for downloading and sharing dat archives in javascript apps.
-
-### Installing via npm
-
-The Dat command line tool can be installed with `npm`:
-
-```
-npm install -g dat
-```
-
-Make sure you have `node` and `npm` installed first. If not, see the prerequisites section below.
-
-Once `npm install` finishes, you should be able to run the `dat` command. If not, see the [installation troubleshooting](#troubleshooting) for tips.
-
-#### Prerequisites
-
-* **Node**: You'll need to [install Node JS][install-node] before installing Dat. Dat needs `node` version 4 or above and `npm` installed. You can run `node -v` to check your version.
-* **npm**: `npm` is installed with node. You can run `npm -v` to make sure it is installed.
-
-Once you have `npm` ready, install `dat` from npm with the `--global, -g` option, `npm install -g dat`.
-
 ### JS Library
 
 Add Dat to your `package.json`, `npm install dat --save`. Dat exports the [dat-node] API via `require('dat')`. Use it in your javascript applications! Dat Desktop and Dat command line both use dat-node to share and download dats.
 
 Full API documentation is available in the [dat-node] repository on Github.
-
-## Getting started
 
 We have Dat installed, let's use it!
 

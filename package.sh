@@ -24,9 +24,9 @@ cp LICENSE builds/dat-$VERSION-linux-x64/
 cp LICENSE builds/dat-$VERSION-macos-x64/
 cp LICENSE builds/dat-$VERSION-win-x64/
 
-cp INSTALL builds/dat-$VERSION-linux-x64/README
-cp INSTALL builds/dat-$VERSION-macos-x64/README
-cp INSTALL builds/dat-$VERSION-win-x64/README
+cp README.md builds/dat-$VERSION-linux-x64/README
+cp README.md builds/dat-$VERSION-macos-x64/README
+cp README.md builds/dat-$VERSION-win-x64/README
 
 cd builds
 ../node_modules/.bin/cross-zip dat-$VERSION-linux-x64 ../dist/dat-$VERSION-linux-x64.zip
