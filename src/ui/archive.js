@@ -1,3 +1,4 @@
+var path = require('path')
 var output = require('neat-log/output')
 var pretty = require('prettier-bytes')
 var chalk = require('chalk')
@@ -20,7 +21,7 @@ function archiveUI (state) {
 
   var dat = state.dat
   var stats = dat.stats.get()
-  var title = (state.dat.resumed) ? '' : `Created new dat in ${dat.path}/.dat\n`
+  var title = (state.dat.resumed) ? '' : `Created new dat in ${dat.path}${path.sep}.dat\n`
   var progressView
 
   if (state.writable || state.opts.showKey) {
