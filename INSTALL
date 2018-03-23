@@ -1,0 +1,26 @@
+Dat CLI installation instructions
+
+Method 1: Self contained binary
+
+- This method does not require installing Node.js or npm
+- Download the latest release zip for your platform (self contained binary) from https://github.com/datproject/dat/releases
+- Extract the zip
+- On a command line run: ./path-to-extracted-zip/dat
+- Make sure to leave all files in the extracted zip in their original location
+
+Linux/Mac: Add to your PATH so you can just run 'dat' instead of './path-to-extracted-zip/dat':
+
+- On a command line run: cd ./path-to-extracted-zip
+- Run: pwd
+- Use the path printed out above to add this line to your `.bash_profile', e.g.:
+
+PATH=/Users/maxogden/Downloads/dat-13.9.2-macos-x64/:$PATH
+
+- Reload your terminal and you should just be able to run 'dat' from any folder now.
+
+Method 2 (recommended for easy updates): npm
+
+- Install http://nodejs.org/
+- On a command line run: npm install dat --global
+- You should now have dat installed, try running: dat
+

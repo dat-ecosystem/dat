@@ -29,7 +29,7 @@ function publish (opts) {
 
   if (!opts.dir) opts.dir = process.cwd()
   if (opts._[0]) opts.server = opts._[0]
-  if (!opts.server) opts.server = 'datproject.org' // nicer error message if not logged in
+  if (!opts.server) opts.server = 'datbase.org' // nicer error message if not logged in
 
   var client = Registry(opts)
   var whoami = client.whoami()
@@ -44,7 +44,7 @@ function publish (opts) {
       New to ${chalk.green(opts.server)} and need an account?
       ${chalk.green('dat register')}
 
-      Explore public dats at ${chalk.blue('datproject.org/explore')}
+      Explore public dats at ${chalk.blue('datbase.org/explore')}
     `
     return exitErr(loginErr)
   }

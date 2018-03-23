@@ -1,12 +1,21 @@
 # Change Log
 All notable changes to this project will be documented in this file.
-This project adheres to [Semantic Versioning](http://semver.org/).
+This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
 *Note: unreleased changes are added here.*
 
-## Fixed
+## 13.9.0 - 2017-10-11
+
+### Changed
+* Use [datbase.org](https://datbase.org) as default registry (instead of datproject.org)
+
+## 13.8.2 - 2017-09-28
+
+### Fixed
+* Error not being handled (https://github.com/datproject/dat/issues/838)
 * Set `opts.debug` properly when using `DEBUG` that isn't `dat`.
+* Move discovery key to option in `dat keys` (#869)
 
 ## 13.8.1 - 2017-08-04
 

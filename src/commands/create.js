@@ -39,7 +39,7 @@ function create (opts) {
     A Dat is a folder with some magic.
 
     Your dat is ready!
-    We will walk you creating a 'dat.json' file.
+    We will walk you through creating a 'dat.json' file.
     (You can skip dat.json and get started now.)
 
     Learn more about dat.json: ${chalk.blue(`https://github.com/datprotocol/dat.json`)}
@@ -63,7 +63,7 @@ function create (opts) {
 
       Now you can add files and share:
       * Run ${chalk.green(`dat share`)} to create metadata and sync.
-      * Copy the unique dat link and securly share it.
+      * Copy the unique dat link and securely share it.
 
       ${chalk.blue(`dat://${dat.key.toString('hex')}`)}
     `
