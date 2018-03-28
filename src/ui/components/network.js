@@ -1,5 +1,6 @@
 var output = require('neat-log/output')
 var pretty = require('prettier-bytes')
+var sourcesUI = require('./sources')
 var pluralize = require('../elements/pluralize')
 
 module.exports = networkUI
@@ -13,6 +14,7 @@ function networkUI (state) {
   // var complete = stats.peers.complete
   return output(`
     ${peers} ${pluralize('connection', peers)} ${speedUI()}
+    ${sourcesUI(state)}
   `)
 
   function speedUI () {

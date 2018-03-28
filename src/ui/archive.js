@@ -6,7 +6,6 @@ var downloadUI = require('./components/download')
 var importUI = require('./components/import-progress')
 var warningsUI = require('./components/warnings')
 var networkUI = require('./components/network')
-var sourcesUI = require('./components/sources')
 var keyEl = require('./elements/key')
 var pluralize = require('./elements/pluralize')
 var version = require('./elements/version')
@@ -51,7 +50,6 @@ function archiveUI (state) {
     ${state.joinNetwork ? '\n' + networkUI(state) : ''}
 
     ${progressView}
-    ${state.opts.sources ? sourcesUI(state) : ''}
     ${state.warnings ? warningsUI(state) : ''}
     ${state.exiting ? 'Exiting the Dat program...' : chalk.dim('Ctrl+C to Exit')}
   `)

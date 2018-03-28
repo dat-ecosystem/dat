@@ -48,7 +48,7 @@ function trackNetwork (state, bus) {
       })
     })
 
-    if (state.opts.sources) trackSources()
+    trackSources()
     if (state.stats) return trackSpeed()
     bus.once('dat:stats', trackSpeed)
 
@@ -66,18 +66,12 @@ function trackNetwork (state, bus) {
 
         state.sources[id] = info
         state.sources[id].speed = peerSpeed()
-        state.sources[id].getProgress = function () {
-
-          // TODO: how to get right peer from archive.content?
-          // var remote = conn.feeds[1].remoteLength
-          // // state.dat.archive.content.sources[0].feed.id.toString('hex')
-          // if (!remote) return
-          // return remote / dat.archive.content.length
-        }
+        state.sources[id].dataTransferred = 0
 
         conn.feeds.map(function (feed) {
           feed.stream.on('data', function (data) {
             state.sources[id].speed = peerSpeed(data.length)
+            state.sources[id].dataTransferred += data.length
             bus.emit('render')
           })
           feed.stream.on('error', function (err) {
