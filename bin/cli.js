@@ -3,6 +3,7 @@
 var subcommand = require('subcommand')
 var debug = require('debug')('dat')
 var usage = require('../src/usage')
+var pkg = require('../package.json')
 
 process.title = 'dat'
 
@@ -11,6 +12,21 @@ var NODE_VERSION_SUPPORTED = 4
 var nodeMajorVer = process.version.match(/^v([0-9]+)\./)[1]
 var invalidNode = nodeMajorVer < NODE_VERSION_SUPPORTED
 if (invalidNode) exitInvalidNode()
+else {
+  var notifier = require('update-notifier')
+  notifier({pkg: pkg})
+    .notify({
+      defer: true,
+      isGlobal: true,
+      boxenOpts: {
+        align: 'left',
+        borderColor: 'green',
+        borderStyle: 'classic',
+        padding: 1,
+        margin: {top: 1, bottom: 1}
+      }
+    })
+}
 
 if (debug.enabled) {
   debug('Dat DEBUG mode engaged, enabling quiet mode')
@@ -72,7 +88,6 @@ var config = {
 }
 
 if (debug.enabled) {
-  var pkg = require('../package.json')
   debug('dat', pkg.version)
   debug('node', process.version)
 }
