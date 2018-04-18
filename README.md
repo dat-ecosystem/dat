@@ -47,7 +47,7 @@ Once `npm install` finishes, you should be able to run the `$ dat` command. If n
 If you are unable to use `npm` to install dat, you can also download a single file binary distribution version of `dat` using the one line install command below. The binary includes a copy of node and dat packaged inside a single file, so you just have to download one file in order to start sharing data, with no other dependencies needed on your system:
 
 ```
-wget -qO- https://raw.githubusercontent.com/datproject/dat/master/bin/download.sh | bash
+wget -qO- https://raw.githubusercontent.com/datproject/dat/master/download.sh | bash
 ```
 
 #### NPM Prerequisites
