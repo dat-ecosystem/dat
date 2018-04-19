@@ -84,7 +84,7 @@ var config = {
   aliases: {
     'init': 'create'
   },
-  extensions: [] // whitelist extensions for now
+  extensions: ['pinning-service-client'] // whitelist extensions for now
 }
 
 if (debug.enabled) {
