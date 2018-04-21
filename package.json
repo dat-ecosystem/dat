@@ -66,7 +66,7 @@
     "hyperdiscovery": "^7.0.0",
     "mkdirp": "^0.5.1",
     "pkg": "^4.2.6",
-    "random-access-memory": "^2.4.0",
+    "random-access-memory": "^3.0.0",
     "recursive-readdir-sync": "^1.0.6",
     "request": "^2.81.0",
     "standard": "^11.0.1",
