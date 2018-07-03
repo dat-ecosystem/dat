@@ -12,8 +12,8 @@ function onExit (state, bus) {
     process.exit()
   })
 
-  function onError (err) {
-    // if (clear) bus.clear() TODO?
+  function onError (err, clear) {
+    if (clear) bus.clear()
     console.error(err)
     process.exit(1)
   }
