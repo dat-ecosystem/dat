@@ -34,7 +34,7 @@ function create (opts) {
   }
 
   var welcome = `Welcome to ${chalk.green(`dat`)} program!`
-  var intro = output`
+  var intro = output(`
     You can turn any folder on your computer into a Dat.
     A Dat is a folder with some magic.
 
@@ -46,7 +46,7 @@ function create (opts) {
 
     ${chalk.dim('Ctrl+C to exit at any time')}
 
-  `
+  `)
   var outro
 
   // Force certain options
@@ -57,7 +57,7 @@ function create (opts) {
     if (err && err.name === 'ExistsError') return exitErr('\nArchive already exists.\nYou can use `dat sync` to update.')
     if (err) return exitErr(err)
 
-    outro = output`
+    outro = output(`
 
       Created empty Dat in ${dat.path}/.dat
 
@@ -66,7 +66,7 @@ function create (opts) {
       * Copy the unique dat link and securely share it.
 
       ${chalk.blue(`dat://${dat.key.toString('hex')}`)}
-    `
+    `)
 
     if (opts.yes) return done()
 
