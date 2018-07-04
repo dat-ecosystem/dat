@@ -27,9 +27,9 @@ function peersUI (state) {
       }
     })
     var theBar = progress ? bar(progress) : '' // progress bar todo
-    return output`
+    return output(`
       [${i}] ${peer.closed ? 'CLOSED' : peer.type}: ${peer.host}:${peer.port} ${pretty(peer.speed)}/s
       ${peer.error ? peer.error : theBar}
-    `
+    `)
   }
 }

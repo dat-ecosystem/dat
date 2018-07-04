@@ -30,10 +30,10 @@ function networkUI (state) {
     return '' // no metadata yet
   }
 
-  return output`
+  return output(`
     ${title}
     ${downBar(stats.downloaded)}
-  `
+  `)
 
   function makeBar () {
     var total = stats.length

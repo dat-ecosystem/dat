@@ -11,9 +11,9 @@ function statusUI (state) {
   var dat = state.dat
   var stats = dat.stats.get()
 
-  return output`
+  return output(`
     ${chalk.blue('dat://' + stringKey(dat.key))}
     ${stats.files} files (${pretty(stats.byteLength)})
     Version: ${chalk.bold(stats.version)}
-  `
+  `)
 }
