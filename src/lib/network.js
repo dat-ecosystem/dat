@@ -26,16 +26,15 @@ function trackNetwork (state, bus) {
       bus.emit('network:callback')
     })
 
-    network.on('errorport', function (err) {
+    network.on('error', function (err) {
       if (err.code === 'EADDRINUSE') {
         if (opts.port) {
-          console.error('Error: specified port ' + opts.port + ' is in use')
-          process.exit(1)
+          bus.emit('exit:warn', `Specified port (${opts.port}) in use. Please use another port.`)
         } else {
-          console.error(err.message + ' trying random port')
+          debug(err.message + ' trying random port')
         }
       } else {
-        console.error(err)
+        return bus.emit('exit:error', err)
       }
     })
     state.network = xtend(network, state.network)
