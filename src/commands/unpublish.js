@@ -31,12 +31,12 @@ function unpublish (opts) {
   var client = Registry(opts)
   var whoami = client.whoami()
   if (!whoami || !whoami.token) {
-    var loginErr = output`
+    var loginErr = output(`
       Welcome to ${chalk.green(`dat`)} program!
 
       ${chalk.bold('You must login before unpublishing.')}
       ${chalk.green('dat login')}
-    `
+    `)
     return exitErr(loginErr)
   }
 

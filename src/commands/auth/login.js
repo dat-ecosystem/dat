@@ -23,11 +23,11 @@ function login (opts) {
   var Registry = require('../../registry')
 
   if (opts._[0]) opts.server = opts._[0]
-  var welcome = output`
+  var welcome = output(`
     Welcome to ${chalk.green(`dat`)} program!
     Login to publish your dats.
 
-  `
+  `)
   console.log(welcome)
 
   var schema = {
@@ -70,13 +70,13 @@ function login (opts) {
       if (err && err.message) return exitErr(err.message)
       else if (err) return exitErr(err.toString())
 
-      console.log(output`
+      console.log(output(`
         Logged you in to ${chalk.green(opts.server)}!
 
         Now you can publish dats and share:
         * Run ${chalk.green(`dat publish`)} to publish a dat!
         * View & Share your dats at ${opts.server}
-      `)
+      `))
       process.exit(0)
     })
   }

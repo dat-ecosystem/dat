@@ -28,7 +28,7 @@ function whoami (opts) {
     if (!opts.server) return exitErr('No login information found.')
     return exitErr('No login information found for that server.')
   }
-  console.log(output`
+  console.log(output(`
     Your active Dat registry information:
 
     ---
@@ -39,7 +39,7 @@ function whoami (opts) {
 
     Change your registry by logging in again:
     ${chalk.dim.green('dat login <registry-url>')}
-  `)
+  `))
   process.exit(0)
 }
 

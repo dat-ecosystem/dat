@@ -34,7 +34,7 @@ function publish (opts) {
   var client = Registry(opts)
   var whoami = client.whoami()
   if (!whoami || !whoami.token) {
-    var loginErr = output`
+    var loginErr = output(`
       Welcome to ${chalk.green(`dat`)} program!
       Publish your dats to ${chalk.green(opts.server)}.
 
@@ -45,7 +45,7 @@ function publish (opts) {
       ${chalk.green('dat register')}
 
       Explore public dats at ${chalk.blue('datbase.org/explore')}
-    `
+    `)
     return exitErr(loginErr)
   }
 
@@ -69,10 +69,10 @@ function publish (opts) {
         title: opts.title,
         description: opts.description
       }, data)
-      var welcome = output`
+      var welcome = output(`
         Publishing dat to ${chalk.green(opts.server)}!
 
-      `
+      `)
       console.log(welcome)
 
       if (datInfo.name) return makeRequest(datInfo)
@@ -101,9 +101,9 @@ function publish (opts) {
         if (err) {
           if (err.message) {
             if (err.message === 'timed out') {
-              return exitErr(output`${chalk.red('\nERROR: ' + opts.server + ' could not connect to your computer.')}
+              return exitErr(output(`${chalk.red('\nERROR: ' + opts.server + ' could not connect to your computer.')}
               Troubleshoot here: ${chalk.green('https://docs.datproject.org/troubleshooting#networking-issues')}
-              `)
+              `))
             }
             var str = err.message.trim()
             if (str === 'jwt expired') return exitErr(`Session expired, please ${chalk.green('dat login')} again`)
@@ -118,26 +118,26 @@ function publish (opts) {
         datjson.write(datInfo, function (err) {
           if (err) return exitErr(err)
           // TODO: write published url to dat.json (need spec)
-          var msg = output`
+          var msg = output(`
 
             We ${body.updated === 1 ? 'updated' : 'published'} your dat!
             ${chalk.blue.underline(`${opts.server}/${whoami.username}/${datInfo.name}`)}
-          `// TODO: get url back? it'd be better to confirm link than guess username/datname structure
+          `)// TODO: get url back? it'd be better to confirm link than guess username/datname structure
 
           console.log(msg)
           if (body.updated === 1) {
-            console.log(output`
+            console.log(output(`
 
               ${chalk.dim.green('Cool fact #21')}
               ${opts.server} will live update when you are sharing your dat!
               You only need to publish again if your dat link changes.
-            `)
+            `))
           } else {
-            console.log(output`
+            console.log(output(`
 
               Remember to use ${chalk.green('dat share')} before sharing.
               This will make sure your dat is available.
-            `)
+            `))
           }
           process.exit(0)
         })

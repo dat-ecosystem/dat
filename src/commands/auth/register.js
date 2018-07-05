@@ -23,11 +23,11 @@ function register (opts) {
 
   // TODO: check if logged in?
   if (opts._[0]) opts.server = opts._[0]
-  var welcome = output`
+  var welcome = output(`
     Welcome to ${chalk.green(`dat`)} program!
     Create a new account with a Dat registry.
 
-  `
+  `)
   console.log(welcome)
 
   var schema = {
@@ -76,11 +76,11 @@ function register (opts) {
     }, function (err) {
       if (err && err.message) return exitErr(err.message)
       else if (err) return exitErr(err.toString())
-      console.log(output`
+      console.log(output(`
         Created account on ${chalk.green(opts.server)}!
 
         Login to start publishing: ${chalk.green(`dat login`)}
-      `)
+      `))
       process.exit(0)
     })
   }
