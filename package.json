@@ -43,7 +43,7 @@
     "dat-encoding": "^5.0.1",
     "dat-json": "^1.0.0",
     "dat-link-resolve": "^2.2.0",
-    "dat-log": "^1.1.0",
+    "dat-log": "^1.2.0",
     "dat-node": "^3.5.5",
     "dat-registry": "^4.0.0",
     "debug": "^3.0.0",
