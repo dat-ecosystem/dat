@@ -2,7 +2,7 @@ var bytes = require('bytes').parse
 var speed = require('speedometer')
 var throttle = require('throttle')
 var pump = require('pump')
-var debug= require('debug')('dat')
+var debug = require('debug')('dat')
 var xtend = Object.assign
 
 module.exports = trackNetwork
