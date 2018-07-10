@@ -35,7 +35,8 @@ function trackNetwork (state, bus) {
           debug(err.message + ' trying random port')
         }
       } else {
-        return bus.emit('exit:error', err)
+        debug('network error:', err.message)
+        // TODO return bus.emit('exit:error', err)
       }
     })
     state.network = xtend(network, state.network)
