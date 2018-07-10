@@ -82,9 +82,9 @@
       "./node_modules/siphash24/siphash24.wasm"
     ],
     "targets": [
-      "node8-linux-x64",
-      "node8-macos-x64",
-      "node8-win-x64"
+      "node10-linux-x64",
+      "node10-macos-x64",
+      "node10-win-x64"
     ]
   }
 }
