@@ -2,7 +2,7 @@
 # couldnt figure out undocumented 'output template' mode for pkg so wrote this
 # also need to include .node files until pkg supports including them in binary
 
-NODE_ABI="node-57"
+NODE_ABI="node-64"
 VERSION=$(node -pe "require('./package.json').version")
 
 rm -rf dist

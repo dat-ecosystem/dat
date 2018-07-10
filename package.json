@@ -4,6 +4,7 @@
   "description": "Dat is the package manager for data. Easily share and version control data.",
   "keywords": [
     "dat",
+    "dat protocol",
     "hyperdrive",
     "decentralized",
     "file sharing"
@@ -26,7 +27,7 @@
     "type": "git",
     "url": "git://github.com/datproject/dat.git"
   },
-  "author": "max ogden",
+  "author": "Dat Project",
   "license": "BSD-3-Clause",
   "bugs": {
     "url": "https://github.com/datproject/dat/issues"
