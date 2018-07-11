@@ -11,7 +11,7 @@ module.exports = {
   command: function (opts) {
     var doctor = require('dat-doctor')
 
-    opts.id = opts._[0]
+    opts.peerId = opts._[0]
     doctor(opts)
   }
 }
