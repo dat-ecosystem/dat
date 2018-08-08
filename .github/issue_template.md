@@ -9,10 +9,14 @@ Thanks for opening an issue! Please help us address your bug:
 
 I am reporting:
 
-- [ ] a bug or unexpected behavior
-- [ ] general feedback
-- [ ] feature request
-- [ ] security issue <!-- see security issue note below -->
+<!--- please select one and place above 
+- a bug or unexpected behavior
+- general feedback
+- feature request
+
+DO NOT REPORT SECURITY ISSUES HERE
+see security issue note below 
+-->
 
 <!--
 **Security Issue:** 
@@ -39,3 +43,6 @@ Please give us details about your installation to assist you. Run `dat -v` to se
 ### Debug Logs
 
 <!-- If it is easy to reproduce your bug, please run with the debug output so we can see what is going on. Type `DEBUG=dat* <your-command>` to print debug logs. -->
+
+```
+```
