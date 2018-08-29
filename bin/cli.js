@@ -14,7 +14,7 @@ var invalidNode = nodeMajorVer < NODE_VERSION_SUPPORTED
 if (invalidNode) exitInvalidNode()
 else {
   var notifier = require('update-notifier')
-  notifier({pkg: pkg})
+  notifier({ pkg: pkg })
     .notify({
       defer: true,
       isGlobal: true,
@@ -23,7 +23,7 @@ else {
         borderColor: 'green',
         borderStyle: 'classic',
         padding: 1,
-        margin: {top: 1, bottom: 1}
+        margin: { top: 1, bottom: 1 }
       }
     })
 }

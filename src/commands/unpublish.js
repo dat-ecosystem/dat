@@ -46,7 +46,7 @@ function unpublish (opts) {
     // TODO better error msg for non-existing archive
     if (!dat.writable) return exitErr('Sorry, you can only publish a dat that you created.')
 
-    var datjson = DatJson(dat.archive, {file: path.join(dat.path, 'dat.json')})
+    var datjson = DatJson(dat.archive, { file: path.join(dat.path, 'dat.json') })
     datjson.read(function (err, data) {
       if (err) return exitErr(err)
       if (!data.name) return exitErr('Try `dat unpublish <name>` with this dat, we are having trouble reading it.')
@@ -73,7 +73,7 @@ function unpublish (opts) {
   }
 
   function makeRequest (name) {
-    client.dats.delete({name: name}, function (err, resp, body) {
+    client.dats.delete({ name: name }, function (err, resp, body) {
       if (err && err.message) exitErr(err.message)
       else if (err) exitErr(err.toString())
       if (body.statusCode === 400) return exitErr(new Error(body.message))

@@ -13,7 +13,7 @@ test('keys - print keys', function (t) {
   help.shareFixtures(function (_, shareDat) {
     shareDat.close(function () {
       var cmd = dat + ' keys '
-      var st = spawn(t, cmd, {cwd: fixtures})
+      var st = spawn(t, cmd, { cwd: fixtures })
 
       st.stdout.match(function (output) {
         if (output.indexOf('dat://') === -1) return false
@@ -31,7 +31,7 @@ test('keys - print discovery key', function (t) {
   help.shareFixtures(function (_, shareDat) {
     shareDat.close(function () {
       var cmd = dat + ' keys --discovery'
-      var st = spawn(t, cmd, {cwd: fixtures})
+      var st = spawn(t, cmd, { cwd: fixtures })
 
       st.stdout.match(function (output) {
         if (output.indexOf('Discovery') === -1) return false
@@ -52,7 +52,7 @@ if (!process.env.TRAVIS) {
       var key = shareDat.key.toString('hex')
       tempDir(function (_, dir, cleanup) {
         var cmd = dat + ' clone ' + key
-        var st = spawn(t, cmd, {cwd: dir, end: false})
+        var st = spawn(t, cmd, { cwd: dir, end: false })
         var datDir = path.join(dir, key)
 
         st.stdout.match(function (output) {
@@ -68,7 +68,7 @@ if (!process.env.TRAVIS) {
           var secretKey = null
 
           var exportKey = dat + ' keys export'
-          var st = spawn(t, exportKey, {cwd: fixtures, end: false})
+          var st = spawn(t, exportKey, { cwd: fixtures, end: false })
           st.stdout.match(function (output) {
             if (!output) return false
             secretKey = output.trim()
@@ -80,7 +80,7 @@ if (!process.env.TRAVIS) {
 
           function importKey () {
             var exportKey = dat + ' keys import'
-            var st = spawn(t, exportKey, {cwd: datDir})
+            var st = spawn(t, exportKey, { cwd: datDir })
             st.stdout.match(function (output) {
               if (!output.indexOf('secret key') === -1) return false
               st.stdin.write(secretKey + '\r')

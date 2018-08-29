@@ -24,7 +24,7 @@ authServer(port, function (err, server, closeServer) {
   if (!server) return
   test('auth - whoami works when not logged in', function (t) {
     var cmd = dat + ' whoami '
-    var st = spawn(t, cmd, {cwd: baseTestDir})
+    var st = spawn(t, cmd, { cwd: baseTestDir })
     st.stderr.match(function (output) {
       t.same(output.trim(), 'Not logged in.', 'printed correct output')
       return true
@@ -35,7 +35,7 @@ authServer(port, function (err, server, closeServer) {
 
   test('auth - register works', function (t) {
     var cmd = dat + ' register --email=hello@bob.com --password=joe --username=joe'
-    var st = spawn(t, cmd, {cwd: baseTestDir})
+    var st = spawn(t, cmd, { cwd: baseTestDir })
     st.stdout.match(function (output) {
       t.same(output.trim(), 'Registered successfully.', 'output success message')
       return true
@@ -46,7 +46,7 @@ authServer(port, function (err, server, closeServer) {
 
   test('auth - login works', function (t) {
     var cmd = dat + ' login --email=hello@bob.com --password=joe'
-    var st = spawn(t, cmd, {cwd: baseTestDir})
+    var st = spawn(t, cmd, { cwd: baseTestDir })
     st.stdout.match(function (output) {
       t.same(output.trim(), 'Logged in successfully.', 'output success message')
       return true
@@ -57,7 +57,7 @@ authServer(port, function (err, server, closeServer) {
 
   test('auth - whoami works', function (t) {
     var cmd = dat + ' whoami'
-    var st = spawn(t, cmd, {cwd: baseTestDir})
+    var st = spawn(t, cmd, { cwd: baseTestDir })
     st.stdout.match(function (output) {
       t.same('hello@bob.com', output.trim(), 'email printed')
       return true
@@ -69,7 +69,7 @@ authServer(port, function (err, server, closeServer) {
   test('auth - publish before create fails', function (t) {
     var cmd = dat + ' publish'
     rimraf.sync(path.join(fixtures, '.dat'))
-    var st = spawn(t, cmd, {cwd: fixtures})
+    var st = spawn(t, cmd, { cwd: fixtures })
     st.stdout.empty()
     st.stderr.match(function (output) {
       t.ok(output.indexOf('existing') > -1, 'Create archive before pub')
@@ -82,7 +82,7 @@ authServer(port, function (err, server, closeServer) {
     rimraf.sync(path.join(fixtures, '.dat'))
     rimraf.sync(path.join(fixtures, 'dat.json'))
     var cmd = dat + ' create --no-import'
-    var st = spawn(t, cmd, {cwd: fixtures})
+    var st = spawn(t, cmd, { cwd: fixtures })
     st.stdout.match(function (output) {
       var link = help.matchLink(output)
       if (!link) return false
@@ -95,7 +95,7 @@ authServer(port, function (err, server, closeServer) {
 
   test('auth - publish our awesome dat', function (t) {
     var cmd = dat + ' publish --name awesome'
-    var st = spawn(t, cmd, {cwd: fixtures})
+    var st = spawn(t, cmd, { cwd: fixtures })
     st.stdout.match(function (output) {
       var published = output.indexOf('Successfully published') > -1
       if (!published) return false
@@ -115,7 +115,7 @@ authServer(port, function (err, server, closeServer) {
       fs.writeFile(path.join(fixtures, 'dat.json'), JSON.stringify(info), function (err) {
         t.ifError(err, 'error after write')
         var cmd = dat + ' publish --name awesome'
-        var st = spawn(t, cmd, {cwd: fixtures})
+        var st = spawn(t, cmd, { cwd: fixtures })
         st.stdout.match(function (output) {
           var published = output.indexOf('Successfully published') > -1
           if (!published) return false
@@ -137,7 +137,7 @@ authServer(port, function (err, server, closeServer) {
     mkdirp.sync(baseDir)
     var downloadDir = path.join(baseDir, shortName.split('/').pop())
     var cmd = dat + ' clone ' + shortName
-    var st = spawn(t, cmd, {cwd: baseDir})
+    var st = spawn(t, cmd, { cwd: baseDir })
     st.stdout.match(function (output) {
       var lookingFor = output.indexOf('Looking for') > -1
       if (!lookingFor) return false
@@ -156,7 +156,7 @@ authServer(port, function (err, server, closeServer) {
     rimraf(path.join(fixtures, 'dat.json'), function (err) {
       t.ifError(err)
       var cmd = dat + ' publish --name another-awesome'
-      var st = spawn(t, cmd, {cwd: fixtures})
+      var st = spawn(t, cmd, { cwd: fixtures })
       st.stdout.match(function (output) {
         var published = output.indexOf('Successfully published') > -1
         if (!published) return false
@@ -177,7 +177,7 @@ authServer(port, function (err, server, closeServer) {
     mkdirp.sync(baseDir)
     var downloadDir = path.join(baseDir, shortName.split('/').pop())
     var cmd = dat + ' clone ' + shortName
-    var st = spawn(t, cmd, {cwd: baseDir})
+    var st = spawn(t, cmd, { cwd: baseDir })
     st.stderr.match(function (output) {
       t.same(output.trim(), 'Dat with that name not found.', 'not found')
       st.kill()
@@ -191,7 +191,7 @@ authServer(port, function (err, server, closeServer) {
 
   test('auth - logout works', function (t) {
     var cmd = dat + ' logout'
-    var st = spawn(t, cmd, {cwd: baseTestDir})
+    var st = spawn(t, cmd, { cwd: baseTestDir })
     st.stdout.match(function (output) {
       t.same('Logged out.', output.trim(), 'output correct')
       return true
@@ -202,7 +202,7 @@ authServer(port, function (err, server, closeServer) {
 
   test('auth - logout prints correctly when trying to log out twice', function (t) {
     var cmd = dat + ' logout'
-    var st = spawn(t, cmd, {cwd: baseTestDir})
+    var st = spawn(t, cmd, { cwd: baseTestDir })
     st.stderr.match(function (output) {
       t.same('Not logged in.', output.trim(), 'output correct')
       return true
@@ -213,7 +213,7 @@ authServer(port, function (err, server, closeServer) {
 
   test('auth - whoami works after logging out', function (t) {
     var cmd = dat + ' whoami'
-    var st = spawn(t, cmd, {cwd: baseTestDir})
+    var st = spawn(t, cmd, { cwd: baseTestDir })
     st.stderr.match(function (output) {
       t.same('Not logged in.', output.trim())
       return true

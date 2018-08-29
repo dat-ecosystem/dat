@@ -18,7 +18,7 @@ try { fs.unlinkSync(path.join(fixtures, 'dat.json')) } catch (e) { /* ignore err
 test('create - default opts no import', function (t) {
   tempDir(function (_, dir, cleanup) {
     var cmd = dat + ' create --title data --description thing'
-    var st = spawn(t, cmd, {cwd: dir})
+    var st = spawn(t, cmd, { cwd: dir })
 
     st.stdout.match(function (output) {
       var datCreated = output.indexOf('Created empty Dat') > -1
@@ -41,7 +41,7 @@ test('create - errors on existing archive', function (t) {
       t.error(err, 'no error')
       dat.close(function () {
         var cmd = dat + ' create --title data --description thing'
-        var st = spawn(t, cmd, {cwd: dir})
+        var st = spawn(t, cmd, { cwd: dir })
         st.stderr.match(function (output) {
           t.ok(output, 'errors')
           st.kill()
@@ -56,7 +56,7 @@ test('create - errors on existing archive', function (t) {
 test('create - sync after create ok', function (t) {
   tempDir(function (_, dir, cleanup) {
     var cmd = dat + ' create --title data --description thing'
-    var st = spawn(t, cmd, {cwd: dir, end: false})
+    var st = spawn(t, cmd, { cwd: dir, end: false })
     st.stdout.match(function (output) {
       var connected = output.indexOf('Created empty Dat') > -1
       if (!connected) return false
@@ -66,7 +66,7 @@ test('create - sync after create ok', function (t) {
 
     function doSync () {
       var cmd = dat + ' sync '
-      var st = spawn(t, cmd, {cwd: dir})
+      var st = spawn(t, cmd, { cwd: dir })
 
       st.stdout.match(function (output) {
         var connected = output.indexOf('Sharing') > -1
@@ -83,7 +83,7 @@ test('create - sync after create ok', function (t) {
 test('create - init alias', function (t) {
   tempDir(function (_, dir, cleanup) {
     var cmd = dat + ' init --title data --description thing'
-    var st = spawn(t, cmd, {cwd: dir})
+    var st = spawn(t, cmd, { cwd: dir })
 
     st.stdout.match(function (output) {
       var datCreated = output.indexOf('Created empty Dat') > -1
