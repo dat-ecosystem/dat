@@ -59,7 +59,7 @@ function importUI (state) {
     if (total < 5e8 || !file.progress) size = `(${pretty(total)})`
     else size = `(${pretty(file.progress)} / ${pretty(total)})`
     return output(`
-      ADD: ${cliTruncate(name, process.stdout.columns - 7 - size.length, {position: 'start'})} ${size}
+      ADD: ${cliTruncate(name, process.stdout.columns - 7 - size.length, { position: 'start' })} ${size}
     `)
   }
 }

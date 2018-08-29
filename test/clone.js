@@ -12,7 +12,7 @@ test('clone - default opts', function (t) {
     var key = shareDat.key.toString('hex')
     tempDir(function (_, dir, cleanup) {
       var cmd = dat + ' clone ' + key
-      var st = spawn(t, cmd, {cwd: dir})
+      var st = spawn(t, cmd, { cwd: dir })
       var datDir = path.join(dir, key)
 
       st.stdout.match(function (output) {
@@ -80,7 +80,7 @@ test('clone - specify dir', function (t) {
       var key = shareDat.key.toString('hex')
       var customDir = 'my_dir'
       var cmd = dat + ' clone ' + key + ' ' + customDir
-      var st = spawn(t, cmd, {cwd: dir})
+      var st = spawn(t, cmd, { cwd: dir })
       st.stdout.match(function (output) {
         var downloadFinished = output.indexOf('Exiting') > -1
         if (!downloadFinished) return false
@@ -105,7 +105,7 @@ test('clone - dat:// link', function (t) {
       var key = 'dat://' + shareDat.key.toString('hex') + '/'
       var cmd = dat + ' clone ' + key + ' '
       var downloadDir = path.join(dir, shareDat.key.toString('hex'))
-      var st = spawn(t, cmd, {cwd: dir})
+      var st = spawn(t, cmd, { cwd: dir })
       st.stdout.match(function (output) {
         var downloadFinished = output.indexOf('Exiting') > -1
         if (!downloadFinished) return false
@@ -130,7 +130,7 @@ test('clone - datproject.org/key link', function (t) {
       var key = 'datproject.org/' + shareDat.key.toString('hex') + '/'
       var cmd = dat + ' clone ' + key + ' '
       var downloadDir = path.join(dir, shareDat.key.toString('hex'))
-      var st = spawn(t, cmd, {cwd: dir})
+      var st = spawn(t, cmd, { cwd: dir })
       st.stdout.match(function (output) {
         var downloadFinished = output.indexOf('Exiting') > -1
         if (!downloadFinished) return false
@@ -197,7 +197,7 @@ test('clone - invalid link', function (t) {
   var key = 'best-key-ever'
   var cmd = dat + ' clone ' + key
   tempDir(function (_, dir, cleanup) {
-    var st = spawn(t, cmd, {cwd: dir})
+    var st = spawn(t, cmd, { cwd: dir })
     var datDir = path.join(dir, key)
     st.stderr.match(function (output) {
       var error = output.indexOf('Could not resolve link') > -1
@@ -276,7 +276,7 @@ test('clone - shortcut/stateless clone', function (t) {
 test('clone - specify directory containing dat.json', function (t) {
   help.shareFixtures(function (_, shareDat) {
     tempDir(function (_, dir, cleanup) {
-      fs.writeFileSync(path.join(dir, 'dat.json'), JSON.stringify({url: shareDat.key.toString('hex')}), 'utf8')
+      fs.writeFileSync(path.join(dir, 'dat.json'), JSON.stringify({ url: shareDat.key.toString('hex') }), 'utf8')
 
       // dat clone /dir
       var cmd = dat + ' clone ' + dir
@@ -315,11 +315,11 @@ test('clone - specify directory containing dat.json', function (t) {
 test('clone - specify directory containing dat.json with cwd', function (t) {
   help.shareFixtures(function (_, shareDat) {
     tempDir(function (_, dir, cleanup) {
-      fs.writeFileSync(path.join(dir, 'dat.json'), JSON.stringify({url: shareDat.key.toString('hex')}), 'utf8')
+      fs.writeFileSync(path.join(dir, 'dat.json'), JSON.stringify({ url: shareDat.key.toString('hex') }), 'utf8')
 
       // cd dir && dat clone /dir/dat.json
       var cmd = dat + ' clone ' + dir
-      var st = spawn(t, cmd, {cwd: dir})
+      var st = spawn(t, cmd, { cwd: dir })
       var datDir = dir
 
       st.stdout.match(function (output) {
@@ -355,7 +355,7 @@ test('clone - specify dat.json path', function (t) {
   help.shareFixtures(function (_, shareDat) {
     tempDir(function (_, dir, cleanup) {
       var datJsonPath = path.join(dir, 'dat.json')
-      fs.writeFileSync(datJsonPath, JSON.stringify({url: shareDat.key.toString('hex')}), 'utf8')
+      fs.writeFileSync(datJsonPath, JSON.stringify({ url: shareDat.key.toString('hex') }), 'utf8')
 
       // dat clone /dir/dat.json
       var cmd = dat + ' clone ' + datJsonPath
@@ -395,11 +395,11 @@ test('clone - specify dat.json path with cwd', function (t) {
   help.shareFixtures(function (_, shareDat) {
     tempDir(function (_, dir, cleanup) {
       var datJsonPath = path.join(dir, 'dat.json')
-      fs.writeFileSync(datJsonPath, JSON.stringify({url: shareDat.key.toString('hex')}), 'utf8')
+      fs.writeFileSync(datJsonPath, JSON.stringify({ url: shareDat.key.toString('hex') }), 'utf8')
 
       // cd /dir && dat clone /dir/dat.json
       var cmd = dat + ' clone ' + datJsonPath
-      var st = spawn(t, cmd, {cwd: dir})
+      var st = spawn(t, cmd, { cwd: dir })
       var datDir = dir
 
       st.stdout.match(function (output) {
@@ -438,7 +438,7 @@ test('clone - specify dat.json + directory', function (t) {
       var datJsonPath = path.join(dir, 'dat.json') // make dat.json in different dir
 
       fs.mkdirSync(datDir)
-      fs.writeFileSync(datJsonPath, JSON.stringify({url: shareDat.key.toString('hex')}), 'utf8')
+      fs.writeFileSync(datJsonPath, JSON.stringify({ url: shareDat.key.toString('hex') }), 'utf8')
 
       // dat clone /dir/dat.json /dir/clone-dest
       var cmd = dat + ' clone ' + datJsonPath + ' ' + datDir

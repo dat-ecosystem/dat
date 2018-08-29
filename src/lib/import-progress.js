@@ -34,11 +34,11 @@ function trackImport (state, bus) {
     })
 
     progress.on('del', function (src, dst) {
-      if (src.live) state.importer.liveImports.push({src: src, dst: dst, type: 'del'})
+      if (src.live) state.importer.liveImports.push({ src: src, dst: dst, type: 'del' })
     })
 
     progress.on('put', function (src, dst) {
-      if (src.live) state.importer.liveImports.push({src: src, dst: dst, type: 'put'})
+      if (src.live) state.importer.liveImports.push({ src: src, dst: dst, type: 'put' })
       if (src.stat.isDirectory()) return
       state.importer.fileImport = {
         src: src,

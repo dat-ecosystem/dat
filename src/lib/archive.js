@@ -63,7 +63,7 @@ function selectiveSync (state, bus) {
     bus.emit('render')
     if (start === 0 && end === 0) return
     debug('downloading', entry, start, end)
-    archive.content.download({start, end}, function () {
+    archive.content.download({ start, end }, function () {
       debug('success', entry)
     })
   }

@@ -60,7 +60,7 @@ function clone (opts) {
     }
   }
 
-  debug(Object.assign({}, opts, {key: '<private>', _: null})) // don't show key
+  debug(Object.assign({}, opts, { key: '<private>', _: null })) // don't show key
 
   var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
   neat.use(trackArchive)

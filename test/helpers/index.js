@@ -30,7 +30,7 @@ function shareFixtures (opts, cb) {
     dat.trackStats()
     dat.joinNetwork()
     if (opts.import === false) return cb(null, dat)
-    dat.importFiles({watch: false}, function (err) {
+    dat.importFiles({ watch: false }, function (err) {
       if (err) throw err
       cb(null, dat)
     })

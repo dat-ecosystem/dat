@@ -56,7 +56,7 @@ function publish (opts) {
 
     dat.joinNetwork() // join network to upload metadata
 
-    var datjson = DatJson(dat.archive, {file: path.join(dat.path, 'dat.json')})
+    var datjson = DatJson(dat.archive, { file: path.join(dat.path, 'dat.json') })
     datjson.read(publish)
 
     function publish (_, data) {
