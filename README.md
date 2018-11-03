@@ -241,7 +241,7 @@ Sync watches files for changes and imports updated files.
 
 By default, Dat will ignore any files in a `.datignore` file, similar to git. Each file should be separated by a newline. Dat also ignores all hidden folders and files.
 
-Dat uses [dat-ignore] to decide if a file should be ignored.
+Dat uses [dat-ignore] to decide if a file should be ignored. Supports pattern wildcards (`/*.png`) and directory-wildcards (`/**/cache`).
 
 #### Selecting Files
 
