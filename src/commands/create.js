@@ -13,6 +13,14 @@ module.exports = {
       default: false,
       abbr: 'y',
       help: 'Skip dat.json creation.'
+    },
+    {
+      name: 'title',
+      help: 'the title property for dat.json'
+    },
+    {
+      name: 'description',
+      help: 'the description property for dat.json'
     }
   ]
 }

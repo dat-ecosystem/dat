@@ -198,6 +198,27 @@ Once a dat is created, you can run all the commands inside that folder, similar 
 
 Dat keeps secret keys in the `~/.dat/secret_keys` folder. These are required to write to any dats you create.
 
+#### Creating a dat & dat.json
+
+```
+dat create [<dir>]
+```
+
+The create command prompts you to make a `dat.json` file and creates a new dat. Import the files with sync or share.
+
+Optionally bypass Title and Description prompt:
+
+```sh
+dat create --title "MY BITS" --description "are ready to synchronize! 😎"
+```
+
+Optionally bypass `dat.json` creation:
+
+```sh
+dat create --yes
+dat create -y
+```
+
 ### Sharing
 
 The quickest way to get started sharing files is to `share`:
@@ -213,16 +234,6 @@ Importing 528 files to Archive (165 MB/s)
 [=-----------------------------------------] 3%
 ADD: data/expn_cd.csv (403 MB / 920 MB)
 ```
-
-
-#### Creating a dat & dat.json
-
-```
-dat create [<dir>]
-```
-
-The create command prompts you to make a `dat.json` file and creates a new dat. Import the files with sync or share.
-
 
 #### Syncing to Network
 
