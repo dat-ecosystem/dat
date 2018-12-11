@@ -47,7 +47,7 @@
     "dat-log": "^1.2.0",
     "dat-node": "^3.5.11",
     "dat-registry": "^4.0.0",
-    "debug": "^3.0.0",
+    "debug": "^4.0.0",
     "neat-log": "^3.1.0",
     "prettier-bytes": "^1.0.3",
     "progress-string": "^1.2.1",
