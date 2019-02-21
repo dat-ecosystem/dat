@@ -1,4 +1,4 @@
-var xtend = require('xtend')
+var xtend = Object.assign
 var RegistryClient = require('dat-registry')
 
 module.exports = function (opts) {
