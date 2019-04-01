@@ -25,7 +25,7 @@ dat pin uninstall-service  Uninstalls your local pinning service.
     alias: 'u',
     boolean: false,
     help: 'Username for logging in'
-  },{
+  }, {
     name: 'password',
     alias: 'p',
     boolean: false,
@@ -36,13 +36,13 @@ dat pin uninstall-service  Uninstalls your local pinning service.
 
     const args = opts._.slice()
 
-    if(!args.length) args.push('--help')
+    if (!args.length) args.push('--help')
 
-    if(opts.username) {
+    if (opts.username) {
       args.push('--username')
       args.push(opts.username)
     }
-    if(opts.password) {
+    if (opts.password) {
       args.push('--password')
       args.push(opts.password)
     }
