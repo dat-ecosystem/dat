@@ -20,9 +20,32 @@ dat pin install-service    Installs a local pinning service on your computer.
                            is active.
 dat pin uninstall-service  Uninstalls your local pinning service.
   `,
-  options: [],
+  options: [{
+    name: 'username',
+    alias: 'u',
+    boolean: false,
+    help: 'Username for logging in'
+  },{
+    name: 'password',
+    alias: 'p',
+    boolean: false,
+    help: 'Username for logging in'
+  }],
   command: function (opts) {
     var pin = require('dat-pin')
+
+    const args = opts._.slice()
+
+    if(!args.length) args.push('--help')
+
+    if(opts.username) {
+      args.push('--username')
+      args.push(opts.username)
+    }
+    if(opts.password) {
+      args.push('--password')
+      args.push(opts.password)
+    }
 
     pin(opts._)
   }
