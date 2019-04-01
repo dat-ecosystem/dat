@@ -16,6 +16,8 @@ module.exports = {
 }
 
 function register (opts) {
+  require('deprecate')('register is deprecated. Please use a pinning service like hashbase.')
+
   var prompt = require('prompt')
   var output = require('neat-log/output')
   var chalk = require('chalk')

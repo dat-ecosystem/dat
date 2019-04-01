@@ -17,6 +17,8 @@ module.exports = {
 }
 
 function publish (opts) {
+  require('deprecate')('publish is deprecated. Please use `dat pin add` instead')
+
   var path = require('path')
   var Dat = require('dat-node')
   var encoding = require('dat-encoding')

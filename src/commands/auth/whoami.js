@@ -16,6 +16,8 @@ module.exports = {
 }
 
 function whoami (opts) {
+  require('deprecate')('whoami is deprecated. Please use `dat pin` instead')
+
   var output = require('neat-log/output')
   var chalk = require('chalk')
   var Registry = require('../../registry')

@@ -17,6 +17,8 @@ module.exports = {
 }
 
 function login (opts) {
+  require('deprecate')('login is deprecated. Please use `dat pin login` instead')
+
   var prompt = require('prompt')
   var output = require('neat-log/output')
   var chalk = require('chalk')

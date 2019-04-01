@@ -17,6 +17,8 @@ module.exports = {
 }
 
 function logout (opts) {
+  require('deprecate')('logout is deprecated. Please use `dat pin logout` instead')
+
   var chalk = require('chalk')
   var Registry = require('../../registry')
 

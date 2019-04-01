@@ -17,6 +17,8 @@ module.exports = {
 }
 
 function unpublish (opts) {
+  require('deprecate')('unpublish is deprecated. Please use `dat pin remove` instead')
+
   var prompt = require('prompt')
   var path = require('path')
   var Dat = require('dat-node')
