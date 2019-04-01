@@ -72,7 +72,8 @@ var config = {
     require('../src/commands/auth/register'),
     require('../src/commands/auth/whoami'),
     require('../src/commands/auth/logout'),
-    require('../src/commands/auth/login')
+    require('../src/commands/auth/login'),
+    require('../src/commands/pin')
   ],
   usage: {
     command: usage,
