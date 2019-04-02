@@ -75,7 +75,7 @@ var config = {
     require('../src/commands/auth/login')
   ],
   usage: {
-    command: usage,
+    command: showUsageOrRunExtension,
     option: {
       name: 'help',
       abbr: 'h'
@@ -84,7 +84,10 @@ var config = {
   aliases: {
     'init': 'create'
   },
-  extensions: [] // whitelist extensions for now
+  // whitelist extensions for now
+  extensions: [
+    'store'
+  ]
 }
 
 if (debug.enabled) {
@@ -140,6 +143,12 @@ function syncShorthand (opts) {
 
   // All else fails, show usage
   return usage(opts)
+}
+
+// This was needed so that we can show help messages from extensions
+function showUsageOrRunExtension (opts, help, usageMessage) {
+  if (config.extensions.indexOf(opts._[0]) > -1) return require('../src/extensions')(opts)
+  usage(opts, help, usageMessage)
 }
 
 function exitInvalidNode () {
