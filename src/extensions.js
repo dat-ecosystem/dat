@@ -1,4 +1,5 @@
 var debug = require('debug')('dat')
+var os = require('os')
 
 module.exports = runExtension
 
@@ -14,7 +15,11 @@ function runExtension (opts) {
 
   function trySpawn (cb) {
     var spawn = require('child_process').spawn
-    var child = spawn('dat-' + extName, process.argv.splice(3))
+    var name = 'dat-' + extName
+    if (os.platform() === 'win32') {
+      name += '.cmd'
+    }
+    var child = spawn(name, process.argv.splice(3))
     child.stdout.pipe(process.stdout)
     child.stderr.pipe(process.stderr)
     child.on('error', function (err) {
