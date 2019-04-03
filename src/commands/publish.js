@@ -24,7 +24,7 @@ function publish (opts) {
   var prompt = require('prompt')
   var chalk = require('chalk')
   var DatJson = require('dat-json')
-  var xtend = require('xtend')
+  var xtend = Object.assign
   var Registry = require('../registry')
 
   if (!opts.dir) opts.dir = process.cwd()
