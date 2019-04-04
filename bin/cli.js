@@ -115,6 +115,10 @@ function syncShorthand (opts) {
   if (!opts._.length) return usage(opts)
   debug('Sync shortcut command')
 
+  debug('Trying extension', opts._[0])
+  // First try extension
+  if (config.extensions.indexOf(opts._[0]) > -1) return require('../src/extensions')(opts)
+
   var parsed = require('../src/parse-args')(opts)
 
   // Download Key
@@ -137,9 +141,6 @@ function syncShorthand (opts) {
     opts.import = opts.import || true
     return require('../src/commands/share').command(opts)
   }
-
-  // If directory sync fails, finally try extension
-  if (config.extensions.indexOf(opts._[0]) > -1) return require('../src/extensions')(opts)
 
   // All else fails, show usage
   return usage(opts)
