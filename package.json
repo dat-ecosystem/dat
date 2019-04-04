@@ -42,7 +42,7 @@
     "cli-truncate": "^1.0.0",
     "dat-doctor": "^2.1.2",
     "dat-encoding": "^5.0.1",
-    "dat-json": "^1.0.3",
+    "dat-json": "^2.0.0",
     "dat-link-resolve": "^2.3.0",
     "dat-log": "^1.2.0",
     "dat-node": "^3.5.11",
