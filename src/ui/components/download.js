@@ -21,7 +21,7 @@ function networkUI (state) {
 
     if (!download.modified) {
       if (state.opts.exit) {
-        title = `dat already in sync`
+        title = `dat already in sync, exiting in 12 seconds`
       } else {
         title = `dat already in sync, waiting for updates.`
       }

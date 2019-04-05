@@ -32,7 +32,14 @@ function trackDownload (state, bus) {
     archive.on('sync', function () {
       debug('archive sync', state.stats.get())
       state.download.nsync = true
-      if (state.opts.exit) return exit()
+      // if we are supposed to exit, do so if we've pulled changes or have given the network 12 seconds
+      if (state.opts.exit) {
+        if (state.download.modified) {
+          return exit()
+        } else {
+          setTimeout(exit, 12000);
+        }
+      }
       if (state.dat.archive.version === 0) {
         // TODO: deal with this.
         // Sync sometimes fires early when it should wait for update.
