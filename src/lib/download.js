@@ -32,8 +32,7 @@ function trackDownload (state, bus) {
     archive.on('sync', function () {
       debug('archive sync', state.stats.get())
       state.download.nsync = true
-      var shouldExit = (state.download.modified && state.opts.exit)
-      if (shouldExit) return exit()
+      if (state.opts.exit) return exit()
       if (state.dat.archive.version === 0) {
         // TODO: deal with this.
         // Sync sometimes fires early when it should wait for update.

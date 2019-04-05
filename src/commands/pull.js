@@ -8,6 +8,12 @@ module.exports = {
   ].join('\n'),
   options: [
     {
+      name: 'exit',
+      boolean: true,
+      default: false,
+      help: 'sync and exit immediately.'
+    },
+    {
       name: 'upload',
       boolean: true,
       default: true,
@@ -58,7 +64,6 @@ function pull (opts) {
 
   // Force these options for pull command
   opts.createIfMissing = false
-  opts.exit = true
 
   var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
   neat.use(trackArchive)

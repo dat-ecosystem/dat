@@ -19,8 +19,13 @@ function networkUI (state) {
       return `dat sync complete.\nVersion ${stats.version}`
     }
 
-    if (!download.modified && state.opts.exit) {
-      title = `dat already in sync, waiting for updates.`
+    if (!download.modified) {
+      if (state.opts.exit) {
+        title = `dat already in sync`
+      }
+      else {
+        title = `dat already in sync, waiting for updates.`
+      }
     } else {
       title = `dat synced, waiting for updates.`
     }
