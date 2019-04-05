@@ -37,7 +37,7 @@ function trackDownload (state, bus) {
         if (state.download.modified) {
           return exit()
         } else {
-          setTimeout(exit, 12000);
+          setTimeout(exit, 12000)
         }
       }
       if (state.dat.archive.version === 0) {
