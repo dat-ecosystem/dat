@@ -45,7 +45,7 @@
     "dat-json": "^1.0.3",
     "dat-link-resolve": "^2.3.0",
     "dat-log": "^1.2.0",
-    "dat-node": "^3.5.11",
+    "dat-node": "^3.5.15",
     "dat-registry": "^4.0.1",
     "debug": "^4.0.0",
     "neat-log": "^3.1.0",
@@ -62,7 +62,7 @@
   "devDependencies": {
     "cross-zip-cli": "^1.0.0",
     "dependency-check": "^3.3.0",
-    "hypercore": "^6.25.0",
+    "hypercore": "^6.25.2",
     "hyperdiscovery": "^8.0.0",
     "mkdirp": "^0.5.1",
     "pkg": "^4.3.7",
