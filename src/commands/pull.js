@@ -8,6 +8,12 @@ module.exports = {
   ].join('\n'),
   options: [
     {
+      name: 'exit',
+      boolean: false,
+      help: 'exit after specified number of seconds (gives the dat network time to find updates). defaults to 12 seconds.'
+    },
+
+    {
       name: 'upload',
       boolean: true,
       default: true,
@@ -58,7 +64,11 @@ function pull (opts) {
 
   // Force these options for pull command
   opts.createIfMissing = false
-  opts.exit = true
+
+  // If --exit is specified without a number of seconds, default to 12
+  if (opts.exit === true) {
+    opts.exit = 12
+  }
 
   var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
   neat.use(trackArchive)
