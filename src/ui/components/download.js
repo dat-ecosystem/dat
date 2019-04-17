@@ -26,6 +26,10 @@ function networkUI (state) {
     }
   }
 
+  if (state.opts.exit) {
+    title = `dat synced, exiting in ${state.opts.exit} seconds.`
+  }
+
   if (!stats.downloaded || !stats.length) {
     return '' // no metadata yet
   }

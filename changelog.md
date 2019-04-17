@@ -3,7 +3,7 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](https://semver.org/).
 
 ## [Unreleased]
-*Note: unreleased changes are added here.*
+* `dat pull --exit=NN` exits after `NN` number of seconds, when there are no updates to sync.
 
 ## 13.9.0 - 2017-10-11
 
