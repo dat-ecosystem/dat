@@ -3,7 +3,7 @@ module.exports = {
   command: sync,
   help: [
     'Sync a Dat archive with the network',
-    'Watch and import file changes (if archive is writable)',
+    'Watch and import file changes',
     '',
     'Usage: dat sync'
   ].join('\n'),
@@ -12,7 +12,7 @@ module.exports = {
       name: 'import',
       boolean: true,
       default: true,
-      help: 'Import files from the directory to the database (Dat Writable).'
+      help: 'Import files from the directory to the database (when writable).'
     },
     {
       name: 'ignoreHidden',
@@ -67,6 +67,8 @@ function sync (opts) {
 
   // Force options
   opts.createIfMissing = false // sync must always be a resumed archive
+
+  // TODO: if dat-store running, add this dat to the local store and then exit = true
   opts.exit = false
 
   var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })

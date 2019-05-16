@@ -82,7 +82,8 @@ var config = {
     }
   },
   aliases: {
-    'init': 'create'
+    'init': 'create',
+    'share': 'sync'
   },
   // whitelist extensions for now
   extensions: [
