@@ -5,6 +5,12 @@ node_js:
   - '8'
   - '10'
   - 'node'
+
+os:
+  - windows
+  - osx
+  - linux
+
 sudo: false
 
 script:

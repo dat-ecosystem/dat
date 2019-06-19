@@ -16,9 +16,9 @@ Have questions? Join our chat via IRC or Gitter:
 
 ---
 
-Mac/Linux      | Windows      | Version
--------------- | ------------ | ------------
-[![Travis][travis-badge]][travis-build] | [![Build status][appveyor-badge]][appveyor-build] | [![NPM version][npm-badge]][npm-package]
+Mac/Linux/Windows | Version
+-------------- | ------------
+[![Travis][travis-badge]][travis-build] | [![NPM version][npm-badge]][npm-package]
 
 ## For Developers
 
