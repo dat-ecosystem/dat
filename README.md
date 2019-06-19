@@ -19,9 +19,6 @@ Mac/Linux      | Windows      | Version
 -------------- | ------------ | ------------
 [![Travis][travis-badge]][travis-build] | [![Build status][appveyor-badge]][appveyor-build] | [![NPM version][npm-badge]][npm-package]
 
-Have questions or need some guidance?
-You can [chat with us](http://chat.datproject.org) in IRC on [#dat][irc-channel] or [Gitter][gitter-chat]!
-
 ## For Developers
 
 Please see [guidelines on contributing] before submitting an issue or PR.
@@ -51,20 +48,7 @@ BSD-3-Clause
 
 [Dat Project]: https://datproject.org
 [Code for Science & Society]: https://codeforscience.org
-[Dat white paper]: https://github.com/datproject/docs/blob/master/papers/dat-paper.pdf
-[Dat Desktop]: https://docs.datproject.org/install#desktop-application
-[Beaker Browser]: https://beakerbrowser.com
-[registry server]: https://github.com/datproject/datbase
-[share-gif]: https://raw.githubusercontent.com/datproject/docs/master/assets/cli-share.gif
-[clone-gif]: https://raw.githubusercontent.com/datproject/docs/master/assets/cli-clone.gif
-[Knight Foundation grant]: https://blog.datproject.org/2016/02/01/announcing-publicbits-org/
 [dat-node]: https://github.com/datproject/dat-node
-[dat-ignore]: https://github.com/joehand/dat-ignore
-[new-issue]: https://github.com/datproject/dat/issues/new
-[dat#503]: https://github.com/datproject/dat/issues/503
-[install-node]: https://nodejs.org/en/download/
-[install-node-npm]: https://docs.npmjs.com/getting-started/installing-node
-[fixing-npm-permissions]: https://docs.npmjs.com/getting-started/fixing-npm-permissions
 [guidelines on contributing]: https://github.com/datproject/dat/blob/master/CONTRIBUTING.md
 [development workflow]: https://github.com/datproject/dat/blob/master/CONTRIBUTING.md#development-workflow
 [travis-badge]: https://travis-ci.org/datproject/dat.svg?branch=master
