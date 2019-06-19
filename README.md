@@ -4,7 +4,7 @@
 
 Use Dat command line to share files with version control, back up data to servers, browse remote files on demand, and automate long-term data preservation.
 
-[<img src="https://datproject.github.io/design/downloads/dat-data-logo.png" align="right" width="140">][Dat Project]
+[<img src=".github/dat-logo.png" align="right" width="140">][Dat Project]
 
 Have questions? Join our chat via IRC or Gitter:
 
