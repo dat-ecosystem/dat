@@ -11,7 +11,8 @@ Have questions? Join our chat via IRC or Gitter:
 [![#dat IRC channel on freenode][irc-badge]][irc-channel]
 [![datproject/discussions][gitter-badge]][gitter-chat]
 
-### [Read the Docs](https://docs.datproject.org/docs/cli-intro)
+#### [Install Dat](https://docs.datproject.org/docs/install)
+#### [Read the Docs](https://docs.datproject.org/docs/cli-intro)
 
 ---
 
