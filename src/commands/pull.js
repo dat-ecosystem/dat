@@ -10,7 +10,7 @@ module.exports = {
     {
       name: 'exit',
       boolean: false,
-      help: 'exit after specified number of seconds (gives the dat network time to find updates). defaults to 12 seconds.'
+      help: 'exit after specified number of seconds, to give the dat network time to find updates. (default: 12)'
     },
 
     {
@@ -66,8 +66,10 @@ function pull (opts) {
   opts.createIfMissing = false
 
   // If --exit is specified without a number of seconds, default to 12
-  if (opts.exit === true) {
-    opts.exit = 12
+  if (opts.exit) {
+    opts.exit = typeof opts.exit === 'number'
+      ? opts.exit
+      : 12
   }
 
   var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })

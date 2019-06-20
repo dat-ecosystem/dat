@@ -26,7 +26,7 @@ function networkUI (state) {
     }
   }
 
-  if (state.opts.exit) {
+  if (typeof state.opts.exit === 'number') {
     title = `dat synced, exiting in ${state.opts.exit} seconds.`
   }
 
