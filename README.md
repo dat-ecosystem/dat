@@ -72,7 +72,7 @@ Dat allows you to focus on the fun work without worrying about moving files arou
 
 * Documentation: [docs.datproject.org](https://docs.datproject.org)
 * [DatBase](https://datbase.org)
-* [Dat white paper]
+* [Dat white paper](https://github.com/datprotocol/whitepaper/blob/master/dat-paper.pdf)
 
 ##### Other Applications
 
