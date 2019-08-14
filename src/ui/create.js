@@ -1,9 +1,9 @@
-var output = require('neat-log/output')
-var pretty = require('prettier-bytes')
-var chalk = require('chalk')
-var importUI = require('./components/import-progress')
-var keyEl = require('./elements/key')
-var pluralize = require('./elements/pluralize')
+const output = require('neat-log/output')
+const pretty = require('prettier-bytes')
+const chalk = require('chalk')
+const importUI = require('./components/import-progress')
+const keyEl = require('./elements/key')
+const pluralize = require('./elements/pluralize')
 
 module.exports = createUI
 
@@ -14,11 +14,11 @@ function createUI (state) {
   `)
   }
 
-  var dat = state.dat
-  var stats = dat.stats.get()
-  var title = '\n'
-  var progressView
-  var exitMsg = `
+  const dat = state.dat
+  const stats = dat.stats.get()
+  let title = '\n'
+  let progressView
+  const exitMsg = `
     Your dat is created! Run ${chalk.green('dat sync')} to share:
     ${keyEl(dat.key)}
   `

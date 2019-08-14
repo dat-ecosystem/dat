@@ -17,14 +17,14 @@ module.exports = {
 }
 
 function logout (opts) {
-  var chalk = require('chalk')
-  var Registry = require('../../registry')
+  const chalk = require('chalk')
+  const Registry = require('../../registry')
 
   if (opts._[0]) opts.server = opts._[0]
 
-  var client = Registry(opts)
+  const client = Registry(opts)
 
-  var whoami = client.whoami()
+  const whoami = client.whoami()
   if (!whoami || !whoami.token) return exitErr('Not currently logged in to that server.')
   client.logout(function (err) {
     if (err) return exitErr(err)

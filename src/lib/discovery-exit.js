@@ -1,4 +1,4 @@
-var output = require('neat-log/output')
+const output = require('neat-log/output')
 
 module.exports = discoveryExit
 
@@ -8,7 +8,7 @@ function discoveryExit (state, bus) {
   function checkExit () {
     if (state.dat.network.connected || !state.opts.exit) return
     if (state.dat.network.connecting) return setTimeout(checkExit, 500) // wait to see if any connections resolve
-    var msg = output(`
+    const msg = output(`
       Dat could not find any connections for that link.
       There may not be any sources online.
 

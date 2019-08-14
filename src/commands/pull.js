@@ -43,19 +43,19 @@ module.exports = {
 }
 
 function pull (opts) {
-  var Dat = require('dat-node')
-  var neatLog = require('neat-log')
-  var archiveUI = require('../ui/archive')
-  var trackArchive = require('../lib/archive')
-  var selectiveSync = require('../lib/selective-sync')
-  var discoveryExit = require('../lib/discovery-exit')
-  var onExit = require('../lib/exit')
-  var parseArgs = require('../parse-args')
-  var debug = require('debug')('dat')
+  const Dat = require('dat-node')
+  const neatLog = require('neat-log')
+  const archiveUI = require('../ui/archive')
+  const trackArchive = require('../lib/archive')
+  const selectiveSync = require('../lib/selective-sync')
+  const discoveryExit = require('../lib/discovery-exit')
+  const onExit = require('../lib/exit')
+  const parseArgs = require('../parse-args')
+  const debug = require('debug')('dat')
 
   debug('dat pull')
   if (!opts.dir) {
-    var parsed = parseArgs(opts)
+    const parsed = parseArgs(opts)
     opts.key = parsed.key
     opts.dir = parsed.dir || process.cwd()
   }
@@ -72,7 +72,7 @@ function pull (opts) {
       : 12
   }
 
-  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
+  const neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
   neat.use(trackArchive)
   neat.use(discoveryExit)
   neat.use(onExit)

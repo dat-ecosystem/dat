@@ -17,21 +17,21 @@ module.exports = {
 }
 
 function unpublish (opts) {
-  var prompt = require('prompt')
-  var path = require('path')
-  var Dat = require('dat-node')
-  var output = require('neat-log/output')
-  var chalk = require('chalk')
-  var DatJson = require('dat-json')
-  var Registry = require('../registry')
+  const prompt = require('prompt')
+  const path = require('path')
+  const Dat = require('dat-node')
+  const output = require('neat-log/output')
+  const chalk = require('chalk')
+  const DatJson = require('dat-json')
+  const Registry = require('../registry')
 
   if (opts._[0]) opts.server = opts._[0]
   if (!opts.dir) opts.dir = process.cwd() // run in dir for `dat unpublish`
 
-  var client = Registry(opts)
-  var whoami = client.whoami()
+  const client = Registry(opts)
+  const whoami = client.whoami()
   if (!whoami || !whoami.token) {
-    var loginErr = output(`
+    const loginErr = output(`
       Welcome to ${chalk.green(`dat`)} program!
 
       ${chalk.bold('You must login before unpublishing.')}
@@ -46,7 +46,7 @@ function unpublish (opts) {
     // TODO better error msg for non-existing archive
     if (!dat.writable) return exitErr('Sorry, you can only publish a dat that you created.')
 
-    var datjson = DatJson(dat.archive, { file: path.join(dat.path, 'dat.json') })
+    const datjson = DatJson(dat.archive, { file: path.join(dat.path, 'dat.json') })
     datjson.read(function (err, data) {
       if (err) return exitErr(err)
       if (!data.name) return exitErr('Try `dat unpublish <name>` with this dat, we are having trouble reading it.')

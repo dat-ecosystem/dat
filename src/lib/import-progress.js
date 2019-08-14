@@ -1,4 +1,4 @@
-var xtend = Object.assign
+const xtend = Object.assign
 
 module.exports = trackImport
 
@@ -7,7 +7,7 @@ function trackImport (state, bus) {
   bus.once('dat', track)
 
   function track () {
-    var progress = state.dat.importFiles(state.opts, function (err) {
+    const progress = state.dat.importFiles(state.opts, function (err) {
       if (err) return bus.emit('exit:error', err)
       state.importer.fileImport = null
       state.exiting = true
@@ -21,7 +21,7 @@ function trackImport (state, bus) {
     }, progress)
     bus.emit('dat:importer')
 
-    var counting = setInterval(function () {
+    const counting = setInterval(function () {
       // Update file count in progress counting (for big dirs)
       bus.emit('render')
     }, state.opts.logspeed)

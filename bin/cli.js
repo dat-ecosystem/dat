@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 
-var subcommand = require('subcommand')
-var debug = require('debug')('dat')
-var usage = require('../src/usage')
-var pkg = require('../package.json')
+const subcommand = require('subcommand')
+const debug = require('debug')('dat')
+const usage = require('../src/usage')
+const pkg = require('../package.json')
 
 process.title = 'dat'
 
 // Check node version to make sure we support
-var NODE_VERSION_SUPPORTED = 4
-var nodeMajorVer = process.version.match(/^v([0-9]+)\./)[1]
-var invalidNode = nodeMajorVer < NODE_VERSION_SUPPORTED
+const NODE_VERSION_SUPPORTED = 4
+const nodeMajorVer = process.version.match(/^v([0-9]+)\./)[1]
+const invalidNode = nodeMajorVer < NODE_VERSION_SUPPORTED
 if (invalidNode) exitInvalidNode()
 else {
-  var notifier = require('update-notifier')
+  const notifier = require('update-notifier')
   notifier({ pkg: pkg })
     .notify({
       defer: true,
@@ -32,7 +32,7 @@ if (debug.enabled) {
   debug('Dat DEBUG mode engaged, enabling quiet mode')
 }
 
-var config = {
+const config = {
   defaults: [
     { name: 'dir', abbr: 'd', help: 'set the directory for Dat' },
     { name: 'logspeed', default: 400 },
@@ -96,11 +96,11 @@ if (debug.enabled) {
 }
 
 // Match Args + Run command
-var match = subcommand(config)
+const match = subcommand(config)
 match(alias(process.argv.slice(2)))
 
 function alias (argv) {
-  var cmd = argv[0]
+  const cmd = argv[0]
   if (!config.aliases[cmd]) return argv
   argv[0] = config.aliases[cmd]
   return argv
@@ -119,7 +119,7 @@ function syncShorthand (opts) {
   // First try extension
   if (config.extensions.indexOf(opts._[0]) > -1) return require('../src/extensions')(opts)
 
-  var parsed = require('../src/parse-args')(opts)
+  const parsed = require('../src/parse-args')(opts)
 
   // Download Key
   if (parsed.key) {

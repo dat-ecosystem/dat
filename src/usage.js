@@ -4,7 +4,7 @@ module.exports = function (opts, help, usage) {
     console.error(pkg.version)
     process.exit(1)
   }
-  var msg = `
+  const msg = `
 Usage: dat <cmd> [<dir>] [options]
 
 Sharing Files:

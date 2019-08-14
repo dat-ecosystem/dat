@@ -17,20 +17,20 @@ module.exports = {
 }
 
 function login (opts) {
-  var prompt = require('prompt')
-  var output = require('neat-log/output')
-  var chalk = require('chalk')
-  var Registry = require('../../registry')
+  const prompt = require('prompt')
+  const output = require('neat-log/output')
+  const chalk = require('chalk')
+  const Registry = require('../../registry')
 
   if (opts._[0]) opts.server = opts._[0]
-  var welcome = output(`
+  const welcome = output(`
     Welcome to ${chalk.green(`dat`)} program!
     Login to publish your dats.
 
   `)
   console.log(welcome)
 
-  var schema = {
+  const schema = {
     properties: {
       server: {
         description: chalk.magenta('Dat registry'),
@@ -62,7 +62,7 @@ function login (opts) {
   })
 
   function makeRequest (user) {
-    var client = Registry(opts)
+    const client = Registry(opts)
     client.login({
       email: user.email,
       password: user.password

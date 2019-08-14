@@ -1,5 +1,5 @@
-var debug = require('debug')('dat')
-var xtend = Object.assign
+const debug = require('debug')('dat')
+const xtend = Object.assign
 
 module.exports = trackDownload
 
@@ -8,7 +8,7 @@ function trackDownload (state, bus) {
   bus.once('archive:content', track)
 
   function track () {
-    var archive = state.dat.archive
+    const archive = state.dat.archive
 
     state.download = xtend({
       modified: false,
@@ -37,7 +37,7 @@ function trackDownload (state, bus) {
         if (state.download.modified) {
           return exit()
         } else {
-          var delayInMilliseconds = 1000 * state.opts.exit
+          const delayInMilliseconds = 1000 * state.opts.exit
           setTimeout(exit, delayInMilliseconds)
         }
       }

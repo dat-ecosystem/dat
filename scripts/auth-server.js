@@ -1,4 +1,4 @@
-var createServer = require('../tests/helpers/auth-server')
+const createServer = require('../tests/helpers/auth-server')
 
 createServer(process.env.PORT || 8888, function (err, server, closeServer) {
   if (err) throw err

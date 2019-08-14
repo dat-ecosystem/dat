@@ -1,9 +1,9 @@
-var spawn = require('tape-spawn')
-var fs = require('fs')
+const spawn = require('tape-spawn')
+const fs = require('fs')
 
 // happens once at require time
 // https://github.com/AndreasMadsen/execspawn/issues/2
-var hasBash = fs.existsSync('/bin/bash')
+const hasBash = fs.existsSync('/bin/bash')
 
 module.exports = function (t, cmd, opts) {
   opts = opts || {}

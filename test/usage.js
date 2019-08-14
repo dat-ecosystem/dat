@@ -1,14 +1,14 @@
-var path = require('path')
-var test = require('tape')
-var spawn = require('./helpers/spawn.js')
+const path = require('path')
+const test = require('tape')
+const spawn = require('./helpers/spawn.js')
 
-var dat = path.resolve(path.join(__dirname, '..', 'bin', 'cli.js'))
-var version = require('../package.json').version
+const dat = path.resolve(path.join(__dirname, '..', 'bin', 'cli.js'))
+const version = require('../package.json').version
 
 test('usage - prints usage', function (t) {
-  var d = spawn(t, dat)
+  const d = spawn(t, dat)
   d.stderr.match(function (output) {
-    var usage = output.indexOf('Usage') > -1
+    const usage = output.indexOf('Usage') > -1
     if (!usage) return false
     return true
   })
@@ -16,9 +16,9 @@ test('usage - prints usage', function (t) {
 })
 
 test('usage - prints version', function (t) {
-  var d = spawn(t, dat + ' -v')
+  const d = spawn(t, dat + ' -v')
   d.stderr.match(function (output) {
-    var ver = output.indexOf(version) > -1
+    const ver = output.indexOf(version) > -1
     if (!ver) return false
     return true
   })
@@ -26,9 +26,9 @@ test('usage - prints version', function (t) {
 })
 
 test('usage - also prints version', function (t) {
-  var d = spawn(t, dat + ' -v')
+  const d = spawn(t, dat + ' -v')
   d.stderr.match(function (output) {
-    var ver = output.indexOf(version) > -1
+    const ver = output.indexOf(version) > -1
     if (!ver) return false
     return true
   })
@@ -36,9 +36,9 @@ test('usage - also prints version', function (t) {
 })
 
 test('usage - help prints usage', function (t) {
-  var d = spawn(t, dat + ' help')
+  const d = spawn(t, dat + ' help')
   d.stderr.match(function (output) {
-    var usage = output.indexOf('Usage') > -1
+    const usage = output.indexOf('Usage') > -1
     if (!usage) return false
     return true
   })

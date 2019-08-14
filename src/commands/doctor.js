@@ -9,7 +9,7 @@ module.exports = {
   ].join('\n'),
   options: [],
   command: function (opts) {
-    var doctor = require('dat-doctor')
+    const doctor = require('dat-doctor')
 
     opts.peerId = opts._[0]
     doctor(opts)

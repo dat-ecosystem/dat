@@ -16,14 +16,14 @@ module.exports = {
 }
 
 function whoami (opts) {
-  var output = require('neat-log/output')
-  var chalk = require('chalk')
-  var Registry = require('../../registry')
+  const output = require('neat-log/output')
+  const chalk = require('chalk')
+  const Registry = require('../../registry')
 
   if (opts._[0]) opts.server = opts._[0]
 
-  var client = Registry(opts)
-  var login = client.whoami()
+  const client = Registry(opts)
+  const login = client.whoami()
   if (!login || !login.token) {
     if (!opts.server) return exitErr('No login information found.')
     return exitErr('No login information found for that server.')

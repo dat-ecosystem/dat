@@ -1,16 +1,16 @@
-var path = require('path')
-var output = require('neat-log/output')
-var pretty = require('prettier-bytes')
-var chalk = require('chalk')
-var downloadUI = require('./components/download')
-var importUI = require('./components/import-progress')
-var warningsUI = require('./components/warnings')
-var networkUI = require('./components/network')
-var sourcesUI = require('./components/sources')
-var keyEl = require('./elements/key')
-var pluralize = require('./elements/pluralize')
-var version = require('./elements/version')
-var pkg = require('../../package.json')
+const path = require('path')
+const output = require('neat-log/output')
+const pretty = require('prettier-bytes')
+const chalk = require('chalk')
+const downloadUI = require('./components/download')
+const importUI = require('./components/import-progress')
+const warningsUI = require('./components/warnings')
+const networkUI = require('./components/network')
+const sourcesUI = require('./components/sources')
+const keyEl = require('./elements/key')
+const pluralize = require('./elements/pluralize')
+const version = require('./elements/version')
+const pkg = require('../../package.json')
 
 module.exports = archiveUI
 
@@ -19,10 +19,10 @@ function archiveUI (state) {
   if (!state.writable && !state.hasContent) return 'Connecting to dat network...'
   if (!state.warnings) state.warnings = []
 
-  var dat = state.dat
-  var stats = dat.stats.get()
-  var title = (state.dat.resumed) ? '' : `Created new dat in ${dat.path}${path.sep}.dat\n`
-  var progressView
+  const dat = state.dat
+  const stats = dat.stats.get()
+  let title = (state.dat.resumed) ? '' : `Created new dat in ${dat.path}${path.sep}.dat\n`
+  let progressView
 
   if (state.writable || state.opts.showKey) {
     title += `${keyEl(dat.key)}\n`

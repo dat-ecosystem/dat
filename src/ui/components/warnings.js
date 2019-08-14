@@ -1,7 +1,7 @@
-var chalk = require('chalk')
+const chalk = require('chalk')
 
 module.exports = function (state) {
-  var warning = ''
+  let warning = ''
   state.warnings.forEach(function (message) {
     warning += `${chalk.yellow(`Warning: ${message}`)}\n`
   })

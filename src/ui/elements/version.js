@@ -1,4 +1,4 @@
-var chalk = require('chalk')
+const chalk = require('chalk')
 
 module.exports = function (version) {
   return `${chalk.green(`dat v${version}`)}`

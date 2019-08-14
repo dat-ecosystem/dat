@@ -1,13 +1,13 @@
-var fs = require('fs')
-var path = require('path')
-var test = require('tape')
-var tempDir = require('temporary-directory')
-var Dat = require('dat-node')
-var spawn = require('./helpers/spawn.js')
-var help = require('./helpers')
+const fs = require('fs')
+const path = require('path')
+const test = require('tape')
+const tempDir = require('temporary-directory')
+const Dat = require('dat-node')
+const spawn = require('./helpers/spawn.js')
+const help = require('./helpers')
 
-var dat = path.resolve(path.join(__dirname, '..', 'bin', 'cli.js'))
-var fixtures = path.join(__dirname, 'fixtures')
+const dat = path.resolve(path.join(__dirname, '..', 'bin', 'cli.js'))
+const fixtures = path.join(__dirname, 'fixtures')
 
 // os x adds this if you view the fixtures in finder and breaks the file count assertions
 try { fs.unlinkSync(path.join(fixtures, '.DS_Store')) } catch (e) { /* ignore error */ }
@@ -17,11 +17,11 @@ try { fs.unlinkSync(path.join(fixtures, 'dat.json')) } catch (e) { /* ignore err
 
 test('create - default opts no import', function (t) {
   tempDir(function (_, dir, cleanup) {
-    var cmd = dat + ' create --title data --description thing'
-    var st = spawn(t, cmd, { cwd: dir })
+    const cmd = dat + ' create --title data --description thing'
+    const st = spawn(t, cmd, { cwd: dir })
 
     st.stdout.match(function (output) {
-      var datCreated = output.indexOf('Created empty Dat') > -1
+      const datCreated = output.indexOf('Created empty Dat') > -1
       if (!datCreated) return false
 
       t.ok(help.isDir(path.join(dir, '.dat')), 'creates dat directory')
@@ -40,8 +40,8 @@ test('create - errors on existing archive', function (t) {
     Dat(dir, function (err, dat) {
       t.error(err, 'no error')
       dat.close(function () {
-        var cmd = dat + ' create --title data --description thing'
-        var st = spawn(t, cmd, { cwd: dir })
+        const cmd = dat + ' create --title data --description thing'
+        const st = spawn(t, cmd, { cwd: dir })
         st.stderr.match(function (output) {
           t.ok(output, 'errors')
           st.kill()
@@ -55,21 +55,21 @@ test('create - errors on existing archive', function (t) {
 
 test('create - sync after create ok', function (t) {
   tempDir(function (_, dir, cleanup) {
-    var cmd = dat + ' create --title data --description thing'
-    var st = spawn(t, cmd, { cwd: dir, end: false })
+    const cmd = dat + ' create --title data --description thing'
+    const st = spawn(t, cmd, { cwd: dir, end: false })
     st.stdout.match(function (output) {
-      var connected = output.indexOf('Created empty Dat') > -1
+      const connected = output.indexOf('Created empty Dat') > -1
       if (!connected) return false
       doSync()
       return true
     })
 
     function doSync () {
-      var cmd = dat + ' sync '
-      var st = spawn(t, cmd, { cwd: dir })
+      const cmd = dat + ' sync '
+      const st = spawn(t, cmd, { cwd: dir })
 
       st.stdout.match(function (output) {
-        var connected = output.indexOf('Sharing') > -1
+        const connected = output.indexOf('Sharing') > -1
         if (!connected) return false
         st.kill()
         return true
@@ -82,11 +82,11 @@ test('create - sync after create ok', function (t) {
 
 test('create - init alias', function (t) {
   tempDir(function (_, dir, cleanup) {
-    var cmd = dat + ' init --title data --description thing'
-    var st = spawn(t, cmd, { cwd: dir })
+    const cmd = dat + ' init --title data --description thing'
+    const st = spawn(t, cmd, { cwd: dir })
 
     st.stdout.match(function (output) {
-      var datCreated = output.indexOf('Created empty Dat') > -1
+      const datCreated = output.indexOf('Created empty Dat') > -1
       if (!datCreated) return false
 
       t.ok(help.isDir(path.join(dir, '.dat')), 'creates dat directory')
@@ -102,10 +102,10 @@ test('create - init alias', function (t) {
 
 test('create - with path', function (t) {
   tempDir(function (_, dir, cleanup) {
-    var cmd = dat + ' init ' + dir + ' --title data --description thing'
-    var st = spawn(t, cmd)
+    const cmd = dat + ' init ' + dir + ' --title data --description thing'
+    const st = spawn(t, cmd)
     st.stdout.match(function (output) {
-      var datCreated = output.indexOf('Created empty Dat') > -1
+      const datCreated = output.indexOf('Created empty Dat') > -1
       if (!datCreated) return false
 
       t.ok(help.isDir(path.join(dir, '.dat')), 'creates dat directory')

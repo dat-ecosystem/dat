@@ -1,19 +1,19 @@
-var fs = require('fs')
-var path = require('path')
-var test = require('tape')
-var rimraf = require('rimraf')
-var tempDir = require('temporary-directory')
-var spawn = require('./helpers/spawn.js')
-var help = require('./helpers')
+const fs = require('fs')
+const path = require('path')
+const test = require('tape')
+const rimraf = require('rimraf')
+const tempDir = require('temporary-directory')
+const spawn = require('./helpers/spawn.js')
+const help = require('./helpers')
 
-var dat = path.resolve(path.join(__dirname, '..', 'bin', 'cli.js'))
-var fixtures = path.join(__dirname, 'fixtures')
+const dat = path.resolve(path.join(__dirname, '..', 'bin', 'cli.js'))
+const fixtures = path.join(__dirname, 'fixtures')
 
 test('keys - print keys', function (t) {
   help.shareFixtures(function (_, shareDat) {
     shareDat.close(function () {
-      var cmd = dat + ' keys '
-      var st = spawn(t, cmd, { cwd: fixtures })
+      const cmd = dat + ' keys '
+      const st = spawn(t, cmd, { cwd: fixtures })
 
       st.stdout.match(function (output) {
         if (output.indexOf('dat://') === -1) return false
@@ -30,8 +30,8 @@ test('keys - print keys', function (t) {
 test('keys - print discovery key', function (t) {
   help.shareFixtures(function (_, shareDat) {
     shareDat.close(function () {
-      var cmd = dat + ' keys --discovery'
-      var st = spawn(t, cmd, { cwd: fixtures })
+      const cmd = dat + ' keys --discovery'
+      const st = spawn(t, cmd, { cwd: fixtures })
 
       st.stdout.match(function (output) {
         if (output.indexOf('Discovery') === -1) return false
@@ -49,14 +49,14 @@ test('keys - print discovery key', function (t) {
 if (!process.env.TRAVIS) {
   test('keys - export & import secret key', function (t) {
     help.shareFixtures(function (_, shareDat) {
-      var key = shareDat.key.toString('hex')
+      const key = shareDat.key.toString('hex')
       tempDir(function (_, dir, cleanup) {
-        var cmd = dat + ' clone ' + key
-        var st = spawn(t, cmd, { cwd: dir, end: false })
-        var datDir = path.join(dir, key)
+        const cmd = dat + ' clone ' + key
+        const st = spawn(t, cmd, { cwd: dir, end: false })
+        const datDir = path.join(dir, key)
 
         st.stdout.match(function (output) {
-          var downloadFinished = output.indexOf('Exiting') > -1
+          const downloadFinished = output.indexOf('Exiting') > -1
           if (!downloadFinished) return false
           st.kill()
           shareDat.close(exchangeKeys)
@@ -65,10 +65,10 @@ if (!process.env.TRAVIS) {
         st.stderr.empty()
 
         function exchangeKeys () {
-          var secretKey = null
+          let secretKey = null
 
-          var exportKey = dat + ' keys export'
-          var st = spawn(t, exportKey, { cwd: fixtures, end: false })
+          const exportKey = dat + ' keys export'
+          const st = spawn(t, exportKey, { cwd: fixtures, end: false })
           st.stdout.match(function (output) {
             if (!output) return false
             secretKey = output.trim()
@@ -79,8 +79,8 @@ if (!process.env.TRAVIS) {
           st.stderr.empty()
 
           function importKey () {
-            var exportKey = dat + ' keys import'
-            var st = spawn(t, exportKey, { cwd: datDir })
+            const exportKey = dat + ' keys import'
+            const st = spawn(t, exportKey, { cwd: datDir })
             st.stdout.match(function (output) {
               if (!output.indexOf('secret key') === -1) return false
               st.stdin.write(secretKey + '\r')

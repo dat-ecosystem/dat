@@ -26,23 +26,23 @@ module.exports = {
 }
 
 function create (opts) {
-  var path = require('path')
-  var fs = require('fs')
-  var Dat = require('dat-node')
-  var output = require('neat-log/output')
-  var DatJson = require('dat-json')
-  var prompt = require('prompt')
-  var chalk = require('chalk')
-  var parseArgs = require('../parse-args')
-  var debug = require('debug')('dat')
+  const path = require('path')
+  const fs = require('fs')
+  const Dat = require('dat-node')
+  const output = require('neat-log/output')
+  const DatJson = require('dat-json')
+  const prompt = require('prompt')
+  const chalk = require('chalk')
+  const parseArgs = require('../parse-args')
+  const debug = require('debug')('dat')
 
   debug('dat create')
   if (!opts.dir) {
     opts.dir = parseArgs(opts).dir || process.cwd()
   }
 
-  var welcome = `Welcome to ${chalk.green(`dat`)} program!`
-  var intro = output(`
+  const welcome = `Welcome to ${chalk.green(`dat`)} program!`
+  const intro = output(`
     You can turn any folder on your computer into a Dat.
     A Dat is a folder with some magic.
 
@@ -55,7 +55,8 @@ function create (opts) {
     ${chalk.dim('Ctrl+C to exit at any time')}
 
   `)
-  var outro
+
+  let outro
 
   // Force certain options
   opts.errorIfExists = true
@@ -79,7 +80,7 @@ function create (opts) {
     if (opts.yes) return done()
 
     console.log(intro)
-    var datjson = DatJson(dat.archive, { file: path.join(opts.dir, 'dat.json') })
+    const datjson = DatJson(dat.archive, { file: path.join(opts.dir, 'dat.json') })
     fs.readFile(path.join(opts.dir, 'dat.json'), 'utf-8', function (err, data) {
       if (err || !data) return doPrompt()
       data = JSON.parse(data)
@@ -90,7 +91,7 @@ function create (opts) {
     function doPrompt (data) {
       if (!data) data = {}
 
-      var schema = {
+      const schema = {
         properties: {
           title: {
             description: chalk.magenta('Title'),

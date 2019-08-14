@@ -1,11 +1,11 @@
-var debug = require('debug')('dat')
-var path = require('path')
-var EventEmitter = require('events').EventEmitter
-var doImport = require('./import-progress')
-var stats = require('./stats')
-var network = require('./network')
-var download = require('./download')
-var serve = require('./serve-http')
+const debug = require('debug')('dat')
+const path = require('path')
+const EventEmitter = require('events').EventEmitter
+const doImport = require('./import-progress')
+const stats = require('./stats')
+const network = require('./network')
+const download = require('./download')
+const serve = require('./serve-http')
 
 module.exports = function (state, bus) {
   state.warnings = state.warnings || []
@@ -33,9 +33,9 @@ module.exports = function (state, bus) {
 }
 
 function selectiveSync (state, bus) {
-  var archive = state.dat.archive
+  const archive = state.dat.archive
   debug('sparse mode. downloading metadata')
-  var emitter = new EventEmitter()
+  const emitter = new EventEmitter()
 
   function download (entry) {
     debug('selected', entry)
@@ -57,8 +57,8 @@ function selectiveSync (state, bus) {
   }
 
   function downloadFile (entry, stat) {
-    var start = stat.offset
-    var end = stat.offset + stat.blocks
+    const start = stat.offset
+    const end = stat.offset + stat.blocks
     state.selectedByteLength += stat.size
     bus.emit('render')
     if (start === 0 && end === 0) return

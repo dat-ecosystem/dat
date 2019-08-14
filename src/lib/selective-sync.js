@@ -1,9 +1,9 @@
-var fs = require('fs')
-var path = require('path')
+const fs = require('fs')
+const path = require('path')
 
 module.exports = function (state, opts) {
   // selective sync stuff
-  var parsing = opts.selectFromFile !== '.datdownload' ? opts.selectFromFile : path.join(opts.dir, '.datdownload')
+  const parsing = opts.selectFromFile !== '.datdownload' ? opts.selectFromFile : path.join(opts.dir, '.datdownload')
   opts.selectedFiles = parseFiles(parsing)
   if (opts.select && typeof opts.select === 'string') opts.selectedFiles = opts.select.split(',')
   if (opts.selectedFiles) {
@@ -15,7 +15,7 @@ module.exports = function (state, opts) {
 }
 
 function parseFiles (input) {
-  var parsed = null
+  let parsed = null
 
   try {
     if (fs.statSync(input).isFile()) {

@@ -50,17 +50,17 @@ module.exports = {
 }
 
 function sync (opts) {
-  var Dat = require('dat-node')
-  var neatLog = require('neat-log')
-  var archiveUI = require('../ui/archive')
-  var selectiveSync = require('../lib/selective-sync')
-  var trackArchive = require('../lib/archive')
-  var onExit = require('../lib/exit')
-  var parseArgs = require('../parse-args')
-  var debug = require('debug')('dat')
+  const Dat = require('dat-node')
+  const neatLog = require('neat-log')
+  const archiveUI = require('../ui/archive')
+  const selectiveSync = require('../lib/selective-sync')
+  const trackArchive = require('../lib/archive')
+  const onExit = require('../lib/exit')
+  const parseArgs = require('../parse-args')
+  const debug = require('debug')('dat')
 
   debug('dat sync')
-  var parsed = parseArgs(opts)
+  const parsed = parseArgs(opts)
   opts.key = parsed.key
   opts.dir = parsed.dir || process.cwd()
   opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
@@ -69,7 +69,7 @@ function sync (opts) {
   opts.createIfMissing = false // sync must always be a resumed archive
   opts.exit = false
 
-  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
+  const neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
   neat.use(trackArchive)
   neat.use(onExit)
   neat.use(function (state, bus) {

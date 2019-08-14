@@ -10,12 +10,12 @@ module.exports = {
 }
 
 function status (opts) {
-  var Dat = require('dat-node')
-  var neatLog = require('neat-log')
-  var statusUI = require('../ui/status')
-  var onExit = require('../lib/exit')
-  var parseArgs = require('../parse-args')
-  var debug = require('debug')('dat')
+  const Dat = require('dat-node')
+  const neatLog = require('neat-log')
+  const statusUI = require('../ui/status')
+  const onExit = require('../lib/exit')
+  const parseArgs = require('../parse-args')
+  const debug = require('debug')('dat')
 
   debug('dat status')
   if (!opts.dir) {
@@ -23,7 +23,7 @@ function status (opts) {
   }
   opts.createIfMissing = false // sync must always be a resumed archive
 
-  var neat = neatLog(statusUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
+  const neat = neatLog(statusUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
   neat.use(onExit)
   neat.use(function (state, bus) {
     state.opts = opts
@@ -33,7 +33,7 @@ function status (opts) {
       if (err) return bus.emit('exit:error', err)
 
       state.dat = dat
-      var stats = dat.trackStats()
+      const stats = dat.trackStats()
       if (stats.get().version === dat.version) return exit()
       stats.on('update', function () {
         if (stats.get().version === dat.version) return exit()

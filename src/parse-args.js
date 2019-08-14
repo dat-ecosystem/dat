@@ -1,12 +1,12 @@
-var fs = require('fs')
-var path = require('path')
-var encoding = require('dat-encoding')
+const fs = require('fs')
+const path = require('path')
+const encoding = require('dat-encoding')
 
 module.exports = function (opts) {
   // dat [<cmd>] arg1 arg2 [options]
   // parse args without options from opts._
   // return parsed { dir, key }
-  var parsed = {
+  const parsed = {
     key: opts.key || null,
     dir: opts.dir || null // process.cwd() ?
   }
@@ -39,7 +39,7 @@ module.exports = function (opts) {
   }
 
   try {
-    var stat = fs.statSync(opts._[0])
+    const stat = fs.statSync(opts._[0])
     if (stat.isFile()) {
       parsed.dir = path.resolve(path.dirname(opts._[0]))
     } else {

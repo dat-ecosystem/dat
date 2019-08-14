@@ -15,7 +15,7 @@ module.exports = {
     }
   ],
   command: function (opts) {
-    var log = require('dat-log')
+    const log = require('dat-log')
     log(opts)
   }
 }

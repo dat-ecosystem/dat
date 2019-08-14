@@ -1,14 +1,14 @@
-var output = require('neat-log/output')
-var pretty = require('prettier-bytes')
-var bar = require('progress-string')
-var cliTruncate = require('cli-truncate')
+const output = require('neat-log/output')
+const pretty = require('prettier-bytes')
+const bar = require('progress-string')
+const cliTruncate = require('cli-truncate')
 
 module.exports = importUI
 
 function importUI (state) {
-  var watch = state.opts.watch
-  var importState = state.importer
-  var indexSpeed = importState.indexSpeed ? `(${pretty(importState.indexSpeed)}/s)` : ''
+  const watch = state.opts.watch
+  const importState = state.importer
+  const indexSpeed = importState.indexSpeed ? `(${pretty(importState.indexSpeed)}/s)` : ''
 
   if (importState.count && !importState.count.done) {
     // dry run in progress
@@ -24,8 +24,8 @@ function importUI (state) {
     return liveImport()
   }
 
-  var total = importState.count.bytes
-  var totalBar = bar({
+  const total = importState.count.bytes
+  const totalBar = bar({
     total: total,
     style: function (a, b) {
       return `[${a}${b}] ${(100 * importState.importedBytes / total).toFixed(0)}%`
@@ -40,7 +40,7 @@ function importUI (state) {
 
   function liveImport () {
     // Live import
-    var imports = importState.liveImports.slice(1).slice(-7)
+    const imports = importState.liveImports.slice(1).slice(-7)
     return output(`
       Watching for file updates
       ${imports.reverse().map(function (file) { return fileImport(file) }).join('\n')}
@@ -51,9 +51,9 @@ function importUI (state) {
     if (!file) return ''
     if (file.type === 'del') return `DEL: ${file.src.name}`
 
-    var total = file.src.stat.size
-    var name = file.dst.name.substr(1) // remove '/' at start
-    var size
+    const total = file.src.stat.size
+    const name = file.dst.name.substr(1) // remove '/' at start
+    let size
 
     // >500 mb show progress
     if (total < 5e8 || !file.progress) size = `(${pretty(total)})`

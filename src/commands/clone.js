@@ -30,20 +30,20 @@ module.exports = {
 }
 
 function clone (opts) {
-  var fs = require('fs')
-  var path = require('path')
-  var rimraf = require('rimraf')
-  var Dat = require('dat-node')
-  var linkResolve = require('dat-link-resolve')
-  var neatLog = require('neat-log')
-  var archiveUI = require('../ui/archive')
-  var trackArchive = require('../lib/archive')
-  var discoveryExit = require('../lib/discovery-exit')
-  var onExit = require('../lib/exit')
-  var parseArgs = require('../parse-args')
-  var debug = require('debug')('dat')
+  const fs = require('fs')
+  const path = require('path')
+  const rimraf = require('rimraf')
+  const Dat = require('dat-node')
+  const linkResolve = require('dat-link-resolve')
+  const neatLog = require('neat-log')
+  const archiveUI = require('../ui/archive')
+  const trackArchive = require('../lib/archive')
+  const discoveryExit = require('../lib/discovery-exit')
+  const onExit = require('../lib/exit')
+  const parseArgs = require('../parse-args')
+  const debug = require('debug')('dat')
 
-  var parsed = parseArgs(opts)
+  const parsed = parseArgs(opts)
   opts.key = parsed.key || opts._[0] // pass other links to resolver
   opts.dir = parsed.dir
   opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
@@ -62,7 +62,7 @@ function clone (opts) {
 
   debug(Object.assign({}, opts, { key: '<private>', _: null })) // don't show key
 
-  var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
+  const neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
   neat.use(trackArchive)
   neat.use(discoveryExit)
   neat.use(onExit)
@@ -70,7 +70,7 @@ function clone (opts) {
     if (!opts.key) return bus.emit('exit:warn', 'key required to clone')
 
     state.opts = opts
-    var createdDirectory = null // so we can delete directory if we get error
+    let createdDirectory = null // so we can delete directory if we get error
 
     // Force these options for clone command
     opts.exit = (opts.exit !== false)
@@ -124,8 +124,8 @@ function clone (opts) {
   })
 
   function getDatJsonKey () {
-    var datPath = opts.key
-    var stat = fs.lstatSync(datPath)
+    let datPath = opts.key
+    const stat = fs.lstatSync(datPath)
 
     if (stat.isDirectory()) datPath = path.join(datPath, 'dat.json')
 

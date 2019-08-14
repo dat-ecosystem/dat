@@ -1,9 +1,9 @@
-var bytes = require('bytes').parse
-var speed = require('speedometer')
-var throttle = require('throttle')
-var pump = require('pump')
-var debug = require('debug')('dat')
-var xtend = Object.assign
+const bytes = require('bytes').parse
+const speed = require('speedometer')
+const throttle = require('throttle')
+const pump = require('pump')
+const debug = require('debug')('dat')
+const xtend = Object.assign
 
 module.exports = trackNetwork
 
@@ -12,18 +12,18 @@ function trackNetwork (state, bus) {
   bus.once('dat', track)
 
   function track () {
-    var opts = state.opts
+    let opts = state.opts
     if (state.opts.up || state.opts.down) {
       opts = xtend({}, opts, {
         connect: function (local, remote) {
-          var streams = [local, remote, local]
+          const streams = [local, remote, local]
           if (state.opts.up) streams.splice(1, 0, throttle(bytes(state.opts.up)))
           if (state.opts.down) streams.splice(-1, 0, throttle(bytes(state.opts.down)))
           pump(streams)
         }
       })
     }
-    var network = state.dat.joinNetwork(opts, function () {
+    const network = state.dat.joinNetwork(opts, function () {
       bus.emit('network:callback')
     })
 
@@ -62,15 +62,15 @@ function trackNetwork (state, bus) {
     function trackSources () {
       state.sources = state.sources || {}
       network.on('connection', function (conn, info) {
-        var id = info.id.toString('hex')
-        var peerSpeed = speed()
+        const id = info.id.toString('hex')
+        const peerSpeed = speed()
 
         state.sources[id] = info
         state.sources[id].speed = peerSpeed()
         state.sources[id].getProgress = function () {
 
           // TODO: how to get right peer from archive.content?
-          // var remote = conn.feeds[1].remoteLength
+          // const remote = conn.feeds[1].remoteLength
           // // state.dat.archive.content.sources[0].feed.id.toString('hex')
           // if (!remote) return
           // return remote / dat.archive.content.length

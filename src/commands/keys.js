@@ -22,9 +22,9 @@ module.exports = {
 }
 
 function keys (opts) {
-  var Dat = require('dat-node')
-  var parseArgs = require('../parse-args')
-  var debug = require('debug')('dat')
+  const Dat = require('dat-node')
+  const parseArgs = require('../parse-args')
+  const debug = require('debug')('dat')
 
   debug('dat keys')
   if (!opts.dir) {
@@ -40,10 +40,10 @@ function keys (opts) {
 }
 
 function run (dat, opts) {
-  var subcommand = require('subcommand')
-  var prompt = require('prompt')
+  const subcommand = require('subcommand')
+  const prompt = require('prompt')
 
-  var config = {
+  const config = {
     root: {
       command: function () {
         console.log(`dat://${dat.key.toString('hex')}`)
@@ -74,7 +74,7 @@ function run (dat, opts) {
   function importKey () {
     // get secret key & write
 
-    var schema = {
+    const schema = {
       properties: {
         key: {
           pattern: /^[a-z0-9]{128}$/,
@@ -89,7 +89,7 @@ function run (dat, opts) {
     prompt.start()
     prompt.get(schema, function (err, data) {
       if (err) return done(err)
-      var secretKey = data.key
+      const secretKey = data.key
       if (typeof secretKey === 'string') secretKey = Buffer.from(secretKey, 'hex')
       // Automatically writes the metadata.ogd file
       dat.archive.metadata._storage.secretKey.write(0, secretKey, done)

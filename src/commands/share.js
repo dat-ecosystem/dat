@@ -30,13 +30,13 @@ module.exports = {
 }
 
 function share (opts) {
-  var Dat = require('dat-node')
-  var neatLog = require('neat-log')
-  var archiveUI = require('../ui/archive')
-  var trackArchive = require('../lib/archive')
-  var onExit = require('../lib/exit')
-  var parseArgs = require('../parse-args')
-  var debug = require('debug')('dat')
+  const Dat = require('dat-node')
+  const neatLog = require('neat-log')
+  const archiveUI = require('../ui/archive')
+  const trackArchive = require('../lib/archive')
+  const onExit = require('../lib/exit')
+  const parseArgs = require('../parse-args')
+  const debug = require('debug')('dat')
 
   if (!opts.dir) {
     opts.dir = parseArgs(opts).dir || process.cwd()
@@ -44,8 +44,8 @@ function share (opts) {
 
   debug('Sharing archive', opts)
 
-  var views = [archiveUI]
-  var neat = neatLog(views, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
+  const views = [archiveUI]
+  const neat = neatLog(views, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
   neat.use(trackArchive)
   neat.use(onExit)
   neat.use(function (state, bus) {

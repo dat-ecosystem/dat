@@ -1,15 +1,15 @@
-var output = require('neat-log/output')
-var bar = require('progress-string')
+const output = require('neat-log/output')
+const bar = require('progress-string')
 
 module.exports = networkUI
 
 function networkUI (state) {
-  var stats = state.stats.get()
-  var download = state.download
+  const stats = state.stats.get()
+  const download = state.download
   if (!stats || !download) return ''
 
-  var title = 'Downloading updates...'
-  var downBar = makeBar()
+  let title = 'Downloading updates...'
+  const downBar = makeBar()
 
   if (download.nsync) {
     if (state.opts.exit && state.dat.archive.version === 0) {
@@ -40,7 +40,7 @@ function networkUI (state) {
   `)
 
   function makeBar () {
-    var total = stats.length
+    const total = stats.length
     return bar({
       total: total,
       style: function (a, b) {

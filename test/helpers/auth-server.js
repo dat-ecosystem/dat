@@ -1,6 +1,6 @@
-var path = require('path')
-var rimraf = require('rimraf')
-var Server, initDb
+const path = require('path')
+const rimraf = require('rimraf')
+let Server, initDb
 try {
   Server = require('dat-registry-api/server')
   initDb = require('dat-registry-api/server/database/init')
@@ -12,7 +12,7 @@ module.exports = createServer
 
 function createServer (port, cb) {
   if (!Server || !initDb) return cb(null)
-  var config = {
+  const config = {
     mixpanel: 'nothing',
     email: {
       fromEmail: 'hi@example.com'
