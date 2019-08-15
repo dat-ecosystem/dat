@@ -10,4 +10,3 @@ test/**.db
 test/.datrc-test
 dist
 builds
-eslintrc.json
