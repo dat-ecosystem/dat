@@ -15,7 +15,7 @@ function runExtension (opts) {
 
   function trySpawn (cb) {
     const spawn = require('child_process').spawn
-    const name = 'dat-' + extName
+    let name = 'dat-' + extName
     if (os.platform() === 'win32') {
       name += '.cmd'
     }

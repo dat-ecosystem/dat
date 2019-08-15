@@ -25,17 +25,17 @@ function status (opts) {
 
   const neat = neatLog(statusUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
   neat.use(onExit)
-  neat.use(function (state, bus) {
+  neat.use((state, bus) => {
     state.opts = opts
 
-    Dat(opts.dir, opts, function (err, dat) {
+    Dat(opts.dir, opts, (err, dat) => {
       if (err && err.name === 'MissingError') return bus.emit('exit:warn', 'Sorry, could not find a dat in this directory.')
       if (err) return bus.emit('exit:error', err)
 
       state.dat = dat
       const stats = dat.trackStats()
       if (stats.get().version === dat.version) return exit()
-      stats.on('update', function () {
+      stats.on('update', () => {
         if (stats.get().version === dat.version) return exit()
       })
 

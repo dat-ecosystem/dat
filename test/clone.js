@@ -7,15 +7,15 @@ const help = require('./helpers')
 
 const dat = path.resolve(path.join(__dirname, '..', 'bin', 'cli.js'))
 
-test('clone - default opts', function (t) {
-  help.shareFixtures(function (_, shareDat) {
+test('clone - default opts', t => {
+  help.shareFixtures((_, shareDat) => {
     const key = shareDat.key.toString('hex')
-    tempDir(function (_, dir, cleanup) {
+    tempDir((_, dir, cleanup) => {
       const cmd = dat + ' clone ' + key
       const st = spawn(t, cmd, { cwd: dir })
       const datDir = path.join(dir, key)
 
-      st.stdout.match(function (output) {
+      st.stdout.match(output => {
         const downloadFinished = output.indexOf('Exiting') > -1
         if (!downloadFinished) return false
 
@@ -44,7 +44,7 @@ test('clone - default opts', function (t) {
       })
       st.succeeds('exits after finishing download')
       st.stderr.empty()
-      st.end(function () {
+      st.end(() => {
         cleanup()
         shareDat.close()
       })
@@ -53,17 +53,17 @@ test('clone - default opts', function (t) {
 })
 
 // Right now we aren't forcing this
-// test('clone - errors on existing dir', function (t) {
-//   tempDir(function (_, dir, cleanup) {
+// test('clone - errors on existing dir', t => {
+//   tempDir((_, dir, cleanup) => {
 //     // make empty dat in directory
-//     Dat(dir, function (err, shareDat) {
+//     Dat(dir, (err, shareDat) => {
 //       t.error(err, 'no error')
 //       // Try to clone to same dir
-//       shareDat.close(function () {
+//       shareDat.close(() => {
 //         const cmd = dat + ' clone ' + shareDat.key.toString('hex') + ' ' + dir
 //         const st = spawn(t, cmd)
 //         st.stdout.empty()
-//         st.stderr.match(function (output) {
+//         st.stderr.match(output => {
 //           t.same(output.trim(), 'Existing archive in this directory. Use pull or sync to update.', 'Existing archive.')
 //           st.kill()
 //           return true
@@ -74,14 +74,14 @@ test('clone - default opts', function (t) {
 //   })
 // })
 
-test('clone - specify dir', function (t) {
-  help.shareFixtures(function (_, shareDat) {
-    tempDir(function (_, dir, cleanup) {
+test('clone - specify dir', t => {
+  help.shareFixtures((_, shareDat) => {
+    tempDir((_, dir, cleanup) => {
       const key = shareDat.key.toString('hex')
       const customDir = 'my_dir'
       const cmd = dat + ' clone ' + key + ' ' + customDir
       const st = spawn(t, cmd, { cwd: dir })
-      st.stdout.match(function (output) {
+      st.stdout.match(output => {
         const downloadFinished = output.indexOf('Exiting') > -1
         if (!downloadFinished) return false
 
@@ -91,7 +91,7 @@ test('clone - specify dir', function (t) {
       })
       st.succeeds('exits after finishing download')
       st.stderr.empty()
-      st.end(function () {
+      st.end(() => {
         cleanup()
         shareDat.close()
       })
@@ -99,14 +99,14 @@ test('clone - specify dir', function (t) {
   })
 })
 
-test('clone - dat:// link', function (t) {
-  help.shareFixtures(function (_, shareDat) {
-    tempDir(function (_, dir, cleanup) {
+test('clone - dat:// link', t => {
+  help.shareFixtures((_, shareDat) => {
+    tempDir((_, dir, cleanup) => {
       const key = 'dat://' + shareDat.key.toString('hex') + '/'
       const cmd = dat + ' clone ' + key + ' '
       const downloadDir = path.join(dir, shareDat.key.toString('hex'))
       const st = spawn(t, cmd, { cwd: dir })
-      st.stdout.match(function (output) {
+      st.stdout.match(output => {
         const downloadFinished = output.indexOf('Exiting') > -1
         if (!downloadFinished) return false
 
@@ -116,7 +116,7 @@ test('clone - dat:// link', function (t) {
       })
       st.succeeds('exits after finishing download')
       st.stderr.empty()
-      st.end(function () {
+      st.end(() => {
         cleanup()
         shareDat.close()
       })
@@ -124,14 +124,14 @@ test('clone - dat:// link', function (t) {
   })
 })
 
-test('clone - datproject.org/key link', function (t) {
-  help.shareFixtures(function (_, shareDat) {
-    tempDir(function (_, dir, cleanup) {
+test('clone - datproject.org/key link', t => {
+  help.shareFixtures((_, shareDat) => {
+    tempDir((_, dir, cleanup) => {
       const key = 'datproject.org/' + shareDat.key.toString('hex') + '/'
       const cmd = dat + ' clone ' + key + ' '
       const downloadDir = path.join(dir, shareDat.key.toString('hex'))
       const st = spawn(t, cmd, { cwd: dir })
-      st.stdout.match(function (output) {
+      st.stdout.match(output => {
         const downloadFinished = output.indexOf('Exiting') > -1
         if (!downloadFinished) return false
 
@@ -141,7 +141,7 @@ test('clone - datproject.org/key link', function (t) {
       })
       st.succeeds('exits after finishing download')
       st.stderr.empty()
-      st.end(function () {
+      st.end(() => {
         cleanup()
         shareDat.close()
       })
@@ -150,15 +150,15 @@ test('clone - datproject.org/key link', function (t) {
 })
 
 // TODO: fix --temp for clones
-// test('clone - with --temp', function (t) {
+// test('clone - with --temp', t => {
 //   // cmd: dat clone <link>
-//   help.shareFixtures(function (_, fixturesDat) {
+//   help.shareFixtures((_, fixturesDat) => {
 //     shareDat = fixturesDat
 //     const key = shareDat.key.toString('hex')
 //     const cmd = dat + ' clone ' + key + ' --temp'
 //     const st = spawn(t, cmd, {cwd: baseTestDir})
 //     const datDir = path.join(baseTestDir, key)
-//     st.stdout.match(function (output) {
+//     st.stdout.match(output => {
 //       const downloadFinished = output.indexOf('Download Finished') > -1
 //       if (!downloadFinished) return false
 
@@ -193,13 +193,13 @@ test('clone - datproject.org/key link', function (t) {
 //   })
 // })
 
-test('clone - invalid link', function (t) {
+test('clone - invalid link', t => {
   const key = 'best-key-ever'
   const cmd = dat + ' clone ' + key
-  tempDir(function (_, dir, cleanup) {
+  tempDir((_, dir, cleanup) => {
     const st = spawn(t, cmd, { cwd: dir })
     const datDir = path.join(dir, key)
-    st.stderr.match(function (output) {
+    st.stderr.match(output => {
       const error = output.indexOf('Could not resolve link') > -1
       if (!error) return false
       t.ok(error, 'has error')
@@ -211,15 +211,15 @@ test('clone - invalid link', function (t) {
   })
 })
 
-test('clone - shortcut/stateless clone', function (t) {
-  help.shareFixtures(function (_, shareDat) {
+test('clone - shortcut/stateless clone', t => {
+  help.shareFixtures((_, shareDat) => {
     const key = shareDat.key.toString('hex')
-    tempDir(function (_, dir, cleanup) {
+    tempDir((_, dir, cleanup) => {
       const datDir = path.join(dir, key)
       const cmd = dat + ' ' + key + ' ' + datDir + ' --exit'
       const st = spawn(t, cmd)
 
-      st.stdout.match(function (output) {
+      st.stdout.match(output => {
         const downloadFinished = output.indexOf('Exiting') > -1
         if (!downloadFinished) return false
 
@@ -242,7 +242,7 @@ test('clone - shortcut/stateless clone', function (t) {
       })
       st.succeeds('exits after finishing download')
       st.stderr.empty()
-      st.end(function () {
+      st.end(() => {
         cleanup()
         shareDat.close()
       })
@@ -251,13 +251,13 @@ test('clone - shortcut/stateless clone', function (t) {
 })
 
 // TODO: fix this
-// test('clone - hypercore link', function (t) {
-//   help.shareFeed(function (_, key, close) {
-//     tempDir(function (_, dir, cleanup) {
+// test('clone - hypercore link', t => {
+//   help.shareFeed((_, key, close) => {
+//     tempDir((_, dir, cleanup) => {
 //       const cmd = dat + ' clone ' + key
 //       const st = spawn(t, cmd, {cwd: dir})
 //       const datDir = path.join(dir, key)
-//       st.stderr.match(function (output) {
+//       st.stderr.match(output => {
 //         const error = output.indexOf('not a Dat Archive') > -1
 //         if (!error) return false
 //         t.ok(error, 'has error')
@@ -265,7 +265,7 @@ test('clone - shortcut/stateless clone', function (t) {
 //         st.kill()
 //         return true
 //       })
-//       st.end(function () {
+//       st.end(() => {
 //         cleanup()
 //         close()
 //       })
@@ -273,9 +273,9 @@ test('clone - shortcut/stateless clone', function (t) {
 //   })
 // })
 
-test('clone - specify directory containing dat.json', function (t) {
-  help.shareFixtures(function (_, shareDat) {
-    tempDir(function (_, dir, cleanup) {
+test('clone - specify directory containing dat.json', t => {
+  help.shareFixtures((_, shareDat) => {
+    tempDir((_, dir, cleanup) => {
       fs.writeFileSync(path.join(dir, 'dat.json'), JSON.stringify({ url: shareDat.key.toString('hex') }), 'utf8')
 
       // dat clone /dir
@@ -283,7 +283,7 @@ test('clone - specify directory containing dat.json', function (t) {
       const st = spawn(t, cmd)
       const datDir = dir
 
-      st.stdout.match(function (output) {
+      st.stdout.match((output) => {
         const downloadFinished = output.indexOf('Exiting') > -1
         if (!downloadFinished) return false
 
@@ -304,7 +304,7 @@ test('clone - specify directory containing dat.json', function (t) {
       })
       st.succeeds('exits after finishing download')
       st.stderr.empty()
-      st.end(function () {
+      st.end(() => {
         cleanup()
         shareDat.close()
       })
@@ -312,9 +312,9 @@ test('clone - specify directory containing dat.json', function (t) {
   })
 })
 
-test('clone - specify directory containing dat.json with cwd', function (t) {
-  help.shareFixtures(function (_, shareDat) {
-    tempDir(function (_, dir, cleanup) {
+test('clone - specify directory containing dat.json with cwd', t => {
+  help.shareFixtures((_, shareDat) => {
+    tempDir((_, dir, cleanup) => {
       fs.writeFileSync(path.join(dir, 'dat.json'), JSON.stringify({ url: shareDat.key.toString('hex') }), 'utf8')
 
       // cd dir && dat clone /dir/dat.json
@@ -322,7 +322,7 @@ test('clone - specify directory containing dat.json with cwd', function (t) {
       const st = spawn(t, cmd, { cwd: dir })
       const datDir = dir
 
-      st.stdout.match(function (output) {
+      st.stdout.match(output => {
         const downloadFinished = output.indexOf('Exiting') > -1
         if (!downloadFinished) return false
 
@@ -343,7 +343,7 @@ test('clone - specify directory containing dat.json with cwd', function (t) {
       })
       st.succeeds('exits after finishing download')
       st.stderr.empty()
-      st.end(function () {
+      st.end(() => {
         cleanup()
         shareDat.close()
       })
@@ -351,9 +351,9 @@ test('clone - specify directory containing dat.json with cwd', function (t) {
   })
 })
 
-test('clone - specify dat.json path', function (t) {
-  help.shareFixtures(function (_, shareDat) {
-    tempDir(function (_, dir, cleanup) {
+test('clone - specify dat.json path', t => {
+  help.shareFixtures((_, shareDat) => {
+    tempDir((_, dir, cleanup) => {
       const datJsonPath = path.join(dir, 'dat.json')
       fs.writeFileSync(datJsonPath, JSON.stringify({ url: shareDat.key.toString('hex') }), 'utf8')
 
@@ -362,7 +362,7 @@ test('clone - specify dat.json path', function (t) {
       const st = spawn(t, cmd)
       const datDir = dir
 
-      st.stdout.match(function (output) {
+      st.stdout.match(output => {
         const downloadFinished = output.indexOf('Exiting') > -1
         if (!downloadFinished) return false
 
@@ -383,7 +383,7 @@ test('clone - specify dat.json path', function (t) {
       })
       st.succeeds('exits after finishing download')
       st.stderr.empty()
-      st.end(function () {
+      st.end(() => {
         cleanup()
         shareDat.close()
       })
@@ -391,9 +391,9 @@ test('clone - specify dat.json path', function (t) {
   })
 })
 
-test('clone - specify dat.json path with cwd', function (t) {
-  help.shareFixtures(function (_, shareDat) {
-    tempDir(function (_, dir, cleanup) {
+test('clone - specify dat.json path with cwd', t => {
+  help.shareFixtures((_, shareDat) => {
+    tempDir((_, dir, cleanup) => {
       const datJsonPath = path.join(dir, 'dat.json')
       fs.writeFileSync(datJsonPath, JSON.stringify({ url: shareDat.key.toString('hex') }), 'utf8')
 
@@ -402,7 +402,7 @@ test('clone - specify dat.json path with cwd', function (t) {
       const st = spawn(t, cmd, { cwd: dir })
       const datDir = dir
 
-      st.stdout.match(function (output) {
+      st.stdout.match(output => {
         const downloadFinished = output.indexOf('Exiting') > -1
         if (!downloadFinished) return false
 
@@ -423,7 +423,7 @@ test('clone - specify dat.json path with cwd', function (t) {
       })
       st.succeeds('exits after finishing download')
       st.stderr.empty()
-      st.end(function () {
+      st.end(() => {
         cleanup()
         shareDat.close()
       })
@@ -431,9 +431,9 @@ test('clone - specify dat.json path with cwd', function (t) {
   })
 })
 
-test('clone - specify dat.json + directory', function (t) {
-  help.shareFixtures(function (_, shareDat) {
-    tempDir(function (_, dir, cleanup) {
+test('clone - specify dat.json + directory', t => {
+  help.shareFixtures((_, shareDat) => {
+    tempDir((_, dir, cleanup) => {
       const datDir = path.join(dir, 'clone-dest')
       const datJsonPath = path.join(dir, 'dat.json') // make dat.json in different dir
 
@@ -444,7 +444,7 @@ test('clone - specify dat.json + directory', function (t) {
       const cmd = dat + ' clone ' + datJsonPath + ' ' + datDir
       const st = spawn(t, cmd)
 
-      st.stdout.match(function (output) {
+      st.stdout.match(output => {
         const downloadFinished = output.indexOf('Exiting') > -1
         if (!downloadFinished) return false
 
@@ -465,7 +465,7 @@ test('clone - specify dat.json + directory', function (t) {
       })
       st.succeeds('exits after finishing download')
       st.stderr.empty()
-      st.end(function () {
+      st.end(() => {
         cleanup()
         shareDat.close()
       })

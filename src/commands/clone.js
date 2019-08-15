@@ -66,7 +66,7 @@ function clone (opts) {
   neat.use(trackArchive)
   neat.use(discoveryExit)
   neat.use(onExit)
-  neat.use(function (state, bus) {
+  neat.use((state, bus) => {
     if (!opts.key) return bus.emit('exit:warn', 'key required to clone')
 
     state.opts = opts
@@ -76,12 +76,12 @@ function clone (opts) {
     opts.exit = (opts.exit !== false)
     // opts.errorIfExists = true // TODO: do we want to force this?
 
-    linkResolve(opts.key, function (err, key) {
+    linkResolve(opts.key, (err, key) => {
       if (err && err.message.indexOf('Invalid key') === -1) return bus.emit('exit:error', 'Could not resolve link')
       else if (err) return bus.emit('exit:warn', 'Link is not a valid Dat link.')
 
       opts.key = key
-      createDir(opts.key, function () {
+      createDir(opts.key, () => {
         bus.emit('key', key)
         runDat()
       })
@@ -95,7 +95,7 @@ function clone (opts) {
       if (!Buffer.isBuffer(opts.dir) && typeof opts.dir !== 'string') {
         return bus.emit('exit:error', 'Directory path must be a string or Buffer')
       }
-      fs.access(opts.dir, fs.F_OK, function (err) {
+      fs.access(opts.dir, fs.F_OK, (err) => {
         if (!err) {
           createdDirectory = false
           return cb()
@@ -107,7 +107,7 @@ function clone (opts) {
     }
 
     function runDat () {
-      Dat(opts.dir, opts, function (err, dat) {
+      Dat(opts.dir, opts, (err, dat) => {
         if (err && err.name === 'ExistsError') return bus.emit('exit:warn', 'Existing archive in this directory. Use pull or sync to update.')
         if (err) {
           if (createdDirectory) rimraf.sync(dat.path)

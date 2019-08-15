@@ -32,7 +32,7 @@ function keys (opts) {
   }
   opts.createIfMissing = false // keys must always be a resumed archive
 
-  Dat(opts.dir, opts, function (err, dat) {
+  Dat(opts.dir, opts, (err, dat) => {
     if (err && err.name === 'MissingError') return exit('Sorry, could not find a dat in this directory.')
     if (err) return exit(err)
     run(dat, opts)
@@ -87,9 +87,9 @@ function run (dat, opts) {
     }
     prompt.message = ''
     prompt.start()
-    prompt.get(schema, function (err, data) {
+    prompt.get(schema, (err, data) => {
       if (err) return done(err)
-      const secretKey = data.key
+      let secretKey = data.key
       if (typeof secretKey === 'string') secretKey = Buffer.from(secretKey, 'hex')
       // Automatically writes the metadata.ogd file
       dat.archive.metadata._storage.secretKey.write(0, secretKey, done)

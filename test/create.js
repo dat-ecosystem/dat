@@ -15,12 +15,12 @@ try { fs.unlinkSync(path.join(fixtures, '.DS_Store')) } catch (e) { /* ignore er
 // start without dat.json
 try { fs.unlinkSync(path.join(fixtures, 'dat.json')) } catch (e) { /* ignore error */ }
 
-test('create - default opts no import', function (t) {
-  tempDir(function (_, dir, cleanup) {
+test('create - default opts no import', t => {
+  tempDir((_, dir, cleanup) => {
     const cmd = dat + ' create --title data --description thing'
     const st = spawn(t, cmd, { cwd: dir })
 
-    st.stdout.match(function (output) {
+    st.stdout.match(output => {
       const datCreated = output.indexOf('Created empty Dat') > -1
       if (!datCreated) return false
 
@@ -35,14 +35,14 @@ test('create - default opts no import', function (t) {
   })
 })
 
-test('create - errors on existing archive', function (t) {
-  tempDir(function (_, dir, cleanup) {
-    Dat(dir, function (err, dat) {
+test('create - errors on existing archive', t => {
+  tempDir((_, dir, cleanup) => {
+    Dat(dir, (err, dat) => {
       t.error(err, 'no error')
-      dat.close(function () {
+      dat.close(() => {
         const cmd = dat + ' create --title data --description thing'
         const st = spawn(t, cmd, { cwd: dir })
-        st.stderr.match(function (output) {
+        st.stderr.match(output => {
           t.ok(output, 'errors')
           st.kill()
           return true
@@ -53,11 +53,11 @@ test('create - errors on existing archive', function (t) {
   })
 })
 
-test('create - sync after create ok', function (t) {
-  tempDir(function (_, dir, cleanup) {
+test('create - sync after create ok', t => {
+  tempDir((_, dir, cleanup) => {
     const cmd = dat + ' create --title data --description thing'
     const st = spawn(t, cmd, { cwd: dir, end: false })
-    st.stdout.match(function (output) {
+    st.stdout.match(output => {
       const connected = output.indexOf('Created empty Dat') > -1
       if (!connected) return false
       doSync()
@@ -68,7 +68,7 @@ test('create - sync after create ok', function (t) {
       const cmd = dat + ' sync '
       const st = spawn(t, cmd, { cwd: dir })
 
-      st.stdout.match(function (output) {
+      st.stdout.match(output => {
         const connected = output.indexOf('Sharing') > -1
         if (!connected) return false
         st.kill()
@@ -80,12 +80,12 @@ test('create - sync after create ok', function (t) {
   })
 })
 
-test('create - init alias', function (t) {
-  tempDir(function (_, dir, cleanup) {
+test('create - init alias', t => {
+  tempDir((_, dir, cleanup) => {
     const cmd = dat + ' init --title data --description thing'
     const st = spawn(t, cmd, { cwd: dir })
 
-    st.stdout.match(function (output) {
+    st.stdout.match(output => {
       const datCreated = output.indexOf('Created empty Dat') > -1
       if (!datCreated) return false
 
@@ -100,11 +100,11 @@ test('create - init alias', function (t) {
   })
 })
 
-test('create - with path', function (t) {
-  tempDir(function (_, dir, cleanup) {
+test('create - with path', t => {
+  tempDir((_, dir, cleanup) => {
     const cmd = dat + ' init ' + dir + ' --title data --description thing'
     const st = spawn(t, cmd)
-    st.stdout.match(function (output) {
+    st.stdout.match(output => {
       const datCreated = output.indexOf('Created empty Dat') > -1
       if (!datCreated) return false
 

@@ -14,7 +14,7 @@ module.exports = {
       help: 'View live updates to history.'
     }
   ],
-  command: function (opts) {
+  command: (opts) => {
     const log = require('dat-log')
     log(opts)
   }

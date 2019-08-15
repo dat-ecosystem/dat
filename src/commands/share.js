@@ -48,10 +48,10 @@ function share (opts) {
   const neat = neatLog(views, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
   neat.use(trackArchive)
   neat.use(onExit)
-  neat.use(function (state, bus) {
+  neat.use((state, bus) => {
     state.opts = opts
 
-    Dat(opts.dir, opts, function (err, dat) {
+    Dat(opts.dir, opts, (err, dat) => {
       if (err && err.name === 'IncompatibleError') return bus.emit('exit:warn', 'Directory contains incompatible dat metadata. Please remove your old .dat folder (rm -rf .dat)')
       else if (err) return bus.emit('exit:error', err)
       if (!dat.writable && !opts.shortcut) return bus.emit('exit:warn', 'Archive not writable, cannot use share. Please use sync to resume download.')

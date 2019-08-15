@@ -55,7 +55,7 @@ function login (opts) {
   prompt.override = opts
   prompt.message = ''
   prompt.start()
-  prompt.get(schema, function (err, results) {
+  prompt.get(schema, (err, results) => {
     if (err) return exitErr(err)
     opts.server = results.server
     makeRequest(results)
@@ -66,7 +66,7 @@ function login (opts) {
     client.login({
       email: user.email,
       password: user.password
-    }, function (err, resp, body) {
+    }, (err, resp, body) => {
       if (err && err.message) return exitErr(err.message)
       else if (err) return exitErr(err.toString())
 

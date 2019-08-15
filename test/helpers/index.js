@@ -25,12 +25,12 @@ function shareFixtures (opts, cb) {
   // os x adds this if you view the fixtures in finder and breaks the file count assertions
   try { fs.unlinkSync(path.join(fixtures, '.DS_Store')) } catch (e) { /* ignore error */ }
   if (opts.resume !== true) rimraf.sync(path.join(fixtures, '.dat'))
-  Dat(fixtures, {}, function (err, dat) {
+  Dat(fixtures, {}, (err, dat) => {
     if (err) throw err
     dat.trackStats()
     dat.joinNetwork()
     if (opts.import === false) return cb(null, dat)
-    dat.importFiles({ watch: false }, function (err) {
+    dat.importFiles({ watch: false }, err => {
       if (err) throw err
       cb(null, dat)
     })
@@ -83,16 +83,16 @@ function isDir (dir) {
 function shareFeed (cb) {
   let sw
   const feed = hypercore(ram)
-  feed.append('hello world', function (err) {
+  feed.append('hello world', err => {
     if (err) throw err
     cb(null, encoding.toStr(feed.key), close)
   })
-  feed.ready(function () {
+  feed.ready(() => {
     sw = swarm(feed)
   })
 
   function close (cb) {
-    feed.close(function () {
+    feed.close(() => {
       sw.close(cb)
     })
   }

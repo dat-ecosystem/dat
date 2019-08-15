@@ -34,18 +34,18 @@ function createServer (port, cb) {
   rimraf.sync(config.db.connection.filename)
   rimraf.sync(config.township.db)
 
-  initDb(config.db, function (err, db) {
+  initDb(config.db, (err, db) => {
     if (err) return cb(err)
 
     const server = Server(config, db)
-    server.listen(config.port, function () {
+    server.listen(config.port, () => {
       console.log('listening', config.port)
     })
 
     cb(null, server, close)
 
     function close (cb) {
-      server.close(function () {
+      server.close(() => {
         rimraf.sync(config.township.db)
         rimraf.sync(config.db.connection.filename)
         process.exit()

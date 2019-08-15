@@ -72,10 +72,10 @@ function sync (opts) {
   const neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
   neat.use(trackArchive)
   neat.use(onExit)
-  neat.use(function (state, bus) {
+  neat.use((state, bus) => {
     state.opts = opts
     selectiveSync(state, opts)
-    Dat(opts.dir, opts, function (err, dat) {
+    Dat(opts.dir, opts, (err, dat) => {
       if (err && err.name === 'MissingError') return bus.emit('exit:warn', 'No existing archive in this directory.')
       if (err) return bus.emit('exit:error', err)
 

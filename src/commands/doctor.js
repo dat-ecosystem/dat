@@ -8,7 +8,7 @@ module.exports = {
     'Usage: dat doctor [<link>]'
   ].join('\n'),
   options: [],
-  command: function (opts) {
+  command: (opts) => {
     const doctor = require('dat-doctor')
 
     opts.peerId = opts._[0]

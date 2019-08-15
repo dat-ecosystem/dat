@@ -27,7 +27,7 @@ function importUI (state) {
   const total = importState.count.bytes
   const totalBar = bar({
     total: total,
-    style: function (a, b) {
+    style: (a, b) => {
       return `[${a}${b}] ${(100 * importState.importedBytes / total).toFixed(0)}%`
     }
   })
@@ -43,7 +43,7 @@ function importUI (state) {
     const imports = importState.liveImports.slice(1).slice(-7)
     return output(`
       Watching for file updates
-      ${imports.reverse().map(function (file) { return fileImport(file) }).join('\n')}
+      ${imports.reverse().map(file => fileImport(file)).join('\n')}
     `)
   }
 

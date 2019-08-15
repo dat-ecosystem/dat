@@ -60,7 +60,7 @@ function register (opts) {
   prompt.override = opts
   prompt.message = ''
   prompt.start()
-  prompt.get(schema, function (err, results) {
+  prompt.get(schema, (err, results) => {
     if (err) return exitErr(err)
     opts.server = results.server
     makeRequest(results)
@@ -73,7 +73,7 @@ function register (opts) {
       email: user.email,
       username: user.username,
       password: user.password
-    }, function (err) {
+    }, err => {
       if (err && err.message) return exitErr(err.message)
       else if (err) return exitErr(err.toString())
       console.log(output(`

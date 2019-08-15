@@ -9,7 +9,7 @@ const serve = require('./serve-http')
 
 module.exports = function (state, bus) {
   state.warnings = state.warnings || []
-  bus.once('dat', function () {
+  bus.once('dat', () => {
     state.writable = state.dat.writable
     state.joinNetwork = !(state.joinNetwork === false)
 
@@ -22,12 +22,12 @@ module.exports = function (state, bus) {
     else download(state, bus)
 
     if (state.dat.archive.content) return bus.emit('archive:content')
-    state.dat.archive.once('content', function () {
+    state.dat.archive.once('content', () => {
       bus.emit('archive:content')
     })
   })
 
-  bus.once('archive:content', function () {
+  bus.once('archive:content', () => {
     state.hasContent = true
   })
 }
@@ -39,7 +39,7 @@ function selectiveSync (state, bus) {
 
   function download (entry) {
     debug('selected', entry)
-    archive.stat(entry, function (err, stat) {
+    archive.stat(entry, (err, stat) => {
       if (err) return state.warnings.push(err.message)
       if (stat.isDirectory()) downloadDir(entry, stat)
       if (stat.isFile()) downloadFile(entry, stat)
@@ -48,9 +48,9 @@ function selectiveSync (state, bus) {
 
   function downloadDir (dirname, stat) {
     debug('downloading dir', dirname)
-    archive.readdir(dirname, function (err, entries) {
+    archive.readdir(dirname, (err, entries) => {
       if (err) return bus.emit('exit:error', err)
-      entries.forEach(function (entry) {
+      entries.forEach(entry => {
         emitter.emit('download', path.join(dirname, entry))
       })
     })
@@ -63,7 +63,7 @@ function selectiveSync (state, bus) {
     bus.emit('render')
     if (start === 0 && end === 0) return
     debug('downloading', entry, start, end)
-    archive.content.download({ start, end }, function () {
+    archive.content.download({ start, end }, () => {
       debug('success', entry)
     })
   }
@@ -72,12 +72,12 @@ function selectiveSync (state, bus) {
   if (state.opts.selectedFiles) state.opts.selectedFiles.forEach(download)
 
   if (state.opts.empty) {
-    archive.metadata.update(function () {
+    archive.metadata.update(() => {
       return bus.emit('exit:warn', `Dat successfully created in empty mode. Download files using pull or sync.`)
     })
   }
 
-  archive.on('update', function () {
+  archive.on('update', () => {
     debug('archive update')
     bus.emit('render')
   })

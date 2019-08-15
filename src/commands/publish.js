@@ -50,7 +50,7 @@ function publish (opts) {
   }
 
   opts.createIfMissing = false // publish must always be a resumed archive
-  Dat(opts.dir, opts, function (err, dat) {
+  Dat(opts.dir, opts, (err, dat) => {
     if (err && err.name === 'MissingError') return exitErr('No existing dat in this directory. Create a dat before publishing.')
     else if (err) return exitErr(err)
 
@@ -88,7 +88,7 @@ function publish (opts) {
             required: true
           }
         }
-      }, function (err, results) {
+      }, (err, results) => {
         if (err) return exitErr(err)
         datInfo.name = results.name
         makeRequest(datInfo)

@@ -62,7 +62,7 @@ function create (opts) {
   opts.errorIfExists = true
 
   console.log(welcome)
-  Dat(opts.dir, opts, function (err, dat) {
+  Dat(opts.dir, opts, (err, dat) => {
     if (err && err.name === 'ExistsError') return exitErr('\nArchive already exists.\nYou can use `dat sync` to update.')
     if (err) return exitErr(err)
 
@@ -81,7 +81,7 @@ function create (opts) {
 
     console.log(intro)
     const datjson = DatJson(dat.archive, { file: path.join(opts.dir, 'dat.json') })
-    fs.readFile(path.join(opts.dir, 'dat.json'), 'utf-8', function (err, data) {
+    fs.readFile(path.join(opts.dir, 'dat.json'), 'utf-8', (err, data) => {
       if (err || !data) return doPrompt()
       data = JSON.parse(data)
       debug('read existing dat.json data', data)

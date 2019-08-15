@@ -5,9 +5,9 @@ const spawn = require('./helpers/spawn.js')
 const dat = path.resolve(path.join(__dirname, '..', 'bin', 'cli.js'))
 const version = require('../package.json').version
 
-test('usage - prints usage', function (t) {
+test('usage - prints usage', t => {
   const d = spawn(t, dat)
-  d.stderr.match(function (output) {
+  d.stderr.match(output => {
     const usage = output.indexOf('Usage') > -1
     if (!usage) return false
     return true
@@ -15,9 +15,9 @@ test('usage - prints usage', function (t) {
   d.end()
 })
 
-test('usage - prints version', function (t) {
+test('usage - prints version', t => {
   const d = spawn(t, dat + ' -v')
-  d.stderr.match(function (output) {
+  d.stderr.match(output => {
     const ver = output.indexOf(version) > -1
     if (!ver) return false
     return true
@@ -25,9 +25,9 @@ test('usage - prints version', function (t) {
   d.end()
 })
 
-test('usage - also prints version', function (t) {
+test('usage - also prints version', t => {
   const d = spawn(t, dat + ' -v')
-  d.stderr.match(function (output) {
+  d.stderr.match(output => {
     const ver = output.indexOf(version) > -1
     if (!ver) return false
     return true
@@ -35,9 +35,9 @@ test('usage - also prints version', function (t) {
   d.end()
 })
 
-test('usage - help prints usage', function (t) {
+test('usage - help prints usage', t => {
   const d = spawn(t, dat + ' help')
-  d.stderr.match(function (output) {
+  d.stderr.match(output => {
     const usage = output.indexOf('Usage') > -1
     if (!usage) return false
     return true

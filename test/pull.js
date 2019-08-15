@@ -6,11 +6,11 @@ const help = require('./helpers')
 
 const dat = path.resolve(path.join(__dirname, '..', 'bin', 'cli.js'))
 
-test('pull - errors without clone first', function (t) {
-  tempDir(function (_, dir, cleanup) {
+test('pull - errors without clone first', t => {
+  tempDir((_, dir, cleanup) => {
     const cmd = dat + ' pull'
     const st = spawn(t, cmd, { cwd: dir })
-    st.stderr.match(function (output) {
+    st.stderr.match(output => {
       t.ok('No existing archive', 'Error: no existing archive')
       st.kill()
       return true
@@ -19,14 +19,14 @@ test('pull - errors without clone first', function (t) {
   })
 })
 
-test('pull - default opts', function (t) {
+test('pull - default opts', t => {
   // import false so we can pull files later
-  help.shareFixtures({ import: false }, function (_, fixturesDat) {
-    tempDir(function (_, dir, cleanup) {
+  help.shareFixtures({ import: false }, (_, fixturesDat) => {
+    tempDir((_, dir, cleanup) => {
       // clone initial dat
       const cmd = dat + ' clone ' + fixturesDat.key.toString('hex') + ' ' + dir
       const st = spawn(t, cmd, { end: false })
-      st.stdout.match(function (output) {
+      st.stdout.match(output => {
         const synced = output.indexOf('dat synced') > -1
         if (!synced) return false
         st.kill()
@@ -36,10 +36,10 @@ test('pull - default opts', function (t) {
 
       function doPull () {
         // TODO: Finish this one. Need some bug fixes on empty pulls =(
-        help.shareFixtures({ resume: true, import: true }, function (_, fixturesDat) {
+        help.shareFixtures({ resume: true, import: true }, (_, fixturesDat) => {
           const cmd = dat + ' pull'
           const st = spawn(t, cmd, { cwd: dir })
-          st.stdout.match(function (output) {
+          st.stdout.match(output => {
             const downloadFinished = output.indexOf('dat sync') > -1
             if (!downloadFinished) return false
             st.kill()
@@ -47,7 +47,7 @@ test('pull - default opts', function (t) {
           })
           st.succeeds('exits after finishing download')
           st.stderr.empty()
-          st.end(function () {
+          st.end(() => {
             fixturesDat.close()
           })
         })
@@ -56,16 +56,16 @@ test('pull - default opts', function (t) {
   })
 })
 
-// test('pull - default opts', function (t) {
+// test('pull - default opts', t => {
 //   // cmd: dat pull
 //   // import the files to the sharer so we can pull new data
-//   shareDat.importFiles(function (err) {
+//   shareDat.importFiles(err => {
 //     if (err) throw err
 
 //     const datDir = path.join(baseTestDir, shareKey)
 //     const cmd = dat + ' pull'
 //     const st = spawn(t, cmd, {cwd: datDir})
-//     st.stdout.match(function (output) {
+//     st.stdout.match(output => {
 //       const downloadFinished = output.indexOf('Download Finished') > -1
 //       if (!downloadFinished) return false
 
@@ -100,12 +100,12 @@ test('pull - default opts', function (t) {
 //   })
 // })
 
-// test('pull - with dir arg', function (t) {
+// test('pull - with dir arg', t => {
 //   const dirName = shareKey
 //   const datDir = path.join(baseTestDir, shareKey)
 //   const cmd = dat + ' pull ' + dirName
 //   const st = spawn(t, cmd, {cwd: baseTestDir})
-//   st.stdout.match(function (output) {
+//   st.stdout.match(output => {
 //     const downloadFinished = output.indexOf('Download Finished') > -1
 //     if (!downloadFinished) return false
 

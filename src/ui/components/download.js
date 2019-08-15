@@ -43,7 +43,7 @@ function networkUI (state) {
     const total = stats.length
     return bar({
       total: total,
-      style: function (a, b) {
+      style: (a, b) => {
         return `[${a}${b}] ${(100 * stats.downloaded / total).toFixed(2)}%`
       }
     })

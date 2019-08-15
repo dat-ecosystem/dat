@@ -9,7 +9,7 @@ function trackStats (state, bus) {
   function track () {
     const stats = state.dat.trackStats(state.opts)
     state.stats = xtend(stats, state.stats)
-    stats.on('update', function () {
+    stats.on('update', () => {
       bus.emit('stats:update')
       bus.emit('render')
     })

@@ -41,13 +41,13 @@ function unpublish (opts) {
   }
 
   opts.createIfMissing = false // unpublish dont try to create new one
-  Dat(opts.dir, opts, function (err, dat) {
+  Dat(opts.dir, opts, (err, dat) => {
     if (err) return exitErr(err)
     // TODO better error msg for non-existing archive
     if (!dat.writable) return exitErr('Sorry, you can only publish a dat that you created.')
 
     const datjson = DatJson(dat.archive, { file: path.join(dat.path, 'dat.json') })
-    datjson.read(function (err, data) {
+    datjson.read((err, data) => {
       if (err) return exitErr(err)
       if (!data.name) return exitErr('Try `dat unpublish <name>` with this dat, we are having trouble reading it.')
       confirm(data.name)
@@ -65,7 +65,7 @@ function unpublish (opts) {
       pattern: /^[a-zA-Z\s-]+$/,
       message: '',
       required: true
-    }], function (err, results) {
+    }], (err, results) => {
       if (err) return console.log(err.message)
       if (results.sure === 'yes' || results.sure === 'y') makeRequest(name)
       else exitErr('Cancelled.')

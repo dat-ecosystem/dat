@@ -12,9 +12,7 @@ function peersUI (state) {
   // const stats = state.stats
   // const peerCount = stats.peers.total || 0
   // const complete = stats.peers.complete
-  const info = Object.keys(peers).map(function (id, i) {
-    return peerUI(peers[id], i)
-  }).join('\n')
+  const info = Object.keys(peers).map((id, i) => peerUI(peers[id], i)).join('\n')
 
   return `\n${info}\n`
 
@@ -22,9 +20,7 @@ function peersUI (state) {
     const progress = peer.getProgress()
     const bar = makeBar({
       total: 100,
-      style: function (a, b) {
-        return `[${a}${b}] ${(progress).toFixed(2)}%`
-      }
+      style: (a, b) => `[${a}${b}] ${(progress).toFixed(2)}%`
     })
     const theBar = progress ? bar(progress) : '' // progress bar todo
     return output(`

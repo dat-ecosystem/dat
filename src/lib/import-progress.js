@@ -7,7 +7,7 @@ function trackImport (state, bus) {
   bus.once('dat', track)
 
   function track () {
-    const progress = state.dat.importFiles(state.opts, function (err) {
+    const progress = state.dat.importFiles(state.opts, err => {
       if (err) return bus.emit('exit:error', err)
       state.importer.fileImport = null
       state.exiting = true
@@ -21,23 +21,23 @@ function trackImport (state, bus) {
     }, progress)
     bus.emit('dat:importer')
 
-    const counting = setInterval(function () {
+    const counting = setInterval(() => {
       // Update file count in progress counting (for big dirs)
       bus.emit('render')
     }, state.opts.logspeed)
 
-    progress.on('count', function (count) {
+    progress.on('count', count => {
       clearInterval(counting)
       state.count = count
       state.count.done = true
       bus.emit('render')
     })
 
-    progress.on('del', function (src, dst) {
+    progress.on('del', (src, dst) => {
       if (src.live) state.importer.liveImports.push({ src: src, dst: dst, type: 'del' })
     })
 
-    progress.on('put', function (src, dst) {
+    progress.on('put', (src, dst) => {
       if (src.live) state.importer.liveImports.push({ src: src, dst: dst, type: 'put' })
       if (src.stat.isDirectory()) return
       state.importer.fileImport = {
@@ -49,7 +49,7 @@ function trackImport (state, bus) {
       bus.emit('render')
     })
 
-    progress.on('put-data', function (chunk, src, dst) {
+    progress.on('put-data', (chunk, src, dst) => {
       state.importer.fileImport.progress += chunk.length
       if (!src.live) state.importer.importedBytes += chunk.length // don't include live in total
       state.importer.indexSpeed = progress.indexSpeed

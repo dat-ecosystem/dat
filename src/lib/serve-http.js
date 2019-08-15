@@ -9,7 +9,7 @@ function runHttp (state, bus) {
     const port = (typeof state.opts.http === 'boolean') ? 8080 : state.opts.http
     const server = state.dat.serveHttp({ port: port })
 
-    server.on('listening', function () {
+    server.on('listening', () => {
       state.http = { port: port, listening: true }
       bus.emit('render')
     })

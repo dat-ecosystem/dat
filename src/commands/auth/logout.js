@@ -26,7 +26,7 @@ function logout (opts) {
 
   const whoami = client.whoami()
   if (!whoami || !whoami.token) return exitErr('Not currently logged in to that server.')
-  client.logout(function (err) {
+  client.logout(err => {
     if (err) return exitErr(err)
     console.log(`Logged out of ${chalk.green(whoami.server)}`)
     process.exit(0)

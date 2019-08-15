@@ -15,21 +15,21 @@ function trackDownload (state, bus) {
       nsync: false
     }, {})
 
-    archive.content.on('clear', function () {
+    archive.content.on('clear', () => {
       debug('archive clear')
       state.download.modified = true
     })
 
-    archive.content.on('download', function (index, data) {
+    archive.content.on('download', (index, data) => {
       state.download.modified = true
     })
 
-    archive.on('syncing', function () {
+    archive.on('syncing', () => {
       debug('archive syncing')
       state.download.nsync = false
     })
 
-    archive.on('sync', function () {
+    archive.on('sync',() => {
       debug('archive sync', state.stats.get())
       state.download.nsync = true
       // if we are supposed to exit, do so if we've pulled changes or have given the network the desired wait time
@@ -48,7 +48,7 @@ function trackDownload (state, bus) {
       bus.emit('render')
     })
 
-    archive.on('update', function () {
+    archive.on('update', () => {
       debug('archive update')
       bus.emit('render')
     })

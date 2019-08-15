@@ -76,11 +76,11 @@ function pull (opts) {
   neat.use(trackArchive)
   neat.use(discoveryExit)
   neat.use(onExit)
-  neat.use(function (state, bus) {
+  neat.use((state, bus) => {
     state.opts = opts
     selectiveSync(state, opts)
 
-    Dat(opts.dir, opts, function (err, dat) {
+    Dat(opts.dir, opts, (err, dat) => {
       if (err && err.name === 'MissingError') return bus.emit('exit:warn', 'No existing archive in this directory. Use clone to download a new archive.')
       if (err) return bus.emit('exit:error', err)
       if (dat.writable) return bus.emit('exit:warn', 'Archive is writable. Cannot pull your own archive.')

@@ -3,10 +3,10 @@ module.exports = onExit
 
 function onExit (state, bus) {
   bus.on('exit:error', onError)
-  bus.on('exit:warn', function (err) {
+  bus.on('exit:warn', err => {
     onError(err, true)
   })
-  bus.on('exit', function () {
+  bus.on('exit', () => {
     state.exiting = true
     bus.render()
     process.exit()
