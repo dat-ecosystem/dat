@@ -481,8 +481,8 @@ BSD-3-Clause
 [Dat Desktop]: https://docs.datproject.org/install#desktop-application
 [Beaker Browser]: https://beakerbrowser.com
 [registry server]: https://github.com/datproject/datbase
-[share-gif]: https://raw.githubusercontent.com/datproject/docs/master/assets/cli-share.gif
-[clone-gif]: https://raw.githubusercontent.com/datproject/docs/master/assets/cli-clone.gif
+[share-gif]: https://raw.githubusercontent.com/datproject/docs/master/docs/assets/cli-share.gif
+[clone-gif]: https://raw.githubusercontent.com/datproject/docs/master/docs/assets/cli-clone.gif
 [Knight Foundation grant]: https://blog.datproject.org/2016/02/01/announcing-publicbits-org/
 [dat-node]: https://github.com/datproject/dat-node
 [dat-ignore]: https://github.com/joehand/dat-ignore
