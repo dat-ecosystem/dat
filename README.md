@@ -71,15 +71,14 @@ Share, backup, and publish your filesystem. You can turn any folder on your comp
 Dat allows you to focus on the fun work without worrying about moving files around. **Secure**, **distributed**, **fast**.
 
 * Documentation: [docs.datproject.org](https://docs.datproject.org)
-* [DatBase](https://datbase.org)
 * [Dat white paper](https://github.com/datprotocol/whitepaper/blob/master/dat-paper.pdf)
 
-##### Other Applications
+##### Desktop Applications
 
 Rather not use the command line? Check out these options:
 
-* [Dat Desktop] - A desktop app to manage multiple dats on your desktop machine.
 * [Beaker Browser] - An experimental p2p browser with built-in support for the Dat protocol.
+* [Dat Desktop] - A desktop app to manage multiple dats on your desktop machine. 
 
 ## dat command line
 
