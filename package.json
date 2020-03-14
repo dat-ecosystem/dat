@@ -69,7 +69,7 @@
     "random-access-memory": "^3.1.1",
     "recursive-readdir-sync": "^1.0.6",
     "request": "^2.88.0",
-    "standard": "^12.0.0",
+    "standard": "^14.3.2",
     "tape": "^4.10.1",
     "tape-spawn": "^1.4.2",
     "temporary-directory": "^1.0.2"
