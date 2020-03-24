@@ -12,7 +12,7 @@ function discoveryExit (state, bus) {
       Dat could not find any connections for that link.
       There may not be any sources online.
 
-      Run 'dat doctor' if you keep having trouble.
+      Ensure that everyone is using the latest version, using dat -v
     `)
     bus.emit('exit:warn', msg)
   }

@@ -34,7 +34,6 @@ Stateless/Shortcut Commands:
    dat <dir>                   create and sync dat in directory
 
 Troubleshooting & Help:
-   dat doctor                  run the dat network doctor
    dat help                    print this usage guide
    dat <command> --help, -h    print help for a specific command
    dat --version, -v           print the dat version
