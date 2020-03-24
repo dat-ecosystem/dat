@@ -60,7 +60,6 @@ var config = {
   commands: [
     require('../src/commands/clone'),
     require('../src/commands/create'),
-    require('../src/commands/doctor'),
     require('../src/commands/log'),
     require('../src/commands/keys'),
     require('../src/commands/publish'),
