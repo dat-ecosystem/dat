@@ -8,7 +8,7 @@ var version = require('../package.json').version
 test('usage - prints usage', function (t) {
   var d = spawn(t, dat)
   d.stderr.match(function (output) {
-    var usage = output.indexOf('Usage') > -1
+    var usage = output.indexOf('dat <link> ') > -1
     if (!usage) return false
     return true
   })
@@ -38,7 +38,7 @@ test('usage - also prints version', function (t) {
 test('usage - help prints usage', function (t) {
   var d = spawn(t, dat + ' help')
   d.stderr.match(function (output) {
-    var usage = output.indexOf('Usage') > -1
+    var usage = output.indexOf('dat <link> ') > -1
     if (!usage) return false
     return true
   })
