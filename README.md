@@ -113,7 +113,7 @@ dat <dir>
 
 Use `dat` to create a dat and sync your files from your computer to other users. Dat scans your files inside `<dir>`, creating metadata in `<dir>/.dat`. Dat stores the public link, version history, and file information inside the dat folder.
 
-`dat sync` and `dat share` are aliases of the same command.
+`dat sync` and `dat share` are aliases for the same command.
 ![share-gif]
 
 ### Downloading Data
@@ -124,7 +124,7 @@ dat dat://<link> <download-dir>
 
 Use `dat` to download files from a remote computer sharing files with Dat. This will download the files from `dat://<link>` to your `<download-dir>`. The download exits after it completes but you can continue to update the files later after the clone is done. Use `dat pull` to update new files or `dat sync` to live sync changes.
 
-`dat clone` is an alias the same command.
+`dat clone` is an alias for the same command.
 
 ![clone-gif]
 
@@ -133,7 +133,7 @@ Use `dat` to download files from a remote computer sharing files with Dat. This 
 
 A few other highlights. Run `dat help` to see the full usage guide.
 
-* `dat create` - Create an empty dat and `dat.json` file.
+* `dat create` or `dat init` - Create an empty dat and `dat.json` file.
 * `dat doctor` - Dat network doctor! The doctor tries to connect to a public peer. The doctor also creates a key to test direct connections.
 * `dat log ~/data/dat-folder/` or `dat log dat://<key>` - view the history and metadata information for a dat.
 
@@ -175,7 +175,7 @@ First, you can create a new dat inside that folder. Using the `dat create` comma
 ❯ dat create
 Welcome to dat program!
 You can turn any folder on your computer into a Dat.
-A Dat is a folder with some magic.
+A dat is a folder with some magic.
 ```
 
 This will create a new (empty) dat. Dat will print a link, share this link to give others access to view your files.
@@ -257,19 +257,20 @@ By default, Dat will download all files. If you want to only download a subset, 
 Start downloading by running the `clone` command. This creates a folder, downloads the content and metadata, and a `.dat` folder inside. Once you started the download, you can resume at any time.
 
 ```
-dat clone <link> [<dir>] [--temp]
+dat <link> [<dir>] [--temp]
 ```
 
 Clone a remote dat archive to a local folder.
 This will create a folder with the key name if no folder is specified.
+
 
 #### Downloading via `dat.json` key
 
 You can use a `dat.json` file to clone also. This is useful when combining Dat and git, for example. To clone a dat you can specify the path to a folder containing a `dat.json`:
 
 ```
-git clone git@github.com:joehand/dat-clone-sparse-test.git
-dat clone ./dat-clone-sparse-test
+git git@github.com:joehand/dat-clone-sparse-test.git
+dat ./dat-clone-sparse-test
 ```
 
 This will download the dat specified in the `dat.json` file.
