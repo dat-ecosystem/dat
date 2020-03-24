@@ -45,7 +45,7 @@
     "dat-json": "^1.0.3",
     "dat-link-resolve": "^2.3.0",
     "dat-log": "^1.2.0",
-    "dat-node": "^3.5.15",
+    "dat-node": "github:datproject/dat-node#hyperswarm",
     "dat-registry": "^4.0.1",
     "debug": "^4.0.0",
     "neat-log": "^3.1.0",
