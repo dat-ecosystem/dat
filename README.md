@@ -105,29 +105,31 @@ A dat is some files from your computer and a `.dat` folder. Each dat has a uniqu
 
 ### Sharing Data
 
-You can start sharing your files with a single command. Unlike `git`, you do not have to initialize a repository first, `dat share` will do that for you:
+You can start sharing your files with a single command. Unlike `git`, you do not have to initialize a repository first, `dat share` or simply `dat` will do that for you:
 
 ```
-dat share <dir>
+dat <dir>
 ```
 
-Use `dat share` to create a dat and sync your files from your computer to other users. Dat scans your files inside `<dir>`, creating metadata in `<dir>/.dat`. Dat stores the public link, version history, and file information inside the dat folder.
+Use `dat` to create a dat and sync your files from your computer to other users. Dat scans your files inside `<dir>`, creating metadata in `<dir>/.dat`. Dat stores the public link, version history, and file information inside the dat folder.
 
+`dat sync` and `dat share` are aliases of the same command.
 ![share-gif]
 
 ### Downloading Data
 
 ```
-dat clone dat://<link> <download-dir>
+dat dat://<link> <download-dir>
 ```
 
-Use `dat clone` to download files from a remote computer sharing files with Dat. This will download the files from `dat://<link>` to your `<download-dir>`. The download exits after it completes but you can continue to update the files later after the clone is done. Use `dat pull` to update new files or `dat sync` to live sync changes.
+Use `dat` to download files from a remote computer sharing files with Dat. This will download the files from `dat://<link>` to your `<download-dir>`. The download exits after it completes but you can continue to update the files later after the clone is done. Use `dat pull` to update new files or `dat sync` to live sync changes.
+
+`dat clone` is an alias the same command.
 
 ![clone-gif]
 
-Try out `dat clone` with the link above to read more about the protocol!
 
-### Other Cool Commands
+### Misc Commands
 
 A few other highlights. Run `dat help` to see the full usage guide.
 
@@ -178,13 +180,11 @@ A Dat is a folder with some magic.
 
 This will create a new (empty) dat. Dat will print a link, share this link to give others access to view your files.
 
-Once we have our dat, run `dat share` to scan your files and sync them to the network. Share the link with your friend to instantly start downloading files.
-
-You can also try viewing your files online. Go to [datbase.org](https://datbase.org) and enter your link to preview on the top left. *(Some users, including me when writing this, may have trouble connecting to datbase.org initially. Don't be alarmed! It is something we are working on. Thanks.)*
+Once we have our dat, run `dat <dir>` to scan your files and sync them to the network. Share the link with your friend to instantly start downloading files.
 
 #### Bonus HTTP Demo
 
-Dat makes it really easy to share live files on a HTTP server. This is a cool demo because we can also see how version history works! Serve dat files on HTTP with the `--http` option. For example, `dat sync --http`, serves your files to a HTTP website with live reloading and version history! This even works for dats you're downloading (add the `--sparse` option to only download files you select via HTTP). The default HTTP port is 8080.
+Dat makes it really easy to share live files on a HTTP server. This is a cool demo because we can also see how version history works! Serve dat files on HTTP with the `--http` option. For example, `dat --http`, serves your files to a HTTP website with live reloading and version history! This even works for dats you're downloading (add the `--sparse` option to only download files you select via HTTP). The default HTTP port is 8080.
 
 *Hint: Use `localhost:8080/?version=10` to view a specific version.*
 
@@ -223,7 +223,7 @@ dat create -y
 The quickest way to get started sharing files is to `share`:
 
 ```
-❯ dat share
+❯ dat 
 dat://3e830227b4b2be197679ff1b573cc85e689f202c0884eb8bdb0e1fcecbd93119
 Sharing dat: 24 files (383 MB)
 
@@ -234,24 +234,18 @@ Importing 528 files to Archive (165 MB/s)
 ADD: data/expn_cd.csv (403 MB / 920 MB)
 ```
 
-#### Syncing to Network
-
 ```
-dat sync [<dir>] [--no-import] [--no-watch]
+dat [<dir>] [--no-import] [--no-watch]
 ```
 
-Start sharing your dat archive over the network.
-Sync will import new or updated files since you last ran `create` or `sync`.
-Sync watches files for changes and imports updated files.
+Start sharing your dat archive over the network. It will import new or updated files since you last ran `create` or `sync`. Dat watches files for changes and imports updated files.
 
 * Use `--no-import` to not import any new or updated files.
 * Use `--no-watch` to not watch directory for changes. `--import` must be true for `--watch` to work.
 
 #### Ignoring Files
 
-By default, Dat will ignore any files in a `.datignore` file, similar to git. Each file should be separated by a newline. Dat also ignores all hidden folders and files.
-
-Dat uses [dat-ignore] to decide if a file should be ignored. Supports pattern wildcards (`/*.png`) and directory-wildcards (`/**/cache`).
+By default, Dat will ignore any files in a `.datignore` file, similar to git. Each file should be separated by a newline. Dat also ignores all hidden folders and files. Supports pattern wildcards (`/*.png`) and directory-wildcards (`/**/cache`).
 
 #### Selecting Files
 
@@ -260,7 +254,7 @@ By default, Dat will download all files. If you want to only download a subset, 
 
 ### Downloading
 
-Start downloading by running the `clone` command. This creates a folder, downloads the content and metadata, and a `.dat` folder inside. Once you started the download, you can resume using `clone` or the other download commands.
+Start downloading by running the `clone` command. This creates a folder, downloads the content and metadata, and a `.dat` folder inside. Once you started the download, you can resume at any time.
 
 ```
 dat clone <link> [<dir>] [--temp]
@@ -288,12 +282,6 @@ Once a dat is clone, you can run either `dat pull` or `dat sync` in the folder t
 dat pull [<dir>]
 ```
 
-Update a cloned dat archive with the latest files and exit.
-
-```
-dat sync [<dir>]
-```
-
 Download latest files and keep connection open to continue updating as remote source is updated.
 
 ### Shortcut commands
@@ -301,47 +289,13 @@ Download latest files and keep connection open to continue updating as remote so
 * `dat <link> <dir>` will run `dat clone` for new dats or resume the existing dat in `<dir>`
 * `dat <dir>` is the same as running `dat sync <dir>`
 
-### Dat Registry and Authentication
-
-As part of our [Knight Foundation grant], we are building a registry for dat archives.
-We will be running a dat registry at datbase.org, but anyone will be able to create their own.
-Once registered, you will be able to publish dat archives from our registry.
-Anyone can clone archives published to a registry without registration:
-
-```
-dat clone datbase.org/jhand/cli-demo
-```
-
-#### Auth (experimental)
-
-You can also use the `dat` command line to register and publish to dat registries. Dat plans to support any registry. Currently, `datbase.org` is the only one available and the default.
-
-To register and login you can use the following commands:
-
-```
-dat register [<registry>]
-dat login
-dat whoami
-```
-
-Once you are logged in to a registry, you can publish a dat archive:
-
-```
-cd my-data
-dat create
-dat publish --name my-dataset
-```
-
-All registry requests take the `<registry>` option if you'd like to publish to a different registry than datbase.org.
-You can deploy your own compatible [registry server] if you'd rather use your own service.
-
 ### Key Management & Moving dats
 
 `dat keys` provides a few commands to help you move or backup your dats.
 
 Writing to a dat requires the secret key, stored in the `~/.dat` folder. You can export and import these keys between dats. First, clone your dat to the new location:
 
-* (original) `dat share`
+* (original) `dat share` 
 * (duplicate) `dat clone <link>`
 
 Then transfer the secret key:
@@ -366,7 +320,7 @@ Check your Dat version:
 dat -v
 ```
 
-You should see the Dat semantic version printed, e.g. `13.1.2`.
+You should see the Dat semantic version printed, e.g. `14.0.0`.
 
 ### Installation Issues
 
@@ -396,7 +350,7 @@ If you are having trouble with a specific command, run with the debug environmen
 This will help us debug any issues:
 
 ```
-DEBUG=dat,dat-node dat clone dat://<link> dir
+DEBUG=dat,dat-node dat dat://<link> dir
 ```
 
 ### Networking Issues
