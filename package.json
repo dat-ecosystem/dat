@@ -44,7 +44,7 @@
     "dat-encoding": "^5.0.1",
     "dat-json": "^1.0.3",
     "dat-link-resolve": "^2.3.0",
-    "dat-log": "^1.2.0",
+    "dat-log": "^2.0.0",
     "dat-node": "^3.5.15",
     "dat-registry": "^4.0.1",
     "debug": "^4.0.0",
