@@ -3,7 +3,7 @@ module.exports = {
   command: sync,
   help: [
     'Sync a Dat archive with the network',
-    'Watch and import file changes (if archive is writable)',
+    'Watch and import file changes',
     '',
     'Usage: dat sync'
   ].join('\n'),
@@ -12,7 +12,7 @@ module.exports = {
       name: 'import',
       boolean: true,
       default: true,
-      help: 'Import files from the directory to the database (Dat Writable).'
+      help: 'Import files from the directory to the database (when writable).'
     },
     {
       name: 'ignoreHidden',
@@ -42,9 +42,9 @@ module.exports = {
     {
       name: 'show-key',
       boolean: true,
-      default: false,
+      default: true,
       abbr: 'k',
-      help: 'Print out the dat key (Dat Not Writable).'
+      help: 'Print out the dat key.'
     }
   ]
 }
@@ -65,8 +65,7 @@ function sync (opts) {
   opts.dir = parsed.dir || process.cwd()
   opts.showKey = opts['show-key'] // using abbr in option makes printed help confusing
 
-  // Force options
-  opts.createIfMissing = false // sync must always be a resumed archive
+  // TODO: if dat-store running, add this dat to the local store and then exit = true
   opts.exit = false
 
   var neat = neatLog(archiveUI, { logspeed: opts.logspeed, quiet: opts.quiet, debug: opts.debug })
@@ -76,7 +75,7 @@ function sync (opts) {
     state.opts = opts
     selectiveSync(state, opts)
     Dat(opts.dir, opts, function (err, dat) {
-      if (err && err.name === 'MissingError') return bus.emit('exit:warn', 'No existing archive in this directory.')
+      if (err && err.name === 'IncompatibleError') return bus.emit('exit:warn', 'Directory contains incompatible dat metadata. Please remove the .dat folder in this directory.')
       if (err) return bus.emit('exit:error', err)
 
       state.dat = dat

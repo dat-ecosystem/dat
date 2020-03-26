@@ -60,12 +60,10 @@ var config = {
   commands: [
     require('../src/commands/clone'),
     require('../src/commands/create'),
-    require('../src/commands/doctor'),
     require('../src/commands/log'),
     require('../src/commands/keys'),
     require('../src/commands/publish'),
     require('../src/commands/pull'),
-    require('../src/commands/share'),
     require('../src/commands/status'),
     require('../src/commands/sync'),
     require('../src/commands/unpublish'),
@@ -82,7 +80,8 @@ var config = {
     }
   },
   aliases: {
-    'init': 'create'
+    'init': 'create',
+    'share': 'sync'
   },
   // whitelist extensions for now
   extensions: [
@@ -139,7 +138,7 @@ function syncShorthand (opts) {
     // Set default opts. TODO: use default opts in share
     opts.watch = opts.watch || true
     opts.import = opts.import || true
-    return require('../src/commands/share').command(opts)
+    return require('../src/commands/sync').command(opts)
   }
 
   // All else fails, show usage

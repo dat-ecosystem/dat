@@ -2,8 +2,7 @@ language: node_js
 
 node_js:
   - 'lts/*'
-  - '8'
-  - '10'
+  - '12'
   - 'node'
 sudo: false
 
@@ -30,5 +29,5 @@ deploy:
   file: dist/*
   on:
     repo: datproject/dat
-    node: '10'
+    node: '12'
     tags: true
