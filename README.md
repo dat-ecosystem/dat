@@ -7,6 +7,15 @@ Dat is a nonprofit-backed community & open protocol for building apps of the fut
 
 Use Dat command line to share files with version control, back up data to servers, browse remote files on demand, and automate long-term data preservation.
 
+## Next version
+
+Try the next version of dat! This version (14.0.0) is not compatible with older
+versions (13.x) and below.
+
+```
+npm install -g dat@next
+```
+
 [<img src="https://datproject.github.io/design/downloads/dat-logo.png" align="right" width="140">][Dat Project]
 
 Have questions? Join our chat via IRC or Gitter:
