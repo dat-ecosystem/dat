@@ -412,8 +412,6 @@ With successful use, Dat will show `Connected to 1 peer` after connection.
 If you never see a peer connected, your network may be restricting discovery or connection.
 Please try using the `dat --doctor` command (see below) between the two computers not connecting. This will help troubleshoot the networks.
 
-* Dat may [have issues][dat#503] connecting if you are using iptables.
-
 #### Dat Doctor
 
 We've included a tool to identify network issues with Dat, the Dat doctor.
