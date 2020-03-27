@@ -16,6 +16,7 @@ Other commands:
    dat pull                    update dat & exit
    dat log                     log history for a dat
    dat status                  get key & info about a local dat
+   dat keys [import/export]    import and export private keys
 
 Troubleshooting & Help:
    dat help                    print this usage guide
