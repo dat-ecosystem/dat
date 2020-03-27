@@ -30,5 +30,5 @@ Troubleshooting & Help:
     console.error(usage)
   }
   console.error('Have fun using Dat! Learn more at docs.datproject.org')
-  process.exit(1)
+  process.exit(0)
 }
