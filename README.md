@@ -143,7 +143,6 @@ Use `dat` to download files from a remote computer sharing files with Dat. This 
 A few other highlights. Run `dat help` to see the full usage guide.
 
 * `dat create` or `dat init` - Create an empty dat and `dat.json` file.
-* `dat doctor` - Dat network doctor! The doctor tries to connect to a public peer. The doctor also creates a key to test direct connections.
 * `dat log ~/data/dat-folder/` or `dat log dat://<key>` - view the history and metadata information for a dat.
 
 ### Quick Demos
@@ -374,26 +373,6 @@ Whenever you run Dat there are several steps to share or download files with pee
 
 With successful use, Dat will show `Connected to 1 peer` after connection.
 If you never see a peer connected, your network may be restricting discovery or connection.
-Please try using the `dat --doctor` command (see below) between the two computers not connecting. This will help troubleshoot the networks.
-
-#### Dat Doctor
-
-We've included a tool to identify network issues with Dat, the Dat doctor.
-The Dat doctor will run two tests:
-
-1. Attempt to connect to a public server running a Dat peer.
-2. Attempt a direct connection between two peers. You will need to run the command on both the computers you are trying to share data between.
-
-Start the doctor by running:
-
-```
-dat doctor
-```
-
-For direct connection tests, the doctor will print out a command to run on the other computer, `dat doctor <64-character-string>`.
-The doctor will run through the key steps in the process of sharing data between computers to help identify the issue.
-
----
 
 ## JS API
 
