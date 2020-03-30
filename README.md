@@ -87,7 +87,7 @@ Dat allows you to focus on the fun work without worrying about moving files arou
 Rather not use the command line? Check out these options:
 
 * [Beaker Browser] - An experimental p2p browser with built-in support for the Dat protocol.
-* [Dat Desktop] - A desktop app to manage multiple dats on your desktop machine. 
+* [Dat Desktop](https://github.com/datproject/dat-desktop) - A desktop app to manage multiple dats on your desktop machine. 
 
 ## dat command line
 
