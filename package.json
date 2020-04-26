@@ -63,7 +63,7 @@
     "dependency-check": "^3.4.1",
     "hypercore": "^6.25.2",
     "mkdirp": "^0.5.4",
-    "pkg": "^4.4.4",
+    "pkg": "^4.4.8",
     "random-access-memory": "^3.1.1",
     "recursive-readdir-sync": "^1.0.6",
     "request": "^2.88.2",
