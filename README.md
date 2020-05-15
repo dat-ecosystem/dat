@@ -23,6 +23,9 @@ Have questions? Join our chat via IRC or Gitter:
 [![#dat IRC channel on freenode][irc-badge]][irc-channel]
 [![datproject/discussions][gitter-badge]][gitter-chat]
 
+### Thanks to our financial supporters!
+[![OpenCollective](https://opencollective.com/dat/tiers/maintainer.svg?avatarHeight=36&width=600")]]
+
 ### Table of Contents
 
 - [Installation](#installation)
