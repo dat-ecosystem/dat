@@ -62,7 +62,7 @@
     "cross-zip-cli": "^1.0.0",
     "dependency-check": "^3.4.1",
     "hypercore": "^6.25.2",
-    "mkdirp": "^0.5.4",
+    "mkdirp": "^1.0.4",
     "pkg": "^4.4.4",
     "random-access-memory": "^3.1.1",
     "recursive-readdir-sync": "^1.0.6",
