@@ -2,19 +2,10 @@
 
 > npm install -g dat
 
-A distributed data community.
-Dat is a nonprofit-backed community & open protocol for building apps of the future.
+Use `dat` command line to share files with version control, back up data to servers, browse remote files on demand, and automate long-term data preservation.
 
-Use Dat command line to share files with version control, back up data to servers, browse remote files on demand, and automate long-term data preservation.
+`dat` is the first application based upon the [Hypercore Protocol](https://github.com/hypercore-protocol), and drove the architectural design through iterative development between 2014 and 2017. There exists a large community around it. 
 
-## Next version
-
-Try the next version of dat! This version (14.0.0) is not compatible with older
-versions (13.x) and below.
-
-```
-npm install -g dat@next
-```
 
 [<img src="https://datproject.github.io/design/downloads/dat-logo.png" align="right" width="140">][Dat Project]
 
@@ -44,23 +35,22 @@ Dat can be used as a command line tool or a javascript library:
 
 ### Installing the `$ dat` command line tool
 
-The recommended way to install the Dat command line tool is with `npm`:
-
-```
-npm install -g dat
-```
-
-Make sure you have `node` and `npm` installed first. If not, see the prerequisites section below. We recommend `npm` because it makes it easy to install new versions of `dat` when they get released.
-
-Once `npm install` finishes, you should be able to run the `$ dat` command. If not, see the [installation troubleshooting](#troubleshooting) for tips.
-
-#### Installing without npm
-
-If you are unable to use `npm` to install dat, you can also download a single file binary distribution version of `dat` using the one line install command below. The binary includes a copy of node and dat packaged inside a single file, so you just have to download one file in order to start sharing data, with no other dependencies needed on your system:
+The recommended way to install dat is through a single file binary distribution version of `dat` with the one line install command below. The binary includes a copy of node and dat packaged inside a single file, so you just have to download one file in order to start sharing data, with no other dependencies needed on your system:
 
 ```
 wget -qO- https://raw.githubusercontent.com/datproject/dat/master/download.sh | bash
 ```
+
+## Next version
+
+Try the next version of dat! This version (14.0.0) is not compatible with older
+versions (13.x) and below, and works on node v12.
+
+```
+npm install -g dat@next
+```
+
+Maintainers wanted!
 
 #### NPM Prerequisites
 
@@ -89,19 +79,8 @@ Dat allows you to focus on the fun work without worrying about moving files arou
 
 Rather not use the command line? Check out these options:
 
-* [Beaker Browser] - An experimental p2p browser with built-in support for the Dat protocol.
+* [Beaker Browser] - An experimental p2p browser with built-in support for the Hypercore Protocol.
 * [Dat Desktop](https://github.com/datproject/dat-desktop) - A desktop app to manage multiple dats on your desktop machine. 
-
-## dat command line
-
-Share, download, and backup files with the command line! Automatically sync changes to datasets. Never worry about manually transferring files again.
-
-Mac/Linux      | Windows      | Version
--------------- | ------------ | ------------
-[![Travis][travis-badge]][travis-build] | [![Build status][appveyor-badge]][appveyor-build] | [![NPM version][npm-badge]][npm-package]
-
-Have questions or need some guidance?
-You can [chat with us](http://chat.datproject.org) in IRC on [#dat][irc-channel] or [Gitter][gitter-chat]!
 
 ### JS Library
 
