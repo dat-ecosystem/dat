@@ -153,7 +153,7 @@ function showUsageOrRunExtension (opts, help, usageMessage) {
 
 function exitInvalidNode () {
   console.error('Node Version:', process.version)
-  console.error('Unfortunately, we only support Node >= v4. Please upgrade to use Dat.')
+  console.error(`Unfortunately, we only support Node >= v${NODE_VERSION_SUPPORTED}. Please upgrade to use Dat.`)
   console.error('You can find the latest version at https://nodejs.org/')
   process.exit(0)
 }
