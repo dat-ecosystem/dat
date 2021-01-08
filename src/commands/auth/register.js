@@ -53,7 +53,15 @@ function register (opts) {
         required: true,
         hidden: true,
         replace: '*'
+      },
+	confirm_password: {
+        description: chalk.magenta('Confirm your password'),
+        message: 'Confirm your password',
+        required: true,
+        hidden: true,
+        replace: '*'
       }
+
     }
   }
 
@@ -63,7 +71,12 @@ function register (opts) {
   prompt.get(schema, function (err, results) {
     if (err) return exitErr(err)
     opts.server = results.server
+    if (results.password != results.confirm_password){
+	console.error("Password and confirmation did not match")
+	process.exit(0)
+}
     makeRequest(results)
+   
   })
 
   function makeRequest (user) {
