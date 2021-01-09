@@ -26,7 +26,6 @@ function register (opts) {
   var welcome = output(`
     Welcome to ${chalk.green(`dat`)} program!
     Create a new account with a Dat registry.
-
   `)
   console.log(welcome)
 
@@ -53,7 +52,15 @@ function register (opts) {
         required: true,
         hidden: true,
         replace: '*'
+      },
+	confirm_password: {
+        description: chalk.magenta('Confirm your password'),
+        message: 'Confirm your password',
+        required: true,
+        hidden: true,
+        replace: '*'
       }
+
     }
   }
 
@@ -63,7 +70,12 @@ function register (opts) {
   prompt.get(schema, function (err, results) {
     if (err) return exitErr(err)
     opts.server = results.server
+    if (results.password != results.confirm_password){
+	console.error("Password and confirmation did not match")
+	process.exit(0)
+}
     makeRequest(results)
+   
   })
 
   function makeRequest (user) {
@@ -78,7 +90,6 @@ function register (opts) {
       else if (err) return exitErr(err.toString())
       console.log(output(`
         Created account on ${chalk.green(opts.server)}!
-
         Login to start publishing: ${chalk.green(`dat login`)}
       `))
       process.exit(0)
