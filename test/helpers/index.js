@@ -6,6 +6,7 @@ var rimraf = require('rimraf')
 var encoding = require('dat-encoding')
 var recursiveReadSync = require('recursive-readdir-sync')
 var Dat = require('dat-node')
+var fetch = require('node-fetch')
 
 module.exports.matchLink = matchDatLink
 module.exports.isDir = isDir
@@ -13,6 +14,7 @@ module.exports.testFolder = newTestFolder
 module.exports.datJson = datJson
 module.exports.shareFixtures = shareFixtures
 module.exports.fileList = fileList
+module.exports.fetchText = fetchText
 
 function shareFixtures (opts, cb) {
   if (typeof opts === 'function') return shareFixtures(null, opts)
@@ -74,4 +76,16 @@ function isDir (dir) {
   } catch (e) {
     return false
   }
+}
+
+function fetchText (url) {
+  let resp = {}
+  return fetch(url).then(function (res) {
+    resp = res
+    return resp.text()
+  }).then(function (body) {
+    return { resp, body, error: null }
+  }).catch(function (error) {
+    return { error, resp: {}, body: null }
+  })
 }
