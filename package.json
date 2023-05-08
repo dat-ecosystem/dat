@@ -61,7 +61,7 @@
   "devDependencies": {
     "cross-zip-cli": "^1.0.0",
     "dependency-check": "^3.4.1",
-    "hypercore": "^6.25.2",
+    "hypercore": "^8.12.0",
     "mkdirp": "^0.5.4",
     "node-fetch": "^2.6.1",
     "pkg": "^4.4.4",
